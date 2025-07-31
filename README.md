@@ -20,7 +20,7 @@ A laser‑focused codebase that **reproduces every numbered equation** in the on
 ### Option A: Full Installation (Recommended)
 ```bash
 # clone
-$ git clone https://github.com/StarDrive/BPR-math-spine.git && cd BPR-math-spine
+$ git clone https://github.com/jackalkahwati/BPR-Math-Spine.git && cd BPR-Math-Spine
 
 # create env with FEniCS (see FEniCS installation notes below)
 $ mamba env create -f environment.yml && conda activate bpr

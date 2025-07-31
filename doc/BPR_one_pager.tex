@@ -1,0 +1,140 @@
+%========================================================
+% Boundary Phase Resonance: One-Page Mathematical Spine
+%========================================================
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry,bm,siunitx}
+\geometry{margin=1in}
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bf Boundary Phase Resonance (BPR):\\
+             Minimal Mathematical Synopsis}\\[6pt]
+  \small Jack Al-Kahwati \quad (July 2025)
+\end{center}
+
+%--------------------------------------------------------
+\paragraph{1. Holographic setup.}
+Let $M^{\,D}$ be a Lorentzian bulk with smooth $(D\!-\!1)$–boundary
+$\Sigma=\partial M$, endowed with induced metric $h_{ab}$ and outward
+normal $n^\mu$.  BPR postulates a \emph{single} real phase field
+$\varphi:\Sigma\to\mathbb R$ (generalised below) whose dynamics
+encode all bulk excitations via a (covariant) holographic dictionary.
+
+%--------------------------------------------------------
+\paragraph{2. Action functional.}
+The total action is written as a sum of five gauge-invariant pieces:
+\begin{align}
+  S &= S_{\text{bulk}}[g,\Psi_{\text{SM}}]
+      + S_{\text{bndy}}[\varphi]
+      + S_{\text{int}}[g,\varphi]     \nonumber\\
+    &\quad + S_{\text{info}}[\varphi]
+      + S_{\text{bio}}[\varphi,\chi_{\text b}]                      \tag{1}
+\end{align}
+Only the \emph{boundary} terms are novel; the bulk piece is
+Einstein–Hilbert + Standard Model.
+
+\smallskip
+\noindent\emph{Boundary phase Lagrangian}
+\begin{equation}
+  S_{\text{bndy}}
+    = \frac{1}{2\kappa}\!
+      \int_\Sigma\! d^{D-1}\!x\,\sqrt{|h|}\,
+      h^{ab}\nabla_a\varphi\,\nabla_b\varphi
+      -\!\int_\Sigma\! d^{D-1}\!x\,\sqrt{|h|}\,V(\varphi).        \tag{2}
+\end{equation}
+
+\smallskip
+\noindent\emph{Metric–boundary coupling}
+\begin{equation}
+  S_{\text{int}}
+   = \lambda
+     \int_M\! d^{D}x\,\sqrt{|g|}\;
+     P^{ab}{}_{\mu\nu}\,
+     (\nabla_a\varphi)(\nabla_b\varphi)\,g^{\mu\nu},
+  \quad P^{ab}{}_{\mu\nu}=h^{ab}n_\mu n_\nu.                      \tag{3}
+\end{equation}
+To $\mathcal O(\lambda)$ one obtains a boundary-sourced deformation
+of $g_{\mu\nu}$:
+$\Delta g_{\mu\nu} \propto \partial_a\varphi\,\partial_b\varphi\,P^{ab}{}_{\mu\nu}$.
+
+\smallskip
+\noindent\emph{Information term (IIT-inspired)}
+\begin{equation}
+  S_{\text{info}}
+   = -\,\xi \!\int_\Sigma\! d^{D-1}\!x\,\sqrt{|h|}
+     \,\Phi[\varphi]\; ,\quad
+  \Phi=\sum_{i<j} I_{ij},                                           \tag{4}
+\end{equation}
+where $I_{ij}=-\!\int p_{ij}\ln p_{ij}$ is a pairwise
+information-metric on $\Sigma$.
+
+\smallskip
+\noindent\emph{Biological/fractal coupling}
+\begin{equation}
+  S_{\text{bio}}
+   = \int_\Sigma\! d^{D-1}\!x\,\sqrt{|h|}\;
+     \chi_{\text b}(x)\,\varphi(x),                                 \tag{5}
+\end{equation}
+where $\chi_{\text b}\!=\!\chi_{\max}\sigma[k(\Phi/\Phi_c-1)]\!E^{\alpha}
+             (\Phi/\Phi_c)^{\beta}\tau S^{\gamma}U^{\delta}I^{\epsilon}$ is
+the six-factor consciousness coupling (see Eq.\,(16) in the main text).
+
+%--------------------------------------------------------
+\paragraph{3. Field equations.}
+Variation of $(1)$ gives
+\begin{align}
+  \kappa\,\nabla^2_\Sigma\varphi
+  &= \partial_\varphi V
+     +\chi_{\text b}(x)
+     +\lambda\,n^\mu n^\nu\!\left(\nabla_\mu\nabla_\nu\varphi
+                    -\Gamma^\rho_{\mu\nu}\nabla_\rho\varphi\right)  \tag{6a}\\
+  G_{\mu\nu}+ \Lambda g_{\mu\nu}
+  &= 8\pi G\bigl(T^{\text{SM}}_{\mu\nu}
+       +T^{\varphi}_{\mu\nu}[h,\varphi]\bigr),                     \tag{6b}
+\end{align}
+with $T^{\varphi}_{\mu\nu}\!\equiv\!-\,\frac{2}{\sqrt{|g|}}
+          \frac{\delta S_{\text{int}}}{\delta g^{\mu\nu}}$.
+Eqs.\,(6) reduce to Einstein–Hilbert and the Casimir-like
+boundary Laplacian in the $\lambda\!\to\!0$ limit.
+
+%--------------------------------------------------------
+\paragraph{4. E$_8$ embedding sketch.}
+Promote $\varphi\mapsto\bm{\Phi}\in\mathfrak{e}_8$:
+$\bm{\Phi}(x)=\sum_{A=1}^{248}\!\phi^A(x)E_A$ with
+$[E_A,E_B]=f_{AB}{}^{\;C}E_C$.  The quartic Casimir provides
+a unique $\mathcal O(\Phi^4)$ invariant.  Spontaneous breaking via
+\[
+  \langle\bm{\Phi}\rangle=\mathrm{diag}(SU(3),SU(2),U(1),\dots)
+\]
+yields an $SU(3)\times SU(2)\times U(1)$ sector $+$~230
+hidden components.  A chiral index on the boundary
+(Atiyah–Singer with torsion) counts left-handed
+zero-modes; the target is $3$ generations.
+
+%--------------------------------------------------------
+\paragraph{5. Sharp experimental falsifier.}
+For a fractal cylindrical cavity of scale $R$ BPR predicts
+\[
+  F_{\text{Cas}}(R)
+    = -\frac{\pi^2\hbar c}{240\,R^4}
+      \Bigl[1+\alpha\,\bigl(R/R_{\!\!f}\bigr)^{\!\!-\delta}\Bigr],
+  \quad\delta\!=\!1.37\pm0.05.                                     \tag{7}
+\]
+A null result at $|\delta|<0.05$ to $\SI{3}{\pico\newton}$ precision
+invalidates the boundary-resonant correction.
+
+%--------------------------------------------------------
+\paragraph{6. Computable quantity for peer audit.}
+Given any triangulated $\Sigma$, eqs.\,(2–3) are
+solved by a single Poisson step.  The repository
+\texttt{github.com/jackalkahwati/BPR-Math-Spine} contains
+FEniCS and symbolic notebooks reproducing (6) and (7) with no hidden assumptions.
+
+\vspace*{-12pt}
+\begin{flushright}
+\emph{Contact:} \texttt{jack@thestardrive.com}
+\end{flushright}
+
+\end{document}
