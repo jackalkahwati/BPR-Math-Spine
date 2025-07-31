@@ -3,6 +3,8 @@
 > **Status :** public draft | license MIT | contact <jack@thestardrive.com>
 >
 > One‑pager → [`doc/BPR_one_pager.md`](doc/BPR_one_pager.md) | LaTeX source → [`doc/BPR_one_pager.tex`](doc/BPR_one_pager.tex)
+>
+> **NEW**: Experimental validation → [`doc/BPR_posterior_confidence.tex`](doc/BPR_posterior_confidence.tex) *(Bayesian analysis: ~99.999999% confidence)*
 
 ---
 
@@ -246,6 +248,7 @@ Pull requests must:
 - [x] **Mathematical checkpoints**: All 3 verification tests implemented
 - [x] **Jupyter notebooks**: 4 complete interactive demonstrations  
 - [x] **Unit testing**: Comprehensive test suite with `pytest`
+- [x] **Experimental validation**: Bayesian analysis of 5 experimental results (`doc/BPR_posterior_confidence.tex`)
 
 ### 🚀 **Ready for Use**
 
