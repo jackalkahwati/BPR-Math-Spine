@@ -2,7 +2,7 @@
 
 > **Status :** public draft | license MIT | contact <jack@thestardrive.com>
 >
-> One‑pager PDF → [`doc/BPR_one_pager.pdf`](doc/BPR_one_pager.pdf)
+> One‑pager → [`doc/BPR_one_pager.md`](doc/BPR_one_pager.md) | LaTeX source → [`doc/BPR_one_pager.tex`](doc/BPR_one_pager.tex)
 
 ---
 
