@@ -1,0 +1,80 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bpr-math-spine"
+version = "0.1.0"
+description = "Minimal, Reproducible Maths for Boundary Phase Resonance"
+authors = [{name = "StarDrive Research Group", email = "jack@stardrive.ai"}]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    "numpy>=1.21",
+    "scipy>=1.7",
+    "matplotlib>=3.5",
+    "sympy>=1.9",
+    "pandas>=1.3",
+]
+
+[project.optional-dependencies]
+fenics = ["fenics>=2019.1.0", "mshr>=2019.1.0"]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov",
+    "black",
+    "isort", 
+    "flake8",
+    "pre-commit",
+    "jupyter",
+    "jupyterlab",
+]
+
+[project.urls]
+Homepage = "https://github.com/StarDrive/BPR-math-spine"
+Repository = "https://github.com/StarDrive/BPR-math-spine"
+Documentation = "https://github.com/StarDrive/BPR-math-spine/tree/main/doc"
+
+[project.scripts]
+bpr-demo = "scripts.run_casimir_demo:main"
+
+[tool.setuptools.packages.find]
+include = ["bpr*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]

@@ -1,0 +1,14 @@
+BPR Mathematical Checkpoints (No-FEniCS Mode)
+=============================================
+
+Checkpoint 1: Laplacian eigenvalue convergence
+Status: SKIPPED (requires FEniCS mesh generation)
+
+Checkpoint 2: Energy-momentum conservation
+Status: FAILED (symbolic verification)
+
+Checkpoint 3: Standard Casimir recovery
+Status: PASSED (analytical scaling)
+
+Note: Limited verification without FEniCS.
+For complete validation, install FEniCS and run full demo.

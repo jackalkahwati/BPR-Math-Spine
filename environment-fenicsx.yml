@@ -1,0 +1,25 @@
+name: bpr-fenicsx
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - numpy>=1.21
+  - scipy>=1.7
+  - matplotlib>=3.5
+  - sympy>=1.9
+  - jupyter
+  - jupyterlab
+  - pytest>=6.0
+  - pytest-cov
+  - black
+  - isort
+  - flake8
+  - pre-commit
+  - pandas
+  - h5py
+  - pip
+  # FEniCSX (newer version) - may work better on modern systems
+  - pip:
+    - fenicsx>=0.5.0
+    - pyvista  # For visualization with FEniCSX

@@ -1,0 +1,27 @@
+name: bpr
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - numpy>=1.21
+  - scipy>=1.7
+  - matplotlib>=3.5
+  - sympy>=1.9
+  - jupyter
+  - jupyterlab
+  - pytest>=6.0
+  - pytest-cov
+  - black
+  - isort
+  - flake8
+  - pre-commit
+  - pandas
+  - h5py
+  - pip
+  # FEniCS installation (see README for platform-specific instructions)
+  - fenics>=2019.1.0
+  - mshr>=2019.1.0
+  - pip:
+    # Alternative: FEniCSX (newer, may work better on some systems)
+    # - fenicsx>=0.5.0
