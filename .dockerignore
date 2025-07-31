@@ -1,0 +1,76 @@
+# BPR-Math-Spine Docker ignore file
+#
+# Excludes unnecessary files from Docker build context
+# to speed up builds and reduce image size.
+
+# Git files
+.git/
+.gitignore
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation build
+docs/_build/
+site/
+
+# Test outputs
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data files (can be large)
+data/*.csv
+data/*.png
+data/*.pdf
+data/*.h5
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Local environment files
+.env
+.env.local
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Docker files (avoid recursion)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# CI/CD
+.github/
+.travis.yml
+.circleci/
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/

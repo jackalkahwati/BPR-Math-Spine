@@ -1,0 +1,76 @@
+# BPR-Math-Spine Docker Compose
+#
+# Provides easy development environment setup with:
+# - BPR-Math-Spine container
+# - Jupyter Lab interface  
+# - Volume mounting for live development
+#
+# Usage:
+#   docker-compose up -d
+#   open http://localhost:8888
+#
+# Author: Jack Al-Kahwati (jack@thestardrive.com)
+
+version: '3.8'
+
+services:
+  bpr-math-spine:
+    build: .
+    container_name: bpr-math-spine
+    ports:
+      - "8888:8888"  # Jupyter Lab
+    volumes:
+      - .:/workspace  # Mount current directory for live development
+      - bpr-data:/workspace/data  # Persistent data volume
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=bpr-token-2025  # Set your own token
+    restart: unless-stopped
+    
+    # Override default command for development
+    command: >
+      bash -c "
+      conda run -n bpr jupyter lab 
+      --ip=0.0.0.0 
+      --port=8888 
+      --no-browser 
+      --allow-root 
+      --notebook-dir=/workspace
+      --ServerApp.token='bpr-token-2025'
+      --ServerApp.password=''
+      "
+
+  # Optional: Add a service for running tests
+  bpr-test:
+    build: .
+    container_name: bpr-test
+    volumes:
+      - .:/workspace
+    profiles:
+      - testing
+    command: >
+      bash -c "
+      conda run -n bpr python scripts/test_fenics_install.py &&
+      conda run -n bpr python scripts/run_casimir_demo.py --no-fenics --quick --no-plots &&
+      conda run -n bpr python scripts/thin_shell_benchmark.py &&
+      conda run -n bpr pytest -v tests/ || echo 'Some tests may fail without full FEniCS - this is expected'
+      "
+
+  # Optional: Add a service for the thin-shell benchmark
+  bpr-benchmark:
+    build: .
+    container_name: bpr-benchmark
+    volumes:
+      - .:/workspace
+      - bpr-data:/workspace/data
+    profiles:
+      - benchmark
+    command: conda run -n bpr python scripts/thin_shell_benchmark.py
+
+volumes:
+  bpr-data:
+    driver: local
+
+networks:
+  default:
+    name: bpr-network

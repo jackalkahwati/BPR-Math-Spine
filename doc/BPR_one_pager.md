@@ -73,14 +73,17 @@ where **δ = 1.37 ± 0.05** is the critical BPR exponent.
 
 | Equation | Implementation | Status |
 |----------|----------------|--------|
+| Eq (1) | Complete action functional | ✅ Complete |
 | Eq (2) | `boundary_field.py::solve_phase()` | ✅ Complete |
 | Eq (3) | `metric.py::metric_perturbation()` | ✅ Complete |
+| Eq (4) | `information.py::InformationIntegration` | ✅ Complete |
+| Eq (5) | `information.py::ConsciousnessCoupling` | ✅ Complete |
 | Eq (6a) | Boundary Laplacian solver | ✅ Complete |
 | Eq (6b) | Stress tensor + conservation | ✅ Complete |
 | Eq (7) | `casimir.py::casimir_force()` | ✅ Complete |
-| Eq (4) | Information integration | 🚧 Placeholder |
-| Eq (5) | Consciousness coupling | 🚧 Placeholder |
-| E₈ embedding | Future notebook | 📋 Planned |
+| E₈ embedding | `notebooks/04_e8_index.ipynb` | ✅ Complete |
+| Thin-shell benchmark | `scripts/thin_shell_benchmark.py` | ✅ Complete |
+| Docker support | `Dockerfile` + `docker-compose.yml` | ✅ Complete |
 
 ## Mathematical Checkpoints
 

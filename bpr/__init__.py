@@ -18,9 +18,9 @@ from .boundary_field import solve_phase
 from .metric import metric_perturbation
 from .casimir import casimir_force, sweep_radius
 
-# Import information integration (placeholder)
+# Import information integration and consciousness coupling
 try:
-    from .information import InformationIntegration, placeholder_consciousness_coupling
+    from .information import InformationIntegration, ConsciousnessCoupling, placeholder_consciousness_coupling
     INFORMATION_AVAILABLE = True
 except ImportError:
     INFORMATION_AVAILABLE = False
@@ -34,4 +34,4 @@ __all__ = [
 ]
 
 if INFORMATION_AVAILABLE:
-    __all__.extend(["InformationIntegration", "placeholder_consciousness_coupling"])
+    __all__.extend(["InformationIntegration", "ConsciousnessCoupling", "placeholder_consciousness_coupling"])
