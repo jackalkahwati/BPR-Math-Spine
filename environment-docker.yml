@@ -1,0 +1,23 @@
+name: bpr
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - numpy>=1.21
+  - scipy>=1.7
+  - matplotlib>=3.5
+  - sympy>=1.9
+  - jupyter
+  - jupyterlab
+  - pytest>=6.0
+  - pandas
+  - h5py
+  - pip
+  - pip:
+    - pytest-cov
+    - black
+    - isort
+    - flake8
+    - pre-commit
+# Docker-optimized environment using only conda-forge
+# This avoids Terms of Service issues with default channels

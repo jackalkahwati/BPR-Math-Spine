@@ -1,0 +1,28 @@
+# BPR Mathematical Spine - Docker Requirements
+# Using pip to avoid conda Terms of Service issues
+
+# Core scientific computing
+numpy>=1.21
+scipy>=1.7
+matplotlib>=3.5
+sympy>=1.9
+pandas
+h5py
+
+# Development and testing
+jupyter
+jupyterlab
+pytest>=6.0
+pytest-cov
+black
+isort
+flake8
+pre-commit
+
+# Additional packages for BPR
+tqdm
+ipywidgets
+
+# Documentation (optional)
+sphinx
+nbsphinx

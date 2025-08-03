@@ -9,14 +9,22 @@
 #   docker-compose up -d
 #   open http://localhost:8888
 #
+# Platform Configuration:
+#   - Apple Silicon (M1/M2/M3): Uses linux/arm64 (default)
+#   - Intel Macs/PCs: Change all "linux/arm64" to "linux/amd64"
+#   - Auto-detect: Run 'uname -m' to check your architecture
+#
 # Author: Jack Al-Kahwati (jack@thestardrive.com)
 
 version: '3.8'
 
 services:
   bpr-math-spine:
-    build: .
+    build: 
+      context: .
+      platform: linux/arm64  # Configured for Apple Silicon
     container_name: bpr-math-spine
+    platform: linux/arm64  # Configured for Apple Silicon
     ports:
       - "8888:8888"  # Jupyter Lab
     volumes:
@@ -42,8 +50,11 @@ services:
 
   # Optional: Add a service for running tests
   bpr-test:
-    build: .
+    build: 
+      context: .
+      platform: linux/arm64  # Configured for Apple Silicon
     container_name: bpr-test
+    platform: linux/arm64  # Configured for Apple Silicon
     volumes:
       - .:/workspace
     profiles:
@@ -58,8 +69,11 @@ services:
 
   # Optional: Add a service for the thin-shell benchmark
   bpr-benchmark:
-    build: .
+    build: 
+      context: .
+      platform: linux/arm64  # Configured for Apple Silicon
     container_name: bpr-benchmark
+    platform: linux/arm64  # Configured for Apple Silicon
     volumes:
       - .:/workspace
       - bpr-data:/workspace/data

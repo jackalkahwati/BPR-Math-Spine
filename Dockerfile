@@ -61,20 +61,33 @@ WORKDIR /workspace
 # Copy requirements first for better caching
 COPY environment.yml .
 COPY environment-minimal.yml .
+COPY environment-docker.yml .
+COPY requirements-docker.txt .
 
-# Install Miniconda for Python environment management
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh && \
+# Install Miniconda for Python environment management (architecture-aware)
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "x86_64" ]; then \
+        MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"; \
+    elif [ "$ARCH" = "aarch64" ]; then \
+        MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-aarch64.sh"; \
+    else \
+        echo "Unsupported architecture: $ARCH" && exit 1; \
+    fi && \
+    wget $MINICONDA_URL -O miniconda.sh && \
     bash miniconda.sh -b -p /opt/conda && \
     rm miniconda.sh
 
-# Add conda to PATH
-ENV PATH="/opt/conda/bin:$PATH"
+# Set up Python virtual environment
+ENV PATH="/opt/bpr-env/bin:$PATH"
+ENV VIRTUAL_ENV="/opt/bpr-env"
 
-# Create BPR environment
-RUN conda env create -f environment.yml
+# Create Python virtual environment and install packages (TOS-free approach)
+RUN python3 -m venv /opt/bpr-env && \
+    /opt/bpr-env/bin/pip install --upgrade pip setuptools wheel && \
+    /opt/bpr-env/bin/pip install -r requirements-docker.txt
 
-# Make RUN commands use the new environment
-SHELL ["conda", "run", "-n", "bpr", "/bin/bash", "-c"]
+# Keep conda available for advanced users but use pip env by default
+ENV PATH="/opt/bpr-env/bin:/opt/conda/bin:$PATH"
 
 # Verify FEniCS installation
 RUN python -c "import dolfin; print(f'✅ FEniCS version: {dolfin.__version__}')" || \
@@ -84,7 +97,7 @@ RUN python -c "import dolfin; print(f'✅ FEniCS version: {dolfin.__version__}')
 COPY . .
 
 # Install BPR package in development mode
-RUN conda run -n bpr pip install -e .
+RUN pip install -e .
 
 # Create user for running notebooks (security)
 RUN useradd -m -s /bin/bash bpruser && \
@@ -93,30 +106,32 @@ RUN useradd -m -s /bin/bash bpruser && \
 USER bpruser
 
 # Test the installation
-RUN conda run -n bpr python -c "import bpr; print('✅ BPR package imported successfully')"
+RUN python -c "import bpr; print('✅ BPR package imported successfully')"
 
 # Run basic tests
-RUN conda run -n bpr python scripts/test_fenics_install.py || \
+RUN python scripts/test_fenics_install.py || \
     echo "⚠️  Some tests failed - this is expected without full FEniCS"
 
 # Set up Jupyter environment
-RUN conda run -n bpr pip install jupyter jupyterlab
+# Jupyter already installed in pip requirements
 
 # Expose Jupyter port
 EXPOSE 8888
 
 # Default command: start Jupyter Lab
-CMD ["conda", "run", "-n", "bpr", "jupyter", "lab", \
+CMD ["jupyter", "lab", \
      "--ip=0.0.0.0", "--port=8888", "--no-browser", \
-     "--allow-root", "--notebook-dir=/workspace"]
+     "--allow-root", "--notebook-dir=/workspace", \
+     "--ServerApp.token=bpr-token-2025", \
+     "--ServerApp.password=''"]
 
 # Alternative entry points (uncomment as needed):
 #
 # Run demo script:
-# CMD ["conda", "run", "-n", "bpr", "python", "scripts/run_casimir_demo.py"]
+# CMD ["python", "scripts/run_casimir_demo.py"]
 #
 # Run tests:
-# CMD ["conda", "run", "-n", "bpr", "pytest", "-v"]
+# CMD ["pytest", "-v"]
 #
 # Interactive shell:
-# CMD ["conda", "run", "-n", "bpr", "bash"]
+# CMD ["bash"]
