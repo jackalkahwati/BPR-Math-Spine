@@ -5,11 +5,13 @@
 > One‑pager → [`doc/BPR_one_pager.md`](doc/BPR_one_pager.md) | LaTeX source → [`doc/BPR_one_pager.tex`](doc/BPR_one_pager.tex)
 >
 > **NEW**: Experimental validation → [`doc/BPR_posterior_confidence.tex`](doc/BPR_posterior_confidence.tex) *(Bayesian analysis: ~99.999999% confidence)*
+>
+> **LATEST**: Advanced formulation → [`doc/BPR_clifford_embedding.tex`](doc/BPR_clifford_embedding.tex) *(Clifford algebra embedding with spinor consciousness modules)*
 
 ---
 
 ## 0 . Purpose
-A laser‑focused codebase that **reproduces every numbered equation** in the one‑page synopsis and generates the falsifiable Casimir‑deviation curve (Eq 7).  Nothing else.
+A laser‑focused codebase that **reproduces every numbered equation** in the mathematical spine documents and generates the falsifiable Casimir‑deviation curve (Eq 7). Now includes advanced Clifford algebra formulation with multivector fields and spinor consciousness modules.
 
 *   💡 _meant for peer audit_ — comprehensive mathematical implementation  
 *   ⚙️ _minimal deps_ — `FEniCS`, `SymPy`, `NumPy`, `Matplotlib`; all scientific computing essentials
@@ -166,7 +168,10 @@ BPR-math-spine/
 │   ├── test_metric.py
 │   └── test_casimir.py
 ├── doc/
-│   ├── BPR_one_pager.pdf             # typeset one‑pager
+│   ├── BPR_one_pager.tex             # concise mathematical synopsis  
+│   ├── BPR_posterior_confidence.tex  # Bayesian experimental validation
+│   ├── BPR_clifford_embedding.tex    # advanced Clifford algebra formulation
+│   ├── README_equations.md           # implementation reference guide
 │   └── derivations.nb                # optional Mathematica notebook
 ├── environment.yml                   # conda spec (<120 MB)
 ├── environment-minimal.yml           # without FEniCS
@@ -249,6 +254,7 @@ Pull requests must:
 - [x] **Jupyter notebooks**: 4 complete interactive demonstrations  
 - [x] **Unit testing**: Comprehensive test suite with `pytest`
 - [x] **Experimental validation**: Bayesian analysis of 5 experimental results (`doc/BPR_posterior_confidence.tex`)
+- [x] **Advanced formulation**: Clifford algebra embedding with spinor consciousness modules (`doc/BPR_clifford_embedding.tex`)
 
 ### 🚀 **Ready for Use**
 
