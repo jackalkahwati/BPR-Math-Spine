@@ -52,17 +52,21 @@ $ pytest -q  # Some tests will be skipped
 
 ### Option C: Docker (Universal Compatibility)
 ```bash
+# Configure for your architecture (Apple Silicon/Intel)
+$ ./scripts/configure_docker_platform.sh
+
 # Build and run with Docker Compose (recommended)
 $ docker-compose up -d
 $ open http://localhost:8888  # Jupyter Lab interface
+# Token: bpr-token-2025
 
 # Or build manually
 $ docker build -t bpr-math-spine .
 $ docker run -it --rm -p 8888:8888 bpr-math-spine
 
 # Run specific scripts in Docker
-$ docker-compose run bpr-benchmark  # Thin-shell benchmark
-$ docker-compose run bpr-test       # Full test suite
+$ docker-compose --profile benchmark up  # Thin-shell benchmark
+$ docker-compose --profile testing up    # Full test suite
 ```
 
 ---
@@ -110,15 +114,22 @@ $ wsl --install
 # or use Docker (see below)
 ```
 
-### Method 3: Docker (Universal)
+### Method 3: Docker (Universal - Recommended for FEniCS)
 ```bash
-# Pull FEniCS Docker image
-$ docker pull dolfinx/dolfinx
+# Auto-configure for your system (Apple Silicon/Intel)
+$ ./scripts/configure_docker_platform.sh
 
-# Run BPR-Math-Spine in container
+# Build and run BPR with full FEniCS support
+$ docker-compose up -d
+$ open http://localhost:8888
+
+# Verify FEniCS installation in container
+$ docker-compose exec bpr-math-spine conda run -n bpr python -c "import dolfin; print('✅ FEniCS ready!')"
+
+# Alternative: Use official FEniCS image
+$ docker pull dolfinx/dolfinx
 $ docker run -ti -v $(pwd):/home/fenics/shared dolfinx/dolfinx
-$ cd /home/fenics/shared
-$ python scripts/run_casimir_demo.py
+$ cd /home/fenics/shared && python scripts/run_casimir_demo.py
 ```
 
 ### Method 4: Alternative Without FEniCS
