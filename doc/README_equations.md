@@ -1,6 +1,6 @@
 # BPR Mathematical Equations Reference
 
-This document lists the key equations implemented in BPR-Math-Spine, referencing the one-page synopsis.
+This document lists the key equations implemented in BPR-Math-Spine, referencing the one-page synopsis and the advanced Clifford algebra formulation.
 
 ## Core Equations
 
@@ -75,9 +75,46 @@ CASIMIR_PREFACTOR = pi**2 * hbar * c / 240
 - **Mesh size**: h ~ 0.1 (default)
 - **Radius range**: 0.2-5.0 μm (for experiments)
 
+## Advanced Formulation: Clifford Algebra Embedding
+
+### Reference Document
+- **File**: `doc/BPR_clifford_embedding.tex`
+- **Description**: Full geometric algebra formulation of BPR theory
+
+### Key Extensions
+
+#### Multivector Phase Field
+```
+φ(x) ∈ Cl(p,q) - Clifford-valued boundary field
+```
+- **Enhancement**: Scalar field promoted to multivector
+- **Benefits**: Captures chirality, orientation, and geometric coherence
+
+#### Spinor Consciousness Modules
+```
+M_j ≅ ψ_j ∈ Spin(p,q) - Prime-indexed spinor modules
+C_ij = ⟨ψ_i† ψ_j⟩ - Coherence matrix
+```
+- **Enhancement**: Prime modules as spinor fields
+- **Benefits**: Geometric representation of consciousness dynamics
+
+#### Curvature-Consciousness Coupling
+```
+R(a,b) = [∇_a, ∇_b] ψ - Induced curvature tensor
+```
+- **Enhancement**: Direct geometric link between consciousness and spacetime
+- **Benefits**: Computable consciousness-induced metric perturbations
+
+### Computational Architecture
+1. **Clifford Libraries**: `clifford.py`, `Clifford.jl`, GAViewer
+2. **Prime Lattice**: Source point generation from prime distribution
+3. **Spinor Evolution**: Geometric algebra field dynamics
+4. **Coherence Detection**: Phase-locking and clustering algorithms
+
 ## Verification Strategy
 
 1. **Analytical**: Compare with known solutions (sphere eigenvalues)
 2. **Numerical**: Convergence tests with mesh refinement
 3. **Physical**: Check conservation laws and limiting behavior
 4. **Computational**: Cross-validation with independent implementations
+5. **Geometric**: Verify Clifford algebra structure and spinor coherence
