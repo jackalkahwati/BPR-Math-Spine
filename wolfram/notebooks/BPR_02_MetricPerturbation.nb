@@ -1,0 +1,30 @@
+Notebook[{
+  Cell["BPR 02 — Metric Perturbation (WL-native)", "Title"],
+  Cell["This notebook mirrors `notebooks/02_metric_perturbation.ipynb` but uses Wolfram Language.", "Text"],
+  Cell[BoxData[
+    RowBox[{"Get","[",RowBox[{"FileNameJoin","[",RowBox[{"{",
+      RowBox[{"DirectoryName","[","NotebookFileName","[","]","]"}],",","\"..\"",
+      ",","\"BPR.wl\""}],"}"}],"]"}],"]"}]], "Input"],
+  Cell["Define a sample φ(x,y,z) and compute Δg, T, and the simplified divergence check.", "Text"],
+  Cell[BoxData[
+    RowBox[{
+      RowBox[{"coords","=","{","t",",","x",",","y",",","z","}"}],";","\n",
+      RowBox[{"phi","=",
+        RowBox[{"Sin","[",RowBox[{"Pi"," ","x"}],"]"}],"*",
+        RowBox[{"Cos","[",RowBox[{"Pi"," ","y"}],"]"}],"*",
+        RowBox[{"Exp","[",RowBox[{"-","(",RowBox[{"x","^","2","+","y","^","2","+","z","^","2"}],")"}],"]"}]}],";","\n",
+      RowBox[{"dg","=",
+        RowBox[{"BPR`BPRMetricPerturbation","[",RowBox[{"phi",",","0.01",",","coords",",","\"CoordinateSystem\"","->","\"cartesian\""}],"]"}]}],";","\n",
+      RowBox[{"T","=",
+        RowBox[{"BPR`BPRStressTensorScalarField","[",RowBox[{"phi",",","coords"}],"]"}]}],";","\n",
+      RowBox[{"div","=",
+        RowBox[{"BPR`BPRVerifyConservation","[",RowBox[{"T",",","coords"}],"]"}]}],";"
+    }]], "Input"],
+  Cell["Inspect Δg and divergence:", "Text"],
+  Cell[BoxData[RowBox[{"MatrixForm","[",RowBox[{"dg","[","\"delta_g\"","]"}],"]"}]], "Input"],
+  Cell[BoxData["div"], "Input"]
+}]
+
+
+
+

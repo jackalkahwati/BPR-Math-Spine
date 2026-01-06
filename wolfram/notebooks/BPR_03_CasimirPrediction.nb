@@ -1,0 +1,30 @@
+Notebook[{
+  Cell["BPR 03 — Casimir Prediction (WL-native)", "Title"],
+  Cell["This notebook mirrors `notebooks/03_casimir_prediction.ipynb` but uses Wolfram Language.", "Text"],
+  Cell[BoxData[
+    RowBox[{"Get","[",RowBox[{"FileNameJoin","[",RowBox[{"{",
+      RowBox[{"DirectoryName","[","NotebookFileName","[","]","]"}],",","\"..\"",
+      ",","\"BPR.wl\""}],"}"}],"]"}],"]"}]], "Input"],
+  Cell["Generate Eq (7) artifact data and plot relative deviation.", "Text"],
+  Cell[BoxData[
+    RowBox[{
+      RowBox[{"data","=",
+        RowBox[{"Normal","[",
+          RowBox[{"BPR`BPRCasimirSweep","[",
+            RowBox[{"0.2*10^-6",",","5.0*10^-6",",","40",",",
+              RowBox[{"\"CouplingLambda\"","->","10^-3"}],",",
+              RowBox[{"\"LMax\"","->","8"}]}],"]"}],"]"}]}],";"
+    }]], "Input"],
+  Cell[BoxData[
+    RowBox[{"ListLogLinearPlot","[",
+      RowBox[{
+        RowBox[{"data","[[",All,",",RowBox[{"{",RowBox[{"\"R [m]\"",",","\"relative_deviation\""}],"}"}],"]"}],",",
+        RowBox[{"PlotRange","->","All"}],",",
+        RowBox[{"Frame","->","True"}],",",
+        RowBox[{"FrameLabel","->",RowBox[{"{","\"R [m]\""," , ","\"ΔF/F\"","}"}]}]
+      }],"]"}]], "Input"]
+}]
+
+
+
+

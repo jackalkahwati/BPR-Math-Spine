@@ -1,0 +1,17 @@
+Notebook[{
+  Cell["BPR 01 — Boundary Laplacian (WL-native)", "Title"],
+  Cell["This notebook mirrors `notebooks/01_boundary_laplacian.ipynb` but uses Wolfram Language.", "Text"],
+  Cell[BoxData[
+    RowBox[{
+      "Get","[",RowBox[{"FileNameJoin","[",RowBox[{"{",
+        RowBox[{"DirectoryName","[","NotebookFileName","[","]","]"}],",","\"..\"",
+        ",","\"BPR.wl\""}],"}"}],"]"}],"]"}]], "Input"],
+  Cell["Checkpoint 1 baseline eigenvalues on S^2: λ_l = l(l+1).", "Text"],
+  Cell[BoxData[
+    RowBox[{"Dataset","[",RowBox[{"AssociationThread","[",
+      RowBox[{"{\"l\",\"lambda\"}",",",RowBox[{"BPR`BPRLaplacianEigenvaluesSphere","[","10","]"}]}],"]"}],"]"}]], "Input"]
+}]
+
+
+
+

@@ -1,0 +1,21 @@
+Notebook[{
+  Cell["BPR 04 — E8 Index (WL-native)", "Title"],
+  Cell["This notebook mirrors `notebooks/04_e8_index.ipynb` but uses Wolfram Language built-ins (RootSystemData).", "Text"],
+  Cell[BoxData[
+    RowBox[{"Get","[",RowBox[{"FileNameJoin","[",RowBox[{"{",
+      RowBox[{"DirectoryName","[","NotebookFileName","[","]","]"}],",","\"..\"",
+      ",","\"BPR.wl\""}],"}"}],"]"}],"]"}]], "Input"],
+  Cell["Basic E8 objects:", "Text"],
+  Cell[BoxData[
+    RowBox[{
+      RowBox[{"roots","=","BPR`BPRE8Roots","[","]"}],";","\n",
+      RowBox[{"cartan","=","BPR`BPRE8CartanMatrix","[","]"}],";","\n",
+      RowBox[{"simple","=","BPR`BPRE8SimpleRoots","[","]"}],";"
+    }]], "Input"],
+  Cell[BoxData[RowBox[{"Length","[","roots","]"}]], "Input"],
+  Cell[BoxData[RowBox[{"MatrixForm","[","cartan","]"}]], "Input"]
+}]
+
+
+
+

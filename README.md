@@ -40,6 +40,22 @@ $ jupyter lab notebooks/01_boundary_laplacian.ipynb
 $ pytest -q
 ```
 
+---
+
+## Wolfram Language port (for Wolfram Research review)
+
+Wolfram Research asked for a runnable Wolfram Language presentation. A minimal, runnable WL scaffold lives in `wolfram/`:
+
+- `wolfram/BPR.wl`: WL package with portable, reviewable APIs mirroring the Python “math spine”
+- `wolfram/run_bpr_demo.wls`: CLI demo that writes eigenvalue + Casimir sweep CSV artifacts
+- `wolfram/tests/BPRTests.wlt`: WL tests (run via `TestReport`)
+
+Run the WL demo (from repo root):
+
+```bash
+wolframscript -file wolfram/run_bpr_demo.wls --output data/
+```
+
 ### Option B: Quick Start without FEniCS
 ```bash
 # For systems where FEniCS installation is problematic

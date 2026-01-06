@@ -117,3 +117,6 @@ instant/
 *.tmp
 *.temp
 *.log
+
+# Local runtime caches
+.mplcache/
