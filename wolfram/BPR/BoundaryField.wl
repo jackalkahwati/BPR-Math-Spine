@@ -16,6 +16,9 @@ BPRSolvePhaseSphereSpectral::usage =
 BPRPhaseEnergySphereSpectral::usage =
   "BPRPhaseEnergySphereSpectral[solution] returns ∫_{S^2} |∇_Σ φ|^2 dS computed from spectral coefficients.";
 
+BPRVerifyPhaseEquationSphereSpectral::usage =
+  "BPRVerifyPhaseEquationSphereSpectral[solution] verifies Eq (6a) κ Δ_{S^2} φ = f in coefficient space and returns an Association of residual metrics.";
+
 Begin["`Private`"];
 
 (* Helpers *)
@@ -199,6 +202,59 @@ BPRPhaseEnergySphereSpectral[solution_] := Module[
     coeff
   ];
   N[energy]
+];
+
+(* Verify κ Δ φ = f on S^2 in spectral coefficients:
+   Δ Y_{l,m} = -l(l+1)/R^2 Y_{l,m}
+   => residual_{l,m} = κ * (-(l(l+1)/R^2)) * φ_{l,m} - f_{l,m}
+*)
+BPRVerifyPhaseEquationSphereSpectral[solution_] := Module[
+  {R, kappa, lMax, fCoeff, phiCoeff, residuals, absResiduals, denom, relResiduals},
+  If[BPRGet[solution, "type"] =!= "SphereSpectral", Return[$Failed]];
+  R = BPRGet[solution, "radius"];
+  kappa = BPRGet[solution, "kappa"];
+  lMax = BPRGet[solution, "lMax"];
+  fCoeff = BPRGet[solution, "fCoefficients"];
+  phiCoeff = BPRGet[solution, "phiCoefficients"];
+
+  residuals = Map[
+    Function[{rule},
+      With[
+        {
+          lm = First[rule],
+          fLM = Last[rule],
+          l = First[First[rule]]
+        },
+        Module[{phiLM, tmp},
+          (* Robust coefficient lookup across runtimes:
+             use rule-replacement, and if nothing matched we get the original lm back. *)
+          tmp = lm /. phiCoeff;
+          phiLM = If[tmp === lm, 0.0, tmp];
+
+          If[l == 0,
+            lm -> 0.0,
+            lm -> (kappa * (-(l (l + 1)/R^2)) * phiLM - fLM)
+          ]
+        ]
+      ]
+    ],
+    fCoeff
+  ];
+
+  absResiduals = Abs[Last /@ residuals];
+  denom = Abs[Last /@ fCoeff];
+  relResiduals = MapThread[
+    If[#2 == 0, 0.0, #1/#2] &,
+    {absResiduals, denom}
+  ];
+
+  <|
+    "lMax" -> lMax,
+    "max_abs_residual" -> N[Max[absResiduals]],
+    "mean_abs_residual" -> N[Mean[absResiduals]],
+    "max_rel_residual" -> N[Max[relResiduals]],
+    "mean_rel_residual" -> N[Mean[relResiduals]]
+  |>
 ];
 
 End[];

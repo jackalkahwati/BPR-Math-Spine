@@ -21,6 +21,13 @@ BPRConsciousnessCoupling::usage =
 
 Begin["`Private`"];
 
+(* Helpers *)
+ClearAll[$BPRLinearSubdivide];
+$BPRLinearSubdivide[a_?NumericQ, b_?NumericQ, n_Integer?NonNegative] := Module[
+  {k = n},
+  If[k == 0, {a}, Table[a + (b - a) * i/k, {i, 0, k}]]
+];
+
 Options[BPRPartitionFieldValues] = {"Partitions" -> 8};
 BPRPartitionFieldValues[values_List, opts : OptionsPattern[]] := Module[
   {n = OptionValue["Partitions"], v = values, sz, parts},
@@ -32,27 +39,43 @@ BPRPartitionFieldValues[values_List, opts : OptionsPattern[]] := Module[
 
 Options[BPRMutualInformationFromHistograms] = {"Bins" -> 10, "Epsilon" -> 10^-12};
 BPRMutualInformationFromHistograms[x_List, y_List, opts : OptionsPattern[]] := Module[
-  {nBins = OptionValue["Bins"], eps = OptionValue["Epsilon"], h2, pxy, px, py, mi},
+  {
+    nBins = OptionValue["Bins"],
+    eps = OptionValue["Epsilon"],
+    xmin, xmax, ymin, ymax,
+    dx, dy,
+    counts, total,
+    pxy, px, py, mi
+  },
   If[Length[x] == 0 || Length[y] == 0, Return[0.0]];
-  h2 = HistogramList[{x, y}, {nBins, nBins}][[3]];
-  If[Total[h2, 2] == 0, Return[0.0]];
-  pxy = N[h2/Total[h2, 2]];
+  If[Length[x] =!= Length[y], Return[0.0]];
+
+  xmin = Min[x]; xmax = Max[x];
+  ymin = Min[y]; ymax = Max[y];
+  If[!NumericQ[xmin] || !NumericQ[xmax] || !NumericQ[ymin] || !NumericQ[ymax], Return[0.0]];
+  If[xmax == xmin || ymax == ymin, Return[0.0]];
+
+  (* Use the {min,max,dx} BinCounts form for maximum compatibility across kernels.
+     dx = (xmax-xmin)/nBins yields exactly nBins bins. *)
+  dx = N[(xmax - xmin)/nBins];
+  dy = N[(ymax - ymin)/nBins];
+  If[dx <= 0 || dy <= 0, Return[0.0]];
+
+  counts = BinCounts[Transpose[{x, y}], {xmin, xmax, dx}, {ymin, ymax, dy}];
+  total = Total[Flatten[counts]];
+  If[total == 0, Return[0.0]];
+
+  pxy = N[counts/total];
   px = Total[pxy, {2}];
   py = Total[pxy, {1}];
-  mi = Total[
-    MapIndexed[
-      Function[{p, ij},
-        If[p <= 0, 0,
-          With[{i = ij[[1, 1]], j = ij[[1, 2]]},
-            p * Log[(p + eps)/((px[[i]] + eps) (py[[j]] + eps))]
-          ]
-        ]
-      ],
-      pxy,
-      {2}
+
+  mi = Sum[
+    With[{p = pxy[[i, j]]},
+      If[p <= 0, 0.0, p * Log[(p + eps)/((px[[i]] + eps) (py[[j]] + eps))]]
     ],
-    2
+    {i, 1, nBins}, {j, 1, nBins}
   ];
+
   Max[0.0, N[mi]]
 ];
 

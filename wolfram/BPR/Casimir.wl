@@ -93,6 +93,8 @@ Options[BPRCasimirForce] = {
      - \"calibrated\": λ=κℓ_P^2 normalization + fractal enhancement (sub-dominant)
   *)
   "CorrectionModel" -> "calibrated",
+  (* If numeric, skip PDE solve and use provided boundary energy directly *)
+  "FieldEnergyOverride" -> Automatic,
   "BoundarySource" -> Automatic
 };
 
@@ -112,7 +114,9 @@ Options[BPRPhenomenologicalCouplingLambda] = {
   "ReferenceScale" -> 10^-6,
   "AlphaBPR" -> 0.1,
   "BoundarySource" -> Automatic,
-  "CorrectionModel" -> "calibrated"
+  "CorrectionModel" -> "calibrated",
+  (* If numeric, skip PDE solve and use provided boundary energy directly *)
+  "EnergyOverride" -> Automatic
 };
 
 (* Compute an experimental upper-bound on λ (units depend on model; here it matches the calibrated linear-in-λ usage).
@@ -136,6 +140,7 @@ BPRPhenomenologicalCouplingLambda[experimentalBound_: 10^-3, referenceSeparation
     alphaBpr = OptionValue["AlphaBPR"],
     src = OptionValue["BoundarySource"],
     model = OptionValue["CorrectionModel"],
+    energyOverride = OptionValue["EnergyOverride"],
     f0, solution, energy, fractalFactor
   },
 
@@ -153,20 +158,26 @@ BPRPhenomenologicalCouplingLambda[experimentalBound_: 10^-3, referenceSeparation
 
   f0 = BPRStandardCasimirForce[d0, "Geometry" -> geometry];
 
-  solution = BPRSolvePhaseSphereSpectral[
-    src,
-    kappa,
-    lMax,
-    "Radius" -> 1.0,
-    Sequence @@ DeleteCases[
-      {
-        If[nθ === Automatic, Nothing, "QuadraturePointsTheta" -> nθ],
-        If[nϕ === Automatic, Nothing, "QuadraturePointsPhi" -> nϕ]
-      },
-      Nothing
-    ]
-  ];
-  energy = BPRPhaseEnergySphereSpectral[solution];
+  energy =
+    If[NumericQ[energyOverride],
+      N[energyOverride],
+      Module[{sol},
+        sol = BPRSolvePhaseSphereSpectral[
+          src,
+          kappa,
+          lMax,
+          "Radius" -> 1.0,
+          Sequence @@ DeleteCases[
+            {
+              If[nθ === Automatic, Nothing, "QuadraturePointsTheta" -> nθ],
+              If[nϕ === Automatic, Nothing, "QuadraturePointsPhi" -> nϕ]
+            },
+            Nothing
+          ]
+        ];
+        BPRPhaseEnergySphereSpectral[sol]
+      ]
+    ];
 
   fractalFactor = 1 + alphaBpr * (d0/rF)^(-delta);
 
@@ -200,6 +211,7 @@ BPRCasimirForce[radius_?NumericQ, opts : OptionsPattern[]] := Module[
     delta = OptionValue["DeltaBPR"],
     rF = OptionValue["ReferenceScale"],
     alphaBpr = OptionValue["AlphaBPR"],
+    energyOverride = OptionValue["FieldEnergyOverride"],
     src = OptionValue["BoundarySource"],
     f0,
     solution,
@@ -218,20 +230,26 @@ BPRCasimirForce[radius_?NumericQ, opts : OptionsPattern[]] := Module[
   f0 = BPRStandardCasimirForce[radius, "Geometry" -> geometry];
 
   (* Solve on S^2 (unit sphere); radius enters only through the Casimir scaling and the BPR correction model. *)
-  solution = BPRSolvePhaseSphereSpectral[
-    src,
-    kappa,
-    lMax,
-    "Radius" -> 1.0,
-    Sequence @@ DeleteCases[
-      {
-        If[nθ === Automatic, Nothing, "QuadraturePointsTheta" -> nθ],
-        If[nϕ === Automatic, Nothing, "QuadraturePointsPhi" -> nϕ]
-      },
-      Nothing
-    ]
-  ];
-  energy = BPRPhaseEnergySphereSpectral[solution];
+  energy =
+    If[NumericQ[energyOverride],
+      N[energyOverride],
+      Module[{sol},
+        sol = BPRSolvePhaseSphereSpectral[
+          src,
+          kappa,
+          lMax,
+          "Radius" -> 1.0,
+          Sequence @@ DeleteCases[
+            {
+              If[nθ === Automatic, Nothing, "QuadraturePointsTheta" -> nθ],
+              If[nϕ === Automatic, Nothing, "QuadraturePointsPhi" -> nϕ]
+            },
+            Nothing
+          ]
+        ];
+        BPRPhaseEnergySphereSpectral[sol]
+      ]
+    ];
 
   (* Choose coupling *)
   lam = Which[

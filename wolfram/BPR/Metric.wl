@@ -16,14 +16,16 @@ BPRVerifyConservation::usage =
 Begin["`Private`"];
 
 Options[BPRMetricPerturbation] = {
-  "CoordinateSystem" -> "cartesian"
+  "CoordinateSystem" -> "cartesian",
+  (* Simplify can be expensive; keep off by default for fast tests/CLI usage *)
+  "Simplify" -> False
 };
 
 (* This mirrors the current repo's intent: a boundary-localized coupling factor.
    For a full GR-consistent implementation, we'd compute Christoffel symbols etc.
 *)
 BPRMetricPerturbation[phiExpr_, couplingLambda_?NumericQ, coords_List, opts : OptionsPattern[]] := Module[
-  {coordSystem = OptionValue["CoordinateSystem"], t, x, y, z, deltaG, boundaryFactor},
+  {coordSystem = OptionValue["CoordinateSystem"], doSimplify = OptionValue["Simplify"], t, x, y, z, deltaG, boundaryFactor},
 
   If[Length[coords] =!= 4, Return[$Failed]];
   {t, x, y, z} = coords;
@@ -60,7 +62,7 @@ BPRMetricPerturbation[phiExpr_, couplingLambda_?NumericQ, coords_List, opts : Op
   <|
     "coords" -> coords,
     "coupling_lambda" -> couplingLambda,
-    "delta_g" -> Simplify[deltaG],
+    "delta_g" -> If[TrueQ[doSimplify], Simplify[deltaG], deltaG],
     "coordinateSystem" -> coordSystem
   |>
 ];

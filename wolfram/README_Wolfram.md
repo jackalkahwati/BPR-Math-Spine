@@ -32,6 +32,20 @@ Outputs:
 - `data/laplacian_eigenvalues_wl.csv`
 - `data/casimir_deviation_wl.csv`
 
+## Run all WL tests (equation-by-equation)
+
+```bash
+wolframscript -code 'TestReport[{"wolfram/tests/BPRTests.wlt","wolfram/tests/BPREquationTests.wlt"}]'
+```
+
+## If `TestReport` trips a license error (fallback smoke runner)
+
+Some Wolfram Engine licenses are sensitive to longer-running `TestReport` sessions. This runner does the same checks but prints PASS/FAIL line-by-line and exits quickly:
+
+```bash
+wolframscript -script wolfram/tests/run_equation_smoke.wls
+```
+
 ## WL-native scope (what’s implemented)
 
 - **Boundary Laplacian / solver**: WL-native spectral Laplace–Beltrami solve on \(S^2\) using spherical harmonics (`wolfram/BPR/BoundaryField.wl`).
