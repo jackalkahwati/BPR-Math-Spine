@@ -7,7 +7,10 @@ This is the core prediction that makes BPR experimentally testable.
 """
 
 import numpy as np
-import pandas as pd
+try:
+    import pandas as pd
+except Exception:  # pragma: no cover
+    pd = None
 from scipy import integrate
 from scipy.constants import hbar, c, pi
 from .geometry import make_boundary
@@ -185,15 +188,28 @@ def sweep_radius(r_min=0.2e-6, r_max=5e-6, n=40, coupling_lambda=1e-3,
                 'relative_deviation': np.nan
             })
     
-    # Convert to DataFrame
-    df = pd.DataFrame(results)
-    
-    # Save to file if requested
+    # Convert to DataFrame if pandas is available; otherwise return list-of-dicts.
+    if pd is not None:
+        df = pd.DataFrame(results)
+        if out is not None:
+            df.to_csv(out, index=False)
+            print(f"\nResults saved to: {out}")
+        return df
+
+    # pandas not available
     if out is not None:
-        df.to_csv(out, index=False)
+        # lightweight CSV writer
+        import csv
+
+        cols = sorted({k for row in results for k in row.keys()})
+        with open(out, "w", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=cols)
+            w.writeheader()
+            for row in results:
+                w.writerow(row)
         print(f"\nResults saved to: {out}")
-    
-    return df
+
+    return results
 
 
 def _standard_casimir_force(radius, geometry):

@@ -15,6 +15,7 @@ Get[FileNameJoin[{$BPRRootDir, "BPR", "Metric.wl"}]];
 Get[FileNameJoin[{$BPRRootDir, "BPR", "Casimir.wl"}]];
 Get[FileNameJoin[{$BPRRootDir, "BPR", "Information.wl"}]];
 Get[FileNameJoin[{$BPRRootDir, "BPR", "E8.wl"}]];
+Get[FileNameJoin[{$BPRRootDir, "BPR", "RPST.wl"}]];
 
 End[];
 EndPackage[];

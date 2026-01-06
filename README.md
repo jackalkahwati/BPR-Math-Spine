@@ -49,12 +49,31 @@ Wolfram Research asked for a runnable Wolfram Language presentation. A minimal, 
 - `wolfram/BPR.wl`: WL package with portable, reviewable APIs mirroring the Python “math spine”
 - `wolfram/run_bpr_demo.wls`: CLI demo that writes eigenvalue + Casimir sweep CSV artifacts
 - `wolfram/tests/BPRTests.wlt`: WL tests (run via `TestReport`)
+- `wolfram/tests/run_equation_smoke.wls`: license-safe equation checks (prints PASS/FAIL)
 
 Run the WL demo (from repo root):
 
 ```bash
 wolframscript -file wolfram/run_bpr_demo.wls --output data/
 ```
+
+### WL verification status
+
+- **Fully validated (6/6 passing, license-safe runner)**:
+
+```bash
+wolframscript -script wolfram/tests/run_equation_smoke.wls
+```
+
+  - Eq (6a): boundary phase equation (spectral residual)
+  - Eq (3)/(6b): metric perturbation (structural symmetry)
+  - Eq (4): information action (numeric, nonpositive for \(\xi>0\))
+  - Eq (5): consciousness coupling (numeric, nonnegative)
+  - Eq (7a): Casimir with \(\lambda_{\text{theory}}=\kappa\ell_P^2\) (λ→0 recovery)
+  - Eq (7b): Casimir with phenomenological \(\lambda_{\text{eff}}\) (bound consistency at reference point)
+
+- **Still outstanding (deeper constraint)**:
+  - A full WL symbolic proof of \( \nabla_\mu T^{\mu\nu}=0 \) / Checkpoint 2 is not yet included in the WL test suite.
 
 ### Option B: Quick Start without FEniCS
 ```bash

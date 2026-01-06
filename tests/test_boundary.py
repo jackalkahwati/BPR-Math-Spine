@@ -17,9 +17,16 @@ try:
     from bpr import make_boundary
     from bpr.boundary_field import solve_phase, solve_eigenvalue_problem, verify_convergence
     from bpr.geometry import get_mesh_quality_metrics, compute_boundary_area
-    FENICS_AVAILABLE = True
+    import bpr.geometry as _bpr_geometry
+    import bpr.boundary_field as _bpr_boundary_field
+
+    # FEniCS availability must be determined from the runtime import flags,
+    # not merely whether our Python modules import successfully.
+    FENICS_AVAILABLE = (_bpr_geometry.fe is not None) and (_bpr_boundary_field.fe is not None)
 except ImportError:
     FENICS_AVAILABLE = False
+
+if not FENICS_AVAILABLE:
     pytestmark = pytest.mark.skip("FEniCS not available")
 
 

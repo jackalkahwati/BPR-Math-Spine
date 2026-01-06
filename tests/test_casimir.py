@@ -6,7 +6,10 @@ Mathematical Checkpoint 3: Recovery of standard Casimir force for λ→0
 
 import pytest
 import numpy as np
-import pandas as pd
+try:
+    import pandas as pd
+except Exception:
+    pd = None
 import sys
 from pathlib import Path
 
@@ -16,12 +19,19 @@ sys.path.insert(0, str(project_root))
 
 try:
     from bpr import casimir_force, sweep_radius
-    from bpr.casimir import (analyze_bpr_signature, export_prediction_data,
-                           _standard_casimir_force, _compute_bpr_force_correction)
+    from bpr.casimir import (
+        analyze_bpr_signature,
+        export_prediction_data,
+        _standard_casimir_force,
+        _compute_bpr_force_correction,
+    )
     MODULES_AVAILABLE = True
 except ImportError as e:
     MODULES_AVAILABLE = False
     pytestmark = pytest.mark.skip(f"BPR modules not available: {e}")
+
+if pd is None:
+    pytestmark = pytest.mark.skip("pandas not available (Casimir sweep tests require pandas)")
 
 
 class TestCasimirForce:

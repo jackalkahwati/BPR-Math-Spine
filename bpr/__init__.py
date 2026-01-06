@@ -35,3 +35,27 @@ __all__ = [
 
 if INFORMATION_AVAILABLE:
     __all__.extend(["InformationIntegration", "ConsciousnessCoupling", "placeholder_consciousness_coupling"])
+
+# Optional: RPST / resonance / HKLL scaffolding
+try:
+    from . import rpst  # noqa: F401
+
+    RPST_AVAILABLE = True
+except Exception:
+    RPST_AVAILABLE = False
+
+try:
+    from . import resonance  # noqa: F401
+
+    RESONANCE_AVAILABLE = True
+except Exception:
+    RESONANCE_AVAILABLE = False
+
+try:
+    from . import hkll  # noqa: F401
+
+    HKLL_AVAILABLE = True
+except Exception:
+    HKLL_AVAILABLE = False
+
+__all__.extend(["RPST_AVAILABLE", "RESONANCE_AVAILABLE", "HKLL_AVAILABLE"])
