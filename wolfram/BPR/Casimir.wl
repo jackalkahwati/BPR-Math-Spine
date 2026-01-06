@@ -11,6 +11,15 @@ BPRCasimirForce::usage =
 BPRCasimirForceRow::usage =
   "BPRCasimirForceRow[radius, opts] returns a plain numeric row {R, F_Casimir, ΔF_BPR, F_total, relative_deviation, field_energy}. Useful for lightweight WL runtimes (e.g. Mathics).";
 
+BPRPhenomenologicalCouplingLambda::usage =
+  "BPRPhenomenologicalCouplingLambda[experimentalBound, referenceSeparation, opts] returns a coupling λ_eff such that |ΔF/F|<=experimentalBound at referenceSeparation, using the current (calibrated) BPR correction model.";
+
+BPRExperimentalBounds::usage =
+  "BPRExperimentalBounds is an Association of named experimental |ΔF/F| bounds and reference separations for Casimir constraints.";
+
+BPRPhenomenologicalCouplingLambdaFromName::usage =
+  "BPRPhenomenologicalCouplingLambdaFromName[name, opts] computes λ_eff using the bound/separation stored in BPRExperimentalBounds[name].";
+
 BPRCasimirSweepRows::usage =
   "BPRCasimirSweepRows[rMin, rMax, n, opts] returns a list of numeric rows (and can export CSV).";
 
@@ -20,6 +29,15 @@ BPRCasimirSweep::usage =
 Begin["`Private`"];
 
 Needs["BPR`"]; (* already loaded when used via BPR.wl; harmless otherwise *)
+
+(* Default experimental bounds table (user-supplied summary; conservative defaults). *)
+BPRExperimentalBounds = <|
+  "Lamoreaux1997" -> <|"bound" -> 5*10^-2, "separation" -> 600*10^-9|>,
+  "Mohideen1998" -> <|"bound" -> 10^-2, "separation" -> 100*10^-9|>,
+  "Decca2003" -> <|"bound" -> 5*10^-3, "separation" -> 160*10^-9|>,
+  "Decca2007" -> <|"bound" -> 2*10^-3, "separation" -> 200*10^-9|>,
+  "StateOfArt2024" -> <|"bound" -> 10^-3, "separation" -> 100*10^-9|>
+|>;
 
 (* Mathics compatibility: avoid Subdivide by using explicit log-spacing. *)
 ClearAll[$BPRLogSpace];
@@ -59,33 +77,134 @@ BPRStandardCasimirForce[radius_?NumericQ, opts : OptionsPattern[]] := Module[
    This matches the current Python repo's structure but makes the “energy” computable WL-natively. *)
 Options[BPRCasimirForce] = {
   "Geometry" -> "parallel_plates",
-  "CouplingLambda" -> 10^-3,
+  (* If Automatic, use λ = κ_boundary * ℓ_P^2 (physically tiny) *)
+  "CouplingLambda" -> Automatic,
+  "KappaBoundary" -> 1.0,
+  (* Boundary PDE stiffness κ in κ Δ φ = f *)
   "Kappa" -> 1.0,
   "LMax" -> 8,
   "QuadraturePointsTheta" -> Automatic,
   "QuadraturePointsPhi" -> Automatic,
   "DeltaBPR" -> 1.37,
   "ReferenceScale" -> 10^-6,
+  "AlphaBPR" -> 0.1,
+  (* Select correction model:
+     - \"legacy\": old demo scaling (can be huge)
+     - \"calibrated\": λ=κℓ_P^2 normalization + fractal enhancement (sub-dominant)
+  *)
+  "CorrectionModel" -> "calibrated",
   "BoundarySource" -> Automatic
 };
 
-BPRCasimirForce[radius_?NumericQ, opts : OptionsPattern[]] := Module[
+BPRPhenomenologicalCouplingLambda::badmodel =
+  "Phenomenological λ_eff is only implemented for CorrectionModel -> \"calibrated\" (linear in λ). Got: `1`.";
+
+BPRPhenomenologicalCouplingLambdaFromName::unk =
+  "Unknown experimental bound name: `1`. Known names: `2`.";
+
+Options[BPRPhenomenologicalCouplingLambda] = {
+  "Geometry" -> "parallel_plates",
+  "Kappa" -> 1.0,
+  "LMax" -> 8,
+  "QuadraturePointsTheta" -> Automatic,
+  "QuadraturePointsPhi" -> Automatic,
+  "DeltaBPR" -> 1.37,
+  "ReferenceScale" -> 10^-6,
+  "AlphaBPR" -> 0.1,
+  "BoundarySource" -> Automatic,
+  "CorrectionModel" -> "calibrated"
+};
+
+(* Compute an experimental upper-bound on λ (units depend on model; here it matches the calibrated linear-in-λ usage).
+   Given:
+     |ΔF/F| <= eps at separation d0
+   and (calibrated model):
+     ΔF(d0) = λ * E * (1 + α (d0/Rf)^(-δ))
+   => λ_eff <= eps * |F_Casimir(d0)| / (E * (1 + α (d0/Rf)^(-δ)))
+*)
+BPRPhenomenologicalCouplingLambda[experimentalBound_: 10^-3, referenceSeparation_: 100*10^-9, opts : OptionsPattern[]] := Module[
   {
+    eps = experimentalBound,
+    d0 = referenceSeparation,
     geometry = OptionValue["Geometry"],
-    lam = OptionValue["CouplingLambda"],
     kappa = OptionValue["Kappa"],
     lMax = OptionValue["LMax"],
     nθ = OptionValue["QuadraturePointsTheta"],
     nϕ = OptionValue["QuadraturePointsPhi"],
     delta = OptionValue["DeltaBPR"],
     rF = OptionValue["ReferenceScale"],
+    alphaBpr = OptionValue["AlphaBPR"],
+    src = OptionValue["BoundarySource"],
+    model = OptionValue["CorrectionModel"],
+    f0, solution, energy, fractalFactor
+  },
+
+  If[model =!= "calibrated",
+    Message[BPRPhenomenologicalCouplingLambda::badmodel, model];
+    Return[$Failed];
+  ];
+
+  If[!NumericQ[eps] || eps <= 0, Return[$Failed]];
+  If[!NumericQ[d0] || d0 <= 0, Return[$Failed]];
+
+  If[src === Automatic,
+    src = Function[{θ, ϕ}, Re[SphericalHarmonicY[2, 0, θ, ϕ]]];
+  ];
+
+  f0 = BPRStandardCasimirForce[d0, "Geometry" -> geometry];
+
+  solution = BPRSolvePhaseSphereSpectral[
+    src,
+    kappa,
+    lMax,
+    "Radius" -> 1.0,
+    Sequence @@ DeleteCases[
+      {
+        If[nθ === Automatic, Nothing, "QuadraturePointsTheta" -> nθ],
+        If[nϕ === Automatic, Nothing, "QuadraturePointsPhi" -> nϕ]
+      },
+      Nothing
+    ]
+  ];
+  energy = BPRPhaseEnergySphereSpectral[solution];
+
+  fractalFactor = 1 + alphaBpr * (d0/rF)^(-delta);
+
+  N[eps * Abs[f0] / (energy * fractalFactor)]
+];
+
+BPRPhenomenologicalCouplingLambdaFromName[name_String, opts : OptionsPattern[]] := Module[
+  {entry},
+  entry = Lookup[BPRExperimentalBounds, name, Missing["NotFound"]];
+  If[Head[entry] === Missing,
+    Message[BPRPhenomenologicalCouplingLambdaFromName::unk, name, Keys[BPRExperimentalBounds]];
+    Return[$Failed];
+  ];
+  BPRPhenomenologicalCouplingLambda[
+    entry["bound"],
+    entry["separation"],
+    FilterRules[{opts}, Options[BPRPhenomenologicalCouplingLambda]]
+  ]
+];
+
+BPRCasimirForce[radius_?NumericQ, opts : OptionsPattern[]] := Module[
+  {
+    geometry = OptionValue["Geometry"],
+    lamOpt = OptionValue["CouplingLambda"],
+    kappaBoundary = OptionValue["KappaBoundary"],
+    model = OptionValue["CorrectionModel"],
+    kappa = OptionValue["Kappa"],
+    lMax = OptionValue["LMax"],
+    nθ = OptionValue["QuadraturePointsTheta"],
+    nϕ = OptionValue["QuadraturePointsPhi"],
+    delta = OptionValue["DeltaBPR"],
+    rF = OptionValue["ReferenceScale"],
+    alphaBpr = OptionValue["AlphaBPR"],
     src = OptionValue["BoundarySource"],
     f0,
     solution,
     energy,
-    geometricFactor,
     baseCorrection,
-    radiusScaling,
     fractalFactor,
     dF,
     fT
@@ -114,18 +233,53 @@ BPRCasimirForce[radius_?NumericQ, opts : OptionsPattern[]] := Module[
   ];
   energy = BPRPhaseEnergySphereSpectral[solution];
 
-  geometricFactor = Which[
-    geometry === "parallel_plates", 1.0,
-    geometry === "sphere", 4 Pi,
-    geometry === "cylinder", 2 Pi,
-    True, 1.0
+  (* Choose coupling *)
+  lam = Which[
+    lamOpt === Automatic, BPRPhysicalCouplingLambda[kappaBoundary],
+    Head[lamOpt] === String && lamOpt === "phenomenological",
+    BPRPhenomenologicalCouplingLambda[10^-3, 100*10^-9,
+      "Geometry" -> geometry,
+      "Kappa" -> kappa,
+      "LMax" -> lMax,
+      "QuadraturePointsTheta" -> nθ,
+      "QuadraturePointsPhi" -> nϕ,
+      "DeltaBPR" -> delta,
+      "ReferenceScale" -> rF,
+      "AlphaBPR" -> alphaBpr,
+      "BoundarySource" -> src,
+      "CorrectionModel" -> model
+    ],
+    Head[lamOpt] === String && KeyExistsQ[BPRExperimentalBounds, lamOpt],
+    BPRPhenomenologicalCouplingLambdaFromName[lamOpt,
+      "Geometry" -> geometry,
+      "Kappa" -> kappa,
+      "LMax" -> lMax,
+      "QuadraturePointsTheta" -> nθ,
+      "QuadraturePointsPhi" -> nϕ,
+      "DeltaBPR" -> delta,
+      "ReferenceScale" -> rF,
+      "AlphaBPR" -> alphaBpr,
+      "BoundarySource" -> src,
+      "CorrectionModel" -> model
+    ],
+    True, lamOpt
   ];
 
-  baseCorrection = lam * energy / radius^2;
-  radiusScaling = (radius/10^-6)^(-1); (* match python demo radius scaling *)
-  fractalFactor = lam * (radius/rF)^(-delta);
+  (* Correction models *)
+  Which[
+    model === "legacy",
+    (* legacy demo scaling (can be huge; kept for backward comparability) *)
+    baseCorrection = lam * energy / radius^2;
+    fractalFactor = lam * (radius/rF)^(-delta);
+    dF = baseCorrection * (radius/10^-6)^(-1) * (1 + fractalFactor),
 
-  dF = geometricFactor * baseCorrection * radiusScaling * (1 + fractalFactor);
+    True,
+    (* calibrated: matches the intent of physical_coupling_lambda + fractal enhancement in your snippet *)
+    baseCorrection = lam * energy; (* separation cancels under the unit-sphere scaling assumption *)
+    fractalFactor = 1 + alphaBpr * (radius/rF)^(-delta);
+    dF = baseCorrection * fractalFactor
+  ];
+
   fT = f0 + dF;
 
   {
@@ -189,7 +343,10 @@ BPRCasimirSweepRows[rMin_?NumericQ, rMax_?NumericQ, n_Integer?Positive, opts : O
 
   (* Pull options once *)
   geometry = OptionValue["Geometry"];
-  lam = OptionValue["CouplingLambda"];
+  lamOpt = OptionValue["CouplingLambda"];
+  kappaBoundary = OptionValue["KappaBoundary"];
+  model = OptionValue["CorrectionModel"];
+  alphaBpr = OptionValue["AlphaBPR"];
   kappa = OptionValue["Kappa"];
   lMax = OptionValue["LMax"];
   nθ = OptionValue["QuadraturePointsTheta"];
@@ -218,21 +375,24 @@ BPRCasimirSweepRows[rMin_?NumericQ, rMax_?NumericQ, n_Integer?Positive, opts : O
   ];
   energy = BPRPhaseEnergySphereSpectral[solution];
 
-  geometricFactor = Which[
-    geometry === "parallel_plates", 1.0,
-    geometry === "sphere", 4 Pi,
-    geometry === "cylinder", 2 Pi,
-    True, 1.0
-  ];
+  lam = If[lamOpt === Automatic, BPRPhysicalCouplingLambda[kappaBoundary], lamOpt];
 
   radii = $BPRLogSpace[rMin, rMax, n];
   rows = Table[
     Module[{r = radii[[i]], f0, baseCorrection, radiusScaling, fractalFactor, dF, fT, rel},
       f0 = BPRStandardCasimirForce[r, "Geometry" -> geometry];
-      baseCorrection = lam * energy / r^2;
-      radiusScaling = (r/10^-6)^(-1);
-      fractalFactor = lam * (r/rF)^(-delta);
-      dF = geometricFactor * baseCorrection * radiusScaling * (1 + fractalFactor);
+      Which[
+        model === "legacy",
+        baseCorrection = lam * energy / r^2;
+        radiusScaling = (r/10^-6)^(-1);
+        fractalFactor = lam * (r/rF)^(-delta);
+        dF = baseCorrection * radiusScaling * (1 + fractalFactor),
+
+        True,
+        baseCorrection = lam * energy;
+        fractalFactor = 1 + alphaBpr * (r/rF)^(-delta);
+        dF = baseCorrection * fractalFactor
+      ];
       fT = f0 + dF;
       rel = If[f0 === 0, Indeterminate, dF/Abs[f0]];
       {N[r], N[f0], N[dF], N[fT], N[rel], N[energy]}
