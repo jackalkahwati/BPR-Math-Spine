@@ -213,6 +213,7 @@ BPRCasimirForce[radius_?NumericQ, opts : OptionsPattern[]] := Module[
     alphaBpr = OptionValue["AlphaBPR"],
     energyOverride = OptionValue["FieldEnergyOverride"],
     src = OptionValue["BoundarySource"],
+    lam,
     f0,
     solution,
     energy,
@@ -349,14 +350,20 @@ BPRCasimirSweep[rMin_?NumericQ, rMax_?NumericQ, n_Integer?Positive, opts : Optio
 
 Options[BPRCasimirSweepRows] = Join[
   Options[BPRCasimirForce],
-  {"OutputCSV" -> None}
+  {
+    "OutputCSV" -> None,
+    (* Output-only: rename the distance column for CSV clarity without changing internal keys. *)
+    "DistanceColumnName" -> "R [m]"
+  }
 ];
 
 BPRCasimirSweepRows[rMin_?NumericQ, rMax_?NumericQ, n_Integer?Positive, opts : OptionsPattern[]] := Module[
   {
     radii, rows, out = OptionValue["OutputCSV"], header,
-    geometry, lam, kappa, lMax, nθ, nϕ, delta, rF, src,
-    solution, energy, geometricFactor
+    dColName = OptionValue["DistanceColumnName"],
+    geometry, lamOpt, kappaBoundary, model, alphaBpr,
+    lam, kappa, lMax, nθ, nϕ, delta, rF, src,
+    solution, energy
   },
 
   (* Pull options once *)
@@ -418,7 +425,7 @@ BPRCasimirSweepRows[rMin_?NumericQ, rMax_?NumericQ, n_Integer?Positive, opts : O
     {i, 1, Length[radii]}
   ];
 
-  header = {"R [m]", "F_Casimir [N]", "ΔF_BPR [N]", "F_total [N]", "relative_deviation", "field_energy"};
+  header = {dColName, "F_Casimir [N]", "ΔF_BPR [N]", "F_total [N]", "relative_deviation", "field_energy"};
   If[StringQ[out],
     Export[out, Prepend[rows, header], "CSV"];
   ];

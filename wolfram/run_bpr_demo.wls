@@ -45,23 +45,25 @@ Export[eigFile, Prepend[eig, {"l", "lambda"}], "CSV"];
 casimirFile = FileNameJoin[{outputDir, "casimir_deviation_wl.csv"}];
 If[quick,
   Print["Running QUICK mode (fewer points / lower LMax) ..."];
-  data = BPR`BPRCasimirSweepRows[0.2*10^-6, 5.0*10^-6, 12,
+  data = BPR`BPRCasimirSweepRows[0.1*10^-6, 5.0*10^-6, 12,
     "Geometry" -> "parallel_plates",
     "CouplingLambda" -> Automatic,
     "CorrectionModel" -> "calibrated",
     "LMax" -> 4,
     "QuadraturePointsTheta" -> 24,
     "QuadraturePointsPhi" -> 48,
+    "DistanceColumnName" -> "d [m]",
     "OutputCSV" -> casimirFile
   ];,
   Print["Running FULL mode ..."];
-  data = BPR`BPRCasimirSweepRows[0.2*10^-6, 5.0*10^-6, 40,
+  data = BPR`BPRCasimirSweepRows[0.1*10^-6, 5.0*10^-6, 40,
     "Geometry" -> "parallel_plates",
     "CouplingLambda" -> Automatic,
     "CorrectionModel" -> "calibrated",
     "LMax" -> 8,
     "QuadraturePointsTheta" -> 48,
     "QuadraturePointsPhi" -> 96,
+    "DistanceColumnName" -> "d [m]",
     "OutputCSV" -> casimirFile
   ];
 ];
