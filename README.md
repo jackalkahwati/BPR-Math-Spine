@@ -2,11 +2,25 @@
 
 > **Status :** public draft | license MIT | contact <jack@thestardrive.com>
 >
+> **COMPLETE FRAMEWORK** → [`doc/BPR_Complete_Framework.md`](doc/BPR_Complete_Framework.md) *(80-page unified document)*
+>
+> **KEY RESULT**: Testable prediction at 10⁻⁸ level via phonon-MEMS experiments
+>
 > One‑pager → [`doc/BPR_one_pager.md`](doc/BPR_one_pager.md) | LaTeX source → [`doc/BPR_one_pager.tex`](doc/BPR_one_pager.tex)
->
-> **NEW**: Experimental validation → [`doc/BPR_posterior_confidence.tex`](doc/BPR_posterior_confidence.tex) *(Bayesian analysis: ~99.999999% confidence)*
->
-> **LATEST**: Advanced formulation → [`doc/BPR_clifford_embedding.tex`](doc/BPR_clifford_embedding.tex) *(Clifford algebra embedding with spinor consciousness modules)*
+
+---
+
+## Key Results
+
+| Coupling Channel | Derived Value | Gap to Detection |
+|------------------|---------------|------------------|
+| Gravitational | λ ~ 10⁻⁹⁰ J·m² | 91 orders |
+| Electromagnetic | λ ~ 10⁻⁵⁴ | 50 orders |
+| **Phonon Collective** | **λ ~ 10⁻⁸** | **1-2 orders** |
+
+**All coupling constants derived from substrate properties—zero free parameters.**
+
+The phonon collective channel (combining mode enhancement, coherent phases, and resonator Q-factor) brings BPR within plausible experimental reach.
 
 ---
 
