@@ -14,7 +14,13 @@ from dataclasses import dataclass
 from typing import Callable, Optional
 
 import numpy as np
-from scipy.special import sph_harm
+try:
+    from scipy.special import sph_harm
+except ImportError:
+    # scipy >= 1.15: sph_harm removed; sph_harm_y has signature (n, m, theta, phi)
+    from scipy.special import sph_harm_y as _sph_harm_y
+    def sph_harm(m, n, theta, phi):          # noqa: E302
+        return _sph_harm_y(n, m, theta, phi)
 
 
 @dataclass(frozen=True)

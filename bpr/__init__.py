@@ -1,16 +1,28 @@
 """
 BPR-Math-Spine: Minimal, Reproducible Maths for Boundary Phase Resonance
 
-A laser-focused codebase that reproduces every numbered equation in the 
-one-page synopsis and generates the falsifiable Casimir-deviation curve.
+A laser-focused codebase that reproduces every numbered equation in the
+one-page synopsis, generates the falsifiable Casimir-deviation curve, and
+now implements the **Ten Adjacent Theories** (Al-Kahwati, Feb 2026):
 
-Based on the mathematical framework by Jack Al-Kahwati (July 2025)
+    I   Boundary Memory Dynamics          (bpr.memory)
+    II  Vacuum Impedance Mismatch         (bpr.impedance)
+    III Boundary-Induced Decoherence      (bpr.decoherence)
+    IV  Universal Phase Transition Taxonomy (bpr.phase_transitions)
+    V   Boundary-Mediated Neutrino Dynamics (bpr.neutrino)
+    VI  Substrate Information Geometry     (bpr.info_geometry)
+    VII Gravitational Wave Phenomenology   (bpr.gravitational_waves)
+    VIII Substrate Complexity Theory       (bpr.complexity)
+    IX  Bioelectric Substrate Coupling     (bpr.bioelectric)
+    X   Resonant Collective Dynamics       (bpr.collective)
+
+Based on the mathematical framework by Jack Al-Kahwati
 Contact: jack@thestardrive.com
 
 License: MIT
 """
 
-__version__ = "0.1.0"
+__version__ = "0.4.0"
 __author__ = "Jack Al-Kahwati / StarDrive Research Group"
 
 from .geometry import make_boundary
@@ -27,10 +39,10 @@ except ImportError:
 
 __all__ = [
     "make_boundary",
-    "solve_phase", 
+    "solve_phase",
     "metric_perturbation",
     "casimir_force",
-    "sweep_radius"
+    "sweep_radius",
 ]
 
 if INFORMATION_AVAILABLE:
@@ -59,3 +71,33 @@ except Exception:
     HKLL_AVAILABLE = False
 
 __all__.extend(["RPST_AVAILABLE", "RESONANCE_AVAILABLE", "HKLL_AVAILABLE"])
+
+# ──────────────────────────────────────────────────────────────────────────
+# Ten Adjacent Theories  (Feb 2026)
+# ──────────────────────────────────────────────────────────────────────────
+
+try:
+    from . import memory            # Theory I    # noqa: F401
+    from . import impedance         # Theory II   # noqa: F401
+    from . import decoherence       # Theory III  # noqa: F401
+    from . import phase_transitions # Theory IV   # noqa: F401
+    from . import neutrino          # Theory V    # noqa: F401
+    from . import info_geometry     # Theory VI   # noqa: F401
+    from . import gravitational_waves  # Theory VII  # noqa: F401
+    from . import complexity        # Theory VIII # noqa: F401
+    from . import bioelectric       # Theory IX   # noqa: F401
+    from . import collective        # Theory X    # noqa: F401
+    from . import black_hole        # BH entropy  # noqa: F401
+
+    ADJACENT_THEORIES_AVAILABLE = True
+except Exception:
+    ADJACENT_THEORIES_AVAILABLE = False
+
+# First-principles coupling pipeline (requires adjacent theories)
+try:
+    from .first_principles import SubstrateDerivedTheories  # noqa: F401
+    FIRST_PRINCIPLES_AVAILABLE = True
+except Exception:
+    FIRST_PRINCIPLES_AVAILABLE = False
+
+__all__.extend(["ADJACENT_THEORIES_AVAILABLE", "FIRST_PRINCIPLES_AVAILABLE"])

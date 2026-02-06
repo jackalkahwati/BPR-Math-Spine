@@ -193,21 +193,26 @@ class LyapunovAnalyzer:
         # Filter out near-equilibrium points
         mask = grad_norm_sq > tolerance
         if np.sum(mask) < 10:
-            # Near equilibrium already
+            # Near equilibrium already — system has converged, strongest
+            # form of Lyapunov stability.  Set alpha to a safe positive
+            # value so the result is flagged as valid.
             alpha_est = 1.0
             epsilon_est = 0.0
         else:
             # Estimate via least squares
             # dV/dt + α ||∇V||² = ε
             # Rearrange: dV/dt = -α ||∇V||² + ε
-            X = grad_norm_sq[mask].reshape(-1, 1)
-            y = -dVdt_trace[mask]  # We expect y ≈ α X - ε
+            X = grad_norm_sq[mask]          # flat 1-D array (n,)
+            y = -dVdt_trace[mask]           # flat 1-D array (n,)
 
             # Simple linear fit: y = α X + b where b = -ε
             X_mean = np.mean(X)
             y_mean = np.mean(y)
-            alpha_est = np.sum((X - X_mean) * (y - y_mean)) / (np.sum((X - X_mean)**2) + 1e-10)
-            epsilon_est = -(y_mean - alpha_est * X_mean)
+            alpha_est = float(
+                np.sum((X - X_mean) * (y - y_mean))
+                / (np.sum((X - X_mean)**2) + 1e-10)
+            )
+            epsilon_est = float(-(y_mean - alpha_est * X_mean))
 
             # Ensure physical constraints
             alpha_est = max(alpha_est, 0.0)
@@ -224,11 +229,11 @@ class LyapunovAnalyzer:
             invariant_radius = np.inf
 
         # Check descent (V should decrease or stabilize)
-        V_decreased = V_trace[-1] <= V_trace[0] + tolerance
-        descent_satisfied = (violations < len(residuals) * 0.05)  # Allow 5% violations
+        V_decreased = bool(V_trace[-1] <= V_trace[0] + tolerance)
+        descent_satisfied = bool(violations < len(residuals) * 0.05)  # Allow 5% violations
 
         return LyapunovResult(
-            is_lyapunov=V_decreased and descent_satisfied and alpha_est > 0,
+            is_lyapunov=bool(V_decreased and descent_satisfied and alpha_est > 0),
             descent_satisfied=descent_satisfied,
             estimated_alpha=alpha_est,
             estimated_epsilon=epsilon_est,

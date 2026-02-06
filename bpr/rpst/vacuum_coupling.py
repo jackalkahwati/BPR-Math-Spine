@@ -28,7 +28,15 @@ References
 import numpy as np
 from dataclasses import dataclass
 from typing import Tuple, List, Optional, Callable
-from scipy.special import spherical_jn, sph_harm
+from scipy.special import spherical_jn
+try:
+    from scipy.special import sph_harm
+except ImportError:
+    # scipy >= 1.15: sph_harm removed; sph_harm_y has signature (n, m, theta, phi)
+    # while old sph_harm had (m, l, theta, phi).  Wrap to keep call-sites unchanged.
+    from scipy.special import sph_harm_y as _sph_harm_y
+    def sph_harm(m, n, theta, phi):          # noqa: E302
+        return _sph_harm_y(n, m, theta, phi)
 from scipy.integrate import quad, dblquad
 from enum import Enum
 
