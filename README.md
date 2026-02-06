@@ -229,7 +229,18 @@ BPR-math-spine/
 │   ├── complexity.py       # VIII Substrate Complexity Theory
 │   ├── bioelectric.py      # IX  Bioelectric Substrate Coupling
 │   ├── collective.py       # X   Resonant Collective Dynamics
-│   └── first_principles.py # ★  (J,p,N) → all 10 theories, zero free params
+│   ├── cosmology.py       # XI   Cosmology & Early Universe
+│   ├── qcd_flavor.py      # XII  QCD & Flavor Physics
+│   ├── emergent_spacetime.py # XIII Emergent Spacetime
+│   ├── topological_matter.py # XIV Topological Condensed Matter
+│   ├── clifford_bpr.py    # XV   Clifford Algebra Embedding
+│   ├── quantum_foundations.py # XVI Quantum Foundations
+│   ├── gauge_unification.py # XVII Gauge Unification & Hierarchy
+│   ├── charged_leptons.py  # XVIII Charged Lepton Masses
+│   ├── nuclear_physics.py  # XIX  Nuclear Physics
+│   ├── quantum_gravity_pheno.py # XX Quantum Gravity Pheno
+│   ├── quantum_chemistry.py # XXI Quantum Chemistry
+│   └── first_principles.py # ★  (J,p,N) → all 21 theories, zero free params
 │
 ├── notebooks/
 │   ├── 01_boundary_laplacian.ipynb   # reproduces Fig A1
@@ -237,7 +248,7 @@ BPR-math-spine/
 │   └── 03_casimir_prediction.ipynb   # reproduces falsifier curve
 ├── scripts/
 │   ├── run_casimir_demo.py           # CLI wrapper around casimir.py
-│   └── generate_predictions.py       # ★  produce all 163 predictions as CSV
+│   └── generate_predictions.py       # ★  produce all 205 predictions as CSV
 ├── data/
 │   └── predictions.csv               # ★  generated predictions table
 ├── tests/
@@ -366,11 +377,11 @@ Pull requests must:
 - [x] **Theory IX**: Bioelectric Substrate Coupling — morphogenetic fields φ_morph, cellular winding W_cell (cancer = aberrant W), aging as coherence decay τ_coh(age) = τ₀ e^{-age/τ_aging}
 - [x] **Theory X**: Resonant Collective Dynamics — Kuramoto flocking, market impedance matching (crash = resonance), social tipping points (f_c ~ 1/⟨k⟩), cooperation from winding alignment
 
-### ✅ **First-Principles Pipeline** (v0.3.0 → v0.5.0)
+### ✅ **First-Principles Pipeline** (v0.3.0 → v0.6.0)
 
-- [x] **Coupling derivation** — `bpr.first_principles.SubstrateDerivedTheories` wires `(J, p, N)` → `boundary_energy.py` → all 16 theories, **zero hand-picked constants**
+- [x] **Coupling derivation** — `bpr.first_principles.SubstrateDerivedTheories` wires `(J, p, N)` → `boundary_energy.py` → all 21 theories, **zero hand-picked constants**
 - [x] **Inter-theory integration tests** — `tests/test_inter_theory.py`: 14 tests chaining Theory I↔III, I↔VII, II↔V, III↔IV, VI↔VIII, IV↔X, IX↔(I,III), VIII↔I
-- [x] **Predictions generator** — `scripts/generate_predictions.py` produces **163** falsifiable predictions as CSV
+- [x] **Predictions generator** — `scripts/generate_predictions.py` produces **205** falsifiable predictions as CSV
 - [x] **Lyapunov bug fix** — numpy broadcasting bug in regression; all 23 Lyapunov tests now pass
 - [x] **FEniCS CI path** — `tests/test_fenics_integration.py` auto-skipped locally, runs in Docker
 
@@ -383,23 +394,31 @@ Pull requests must:
 - [x] **Theory XV: Clifford Algebra** — multivector fields in Cl(3,0), spinor modules, Cliffordon spectrum
 - [x] **Theory XVI: Quantum Foundations** — Born rule (1 − 1/p accuracy), arrow of time, Bell bound → Tsirelson
 
+### ✅ **Frontier Theories** (v0.6.0)
+
+- [x] **Theory XVII: Gauge Unification** — GUT scale = M_Pl/p^{1/4}, coupling running, hierarchy = √(pN), proton decay
+- [x] **Theory XVIII: Charged Leptons** — e/μ/τ masses from cohomology norms, Koide formula = 2/3 from S², lepton universality
+- [x] **Theory XIX: Nuclear Physics** — magic numbers (2,8,20,28,50,82,126) from winding shells, binding energies, neutron star M_max
+- [x] **Theory XX: Quantum Gravity Pheno** — modified dispersion (ξ₁=0, ξ₂=1/p), GUP (β=1/p), Lorentz invariance to exp(-p^{1/3})
+- [x] **Theory XXI: Quantum Chemistry** — noble gas Z from shell filling, chemical bonds, electronegativity, chirality, periodic table
+
 ### 🚀 **Ready for Use**
 
 The BPR-Math-Spine framework is **feature-complete** and ready for:
 * **Peer review** — All mathematics transparent and auditable
-* **Experimental validation** — 163 falsifiable predictions generated, end-to-end from substrate  
+* **Experimental validation** — 205 falsifiable predictions generated, end-to-end from substrate  
 * **Research extension** — Modular architecture for new physics
 * **Publication** — Complete mathematical spine for papers
 * **Docker CI** — `docker-compose run --rm --profile testing bpr-test` runs all tests with FEniCS
 
 ### 📊 **Project Statistics**  
-* **~14,000+** total lines of code
-* **~10,000** core mathematical LoC  
+* **~17,000+** total lines of code
+* **~12,000** core mathematical LoC  
 * **248** E₈ generators implemented
 * **7/7** BPR equations complete
-* **16 theories** — 10 adjacent + 6 extended (Cosmology, QCD, Spacetime, Topo Matter, Clifford, Foundations)
-* **163** falsifiable predictions (from 3 substrate numbers: J, p, N)
-* **339** tests passing, 21 skipped (FEniCS auto-skip)
+* **21 theories** — 10 adjacent + 6 extended + 5 frontier (Gauge, Leptons, Nuclear, QG, Chemistry)
+* **205** falsifiable predictions (from 3 substrate numbers: J, p, N)
+* **395** tests passing, 21 skipped (FEniCS auto-skip)
 * **3/3** mathematical checkpoints verified
 
 ---
