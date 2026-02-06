@@ -60,11 +60,17 @@ from . import complexity as th8
 from . import bioelectric as th9
 from . import collective as th10
 from . import black_hole as th_bh
+from . import cosmology as th11
+from . import qcd_flavor as th12
+from . import emergent_spacetime as th13
+from . import topological_matter as th14
+from . import clifford_bpr as th15
+from . import quantum_foundations as th16
 
 
 @dataclass
 class SubstrateDerivedTheories:
-    """All 10 adjacent theories parameterised from first principles.
+    """All 16 theories parameterised from first principles.
 
     Every coupling constant is derived from (J, p, N, geometry, radius)
     via the chain in ``boundary_energy.py``.  No hand-picked values.
@@ -281,6 +287,74 @@ class SubstrateDerivedTheories:
                        N_pop: int = 1000) -> th10.TippingPoint:
         return th10.TippingPoint(mean_degree=mean_degree, N=N_pop)
 
+    # ------------------------------------------------------------------
+    # Theory XI: Cosmology
+    # ------------------------------------------------------------------
+    def inflation(self) -> th11.InflationaryParameters:
+        return th11.InflationaryParameters(p=self.params.p, d=3)
+
+    def baryogenesis(self) -> th11.Baryogenesis:
+        return th11.Baryogenesis(p=self.params.p, N=self.params.N)
+
+    def cmb_anomaly(self) -> th11.CMBAnomaly:
+        return th11.CMBAnomaly(p=self.params.p)
+
+    # ------------------------------------------------------------------
+    # Theory XII: QCD & Flavor Physics
+    # ------------------------------------------------------------------
+    def quark_masses(self) -> th12.QuarkMassSpectrum:
+        return th12.QuarkMassSpectrum()
+
+    def ckm(self) -> th12.CKMMatrix:
+        return th12.CKMMatrix()
+
+    def color_confinement(self) -> th12.ColorConfinement:
+        return th12.ColorConfinement(kappa=self.kappa, xi=self.xi)
+
+    # ------------------------------------------------------------------
+    # Theory XIII: Emergent Spacetime
+    # ------------------------------------------------------------------
+    def emergent_dimensions(self) -> th13.EmergentDimensions:
+        geo = self.params.geometry.value
+        return th13.EmergentDimensions(geometry=geo)
+
+    def holographic_entropy(self, area: float = 1.0) -> th13.HolographicEntropy:
+        return th13.HolographicEntropy(boundary_area=area, p=self.params.p)
+
+    def bekenstein_bound(self, R: float = 1.0,
+                          E: float = 1.0) -> th13.BekensteinBound:
+        return th13.BekensteinBound(R=R, E=E)
+
+    # ------------------------------------------------------------------
+    # Theory XIV: Topological Condensed Matter
+    # ------------------------------------------------------------------
+    def quantum_hall(self, nu: int = 1) -> th14.QuantumHallEffect:
+        return th14.QuantumHallEffect(nu=nu)
+
+    def topological_insulator(self, W: int = 1) -> th14.TopologicalInsulator:
+        return th14.TopologicalInsulator(W=W)
+
+    def anyons(self, W: int = 1) -> th14.AnyonStatistics:
+        return th14.AnyonStatistics(W=W, p=self.params.p)
+
+    # ------------------------------------------------------------------
+    # Theory XV: Clifford Algebra
+    # ------------------------------------------------------------------
+    def cliffordon_spectrum(self) -> th15.CliffordonSpectrum:
+        return th15.CliffordonSpectrum(p=self.params.p)
+
+    # ------------------------------------------------------------------
+    # Theory XVI: Quantum Foundations
+    # ------------------------------------------------------------------
+    def born_rule(self) -> th16.BornRule:
+        return th16.BornRule(p=self.params.p)
+
+    def arrow_of_time(self) -> th16.ArrowOfTime:
+        return th16.ArrowOfTime(p=self.params.p, J=self.params.J)
+
+    def bell_inequality(self) -> th16.BellInequality:
+        return th16.BellInequality(p=self.params.p)
+
     # ==================================================================
     # Summary & predictions
     # ==================================================================
@@ -320,10 +394,11 @@ class SubstrateDerivedTheories:
         return "\n".join(lines)
 
     def predictions(self) -> Dict[str, Any]:
-        """Generate all 60+ falsifiable predictions as a dict.
+        """Generate all 160+ falsifiable predictions as a dict.
 
-        Keys follow the paper's prediction IDs (P1.1, P2.1, …).
-        Extended predictions use Px.N where N > 4.
+        Keys follow the paper's prediction IDs (P1.1, P2.1, …, P16.x).
+        Theories I–X are the original adjacent theories.
+        Theories XI–XVI are the extended theories (cosmology, QCD, etc.).
         """
         mk = self.memory_kernel_params(W=1.0)
         ns = self.neutrino_spectrum()
@@ -548,5 +623,122 @@ class SubstrateDerivedTheories:
         n_gen = th5.number_of_generations("sphere")
         preds["P5.10_number_of_generations"] = n_gen
         preds["P5.11_4th_generation_requires"] = "genus ≥ 2 boundary topology"
+
+        # ==================================================================
+        # THEORIES XI–XVI:  ~60 NEW PREDICTIONS
+        # ==================================================================
+
+        # ── Theory XI: Cosmology & Early Universe ──
+        infl = self.inflation()
+        bary = self.baryogenesis()
+        cmb = self.cmb_anomaly()
+
+        preds["P11.1_n_efolds"] = infl.n_efolds
+        preds["P11.2_spectral_index"] = infl.spectral_index
+        preds["P11.3_tensor_to_scalar_r"] = infl.tensor_to_scalar
+        preds["P11.4_running_dns_dlnk"] = infl.running
+        preds["P11.5_slow_roll_epsilon"] = infl.slow_roll_epsilon()
+        preds["P11.6_slow_roll_eta"] = infl.slow_roll_eta()
+        preds["P11.7_baryon_asymmetry_eta"] = bary.baryon_asymmetry
+        preds["P11.8_matter_dominates"] = bary.matter_dominates
+        preds["P11.9_cp_phase_boundary"] = bary.cp_phase
+        preds["P11.10_cmb_quadrupole_suppression"] = cmb.quadrupole_suppression
+        preds["P11.11_cmb_hemispherical_asymmetry"] = cmb.hemispherical_asymmetry
+        preds["P11.12_cmb_l_boundary"] = cmb.l_boundary
+        preds["P11.13_reheating_T_GeV"] = th11.reheating_temperature(self.params.p)
+        preds["P11.14_delta_Neff"] = th11.delta_neff(self.params.p)
+        dm_relic = th11.DarkMatterRelic(W_c=self.W_c, p=self.params.p,
+                                         kappa_dim=self.kappa_dim)
+        preds["P11.15_DM_relic_Omega_h2"] = dm_relic.relic_abundance
+
+        # ── Theory XII: QCD & Flavor Physics ──
+        quarks = self.quark_masses()
+        ckm = self.ckm()
+        ckm_angles = ckm.mixing_angles()
+        qm = quarks.all_masses_MeV
+
+        preds["P12.1_confinement_criterion"] = "only W_color=0 propagates"
+        preds["P12.2_m_u_MeV"] = qm["u"]
+        preds["P12.3_m_d_MeV"] = qm["d"]
+        preds["P12.4_m_s_MeV"] = qm["s"]
+        preds["P12.5_m_c_MeV"] = qm["c"]
+        preds["P12.6_m_b_MeV"] = qm["b"]
+        preds["P12.7_m_t_MeV"] = qm["t"]
+        preds["P12.8_CKM_theta12_deg"] = ckm_angles["theta12_deg"]
+        preds["P12.9_CKM_theta23_deg"] = ckm_angles["theta23_deg"]
+        preds["P12.10_CKM_theta13_deg"] = ckm_angles["theta13_deg"]
+        preds["P12.11_CKM_Jarlskog"] = ckm_angles["Jarlskog_invariant"]
+        preds["P12.12_strong_CP_theta"] = th12.strong_cp_theta(self.params.p)
+        preds["P12.13_proton_mass_GeV"] = th12.proton_mass_from_confinement()
+        preds["P12.14_pion_mass_MeV"] = th12.pion_mass()
+
+        # ── Theory XIII: Emergent Spacetime ──
+        ed = self.emergent_dimensions()
+        preds["P13.3_spatial_dimensions"] = ed.spatial_dimensions
+        preds["P13.4_time_dimensions"] = ed.time_dimensions
+        preds["P13.5_total_dimensions"] = ed.total_dimensions
+        preds["P13.6_holographic_entropy_formula"] = "S_EE = A / (4 l_P²)"
+        preds["P13.7_bekenstein_bound"] = "S ≤ 2πRE / (ℏc)"
+        preds["P13.8_planck_length_emergent"] = th13.planck_length_from_substrate(
+            self.xi, self.params.p)
+        preds["P13.9_ER_equals_EPR"] = "entangled pair ↔ ER bridge"
+        preds["P13.10_firewall_resolution"] = (
+            "smooth horizon from boundary phase continuity")
+        preds["P13.11_scrambling_time_1Msun_s"] = th13.scrambling_time(1.0)
+        preds["P13.12_page_time_1Msun_s"] = th13.page_time(1.0)
+
+        # ── Theory XIV: Topological Condensed Matter ──
+        qhe = self.quantum_hall(nu=1)
+        ti = self.topological_insulator(W=1)
+        anyon = self.anyons(W=1)
+        fqhe = th14.FractionalQHE(W=1, p=3)
+
+        preds["P14.1_hall_conductance_nu1_S"] = qhe.hall_conductance
+        preds["P14.2_hall_resistance_nu1_Ohm"] = qhe.hall_resistance
+        preds["P14.3_chern_number_nu1"] = qhe.chern_number
+        preds["P14.4_fqhe_filling_1_3"] = fqhe.filling_fraction
+        preds["P14.5_fqhe_quasiparticle_charge"] = fqhe.quasiparticle_charge
+        preds["P14.6_TI_z2_index"] = ti.z2_index
+        preds["P14.7_TI_is_topological"] = ti.is_topological
+        preds["P14.8_TI_edge_velocity_m_s"] = ti.edge_state_velocity
+        preds["P14.9_anyon_exchange_phase_rad"] = anyon.exchange_phase
+        preds["P14.10_anyon_type"] = anyon.particle_type
+        preds["P14.11_majorana_modes_wire_W1"] = th14.majorana_zero_modes(1)
+        preds["P14.12_conductance_quantum_S"] = (
+            th14.QuantizedConductance(1).conductance)
+
+        # ── Theory XV: Clifford Algebra ──
+        cliff = self.cliffordon_spectrum()
+        preds["P15.1_clifford_algebra_dim"] = th15.clifford_dimension(3)
+        preds["P15.2_spinor_dim"] = th15.spinor_dimension(3)
+        preds["P15.3_lightest_cliffordon_eV"] = cliff.lightest_mass_eV
+        preds["P15.4_cliffordon_mass_gap_eV"] = cliff.mass_gap_eV
+        preds["P15.5_cliffordon_n1_stable"] = cliff.stability_criterion(1)
+        preds["P15.6_multivector_components"] = 8  # Cl(3,0)
+
+        # ── Theory XVI: Quantum Foundations ──
+        br = self.born_rule()
+        at = self.arrow_of_time()
+        bell = self.bell_inequality()
+        meas = th16.MeasurementDynamics()
+        bb = th16.BoltzmannBrainSuppression(p=self.params.p)
+
+        preds["P16.1_born_rule_accuracy"] = br.born_rule_accuracy
+        preds["P16.2_born_rule_deviation"] = br.correction_amplitude
+        preds["P16.3_born_rule_testable"] = br.deviation_testable
+        preds["P16.4_arrow_of_time"] = at.entropy_monotonic
+        preds["P16.5_time_quantum_s"] = at.time_quantum
+        preds["P16.6_cpt_status"] = at.cpt_status
+        preds["P16.7_bell_bpr_bound"] = bell.bpr_bound
+        preds["P16.8_tsirelson_deviation"] = bell.deviation_from_tsirelson
+        preds["P16.9_violates_classical_bell"] = bell.violates_classical()
+        preds["P16.10_measurement_time_s"] = meas.measurement_time
+        preds["P16.11_collapse_is_physical"] = meas.collapse_is_physical
+        preds["P16.12_boltzmann_brain_suppression_log10"] = bb.log_suppression
+        preds["P16.13_boltzmann_brain_impossible"] = bb.effectively_zero
+        preds["P16.14_contextuality_dim"] = th16.contextuality_dimension_bound(
+            self.params.p)
+        preds["P16.15_free_will_compatible"] = th16.free_will_theorem_compatible(
+            self.params.p)
 
         return preds

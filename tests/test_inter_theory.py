@@ -219,7 +219,7 @@ class TestFirstPrinciplesPipeline:
 
     def test_predictions_dict(self, sdt):
         preds = sdt.predictions()
-        assert len(preds) >= 80, f"Expected 80+ predictions, got {len(preds)}"
+        assert len(preds) >= 150, f"Expected 150+ predictions, got {len(preds)}"
         assert "P1.2_prime_harmonic_omega" in preds
         assert "P5.1_hierarchy" in preds
         assert preds["P5.1_hierarchy"] == "normal"

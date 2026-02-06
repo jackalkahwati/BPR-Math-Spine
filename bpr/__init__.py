@@ -3,18 +3,24 @@ BPR-Math-Spine: Minimal, Reproducible Maths for Boundary Phase Resonance
 
 A laser-focused codebase that reproduces every numbered equation in the
 one-page synopsis, generates the falsifiable Casimir-deviation curve, and
-now implements the **Ten Adjacent Theories** (Al-Kahwati, Feb 2026):
+now implements **16 theories** (Al-Kahwati, Feb 2026):
 
-    I   Boundary Memory Dynamics          (bpr.memory)
-    II  Vacuum Impedance Mismatch         (bpr.impedance)
-    III Boundary-Induced Decoherence      (bpr.decoherence)
-    IV  Universal Phase Transition Taxonomy (bpr.phase_transitions)
-    V   Boundary-Mediated Neutrino Dynamics (bpr.neutrino)
-    VI  Substrate Information Geometry     (bpr.info_geometry)
-    VII Gravitational Wave Phenomenology   (bpr.gravitational_waves)
-    VIII Substrate Complexity Theory       (bpr.complexity)
-    IX  Bioelectric Substrate Coupling     (bpr.bioelectric)
-    X   Resonant Collective Dynamics       (bpr.collective)
+    I    Boundary Memory Dynamics          (bpr.memory)
+    II   Vacuum Impedance Mismatch         (bpr.impedance)
+    III  Boundary-Induced Decoherence      (bpr.decoherence)
+    IV   Universal Phase Transition Taxonomy (bpr.phase_transitions)
+    V    Boundary-Mediated Neutrino Dynamics (bpr.neutrino)
+    VI   Substrate Information Geometry     (bpr.info_geometry)
+    VII  Gravitational Wave Phenomenology   (bpr.gravitational_waves)
+    VIII Substrate Complexity Theory        (bpr.complexity)
+    IX   Bioelectric Substrate Coupling     (bpr.bioelectric)
+    X    Resonant Collective Dynamics       (bpr.collective)
+    XI   Cosmology & Early Universe         (bpr.cosmology)
+    XII  QCD & Flavor Physics               (bpr.qcd_flavor)
+    XIII Emergent Spacetime & Holography    (bpr.emergent_spacetime)
+    XIV  Topological Condensed Matter       (bpr.topological_matter)
+    XV   Clifford Algebra Embedding         (bpr.clifford_bpr)
+    XVI  Quantum Foundations                (bpr.quantum_foundations)
 
 Based on the mathematical framework by Jack Al-Kahwati
 Contact: jack@thestardrive.com
@@ -22,7 +28,7 @@ Contact: jack@thestardrive.com
 License: MIT
 """
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 __author__ = "Jack Al-Kahwati / StarDrive Research Group"
 
 from .geometry import make_boundary
@@ -88,6 +94,12 @@ try:
     from . import bioelectric       # Theory IX   # noqa: F401
     from . import collective        # Theory X    # noqa: F401
     from . import black_hole        # BH entropy  # noqa: F401
+    from . import cosmology         # Theory XI   # noqa: F401
+    from . import qcd_flavor        # Theory XII  # noqa: F401
+    from . import emergent_spacetime  # Theory XIII  # noqa: F401
+    from . import topological_matter  # Theory XIV  # noqa: F401
+    from . import clifford_bpr      # Theory XV   # noqa: F401
+    from . import quantum_foundations  # Theory XVI  # noqa: F401
 
     ADJACENT_THEORIES_AVAILABLE = True
 except Exception:
