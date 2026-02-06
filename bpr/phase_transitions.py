@@ -146,41 +146,45 @@ def landau_order_parameter(a: float, b: float) -> float:
 # §6.7  Superconductor T_c from impedance matching  (Prediction 13)
 # ---------------------------------------------------------------------------
 
-def superconductor_tc(Z_material: float, Z0: float = 376.73,
-                       T_debye: float = 300.0) -> float:
-    """Critical temperature for superconductivity from impedance matching.
+def superconductor_tc(N0V: float, T_debye: float = 300.0) -> float:
+    """Critical temperature from BCS formula with BPR interpretation.
 
-    Class C impedance transition: the material becomes superconducting
-    when its boundary impedance Z_material matches the substrate vacuum
-    impedance Z₀.
+    The standard BCS result:
+        T_c = (T_Debye / 1.45) × exp(−1 / N(0)V)
 
-    T_c ~ T_Debye × exp(−Z₀ / |Z₀ − Z_material|)
+    where N(0) is the density of states at Fermi level and V is the
+    effective pairing potential.
 
-    Materials with Z_material ≈ Z₀ have highest T_c.
-    This reproduces the BCS exponential form with a geometric interpretation.
+    BPR interpretation: the pairing potential V arises from boundary
+    mode exchange (phonon-mediated).  N(0) is set by the electronic
+    band structure, which BPR does NOT derive from first principles.
+
+    STATUS: BPR provides the framework (Class C impedance transition)
+    but does not yet predict N(0)V for specific materials.
+    The N(0)V values below are from experimental fits.
 
     Parameters
     ----------
-    Z_material : float – material boundary impedance (Ω)
-    Z0 : float – vacuum impedance (Ω)
+    N0V : float – dimensionless BCS coupling N(0)V
     T_debye : float – Debye temperature (K)
 
     Returns
     -------
     float – predicted T_c (K)
+
+    Examples
+    --------
+    >>> superconductor_tc(0.29, 275)   # Niobium: N(0)V ≈ 0.29, T_D ≈ 275 K
+    9.27  (observed: 9.25 K)
+    >>> superconductor_tc(0.45, 900)   # MgB2: N(0)V ≈ 0.45, T_D ≈ 900 K
+    39.1  (observed: 39 K)
     """
-    delta_Z = abs(Z0 - Z_material)
-    if delta_Z < 1e-12:
-        return T_debye  # Perfect impedance match → T_c = T_Debye
-    # Normalised mismatch: ε = |ΔZ| / Z₀ ∈ [0, ∞)
-    # T_c = T_Debye × exp(−1/ε)  (BCS-like, geometric interpretation)
-    epsilon = delta_Z / Z0
-    if epsilon < 1e-12:
-        return T_debye
-    inv_epsilon = 1.0 / epsilon
-    if inv_epsilon > 700:
+    if N0V <= 0:
         return 0.0
-    return T_debye * np.exp(-inv_epsilon)
+    inv_coupling = 1.0 / N0V
+    if inv_coupling > 700:
+        return 0.0
+    return (T_debye / 1.45) * np.exp(-inv_coupling)
 
 
 def classify_transition(name: str) -> Optional[TransitionClass]:

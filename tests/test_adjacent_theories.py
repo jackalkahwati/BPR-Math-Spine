@@ -86,7 +86,7 @@ class TestImpedance:
 
     def test_mond_interpolation_limits(self):
         from bpr.impedance import MONDInterpolation
-        mond = MONDInterpolation(R_boundary=1e26)
+        mond = MONDInterpolation()
         # Deep-MOND: μ(x) ≈ x for x << 1
         x_small = 1e-3 * mond.a0
         assert mond.mu(x_small) == pytest.approx(x_small / mond.a0, rel=0.1)
@@ -96,7 +96,7 @@ class TestImpedance:
 
     def test_rotation_curve_mond_vs_newtonian(self):
         from bpr.impedance import rotation_curve, MONDInterpolation
-        mond = MONDInterpolation(R_boundary=1e26)
+        mond = MONDInterpolation()
         # Use radii where a_N << a₀ (deep-MOND: v = (G M a₀)^{1/4}, independent of r)
         # a₀ ≈ 9e-10 m/s²; for M_baryon ~ 1e41 kg, a_N < a₀ above ~ 3e25 m
         M_baryon = 1e11 * 2e30  # ~ 2e41 kg

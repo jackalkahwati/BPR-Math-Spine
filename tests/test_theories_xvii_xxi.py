@@ -41,10 +41,11 @@ class TestGaugeCoupling:
 
 
 class TestHierarchy:
-    def test_hierarchy_large(self):
+    def test_hierarchy_open(self):
         from bpr.gauge_unification import HierarchyProblem
         h = HierarchyProblem(p=104729, N=10000)
-        assert h.predicted_ratio > 100
+        assert h.hierarchy_derived is False  # honest: open problem
+        assert h.observed_ratio > 1e15
 
     def test_higgs_protected(self):
         from bpr.gauge_unification import HierarchyProblem

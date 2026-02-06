@@ -101,7 +101,13 @@ class MONDInterpolation:
     """Modified gravity at galactic scales from impedance transition.
 
     Characteristic acceleration:
-        a₀ = c² / R_boundary
+        a₀ = c H₀ / (2π)
+
+    BPR interpretation: a₀ is set by the *cosmological* boundary
+    (Hubble horizon), NOT by the lab-scale boundary.  Below a₀,
+    gravitational modes aren't fully resolved by the finite boundary.
+
+    This reproduces the Milgrom coincidence  a₀ ≈ c H₀.
 
     Interpolation function (simple form, §4.4):
         μ(x) = x / (1 + x)     where x = a / a₀
@@ -109,12 +115,21 @@ class MONDInterpolation:
     In the deep-MOND limit (x << 1):  μ ≈ x  →  F ∝ 1/r
     In the Newtonian limit  (x >> 1):  μ ≈ 1  →  F ∝ 1/r²
     """
-    R_boundary: float = 1e26     # boundary coherence length (m)
+    H0_km_s_Mpc: float = 67.4   # Hubble constant
+
+    @property
+    def H0_si(self) -> float:
+        """Hubble constant in SI (s⁻¹)."""
+        return self.H0_km_s_Mpc * 1e3 / 3.0857e22  # km/s/Mpc → s⁻¹
 
     @property
     def a0(self) -> float:
-        """MOND acceleration scale (m/s²)."""
-        return _C ** 2 / self.R_boundary
+        """MOND acceleration scale (m/s²).
+
+        a₀ = c H₀ / (2π)  ≈ 1.1 × 10⁻¹⁰ m/s².
+        Observed (Milgrom): a₀ ≈ 1.2 × 10⁻¹⁰ m/s².
+        """
+        return _C * self.H0_si / (2.0 * np.pi)
 
     def mu(self, a: float | np.ndarray) -> float | np.ndarray:
         """Interpolation function μ(a/a₀)."""

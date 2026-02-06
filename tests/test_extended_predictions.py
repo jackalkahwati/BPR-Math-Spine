@@ -214,23 +214,22 @@ class TestHubbleTension:
 class TestSuperconductorTc:
     def test_stronger_coupling_higher_Tc(self):
         from bpr.phase_transitions import superconductor_tc
-        # In the BCS-like formula T_c = T_D exp(-1/ε), ε = |ΔZ|/Z₀
-        # Larger ε (stronger impedance mismatch coupling) → higher T_c
-        # This mirrors BCS: larger N(0)V → higher T_c
-        Tc_weak = superconductor_tc(Z_material=350.0, T_debye=300.0)  # small ΔZ
-        Tc_strong = superconductor_tc(Z_material=200.0, T_debye=300.0)  # large ΔZ
+        # BCS: larger N(0)V → higher T_c
+        Tc_weak = superconductor_tc(N0V=0.2, T_debye=300.0)
+        Tc_strong = superconductor_tc(N0V=0.4, T_debye=300.0)
         assert Tc_strong > Tc_weak
 
-    def test_moderate_mismatch_has_nonzero_Tc(self):
+    def test_moderate_coupling_has_nonzero_Tc(self):
         from bpr.phase_transitions import superconductor_tc
-        Tc = superconductor_tc(Z_material=200.0, T_debye=300.0)
+        Tc = superconductor_tc(N0V=0.3, T_debye=300.0)
         assert Tc > 0
         assert Tc < 300.0  # Below Debye temperature
 
-    def test_perfect_match_gives_T_debye(self):
+    def test_niobium_order_of_magnitude(self):
         from bpr.phase_transitions import superconductor_tc
-        Tc = superconductor_tc(Z_material=376.73, T_debye=300.0)
-        assert Tc == pytest.approx(300.0, abs=1.0)
+        # Nb: N(0)V ≈ 0.29, T_D ≈ 275 K → Tc ≈ 9.25 K
+        Tc = superconductor_tc(N0V=0.29, T_debye=275.0)
+        assert 3 < Tc < 20  # order-of-magnitude correct
 
 
 # ═══════════════════════════════════════════════════════════════════

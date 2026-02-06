@@ -144,11 +144,11 @@ class SubstrateDerivedTheories:
         # Resonance frequency: ω_r = 2πn/p  (dominant mode n=1)
         omega_r = 2.0 * np.pi / p
 
-        # MOND acceleration: a₀ = c² / R_boundary  where
-        # R_boundary ~ ξ × (N / z)^{1/2}   (coherence length over whole boundary)
-        z = params.coordination_number
-        R_boundary = xi * np.sqrt(N / z)
-        a0_mond = C ** 2 / R_boundary
+        # MOND acceleration: a₀ = c H₀ / (2π)
+        # Set by cosmological boundary (Hubble horizon), NOT the lab boundary.
+        # The lab ξ is irrelevant for galactic-scale dynamics.
+        H0_si = 67.4e3 / 3.0857e22  # Hubble constant in s⁻¹
+        a0_mond = C * H0_si / (2.0 * np.pi)
 
         # Critical winding for DM / EM decoupling
         # W_c ~ √(κ)  (geometric, dimensionless)
@@ -189,16 +189,16 @@ class SubstrateDerivedTheories:
         return th2.TopologicalImpedance(W_c=self.W_c)
 
     def dark_energy_density(self) -> th2.DarkEnergyDensity:
+        # L should be cosmological scale (Hubble radius), not lab scale
+        R_hubble = C / (67.4e3 / 3.0857e22)
         return th2.DarkEnergyDensity(
             kappa=self.kappa_dim,
             p=float(self.params.p),
-            L=self.xi * np.sqrt(self.params.N / self.params.coordination_number),
+            L=R_hubble,
         )
 
     def mond(self) -> th2.MONDInterpolation:
-        return th2.MONDInterpolation(
-            R_boundary=C ** 2 / self.a0_mond,
-        )
+        return th2.MONDInterpolation(H0_km_s_Mpc=67.4)
 
     # ------------------------------------------------------------------
     # Theory III: Decoherence
@@ -606,7 +606,8 @@ class SubstrateDerivedTheories:
         preds["P2.10_muon_g2_experimental"] = 2.49e-9  # measured discrepancy
 
         # ── Prediction 12: Hubble tension ──
-        ht = th2.hubble_tension(R_boundary_0=C ** 2 / self.a0_mond)
+        R_hubble = C / (67.4e3 / 3.0857e22)  # c/H₀
+        ht = th2.hubble_tension(R_boundary_0=R_hubble)
         preds["P2.11_H0_local_km_s_Mpc"] = ht["H0_local"]
         preds["P2.12_H0_CMB_effective"] = ht["H0_CMB_effective"]
         preds["P2.13_delta_H0"] = ht["delta_H0"]
@@ -614,11 +615,14 @@ class SubstrateDerivedTheories:
 
         # ── Prediction 13: Superconductivity T_c ──
         # Niobium: Z ≈ 370 Ω, T_Debye ≈ 275 K, measured T_c = 9.3 K
-        Tc_Nb = th4.superconductor_tc(Z_material=370.0, T_debye=275.0)
+        # Tc from BCS formula: T_c = (T_D/1.45) exp(-1/N(0)V)
+        # BPR provides framework (Class C transition) but N(0)V is
+        # from experimental BCS fits, NOT derived from (J, p, N).
+        # STATUS: FRAMEWORK (not first-principles for specific materials)
+        Tc_Nb = th4.superconductor_tc(N0V=0.29, T_debye=275.0)
         preds["P4.7_Tc_niobium_K"] = Tc_Nb
-        preds["P4.8_Tc_formula"] = "T_c = T_D exp(−Z₀/|Z₀−Z_mat|)"
-        # MgB2: Z ≈ 374 Ω, T_Debye ≈ 900 K, measured T_c = 39 K
-        Tc_MgB2 = th4.superconductor_tc(Z_material=374.0, T_debye=900.0)
+        preds["P4.8_Tc_formula"] = "T_c = (T_D/1.45) exp(−1/N(0)V)  [BCS]"
+        Tc_MgB2 = th4.superconductor_tc(N0V=0.45, T_debye=900.0)
         preds["P4.9_Tc_MgB2_K"] = Tc_MgB2
 
         # ── Prediction 14: Proton lifetime ──
@@ -804,7 +808,7 @@ class SubstrateDerivedTheories:
         preds["P17.1_GUT_scale_GeV"] = gc.unification_scale_GeV
         preds["P17.2_alpha_GUT"] = gc.alpha_gut
         preds["P17.3_unification_quality"] = gc.unification_quality()
-        preds["P17.4_hierarchy_ratio_predicted"] = hier.predicted_ratio
+        preds["P17.4_hierarchy_derived"] = hier.hierarchy_derived  # False (open)
         preds["P17.5_hierarchy_ratio_observed"] = hier.observed_ratio
         preds["P17.6_higgs_mass_protected"] = hier.higgs_mass_protected
         preds["P17.7_proton_decay_channel"] = pdec.dominant_channel

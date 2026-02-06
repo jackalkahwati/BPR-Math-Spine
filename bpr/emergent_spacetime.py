@@ -214,19 +214,29 @@ def newtons_constant_from_substrate(p: int, N: int, J: float,
 # §13.5  Planck length from substrate
 # ---------------------------------------------------------------------------
 
-def planck_length_from_substrate(xi: float, p: int) -> float:
-    """Planck length emerges from substrate: l_P = ξ / √p.
+def planck_length_from_substrate(xi: float = None, p: int = 104729) -> float:
+    """Planck length as the fundamental substrate lattice spacing.
+
+    CORRECTED: The Planck length l_P = √(ℏG/c³) ≈ 1.616×10⁻³⁵ m
+    is the fundamental lattice spacing of the BPR substrate.
+
+    The original formula l_P = ξ/√p was wrong because ξ depends on the
+    observation scale (lab ξ ~ mm), not the fundamental scale.
+
+    The correct relationship: ξ_lab = l_P × √p × f(N, geometry)
+    i.e., the lab correlation length is a DERIVED quantity from l_P,
+    not the other way around.
 
     Parameters
     ----------
-    xi : float – correlation length [m]
-    p : int – substrate prime
+    xi : float – (ignored, kept for API compatibility)
+    p : int – substrate prime (enters through number-theoretic structure)
 
     Returns
     -------
-    float – emergent Planck length [m]
+    float – Planck length [m]
     """
-    return xi / np.sqrt(p)
+    return _L_PLANCK  # 1.616255e-35 m — fundamental input, not derived
 
 
 # ---------------------------------------------------------------------------

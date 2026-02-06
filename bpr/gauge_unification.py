@@ -126,15 +126,17 @@ class GaugeCouplingRunning:
 
 @dataclass
 class HierarchyProblem:
-    """Hierarchy problem resolution from winding suppression.
+    """Hierarchy problem: BPR framework statement.
 
-    The ratio M_Pl / M_EW is naturally large because the gravitational
-    sector couples through high-winding boundary modes:
+    The observed ratio M_Pl / v_EW ≈ 5 × 10¹⁶ is the hierarchy problem.
 
-        M_Pl / M_EW = √(p × N)
+    BPR CLAIM: The boundary provides a natural UV cutoff, so there are
+    no quadratic divergences → no fine-tuning needed for the Higgs mass.
+    This is analogous to how a lattice regulator eliminates UV divergences.
 
-    No fine-tuning needed — the hierarchy is a consequence of the
-    large prime modulus p and the number of boundary sites N.
+    BPR OPEN PROBLEM: Deriving the *value* M_Pl / v_EW from (p, N).
+    Previous formula √(pN) ≈ 3×10⁴ was off by 12 orders and has been
+    removed.  The hierarchy value is currently an input, not a prediction.
 
     Parameters
     ----------
@@ -145,24 +147,14 @@ class HierarchyProblem:
     N: int = 10000
 
     @property
-    def hierarchy_ratio(self) -> float:
-        """M_Pl / M_EW = √(p × N)."""
-        return np.sqrt(self.p * self.N)
-
-    @property
-    def predicted_ratio(self) -> float:
-        """Predicted ratio."""
-        return self.hierarchy_ratio
-
-    @property
     def observed_ratio(self) -> float:
-        """Observed M_Pl / v_Higgs."""
+        """Observed M_Pl / v_Higgs ≈ 5×10¹⁶."""
         return _M_PL_GEV / _V_HIGGS
 
     @property
     def naturalness(self) -> str:
-        """Assessment: is the hierarchy natural in BPR?"""
-        return "natural — no fine-tuning (hierarchy = √(pN) from substrate)"
+        """BPR naturalness: UV cutoff from boundary removes fine-tuning."""
+        return "natural — boundary UV cutoff removes quadratic divergences"
 
     @property
     def higgs_mass_protected(self) -> bool:
@@ -172,6 +164,14 @@ class HierarchyProblem:
         natural UV cutoff at the substrate scale.
         """
         return True
+
+    @property
+    def hierarchy_derived(self) -> bool:
+        """Whether the hierarchy VALUE is derived from first principles.
+
+        Currently False — this is an open problem.
+        """
+        return False
 
 
 # ---------------------------------------------------------------------------
