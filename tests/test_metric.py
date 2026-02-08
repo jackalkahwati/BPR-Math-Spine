@@ -357,9 +357,6 @@ def test_mathematical_checkpoint_2():
             print("\n⚠️  MATHEMATICAL CHECKPOINT 2: NEEDS ATTENTION")
             print("   Some conservation laws may be violated")
         
-        # Note: For symbolic tests, we're more lenient than numerical tests
-        return True  # Consider symbolic verification as passing
-        
     except Exception as e:
         print(f"\n❌ MATHEMATICAL CHECKPOINT 2: ERROR")
         print(f"   {e}")

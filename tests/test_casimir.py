@@ -418,8 +418,6 @@ def test_mathematical_checkpoint_3():
             print("\n⚠️  MATHEMATICAL CHECKPOINT 3: NEEDS ATTENTION")
             print("   Recovery may not be complete - check implementation")
         
-        return recovery_verified
-        
     except Exception as e:
         print(f"\n❌ MATHEMATICAL CHECKPOINT 3: ERROR")
         print(f"   {e}")
@@ -466,9 +464,7 @@ def test_equation_7_implementation():
         
         print("✅ Equation 7 implementation verified")
         print("   F_total = F_Casimir + ΔF_BPR holds for all points")
-        
-        return True
-        
+
     except Exception as e:
         pytest.fail(f"Equation 7 test failed: {e}")
 

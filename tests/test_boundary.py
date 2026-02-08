@@ -251,7 +251,6 @@ def test_mathematical_checkpoint_1():
         print("\n⚠️  MATHEMATICAL CHECKPOINT 1: FAILED — refine mesh or check implementation")
 
     assert all_passed, f"Checkpoint 1 failed: max cluster-mean error {max_error:.1e}"
-    return all_passed
 
 
 if __name__ == "__main__":
