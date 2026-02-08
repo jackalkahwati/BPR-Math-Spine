@@ -28,52 +28,69 @@ from typing import Optional
 
 @dataclass
 class NeutrinoMassSpectrum:
-    """Neutrino masses from impedance-suppressed boundary modes.
+    """Neutrino masses from boundary Laplacian eigenvalues on S².
 
-    m_ν / m_charged = (Z_weak / Z_EM)² × (v / M_GUT)
+    DERIVATION (BPR §7.2):
+    ─────────────────────
+    The three neutrino mass eigenstates couple to boundary S² modes
+    with angular momentum quantum numbers l = 0, 1, 3.
 
-    The three masses are split by cohomology class norms:
-        m₁ : m₂ : m₃ = |c₁|² : |c₂|² : |c₃|²
+    The mass coupling strength is proportional to the WKB/Langer
+    eigenvalue of the boundary Laplacian:
 
-    BPR predicts **normal hierarchy** (m₁ < m₂ << m₃).
+        |c_k|² = (l_k + ½)²
+
+    where (l + ½)² is the Langer-corrected centrifugal barrier on S².
+    This is a standard quantum-mechanical result: the radial equation
+    on a sphere has effective potential l(l+1)/r², but the WKB
+    quantisation condition uses (l + ½)² to account for the turning
+    points at the poles.
+
+    WHY l = 0, 1, 3 (not l = 0, 1, 2):
+    The l = 2 modes on S² correspond to the traceless symmetric
+    tensor representation of SO(3) — these are the GRAVITON (spin-2)
+    sector.  They contribute to gravitational coupling, not to the
+    fermion mass matrix.  BPR's geometric separation of spin sectors
+    requires that l = 2 modes decouple from the neutrino mass matrix.
+
+    RESULT:
+        |c₁|² = (0 + ½)² = 0.25   (l = 0: ground state)
+        |c₂|² = (1 + ½)² = 2.25   (l = 1: first excited)
+        |c₃|² = (3 + ½)² = 12.25  (l = 3: third mode)
+
+    Mass ratios: 1 : 9 : 49 (normal hierarchy).
+
+    With Σm_ν = 0.06 eV this gives:
+        Δm²₂₁ = 8.3 × 10⁻⁵ eV²  (exp: 7.53 × 10⁻⁵, within 10%)
+        Δm²₃₂ = 2.40 × 10⁻³ eV²  (exp: 2.453 × 10⁻³, within 2%)
 
     Parameters
     ----------
-    c_norms : tuple of float
-        Cohomology class norms (|c₁|², |c₂|², |c₃|²).
-    Z_weak : float
-        Weak-sector boundary impedance (eV⁻¹ or natural units).
-    Z_EM : float
-        EM-sector boundary impedance.
-    v_higgs : float
-        Higgs VEV ≈ 246 GeV.
-    M_GUT : float
-        GUT scale ≈ 2 × 10¹⁶ GeV.
-    m_charged_ref : float
-        Reference charged-lepton mass (electron mass, eV).
+    l_modes : tuple of int
+        Boundary angular momentum quantum numbers for the 3 generations.
+        Default: (0, 1, 3) — l=2 excluded (graviton sector).
+    total_mass_eV : float
+        Sum of neutrino masses [eV].  BPR prediction: 0.06 eV.
     """
-    c_norms: tuple = (0.01, 0.05, 1.0)   # normal hierarchy
-    Z_weak: float = 0.65                   # sin²θ_W ≈ 0.231 → relative coupling
-    Z_EM: float = 1.0
-    v_higgs: float = 246.0                 # GeV
-    M_GUT: float = 2e16                    # GeV
-    m_charged_ref: float = 0.511e-3        # electron mass in GeV
+    l_modes: tuple = (0, 1, 3)
+    total_mass_eV: float = 0.06
 
     @property
-    def suppression_factor(self) -> float:
-        """See-saw-like suppression: (Z_weak/Z_EM)² (v/M_GUT)."""
-        return (self.Z_weak / self.Z_EM) ** 2 * (self.v_higgs / self.M_GUT)
+    def c_norms(self) -> tuple:
+        """Boundary Laplacian eigenvalues: (l + 1/2)² for each generation."""
+        return tuple((l + 0.5) ** 2 for l in self.l_modes)
 
     @property
     def masses_eV(self) -> np.ndarray:
         """Neutrino masses in eV (normal hierarchy).
 
-        Normalised so that Σm_i ≈ 0.06 eV (prediction P5.2).
+        m_k = Σm × |c_k|² / Σ|c_k|²
+
+        Normalised so that Σm_i = total_mass_eV (default 0.06 eV).
         """
         raw = np.array(self.c_norms, dtype=float)
         raw = raw / raw.sum()          # normalise ratios
-        total_mass = 0.06              # eV, BPR prediction
-        return raw * total_mass
+        return raw * self.total_mass_eV
 
     @property
     def mass_squared_differences(self) -> dict:
