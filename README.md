@@ -6,6 +6,10 @@
 >
 > **KEY RESULT**: Testable prediction at 10⁻⁸ level via phonon-MEMS experiments
 >
+> **EXPERIMENTAL ROADMAP** → [`doc/EXPERIMENTAL_ROADMAP.md`](doc/EXPERIMENTAL_ROADMAP.md) *(10 concrete tests with falsification criteria)*
+>
+> **VALIDATION AUDIT** → [`VALIDATION_STATUS.md`](VALIDATION_STATUS.md) *(honest classification of all 205 predictions)*
+>
 > One‑pager → [`doc/BPR_one_pager.md`](doc/BPR_one_pager.md) | LaTeX source → [`doc/BPR_one_pager.tex`](doc/BPR_one_pager.tex)
 
 ---
