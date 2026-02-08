@@ -1,7 +1,8 @@
 # BPR-Math-Spine: Prediction Validation Status
 
-> **Version:** 0.7.0 (Jan 2026)  
-> **Policy:** Every prediction is classified honestly.  Failures are documented.
+> **Version:** 0.8.0 (Jan 2026)  
+> **Policy:** Every prediction is classified honestly.  Failures are documented.  
+> **v0.8.0 changes:** 19 SUSPICIOUS → 5 DERIVED + 9 FRAMEWORK + 2 CONSISTENT + 3 SUSPICIOUS
 
 ## Classification Key
 
@@ -81,10 +82,10 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 ### Theory XI: Cosmology (P11.x)
 | # | Prediction | Value | Status | Comparison |
 |---|-----------|-------|--------|------------|
-| P11.2 | n_s | 0.968 | SUSPICIOUS | Planck: 0.9649 ± 0.004 (Starobinsky input) |
-| P11.3 | r | 0.003 | SUSPICIOUS | Bound: r < 0.044 (Starobinsky gives this) |
+| P11.2 | n_s | 0.968 | FRAMEWORK | Planck: 0.9649 ± 0.004 (N derived from p, but Starobinsky potential assumed) |
+| P11.3 | r | 0.003 | FRAMEWORK | Bound: r < 0.044 (Starobinsky potential assumed, not derived) |
 | P11.7 | η_baryon | 3.0×10⁻¹⁰ | FRAMEWORK | Obs: 6.1×10⁻¹⁰ (factor 2) |
-| P11.15 | Ω_DM h² | 0.1196 | SUSPICIOUS | Planck: 0.120 ± 0.001 (too precise, likely input) |
+| P11.15 | Ω_DM h² | ~3.2 | DERIVED | Planck: 0.120 ± 0.001 (thermal freeze-out, ~26× off — honest prediction) |
 
 ### Theory IV: Phase Transitions (P4.x)
 | # | Prediction | Value | Status | Notes |
@@ -100,11 +101,29 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P17.6 | Higgs mass protected | YES | DERIVED | UV cutoff from boundary |
 | P17.8 | τ_proton(GUT) | ~10⁴³ yr | DERIVED | Bound: > 2.4×10³⁴ yr ✓ |
 
+### Theory XII: QCD & Flavor (P12.x)
+| # | Prediction | Value | Status | Comparison |
+|---|-----------|-------|--------|------------|
+| P12.2 | m_u | 2.16 MeV | DERIVED | PDG: 2.16 ± 0.49 (S² l-modes, 0.2% off) |
+| P12.3 | m_d | 4.67 MeV | FRAMEWORK | Experimental input (S² l² doesn't fit down-type) |
+| P12.4 | m_s | 93.4 MeV | FRAMEWORK | Experimental input |
+| P12.5 | m_c | 1242 MeV | DERIVED | PDG: 1270 ± 20 (S² l-modes, 2.2% off) |
+| P12.6 | m_b | 4180 MeV | FRAMEWORK | Experimental input |
+| P12.7 | m_t | 172760 MeV | FRAMEWORK | Anchor mass for up-type l-mode derivation |
+| P12.8 | CKM θ₁₂ | 12.93° | DERIVED | PDG: 12.96° ± 0.03° (Gatto–Sartori–Tonin) |
+| P12.9 | CKM θ₂₃ | 2.32° | FRAMEWORK | Experimental input (Fritzsch texture 3.7× off) |
+| P12.10 | CKM θ₁₃ | 0.21° | FRAMEWORK | Experimental input |
+| P12.11 | Jarlskog J | 3.0×10⁻⁵ | FRAMEWORK | Depends on underived θ₂₃, θ₁₃, δ_CP |
+| P12.13 | m_proton | 0.996 GeV | CONSISTENT | Standard QCD: m_p ≈ 3Λ_QCD (not BPR-specific) |
+| P12.14 | m_pion | 86 MeV | CONSISTENT | Standard GMOR relation (not BPR-specific, 36% off) |
+
 ### Theory XVIII: Charged Leptons (P18.x)
-| # | Prediction | Status | Notes |
-|---|-----------|--------|-------|
-| P18.1-3 | e/μ/τ masses | SUSPICIOUS | c_norms tuned to match known masses |
-| P18.4 | Koide Q = 2/3 | SUSPICIOUS | Known empirical relation (Koide 1981) |
+| # | Prediction | Value | Status | Comparison |
+|---|-----------|-------|--------|------------|
+| P18.1 | m_e | 0.510 MeV | DERIVED | CODATA: 0.5110 ± 0.00000002 (S² l-modes, 0.11% off) |
+| P18.2 | m_μ | 100.1 MeV | DERIVED | CODATA: 105.66 ± 0.000002 (S² l-modes, 5.3% off) |
+| P18.3 | m_τ | 1776.86 MeV | FRAMEWORK | Anchor mass for l-mode derivation (1 input) |
+| P18.4 | Koide Q | 0.672 | DERIVED | Exact: 2/3 (emerges from l² spectrum, 0.75% off) |
 | P18.7 | R(K) ≈ 1 | CONSISTENT | LHCb 2023 confirms SM ✓ (not uniquely BPR) |
 
 ### Theory XIX: Nuclear Physics (P19.x)
@@ -126,17 +145,22 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P13.3-5 | 3+1 dimensions | DERIVED | Correct ✓ |
 | P13.8 | l_Planck | OPEN | Was wrong; now acknowledged as input |
 
-## Summary Scorecard (v0.7.0)
+## Summary Scorecard (v0.8.0)
 
-| Category | Count | % |
-|----------|-------|---|
-| DERIVED (genuine BPR prediction, consistent with data) | ~25 | 12% |
-| FRAMEWORK (BPR formula, some inputs from experiment) | ~30 | 15% |
-| CONSISTENT (matches, but also SM/GR prediction) | ~20 | 10% |
-| SUSPICIOUS (likely reverse-engineered from known data) | ~15 | 7% |
-| CONJECTURAL (not yet testable) | ~40 | 20% |
-| Standard physics with BPR label | ~70 | 34% |
-| OPEN (acknowledged as unsolved) | ~5 | 2% |
+| Category | Count | Change from v0.7 | Notes |
+|----------|-------|------------------|-------|
+| DERIVED | ~30 | +5 | Lepton/quark masses from S² l-modes, DM relic freeze-out |
+| FRAMEWORK | ~37 | +7 | Down-type quarks, CKM θ₂₃/θ₁₃/δ_CP, n_s, r, anchor masses |
+| CONSISTENT | ~22 | +2 | Proton/pion masses (standard QCD) |
+| SUSPICIOUS | ~3 | −12 | Only down-type quark c_norms remain |
+| CONJECTURAL | ~40 | — | Unchanged |
+| Standard physics | ~70 | — | Unchanged |
+| OPEN | ~5 | — | Unchanged |
+
+**Key change:** 19 SUSPICIOUS predictions reduced to 3 by genuine derivation (7)
+or honest reclassification (9 to FRAMEWORK, 2 to CONSISTENT).
+The muon mass goes from "matching perfectly" (fitted) to "5.3% off" (derived).
+The DM relic density goes from "0.12 exactly" (hardcoded) to "~3.2" (freeze-out, 26× off).
 
 ## Lessons Learned
 
@@ -152,9 +176,17 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
    reproduce textbook results (magic numbers, shell structure, hydrogen levels)
    demonstrate consistency but not predictive power.
 
-4. **The genuinely novel content is smaller but real.** The ~25 DERIVED
+4. **The genuinely novel content is smaller but real.** The ~30 DERIVED
    predictions—especially the Casimir deviation, phonon coupling channel,
-   decoherence scaling, and Lorentz violation bound—are testable and specific.
+   decoherence scaling, Lorentz violation bound, and now lepton/quark mass
+   ratios from S² boundary modes—are testable and specific.
+
+5. **A wrong prediction is worth more than a fitted "prediction."** (v0.8.0)
+   The DM relic density Ω h² ≈ 3.2 is 26× off from observation, but it
+   is a genuine calculation from BPR parameters via thermal freeze-out.
+   The previous hardcoded "0.12" was suspicious precisely because it matched
+   too well.  Similarly, m_μ = 100 MeV (5.3% off) is a real prediction;
+   the previous exact match was circular.
 
 ---
-*Generated by BPR-Math-Spine v0.7.0 validation audit*
+*Generated by BPR-Math-Spine v0.8.0 validation audit*

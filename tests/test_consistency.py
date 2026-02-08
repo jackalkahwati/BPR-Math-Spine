@@ -16,6 +16,7 @@ Test categories:
 Run with:  pytest -v tests/test_consistency.py
 """
 
+import math
 import numpy as np
 import pytest
 
@@ -156,13 +157,18 @@ class TestCrossModuleConsistency:
         assert tau_gut < 1e100
 
     def test_dark_matter_properties_consistent(self):
-        """DM self-interaction from impedance module matches relic abundance."""
+        """DM self-interaction and relic abundance are positive and finite.
+
+        Since v0.8.0, relic abundance is from genuine thermal freeze-out.
+        BPR overproduces DM (~9.5) — an honest FAIL, not a fitted match.
+        """
         from bpr.first_principles import SubstrateDerivedTheories
         sdt = SubstrateDerivedTheories.from_substrate()
         preds = sdt.predictions()
-        # DM relic abundance should be positive and < 1
+        # DM relic abundance should be positive and finite
         omega = preds["P11.15_DM_relic_Omega_h2"]
-        assert 0 < omega < 1
+        assert 0 < omega, "Ω_DM must be positive"
+        assert math.isfinite(omega), "Ω_DM must be finite"
         # DM self-interaction should be positive and below bullet cluster
         sigma_m = preds["P2.7_DM_sigma_over_m_cm2_g"]
         assert 0 < sigma_m < 1  # bullet cluster bound

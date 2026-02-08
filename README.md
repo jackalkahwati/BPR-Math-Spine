@@ -12,6 +12,8 @@
 >
 > **CONSISTENCY AUDIT** → [`doc/CONSISTENCY_AUDIT.md`](doc/CONSISTENCY_AUDIT.md) *(58 internal math consistency tests — no experiments needed)*
 >
+> **BENCHMARK SCORECARD** → [`doc/BENCHMARK_SCORECARD.md`](doc/BENCHMARK_SCORECARD.md) *(50 predictions vs PDG/Planck/CODATA data, with tuning audit)*
+>
 > One‑pager → [`doc/BPR_one_pager.md`](doc/BPR_one_pager.md) | LaTeX source → [`doc/BPR_one_pager.tex`](doc/BPR_one_pager.tex)
 
 ---
@@ -424,8 +426,10 @@ The BPR-Math-Spine framework is **feature-complete** and ready for:
 * **7/7** BPR equations complete
 * **21 theories** — 10 adjacent + 6 extended + 5 frontier (Gauge, Leptons, Nuclear, QG, Chemistry)
 * **205** falsifiable predictions (from 3 substrate numbers: J, p, N)
-* **459** tests passing, 21 skipped (FEniCS auto-skip)
+* **488** tests passing, 21 skipped (FEniCS auto-skip)
 * **58** mathematical consistency tests (no experiments needed)
+* **29** benchmark regression tests (predictions vs experiment)
+* **50** predictions benchmarked against PDG/Planck/CODATA data
 * **3/3** mathematical checkpoints verified
 
 ---
