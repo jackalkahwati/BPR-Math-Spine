@@ -123,3 +123,37 @@ except Exception:
     FIRST_PRINCIPLES_AVAILABLE = False
 
 __all__.extend(["ADJACENT_THEORIES_AVAILABLE", "FIRST_PRINCIPLES_AVAILABLE"])
+
+# Energy balance / thermodynamic accounting (gates all energy claims)
+try:
+    from .energy_balance import (  # noqa: F401
+        BoundaryStateCycle,
+        CycleEnergyBalance,
+        FreeEnergy,
+        generate_null_configurations,
+        run_full_analysis,
+    )
+    ENERGY_BALANCE_AVAILABLE = True
+except Exception:
+    ENERGY_BALANCE_AVAILABLE = False
+
+__all__.append("ENERGY_BALANCE_AVAILABLE")
+
+# Substrate heat flow / steady-state thermal reservoir hypothesis
+try:
+    from .substrate_heat_flow import (  # noqa: F401
+        SubstrateBath,
+        BoundaryCoupling,
+        HeatFlowResult,
+        compute_Teff,
+        compute_heat_flow,
+        compute_all_methods,
+        generate_nulls_for_heat_flow,
+        generate_scaling_predictions,
+        run_full_analysis as run_heat_flow_analysis,
+    )
+    SUBSTRATE_HEAT_FLOW_AVAILABLE = True
+except Exception:
+    SUBSTRATE_HEAT_FLOW_AVAILABLE = False
+
+__all__.append("SUBSTRATE_HEAT_FLOW_AVAILABLE")
