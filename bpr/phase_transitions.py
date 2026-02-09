@@ -41,16 +41,51 @@ class TransitionClass(Enum):
 # ---------------------------------------------------------------------------
 
 TRANSITION_CATALOG = [
+    # Class A – Winding transitions (ΔW ≠ 0, first-order)
     {"name": "Consciousness onset",      "class": TransitionClass.A, "order_parameter": "W (winding)"},
     {"name": "Superfluid He-4",          "class": TransitionClass.A, "order_parameter": "W (vortex)"},
+
+    # Class B – Connectivity transitions (percolation / graph topology)
     {"name": "QCD confinement",          "class": TransitionClass.B, "order_parameter": "Polyakov loop"},
     {"name": "Metal-insulator",          "class": TransitionClass.B, "order_parameter": "Conductivity"},
+
+    # Class C – Impedance transitions (Landau continuous)
     {"name": "Superconductivity",        "class": TransitionClass.C, "order_parameter": "Gap Δ"},
     {"name": "Ferromagnetism",           "class": TransitionClass.C, "order_parameter": "Magnetisation M"},
     {"name": "Decoherence",              "class": TransitionClass.C, "order_parameter": "Ψ (coherence)"},
+
+    # Class D – Symmetry-breaking transitions (boundary frustration)
     {"name": "Electroweak",              "class": TransitionClass.D, "order_parameter": "Higgs VEV"},
     {"name": "Chiral symmetry breaking", "class": TransitionClass.D, "order_parameter": "⟨ψ̄ψ⟩"},
+
+    # Mixed class – Multiple transition characters
     {"name": "BEC",                      "class": "A+C",             "order_parameter": "Condensate fraction"},
+
+    # ── Unconventional superconductors: mixed winding + impedance ──
+    # Nodal gap ⇒ boundary phase winding passes through zero at
+    # symmetry-required points on the Fermi surface (Class A character).
+    # Disorder-sensitive T_c violates Anderson's theorem ⇒ not pure Class C.
+    # Miassite is the first unconventional SC found in mineral form.
+    #
+    # Evidence:
+    #   - Linear-T London penetration depth (nodal gap)
+    #   - T_c suppression under electron irradiation (disorder sensitivity)
+    #   - Critical field behaviour matches unconventional predictions
+    #
+    # Reference: Kim et al., "Nodal superconductivity in miassite Rh17S15,"
+    #   Commun. Mater. (2024). DOE Office of Science / Ames National Laboratory.
+    #   https://www.ameslab.gov/news/scientists-reveal-the-first-unconventional-
+    #   superconductor-that-can-be-found-in-mineral-form-in
+    {"name": "Miassite (Rh17S15)",
+     "class": "A+C",
+     "order_parameter": "Nodal gap Δ(k)",
+     "notes": ("First natural unconventional superconductor. "
+               "T_c ~ 5.4 K, measured at 50 mK. "
+               "Nodal London penetration depth (linear-T), "
+               "disorder-sensitive T_c (Anderson theorem violation). "
+               "Geological formation ⇒ boundary winding ground state "
+               "selected by thermodynamic equilibrium, not engineering. "
+               "Prozorov, Canfield et al., Ames National Laboratory (2024).")},
 ]
 
 
@@ -187,11 +222,37 @@ def superconductor_tc(N0V: float, T_debye: float = 300.0) -> float:
     return (T_debye / 1.45) * np.exp(-inv_coupling)
 
 
-def classify_transition(name: str) -> Optional[TransitionClass]:
-    """Look up a transition's BPR class from the catalog."""
+def classify_transition(name: str) -> Optional[TransitionClass | str]:
+    """Look up a transition's BPR class from the catalog.
+
+    Returns a :class:`TransitionClass` for pure classes, or a string
+    like ``"A+C"`` for mixed-class transitions (e.g. BEC, miassite).
+
+    Matching is case-insensitive and supports exact or substring match
+    so that ``"Miassite"`` finds ``"Miassite (Rh17S15)"``.
+    """
+    name_lower = name.lower()
+    # Exact match first
     for entry in TRANSITION_CATALOG:
-        if entry["name"].lower() == name.lower():
-            cls = entry["class"]
-            if isinstance(cls, TransitionClass):
-                return cls
+        if entry["name"].lower() == name_lower:
+            return entry["class"]
+    # Substring match (e.g. "Miassite" → "Miassite (Rh17S15)")
+    for entry in TRANSITION_CATALOG:
+        if name_lower in entry["name"].lower():
+            return entry["class"]
+    return None
+
+
+def get_catalog_entry(name: str) -> Optional[dict]:
+    """Return full catalog entry (including notes) for a transition.
+
+    Matching is case-insensitive, supports exact and substring match.
+    """
+    name_lower = name.lower()
+    for entry in TRANSITION_CATALOG:
+        if entry["name"].lower() == name_lower:
+            return entry
+    for entry in TRANSITION_CATALOG:
+        if name_lower in entry["name"].lower():
+            return entry
     return None
