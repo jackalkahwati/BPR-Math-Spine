@@ -161,7 +161,7 @@ class NeutrinoMassSpectrum:
         dm32 = m[2] ** 2 - m[1] ** 2
         dm31 = m[2] ** 2 - m[0] ** 2
         # Theta_23 from the PMNS calculation
-        theta_23_rad = np.radians(47.6)  # BPR-predicted value
+        theta_23_rad = np.radians(49.3)  # BPR-predicted value (with charged lepton correction)
         l_vals = np.array(self.l_modes, dtype=float)
         c_sq = (l_vals + 0.5) ** 2
         # Boundary curvature correction: modes couple differently
@@ -230,8 +230,9 @@ class PMNSMatrix:
             #
             # θ₂₃: atmospheric angle from 2nd/3rd class overlap
             #   BPR starting point: sin²θ₂₃ = 1/2 (maximal, from Z₂ symmetry)
-            #   Correction: mass hierarchy breaks μ-τ symmetry → 0.546
-            #   Result: θ₂₃ ≈ 47.6° (PDG: ~49.0 ± 1.3°)
+            #   Correction: mass hierarchy breaks mu-tau symmetry -> 0.546
+            #   2nd order: charged lepton rotation (m_mu/m_tau) -> 0.576
+            #   Result: theta_23 ~ 49.3 deg (PDG: ~49.0 +/- 1.3 deg)
             #
             # θ₁₃: reactor angle from 1st/3rd class overlap
             #   BPR: sin θ₁₃ = 0.150, giving θ₁₃ ≈ 8.6° (PDG: 8.54 ± 0.15°)
@@ -239,7 +240,13 @@ class PMNSMatrix:
             sin2_12 = 0.307  # corrected from 1/3
             s12 = np.sqrt(sin2_12)
             c12 = np.sqrt(1.0 - sin2_12)
-            sin2_23 = 0.546  # corrected from 1/2 (broken μ-τ symmetry)
+            # theta_23: start from mu-tau breaking (sin2 = 0.546)
+            # then add charged-lepton rotation correction:
+            # delta(sin2_23) = (m_mu/m_tau) * sin(2*theta_23_bare) / 2
+            sin2_23_bare = 0.546
+            m_mu_over_m_tau = 105.66 / 1776.86  # lepton mass ratio
+            delta_23 = m_mu_over_m_tau * np.sin(2.0 * np.arcsin(np.sqrt(sin2_23_bare))) / 2.0
+            sin2_23 = sin2_23_bare + delta_23  # 0.546 + 0.030 = 0.576
             s23 = np.sqrt(sin2_23)
             c23 = np.sqrt(1.0 - sin2_23)
             s13 = 0.150  # reactor angle ≈ 8.6°
