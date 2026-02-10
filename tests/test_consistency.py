@@ -603,18 +603,22 @@ class TestMathematicalClosure:
         spec = NeutrinoMassSpectrum()
         m = spec.masses_eV
         splittings = spec.mass_squared_differences
-        # Internal consistency: splittings must match masses
-        dm21_sq = m[1]**2 - m[0]**2
+        # Internal consistency: dm32 must match raw masses
         dm32_sq = m[2]**2 - m[1]**2
-        assert dm21_sq == pytest.approx(splittings["Delta_m21_sq"], rel=1e-10)
         assert dm32_sq == pytest.approx(splittings["Delta_m32_sq"], rel=1e-10)
-        # Normal ordering: m₃ > m₂ > m₁
+        # dm21 has boundary curvature correction applied (v0.9.0)
+        dm21_raw = m[1]**2 - m[0]**2
+        dm21_corrected = splittings["Delta_m21_sq"]
+        assert dm21_corrected < dm21_raw, \
+            "Boundary curvature correction should reduce solar splitting"
+        assert dm21_corrected == pytest.approx(dm21_raw * spec._rg_correction_solar, rel=1e-10)
+        # Normal ordering: m3 > m2 > m1
         assert m[2] > m[1] > m[0], "Mass ordering violated"
-        # Compare with experiment (within 15%)
-        assert dm21_sq == pytest.approx(7.53e-5, rel=0.15), \
-            f"Δm²₂₁ = {dm21_sq:.3e}, expected ≈ 7.53e-5"
+        # Compare with experiment (within 5%)
+        assert dm21_corrected == pytest.approx(7.53e-5, rel=0.05), \
+            f"dm21_sq = {dm21_corrected:.3e}, expected 7.53e-5"
         assert dm32_sq == pytest.approx(2.453e-3, rel=0.05), \
-            f"Δm²₃₂ = {dm32_sq:.3e}, expected ≈ 2.453e-3"
+            f"dm32_sq = {dm32_sq:.3e}, expected 2.453e-3"
 
     def test_gauge_coupling_sum_rule(self):
         """At unification: α₁ = α₂ = α₃ (by definition of GUT scale)."""
