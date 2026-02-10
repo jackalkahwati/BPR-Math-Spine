@@ -372,6 +372,11 @@ class SubstrateDerivedTheories:
     def proton_decay(self) -> th17.ProtonDecay:
         return th17.ProtonDecay(p=self.params.p)
 
+    def higgs_mass(self) -> th17.HiggsMass:
+        """Higgs boson mass from boundary mode counting (DERIVED)."""
+        z = self.params.coordination_number
+        return th17.HiggsMass(p=self.params.p, z=z)
+
     # ------------------------------------------------------------------
     # Theory XVIII: Charged Leptons
     # ------------------------------------------------------------------
@@ -819,6 +824,11 @@ class SubstrateDerivedTheories:
         preds["P17.8_proton_lifetime_GUT_years"] = pdec.lifetime_years
         preds["P17.9_exceeds_superK"] = pdec.exceeds_superK
         preds["P17.10_weinberg_sin2tw_GUT"] = th17.weinberg_angle_from_boundary()
+
+        # ── Higgs boson mass (DERIVED) ──
+        hm = self.higgs_mass()
+        preds["P17.11_higgs_mass_GeV"] = hm.higgs_mass_GeV
+        preds["P17.12_higgs_lambda"] = hm.lambda_H
 
         # ── Theory XVIII: Charged Leptons ──
         lep = self.charged_leptons()

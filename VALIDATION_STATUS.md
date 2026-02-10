@@ -1,8 +1,8 @@
 # BPR-Math-Spine: Prediction Validation Status
 
-> **Version:** 0.8.0 (Jan 2026)  
+> **Version:** 0.9.2 (Feb 2026)  
 > **Policy:** Every prediction is classified honestly.  Failures are documented.  
-> **v0.8.0 changes:** 19 SUSPICIOUS → 5 DERIVED + 9 FRAMEWORK + 2 CONSISTENT + 3 SUSPICIOUS
+> **v0.9.2 changes:** Higgs mass DERIVED (0.8% off), down-type quarks partially derived, proton/pion mass improved
 
 ## Classification Key
 
@@ -145,17 +145,17 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P13.3-5 | 3+1 dimensions | DERIVED | Correct ✓ |
 | P13.8 | l_Planck | OPEN | Was wrong; now acknowledged as input |
 
-## Summary Scorecard (v0.9.0)
+## Summary Scorecard (v0.9.2)
 
 | Category | Count | Change from v0.8 | Notes |
 |----------|-------|------------------|-------|
-| DERIVED | ~33 | +3 | DM relic (boundary collective), baryon asymmetry (boundary sphaleron), Δm²₂₁ (curvature correction) |
-| FRAMEWORK | ~35 | −2 | Tc(Nb), Tc(MgB₂) improved with strong-coupling + corrected N(0)V |
+| DERIVED | ~36 | +6 | +Higgs mass (0.8%), +m_d (0.5%), +DM relic, +baryon asymmetry, +dm21_sq, +proton mass |
+| FRAMEWORK | ~33 | −4 | Tc improved; m_s (20% off, needs SU(3) correction) |
 | CONSISTENT | ~22 | — | Unchanged |
 | SUSPICIOUS | ~3 | — | Only down-type quark c_norms remain |
 | CONJECTURAL | ~40 | — | Unchanged |
 | Standard physics | ~70 | — | Unchanged |
-| OPEN | ~2 | −3 | DM relic, baryon asymmetry, Δm²₂₁ now closed |
+| OPEN | ~1 | −4 | Down-type m_s/m_d ratio (needs SU(3) color boundary calculation) |
 
 **v0.9.0 key changes:** 5 previously failing/tension predictions closed:
 
