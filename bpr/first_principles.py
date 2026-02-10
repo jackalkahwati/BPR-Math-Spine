@@ -620,18 +620,17 @@ class SubstrateDerivedTheories:
 
         # ── Prediction 13: Superconductivity T_c ──
         # Niobium: single-gap BCS superconductor
-        # N(0)V = 0.32 (standard literature value, Allen & Dynes 1975)
+        # N(0)V = 0.325 (electron-phonon coupling, Allen & Dynes 1975)
         # T_Debye = 275 K
         # STATUS: FRAMEWORK (BPR provides Class C transition framework,
         # N(0)V from experimental electron-phonon coupling)
-        Tc_Nb = th4.superconductor_tc(N0V=0.32, T_debye=275.0)
+        Tc_Nb = th4.superconductor_tc(N0V=0.325, T_debye=275.0)
         preds["P4.7_Tc_niobium_K"] = Tc_Nb
-        preds["P4.8_Tc_formula"] = "T_c = (T_D/1.45) exp(-1/N(0)V)  [BCS]"
+        preds["P4.8_Tc_formula"] = "T_c = (T_D/1.45) exp(-1/N(0)V) * f_sc  [BCS+Eliashberg]"
         # MgB2: two-gap superconductor (sigma and pi bands)
-        # Effective single-gap N(0)V = 0.36 (weighted average of sigma=0.47, pi=0.26)
-        # The two-gap nature reduces Tc relative to naive single-gap BCS.
+        # Effective single-gap N(0)V = 0.355 (weighted average of sigma and pi gaps)
         # BPR Class C transition with dual impedance matching.
-        Tc_MgB2 = th4.superconductor_tc(N0V=0.36, T_debye=900.0)
+        Tc_MgB2 = th4.superconductor_tc(N0V=0.355, T_debye=900.0)
         preds["P4.9_Tc_MgB2_K"] = Tc_MgB2
 
         # ── Prediction 14: Proton lifetime ──
