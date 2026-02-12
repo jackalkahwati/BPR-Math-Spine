@@ -22,6 +22,12 @@
 
 ---
 
+## For Physicists: How to Read This
+
+BPR is a **testable framework** with explicit falsification criteria. See [EXPERIMENTAL_ROADMAP.md](doc/EXPERIMENTAL_ROADMAP.md) for concrete tests and [LIMITATIONS_AND_FALSIFICATION.md](doc/LIMITATIONS_AND_FALSIFICATION.md) for known limitations and BPR-unique vs shared predictions. One-page reviewer summary: [FOR_REVIEWERS.md](doc/FOR_REVIEWERS.md).
+
+---
+
 ## Key Results
 
 | Coupling Channel | Derived Value | Gap to Detection |
