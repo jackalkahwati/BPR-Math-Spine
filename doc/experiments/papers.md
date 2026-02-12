@@ -28,7 +28,9 @@
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
-| **Piran & Ofengeim, arXiv:2308.03031 (2023), Phys. Rev. D** | GRB 221009A: E_QG,2 > 5.8×10⁻⁸ m_Pl (subluminal), 4.6×10⁻⁸ m_Pl (superluminal). Best time-of-flight limits | [arXiv:2308.03031](https://arxiv.org/abs/2308.03031) |
+| **Piran & Ofengeim, Phys. Rev. D 109, 081501 (2024)** | GRB 221009A: E_QG,2 > 5.8×10⁻⁸ m_Pl (subluminal), 4.6×10⁻⁸ m_Pl (superluminal). Best time-of-flight limits | [arXiv:2308.03031](https://arxiv.org/abs/2308.03031) |
+| **Energy-dependent intrinsic delay, Phys. Lett. B 858, 138951 (2024)** | Separating intrinsic GRB delays from LIV; quadratic LIV | [DOI:10.1016/j.physletb.2024.138951](https://doi.org/10.1016/j.physletb.2024.138951) |
+| **CTA feasibility, HAL:04679675 (2024)** | CTA LIV search from relativistic jets; Synchrotron-Self-Compton; discriminate intrinsic vs LIV | [hal.science/hal-04679675](https://hal.science/hal-04679675) |
 | **LHAASO Collab., arXiv:2106.12350 (2021)** | LIV constraints from TeV gamma rays | [arXiv:2106.12350](https://arxiv.org/abs/2106.12350) |
 | **Fermi-LAT GRB 090510** | |δc/c| < 6×10⁻²¹ | — |
 
@@ -58,10 +60,13 @@
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
 | **Xu et al., arXiv:2504.10579 (2025)** | "Preliminary measurements suggest superconductivity-dependent shifts." Subatomic resolution via STM | [arXiv:2504.10579](https://arxiv.org/abs/2504.10579) |
+| **Bimonte, Phys. Rev. B 111, 174512 (2025)** | Proposal: first-order SC transition + parallel B → detectable Casimir jump; micro-torsional oscillator | [DOI:10.1103/PhysRevB.111.174512](https://doi.org/10.1103/PhysRevB.111.174512) [arXiv:2502.04950](https://arxiv.org/abs/2502.04950) |
+| **de Jong et al., arXiv:2501.13759 (2025)** | Casimir force between superconducting objects; drum resonator; excellent agreement; path to single-phonon nonlinear regime | [arXiv:2501.13759](https://arxiv.org/abs/2501.13759) |
 | **Norte et al., Phys. Rev. Lett. 121, 030405 (2018)** | Platform for Casimir force between superconductors | [DOI:10.1103/PhysRevLett.121.030405](https://doi.org/10.1103/PhysRevLett.121.030405) |
 | **Bimonte et al., Phys. Rev. A 99, 052507 (2019)** | Casimir effect between superconductors (Lifshitz theory) | [DOI:10.1103/PhysRevA.99.052507](https://doi.org/10.1103/PhysRevA.99.052507) |
+| **EPFL MEMS platform** | Commercial MEMS sensor for Casimir metrology; piconewton resolution | [infoscience.epfl.ch](https://infoscience.epfl.ch/entities/publication/20917c6c-61bb-45d4-aff3-6a7d81b3282e/full) |
 
-**Verdict: INCONCLUSIVE** — Hints at shift; no quantitative BPR comparison yet.
+**Verdict: INCONCLUSIVE** — Hints at shift; no quantitative BPR δ comparison yet.
 
 ---
 
@@ -113,12 +118,13 @@
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
+| **Pleinert et al., Phys. Rev. Research 2, 012051 (2020)** | Many-particle Sorkin parameters; exponentially more sensitive than single-particle; path to 10⁻⁵ | [DOI:10.1103/PhysRevResearch.2.012051](https://doi.org/10.1103/PhysRevResearch.2.012051) |
+| **Pleinert et al., Phys. Rev. Lett. 126, 190401 (2021)** | Two-photon-five-slit; fifth-order interference < 10⁻³ intensity-correlation | [DOI:10.1103/PhysRevLett.126.190401](https://doi.org/10.1103/PhysRevLett.126.190401) |
 | **Söllner et al., Found. Phys. 42, 742 (2012)** | Triple-slit: κ < 2×10⁻³ | [DOI:10.1007/s10701-011-9613-0](https://doi.org/10.1007/s10701-011-9613-0) |
 | **Phys. Rev. A 103, 033707 (2021)** | Biphoton Sorkin parameter; theory κ ~ 10⁻⁵ | [DOI:10.1103/PhysRevA.103.033707](https://doi.org/10.1103/PhysRevA.103.033707) |
-| **Sinha et al., Phys. Rev. Research 2, 012051 (2020)** | Many-particle interference; Sorkin parameter | [DOI:10.1103/PhysRevResearch.2.012051](https://doi.org/10.1103/PhysRevResearch.2.012051) |
 | **Sinha et al., arXiv:0811.2068 (2008)** | Triple-slit test of Born's rule | [arXiv:0811.2068](https://arxiv.org/abs/0811.2068) |
 
-**Verdict: INCONCLUSIVE** — Current bounds 100× above BPR.
+**Verdict: INCONCLUSIVE** — Current bounds 100× above BPR. Many-photon path to 10⁻⁵ identified.
 
 ---
 
@@ -272,7 +278,9 @@
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
-| **arXiv:2101.08216 (2021)** | Experimental decoherence in molecule interferometry | [arXiv:2101.08216](https://arxiv.org/abs/2101.08216) |
+| **arXiv:2101.08216 (2021)** | Review: decoherence in molecule interferometry; mass scaling; thermal radiation; C₇₀ Talbot-Lau | [arXiv:2101.08216](https://arxiv.org/abs/2101.08216) |
+| **Kaltenbaek et al., Quantum Sci. Technol. 8, 014006 (2023)** | MAQRO mission: DECIDE (DECoherence In Double-slit Experiments); macroscopic superposition; space-based | [DOI:10.1088/2058-9565/ac9e41](https://doi.org/10.1088/2058-9565/ac9e41) |
+| **arXiv:2410.20910 (2024)** | Decoherence from air scattering; mass scaling; macroscopic spatial superpositions | [arXiv:2410.20910](https://arxiv.org/abs/2410.20910) |
 | **Nimmrichter et al., Nature Commun. 7, 10121 (2016)** | Coherence with absorption/heating in molecule interferometer | [DOI:10.1038/ncomms10121](https://doi.org/10.1038/ncomms10121) |
 | **Hornberger et al., Rev. Mod. Phys. 84, 157 (2012)** | Collisional decoherence | [DOI:10.1103/RevModPhys.84.157](https://doi.org/10.1103/RevModPhys.84.157) |
 
@@ -282,15 +290,18 @@
 
 ## 20. Quark Masses — **CONFIRM**
 
-**BPR predicts:** Six quark masses from boundary mode spectrum (Theory XII).
+**BPR predicts:** Six quark masses from boundary mode spectrum (Theory XII). **BPR-unique:** m_s/m_d = 20.0 (SM has no explanation).
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
 | **PDG 2024, Phys. Rev. D 110, 030001** | m_u = 2.16±0.07, m_d = 4.70±0.07, m_s = 93.5±0.8 MeV (2 GeV); m_c = 1.273±0.005, m_b = 4.183±0.007 GeV; m_t = 172.57±0.29 GeV | [pdg.lbl.gov/2024](https://pdg.lbl.gov/2024/tables/rpp2024-sum-quarks.pdf) |
+| **FLAG lattice QCD** | m_s/m_ud = 27.23(10); m_s/m_l = 27.2(3) | [FLAG](https://flag.universe.it/) |
+| **McNeile et al., Phys. Rev. D 86, 074503 (2012)** | Precise m_s/m̄ from charm anchor; m̄_s(2 GeV) = 92.4(1.5) MeV | [DOI:10.1103/PhysRevD.86.074503](https://doi.org/10.1103/PhysRevD.86.074503) |
+| **Chiral perturbation: m_s/m_u,d** | χPT + Dyson-Schwinger; consistent with lattice | [hepnp.ihep.ac.cn DOI:10.1088/1674-1137/37/4/043101](https://doi.org/10.1088/1674-1137/37/4/043101) |
 | **ATLAS + CMS, Eur. Phys. J. C 84, 575 (2024)** | Combined m_t = 172.52 ± 0.33 GeV | [DOI:10.1140/epjc/s10052-024-12900-9](https://doi.org/10.1140/epjc/s10052-024-12900-9) |
 | **PDG 2024 quark masses review** | MS-bar masses; lattice QCD | [pdg.lbl.gov/2024/reviews](https://pdg.lbl.gov/2024/reviews/rpp2024-rev-quark-masses.pdf) |
 
-**Verdict: CONFIRM** — BPR within ~2.5% for all six masses.
+**Verdict: CONFIRM** — BPR within ~2.5% for all six masses. **BPR-unique:** m_s/m_d = 20.0 (PDG: 93.5/4.70 ≈ 19.9); lattice QCD computes m_s/m_ud, χPT constrains ratios; BPR derives exact m_s/m_d from boundary spectrum.
 
 ---
 
