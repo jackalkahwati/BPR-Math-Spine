@@ -53,6 +53,7 @@ from __future__ import annotations
 
 import numpy as np
 from dataclasses import dataclass
+from typing import Optional
 
 # Physical constants
 _V_HIGGS = 246.0            # GeV
@@ -101,9 +102,22 @@ class ChargedLeptonSpectrum:
     anchor_mass_MeV : float
         Mass of the heaviest lepton [MeV].  This is the single
         experimental input (reduced from 3 fitted parameters).
+    v_EW_GeV : float or None
+        When provided with alpha_EM, derive m_τ = v_EW × α (no anchor).
+    alpha_EM : float or None
+        Fine structure constant from BPR (1/137.03).  With v_EW, yields m_τ.
     """
     l_modes: tuple = (1, np.sqrt(14 * 15), 59)   # (e, μ, τ); l_μ=√210 from Higgs mixing
     anchor_mass_MeV: float = _M_TAU_MEV
+    v_EW_GeV: Optional[float] = None
+    alpha_EM: Optional[float] = None
+
+    @property
+    def _m_tau_MeV(self) -> float:
+        """Tau mass [MeV]: derived from v_EW × α when both given."""
+        if self.v_EW_GeV is not None and self.alpha_EM is not None:
+            return self.v_EW_GeV * 1000.0 * self.alpha_EM  # GeV → MeV
+        return self.anchor_mass_MeV
 
     @property
     def c_norms(self) -> np.ndarray:
@@ -122,14 +136,12 @@ class ChargedLeptonSpectrum:
     def masses_MeV(self) -> np.ndarray:
         """Lepton masses [MeV]: (m_e, m_μ, m_τ).
 
-        Anchored to heaviest generation (τ):
+        Anchored to heaviest generation (τ), or m_τ = v_EW × α when derived:
             m_k = m_τ × l_k² / l_τ²
         """
         c = self.c_norms
-        # Anchor: m_τ = anchor_mass_MeV, c_τ = l_τ² = 59² = 3481
-        # m_k = anchor_mass_MeV × c_k / c_max
         c_max = c[-1]  # τ has the largest c_norm (highest l)
-        return self.anchor_mass_MeV * c / c_max
+        return self._m_tau_MeV * c / c_max
 
     @property
     def all_masses_MeV(self) -> dict:

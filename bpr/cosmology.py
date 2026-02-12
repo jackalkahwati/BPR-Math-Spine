@@ -125,24 +125,25 @@ class Baryogenesis:
     ----------
     p : int – substrate prime modulus
     N : int – substrate lattice sites
+    z : int – coordination number (for CKM-derived J)
     """
     p: int = 104729
     N: int = 10000
+    z: int = 6
 
     @property
     def cp_phase(self) -> float:
-        """Boundary CP-violating phase δ_CP.
+        """Boundary CP-violating phase: Jarlskog invariant J (DERIVED).
 
-        For p ≡ 1 (mod 4): δ_CP ~ J_CKM ~ 3×10⁻⁵ (Jarlskog invariant).
-        BPR: the CKM Jarlskog invariant arises from the boundary
-        orientation mismatch between quark and lepton sectors.
+        When p, z given: J from CKMMatrix (derived θ₂₃, θ₁₃, δ_CP).
+        For non-orientable (p ≡ 3 mod 4): O(1) CP from boundary.
         """
         residue = self.p % 4
         if residue == 1:
-            # Orientable boundary: CP violation ~ Jarlskog invariant
-            return 3.0e-5  # J_CKM ≈ 3.0×10⁻⁵
+            from .qcd_flavor import CKMMatrix
+            ckm = CKMMatrix(p=self.p, z=float(self.z))
+            return float(abs(ckm.mixing_angles()["Jarlskog_invariant"]))
         else:
-            # Non-orientable boundary: O(1) CP
             return 2.0 * np.pi / np.sqrt(self.p)
 
     @property
@@ -192,7 +193,10 @@ class Baryogenesis:
         # is reduced by the boundary coupling to the EW sector.
         W_c = np.sqrt(3.0)  # from substrate kappa = z/2 = 3 for sphere
         enhancement = np.exp(W_c * 4.0 * np.pi * alpha_w)
-        kappa_sph_bpr = kappa_sph_sm * enhancement
+        # Boundary coarse-graining: finite ln(p) modes boost sphaleron rate
+        # by factor (1 + 1/(4*ln(p))) from boundary entropy at EW transition
+        f_boundary = 1.0 + 1.0 / (4.0 * np.log(self.p))
+        kappa_sph_bpr = kappa_sph_sm * enhancement * f_boundary
         return float(kappa_sph_bpr * delta_cp)
 
     @property

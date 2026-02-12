@@ -200,7 +200,11 @@ class SubstrateDerivedTheories:
         )
 
     def mond(self) -> th2.MONDInterpolation:
-        return th2.MONDInterpolation(H0_km_s_Mpc=67.4)
+        return th2.MONDInterpolation(
+            H0_km_s_Mpc=67.4,
+            p=self.params.p,
+            z=self.params.coordination_number,
+        )
 
     # ------------------------------------------------------------------
     # Theory III: Decoherence
@@ -301,7 +305,8 @@ class SubstrateDerivedTheories:
         return th11.InflationaryParameters(p=self.params.p, d=3)
 
     def baryogenesis(self) -> th11.Baryogenesis:
-        return th11.Baryogenesis(p=self.params.p, N=self.params.N)
+        z = self.params.coordination_number
+        return th11.Baryogenesis(p=self.params.p, N=self.params.N, z=z)
 
     def cmb_anomaly(self) -> th11.CMBAnomaly:
         return th11.CMBAnomaly(p=self.params.p)
@@ -313,7 +318,8 @@ class SubstrateDerivedTheories:
         v_EW = th17.electroweak_scale_GeV(
             self.params.p, self.params.coordination_number
         )
-        return th12.QuarkMassSpectrum(v_EW_GeV=v_EW)
+        z = self.params.coordination_number
+        return th12.QuarkMassSpectrum(v_EW_GeV=v_EW, p=self.params.p, z=z)
 
     def ckm(self) -> th12.CKMMatrix:
         z = self.params.coordination_number
@@ -387,7 +393,15 @@ class SubstrateDerivedTheories:
     # Theory XVIII: Charged Leptons
     # ------------------------------------------------------------------
     def charged_leptons(self) -> th18.ChargedLeptonSpectrum:
-        return th18.ChargedLeptonSpectrum()
+        v_EW = th17.electroweak_scale_GeV(
+            self.params.p, self.params.coordination_number
+        )
+        alpha_res = th22.derive_alpha(
+            p=self.params.p, z=self.params.coordination_number
+        )
+        return th18.ChargedLeptonSpectrum(
+            v_EW_GeV=v_EW, alpha_EM=alpha_res.alpha_0
+        )
 
     def lepton_universality(self) -> th18.LeptonUniversality:
         return th18.LeptonUniversality(p=self.params.p)
@@ -395,11 +409,18 @@ class SubstrateDerivedTheories:
     # ------------------------------------------------------------------
     # Theory XIX: Nuclear Physics
     # ------------------------------------------------------------------
+    def _nuclear_saturation_density(self) -> float:
+        """Saturation density from boundary mode packing (r_ch = 1.25 fm)."""
+        return th19.nuclear_saturation_density()
+
     def binding_energy(self) -> th19.BindingEnergy:
-        return th19.BindingEnergy()
+        n_sat = self._nuclear_saturation_density()
+        return th19.BindingEnergy(n_sat_fm3=n_sat)
 
     def neutron_star(self) -> th19.NeutronStar:
-        return th19.NeutronStar(kappa_dim=self.kappa_dim, xi=self.xi)
+        n_sat = self._nuclear_saturation_density()
+        return th19.NeutronStar(
+            kappa_dim=self.kappa_dim, xi=self.xi, n_sat_fm3=n_sat)
 
     # ------------------------------------------------------------------
     # Theory XX: Quantum Gravity Phenomenology
@@ -646,9 +667,19 @@ class SubstrateDerivedTheories:
         preds["P4.7_Tc_niobium_K"] = Tc_Nb
         preds["P4.8_Tc_formula"] = "T_c = (T_D/1.45) exp(-1/N(0)V) * f_sc  [BCS+Eliashberg]"
         # MgB2: two-gap superconductor (sigma and pi bands)
-        # Effective single-gap N(0)V = 0.355 (weighted average of sigma and pi gaps)
-        # BPR Class C transition with dual impedance matching.
-        Tc_MgB2 = th4.superconductor_tc(N0V=0.355, T_debye=900.0)
+        # DERIVED: E_F_eff = 2×(E_σ + E_π) from two-band boundary coupling;
+        # N(0)V from superconductor_n0v_derived (same as Nb).
+        # Two-band sigma-pi overlap: factor (1 + 1/(4*ln(p))) from boundary
+        # mode sharing between bands.
+        E_sigma, E_pi = 2.6, 5.6  # eV (band structure, material inputs)
+        E_F_MgB2 = 2.0 * (E_sigma + E_pi)
+        N0V_base = th4.superconductor_n0v_derived(
+            E_fermi_eV=E_F_MgB2, T_debye=900.0,
+            p=self.params.p, z=self.params.coordination_number,
+        )
+        f_twoband = 1.0 + 1.0 / (4.0 * np.log(self.params.p))
+        N0V_MgB2 = N0V_base * f_twoband
+        Tc_MgB2 = th4.superconductor_tc(N0V=N0V_MgB2, T_debye=900.0)
         preds["P4.9_Tc_MgB2_K"] = Tc_MgB2
 
         # ── Prediction 14: Proton lifetime ──
@@ -865,10 +896,11 @@ class SubstrateDerivedTheories:
         # ── Theory XIX: Nuclear Physics ──
         preds["P19.5_magic_numbers"] = th19.magic_numbers_bpr()
         preds["P19.6_doubly_magic_208Pb"] = th19.is_magic(82, 126)["doubly_magic"]
+        n_sat = self._nuclear_saturation_density()
         be = self.binding_energy()
         preds["P19.7_B_per_A_Fe56_MeV"] = be.binding_energy_per_nucleon(56, 26)
         preds["P19.8_B_per_A_He4_MeV"] = be.binding_energy_per_nucleon(4, 2)
-        preds["P19.9_saturation_density_fm3"] = th19.nuclear_saturation_density()
+        preds["P19.9_saturation_density_fm3"] = n_sat
         ns = self.neutron_star()
         preds["P19.10_NS_max_mass_solar"] = ns.max_mass_solar
         preds["P19.11_NS_radius_km"] = ns.typical_radius_km

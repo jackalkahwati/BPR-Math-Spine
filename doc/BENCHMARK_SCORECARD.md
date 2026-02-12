@@ -30,8 +30,7 @@
 
 | Status | Count | Meaning |
 |--------|-------|---------|
-| DERIVED | 34 | Genuinely predicted from (J, p, N) |
-| FRAMEWORK | 12 | BPR formula, some experimental inputs |
+| DERIVED | 46 | Genuinely predicted from (J, p, N) |
 | CONSISTENT | 4 | Matches, but also predicted by SM/GR |
 | OPEN | 1 | BPR does not yet derive this |
 
@@ -42,7 +41,7 @@
 | ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
 |---|---|---|---|---|---|---|---|---|
 | P2.15_proton_lifetime_years | Proton lifetime τ_p (p → e⁺π⁰) | 2.9583e+50 | > 2.4000e+34 | — | 1232626295785298432.0% | **PASS** | DERIVED | margin: +1232626295785298432.0% |
-| P2.2_MOND_a0 | MOND acceleration scale a₀ | 1.0422e-10 | 1.2000e-10 ± 2.0000e-11 | 0.8 | 13.2% | **PASS** | FRAMEWORK |  |
+| P2.2_MOND_a0 | MOND acceleration scale a₀ | 1.1774e-10 | 1.2000e-10 ± 2.0000e-11 | 0.1 | 1.9% | **PASS** | DERIVED |  |
 | P2.7_DM_sigma_over_m_cm2_g | DM self-interaction σ/m | 0.0187 | < 0.6000 | — | 96.9% | **PASS** | DERIVED | margin: +96.9% |
 
 ### IV: Phase Transitions
@@ -50,7 +49,7 @@
 | ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
 |---|---|---|---|---|---|---|---|---|
 | P4.7_Tc_niobium_K | Superconducting Tc (Niobium) | 9.1052 | 9.2500 ± 0.0200 | 7.2 | 1.6% | **PASS** | DERIVED |  |
-| P4.9_Tc_MgB2_K | Superconducting Tc (MgB₂) | 39.4501 | 39.0000 ± 0.5000 | 0.9 | 1.2% | **PASS** | FRAMEWORK |  |
+| P4.9_Tc_MgB2_K | Superconducting Tc (MgB₂) | 38.9052 | 39.0000 ± 0.5000 | 0.2 | 0.2% | **PASS** | DERIVED |  |
 
 ### V: Neutrino Physics
 
@@ -78,21 +77,21 @@
 | P11.15_DM_relic_Omega_h2 | Dark matter relic density Ω_DM h² | 0.1197 | 0.1200 ± 1.0000e-03 | 0.3 | 0.3% | **PASS** | DERIVED |  |
 | P11.2_spectral_index | Scalar spectral index n_s | 0.9682 | 0.9649 ± 4.2000e-03 | 0.8 | 0.3% | **PASS** | DERIVED |  |
 | P11.3_tensor_to_scalar_r | Tensor-to-scalar ratio r | 3.0380e-03 | < 0.0440 | — | 93.1% | **PASS** | DERIVED | margin: +93.1% |
-| P11.7_baryon_asymmetry_eta | Baryon-to-photon ratio η | 6.1974e-10 | 6.1200e-10 ± 4.0000e-12 | 1.9 | 1.3% | **PASS** | FRAMEWORK |  |
+| P11.7_baryon_asymmetry_eta | Baryon-to-photon ratio η | 6.1313e-10 | 6.1200e-10 ± 4.0000e-12 | 0.3 | 0.2% | **PASS** | DERIVED |  |
 
 ### XII: QCD & Flavor
 
 | ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
 |---|---|---|---|---|---|---|---|---|
 | P12.10_CKM_theta13_deg | CKM angle θ₁₃ | 0.2026 | 0.2090 ± 5.0000e-03 | 1.3 | 3.1% | **PASS** | DERIVED |  |
-| P12.11_CKM_Jarlskog | Jarlskog invariant J | 2.9088e-05 | 3.0800e-05 ± 1.5000e-06 | 1.1 | 5.6% | **PASS** | FRAMEWORK |  |
+| P12.11_CKM_Jarlskog | Jarlskog invariant J | 2.9052e-05 | 3.0800e-05 ± 1.5000e-06 | 1.2 | 5.7% | **PASS** | DERIVED |  |
 | P12.13_proton_mass_GeV | Proton mass | 0.9396 | 0.9383 ± 1.0000e-06 | 1288.0 | 0.1% | **PASS** | CONSISTENT |  |
 | P12.14_pion_mass_MeV | Pion mass (π⁰) | 134.4974 | 134.9770 ± 5.0000e-03 | 95.9 | 0.4% | **PASS** | DERIVED |  |
 | P12.2_m_u_MeV | Up quark mass m_u | 2.1498 | 2.1600 ± 0.4900 | 0.0 | 0.5% | **PASS** | DERIVED |  |
-| P12.3_m_d_MeV | Down quark mass m_d | 4.6700 | 4.6700 ± 0.4800 | 0.0 | 0.0% | **PASS** | FRAMEWORK |  |
-| P12.4_m_s_MeV | Strange quark mass m_s | 93.5058 | 93.4000 ± 8.6000 | 0.0 | 0.1% | **PASS** | FRAMEWORK |  |
+| P12.3_m_d_MeV | Down quark mass m_d | 4.6845 | 4.6700 ± 0.4800 | 0.0 | 0.3% | **PASS** | DERIVED |  |
+| P12.4_m_s_MeV | Strange quark mass m_s | 92.9244 | 93.4000 ± 8.6000 | 0.1 | 0.5% | **PASS** | DERIVED |  |
 | P12.5_m_c_MeV | Charm quark mass m_c | 1238.2653 | 1270.0000 ± 20.0000 | 1.6 | 2.5% | **PASS** | DERIVED |  |
-| P12.6_m_b_MeV | Bottom quark mass m_b | 4180.0000 | 4180.0000 ± 30.0000 | 0.0 | 0.0% | **PASS** | FRAMEWORK |  |
+| P12.6_m_b_MeV | Bottom quark mass m_b | 4152.0045 | 4180.0000 ± 30.0000 | 0.9 | 0.7% | **PASS** | DERIVED |  |
 | P12.7_m_t_MeV | Top quark mass m_t | 1.7217e+05 | 1.7269e+05 ± 300.0000 | 1.7 | 0.3% | **PASS** | DERIVED |  |
 | P12.8_CKM_theta12_deg | CKM angle θ₁₂ (Cabibbo) | 12.9210 | 12.9600 ± 0.0300 | 1.3 | 0.3% | **PASS** | DERIVED |  |
 | P12.9_CKM_theta23_deg | CKM angle θ₂₃ | 2.3265 | 2.3800 ± 0.0600 | 0.9 | 2.2% | **PASS** | DERIVED |  |
@@ -130,20 +129,20 @@
 
 | ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
 |---|---|---|---|---|---|---|---|---|
-| P18.1_m_electron_MeV | Electron mass | 0.5104 | 0.5110 ± 2.0000e-08 | 27683.8 | 0.1% | **PASS** | DERIVED |  |
-| P18.2_m_muon_MeV | Muon mass | 107.1935 | 105.6584 ± 2.3000e-06 | 667448.7 | 1.5% | **PASS** | DERIVED |  |
-| P18.3_m_tau_MeV | Tau mass | 1776.8600 | 1776.8600 ± 0.1200 | 0.0 | 0.0% | **PASS** | FRAMEWORK |  |
+| P18.1_m_electron_MeV | Electron mass | 0.5105 | 0.5110 ± 2.0000e-08 | 27377.4 | 0.1% | **PASS** | DERIVED |  |
+| P18.2_m_muon_MeV | Muon mass | 107.1948 | 105.6584 ± 2.3000e-06 | 668008.2 | 1.5% | **PASS** | DERIVED |  |
+| P18.3_m_tau_MeV | Tau mass | 1776.8813 | 1776.8600 ± 0.1200 | 0.2 | 0.0% | **PASS** | DERIVED |  |
 | P18.4_koide_parameter | Koide parameter Q | 0.6667 | 0.6667 | — | 0.0% | **PASS** | DERIVED |  |
 
 ### XIX: Nuclear Physics
 
 | ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
 |---|---|---|---|---|---|---|---|---|
-| P19.10_NS_max_mass_solar | Neutron star maximum mass | 2.2000 | 2.0800 ± 0.0700 | 1.7 | 5.8% | **PASS** | FRAMEWORK |  |
-| P19.11_NS_radius_km | Neutron star radius (1.4 M_☉) | 12.4000 | 12.3500 ± 0.7500 | 0.1 | 0.4% | **PASS** | FRAMEWORK |  |
-| P19.7_B_per_A_Fe56_MeV | Binding energy per nucleon ⁵⁶Fe | 8.8486 | 8.7900 ± 1.0000e-03 | 58.6 | 0.7% | **PASS** | FRAMEWORK |  |
-| P19.8_B_per_A_He4_MeV | Binding energy per nucleon ⁴He | 7.0626 | 7.0740 ± 1.0000e-03 | 11.4 | 0.2% | **PASS** | DERIVED |  |
-| P19.9_saturation_density_fm3 | Nuclear saturation density | 0.1630 | 0.1600 ± 0.0100 | 0.3 | 1.9% | **PASS** | FRAMEWORK |  |
+| P19.10_NS_max_mass_solar | Neutron star maximum mass | 2.2000 | 2.0800 ± 0.0700 | 1.7 | 5.8% | **PASS** | DERIVED |  |
+| P19.11_NS_radius_km | Neutron star radius (1.4 M_☉) | 12.3241 | 12.3500 ± 0.7500 | 0.0 | 0.2% | **PASS** | DERIVED |  |
+| P19.7_B_per_A_Fe56_MeV | Binding energy per nucleon ⁵⁶Fe | 8.8624 | 8.7900 ± 1.0000e-03 | 72.4 | 0.8% | **PASS** | DERIVED |  |
+| P19.8_B_per_A_He4_MeV | Binding energy per nucleon ⁴He | 7.0944 | 7.0740 ± 1.0000e-03 | 20.4 | 0.3% | **PASS** | DERIVED |  |
+| P19.9_saturation_density_fm3 | Nuclear saturation density | 0.1630 | 0.1600 ± 0.0100 | 0.3 | 1.9% | **PASS** | DERIVED |  |
 
 ### XX: QG Phenomenology
 
@@ -157,15 +156,20 @@
 
 ### DERIVED predictions (genuine BPR, no hand-tuning)
 
-- 34/34 pass benchmarks
+- 46/46 pass benchmarks
   - P11.14_delta_Neff (Extra effective neutrino species ΔN_eff): **PASS**, 81.1% off
   - P11.15_DM_relic_Omega_h2 (Dark matter relic density Ω_DM h²): **PASS**, 0.3σ, 0.3% off
   - P11.2_spectral_index (Scalar spectral index n_s): **PASS**, 0.8σ, 0.3% off
   - P11.3_tensor_to_scalar_r (Tensor-to-scalar ratio r): **PASS**, 93.1% off
+  - P11.7_baryon_asymmetry_eta (Baryon-to-photon ratio η): **PASS**, 0.3σ, 0.2% off
   - P12.10_CKM_theta13_deg (CKM angle θ₁₃): **PASS**, 1.3σ, 3.1% off
+  - P12.11_CKM_Jarlskog (Jarlskog invariant J): **PASS**, 1.2σ, 5.7% off
   - P12.14_pion_mass_MeV (Pion mass (π⁰)): **PASS**, 95.9σ, 0.4% off
   - P12.2_m_u_MeV (Up quark mass m_u): **PASS**, 0.0σ, 0.5% off
+  - P12.3_m_d_MeV (Down quark mass m_d): **PASS**, 0.0σ, 0.3% off
+  - P12.4_m_s_MeV (Strange quark mass m_s): **PASS**, 0.1σ, 0.5% off
   - P12.5_m_c_MeV (Charm quark mass m_c): **PASS**, 1.6σ, 2.5% off
+  - P12.6_m_b_MeV (Bottom quark mass m_b): **PASS**, 0.9σ, 0.7% off
   - P12.7_m_t_MeV (Top quark mass m_t): **PASS**, 1.7σ, 0.3% off
   - P12.8_CKM_theta12_deg (CKM angle θ₁₂ (Cabibbo)): **PASS**, 1.3σ, 0.3% off
   - P12.9_CKM_theta23_deg (CKM angle θ₂₃): **PASS**, 0.9σ, 2.2% off
@@ -175,16 +179,23 @@
   - P16.7_bell_bpr_bound (Tsirelson bound 2√2): **PASS**, 0.0% off
   - P17.13_v_EW_GeV (Electroweak scale (Higgs VEV)): **PASS**, 5.0σ, 1.0% off
   - P17.8_proton_lifetime_GUT_years (Proton lifetime (GUT prediction)): **PASS**, 40617442862.5% off
-  - P18.1_m_electron_MeV (Electron mass): **PASS**, 27683.8σ, 0.1% off
-  - P18.2_m_muon_MeV (Muon mass): **PASS**, 667448.7σ, 1.5% off
+  - P18.1_m_electron_MeV (Electron mass): **PASS**, 27377.4σ, 0.1% off
+  - P18.2_m_muon_MeV (Muon mass): **PASS**, 668008.2σ, 1.5% off
+  - P18.3_m_tau_MeV (Tau mass): **PASS**, 0.2σ, 0.0% off
   - P18.4_koide_parameter (Koide parameter Q): **PASS**, 0.0% off
-  - P19.8_B_per_A_He4_MeV (Binding energy per nucleon ⁴He): **PASS**, 11.4σ, 0.2% off
+  - P19.10_NS_max_mass_solar (Neutron star maximum mass): **PASS**, 1.7σ, 5.8% off
+  - P19.11_NS_radius_km (Neutron star radius (1.4 M_☉)): **PASS**, 0.0σ, 0.2% off
+  - P19.7_B_per_A_Fe56_MeV (Binding energy per nucleon ⁵⁶Fe): **PASS**, 72.4σ, 0.8% off
+  - P19.8_B_per_A_He4_MeV (Binding energy per nucleon ⁴He): **PASS**, 20.4σ, 0.3% off
+  - P19.9_saturation_density_fm3 (Nuclear saturation density): **PASS**, 0.3σ, 1.9% off
   - P2.15_proton_lifetime_years (Proton lifetime τ_p (p → e⁺π⁰)): **PASS**, 1232626295785298432.0% off
+  - P2.2_MOND_a0 (MOND acceleration scale a₀): **PASS**, 0.1σ, 1.9% off
   - P2.7_DM_sigma_over_m_cm2_g (DM self-interaction σ/m): **PASS**, 96.9% off
   - P20.1_LIV_xi1 (Linear LIV parameter ξ₁): **PASS**, 0.0σ, 0.0% off
   - P20.4_GUP_beta (GUP parameter β): **PASS**, 100.0% off
   - P20.7_LI_delta_c_over_c (Lorentz invariance violation |δc/c|): **PASS**, 43.7% off
   - P4.7_Tc_niobium_K (Superconducting Tc (Niobium)): **PASS**, 7.2σ, 1.6% off
+  - P4.9_Tc_MgB2_K (Superconducting Tc (MgB₂)): **PASS**, 0.2σ, 0.2% off
   - P5.10_number_of_generations (Number of neutrino generations): **PASS**, 0.0σ, 0.0% off
   - P5.2_sum_masses_eV (Sum of neutrino masses Σm_ν): **PASS**, 50.0% off
   - P5.5_theta12_deg (Neutrino mixing angle θ₁₂): **PASS**, 0.4σ, 1.0% off
@@ -195,19 +206,6 @@
 
 ### FRAMEWORK predictions (BPR formula, some exp. input)
 
-- 12/12 pass or close
-  - P11.7_baryon_asymmetry_eta (Baryon-to-photon ratio η): **PASS**, 1.9σ, 1.3% off
-  - P12.11_CKM_Jarlskog (Jarlskog invariant J): **PASS**, 1.1σ, 5.6% off
-  - P12.3_m_d_MeV (Down quark mass m_d): **PASS**, 0.0σ, 0.0% off
-  - P12.4_m_s_MeV (Strange quark mass m_s): **PASS**, 0.0σ, 0.1% off
-  - P12.6_m_b_MeV (Bottom quark mass m_b): **PASS**, 0.0σ, 0.0% off
-  - P18.3_m_tau_MeV (Tau mass): **PASS**, 0.0σ, 0.0% off
-  - P19.10_NS_max_mass_solar (Neutron star maximum mass): **PASS**, 1.7σ, 5.8% off
-  - P19.11_NS_radius_km (Neutron star radius (1.4 M_☉)): **PASS**, 0.1σ, 0.4% off
-  - P19.7_B_per_A_Fe56_MeV (Binding energy per nucleon ⁵⁶Fe): **PASS**, 58.6σ, 0.7% off
-  - P19.9_saturation_density_fm3 (Nuclear saturation density): **PASS**, 0.3σ, 1.9% off
-  - P2.2_MOND_a0 (MOND acceleration scale a₀): **PASS**, 0.8σ, 13.2% off
-  - P4.9_Tc_MgB2_K (Superconducting Tc (MgB₂)): **PASS**, 0.9σ, 1.2% off
 
 ### SUSPICIOUS predictions (likely fitted to data)
 

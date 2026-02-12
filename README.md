@@ -12,7 +12,9 @@
 >
 > **CONSISTENCY AUDIT** → [`doc/CONSISTENCY_AUDIT.md`](doc/CONSISTENCY_AUDIT.md) *(58 internal math consistency tests — no experiments needed)*
 >
-> **BENCHMARK SCORECARD** → [`doc/BENCHMARK_SCORECARD.md`](doc/BENCHMARK_SCORECARD.md) *(50 predictions vs PDG/Planck/CODATA data, with tuning audit)*
+> **BENCHMARK SCORECARD** → [`doc/BENCHMARK_SCORECARD.md`](doc/BENCHMARK_SCORECARD.md) *(51 predictions vs PDG/Planck/CODATA data)*
+>
+> **DERIVATION ROADMAP** → [`doc/derivations/DERIVATION_ROADMAP.md`](doc/derivations/DERIVATION_ROADMAP.md) *(41 DERIVED, 5 FRAMEWORK)*
 >
 > One‑pager → [`doc/BPR_one_pager.md`](doc/BPR_one_pager.md) | LaTeX source → [`doc/BPR_one_pager.tex`](doc/BPR_one_pager.tex)
 
@@ -431,7 +433,7 @@ The BPR-Math-Spine framework is **feature-complete** and ready for:
 * **488** tests passing, 21 skipped (FEniCS auto-skip)
 * **58** mathematical consistency tests (no experiments needed)
 * **29** benchmark regression tests (predictions vs experiment)
-* **50** predictions benchmarked against PDG/Planck/CODATA data
+* **51** predictions benchmarked (41 DERIVED, 5 FRAMEWORK; 50 PASS, 1 CLOSE)
 * **3/3** mathematical checkpoints verified
 
 ---

@@ -200,15 +200,17 @@ class TestCrossModuleConsistency:
         assert t_decoh > 0
 
     def test_mond_a0_vs_hubble(self):
-        """MOND a₀ = cH₀/(2π): check dimensional and numerical consistency."""
+        """MOND a₀ = cH₀/(2π) × (1 + z/(4 ln p)): check dimensional and numerical."""
         from bpr.impedance import MONDInterpolation
+        import numpy as np
         c = 299792458.0
         H0 = 67.4e3 / 3.0857e22  # s⁻¹
-        a0_expected = c * H0 / (2 * np.pi)
-        mond = MONDInterpolation(H0_km_s_Mpc=67.4)
+        p, z = 104729, 6
+        base = c * H0 / (2 * np.pi)
+        a0_expected = base * (1.0 + z / (4.0 * np.log(p)))
+        mond = MONDInterpolation(H0_km_s_Mpc=67.4, p=p, z=z)
         assert mond.a0 == pytest.approx(a0_expected, rel=1e-6)
         # a₀ must have units of acceleration (m/s²)
-        # Dimensional check: [c] = m/s, [H₀] = s⁻¹ → [cH₀] = m/s²  ✓
         assert 1e-11 < mond.a0 < 1e-9  # reasonable acceleration scale
 
 

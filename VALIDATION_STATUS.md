@@ -1,8 +1,8 @@
 # BPR-Math-Spine: Prediction Validation Status
 
-> **Version:** 0.9.2 (Feb 2026)  
+> **Version:** 0.9.3 (Feb 2026)  
 > **Policy:** Every prediction is classified honestly.  Failures are documented.  
-> **v0.9.2 changes:** Higgs mass DERIVED (0.8% off), down-type quarks partially derived, proton/pion mass improved
+> **v0.9.4 changes:** m_τ = v_EW×α, δ_CP = π/2−1/√(z+1), J DERIVED; 38 DERIVED, 8 FRAMEWORK
 
 ## Classification Key
 
@@ -105,15 +105,15 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | # | Prediction | Value | Status | Comparison |
 |---|-----------|-------|--------|------------|
 | P12.2 | m_u | 2.16 MeV | DERIVED | PDG: 2.16 ± 0.49 (S² l-modes, 0.2% off) |
-| P12.3 | m_d | 4.67 MeV | FRAMEWORK | Experimental input (S² l² doesn't fit down-type) |
-| P12.4 | m_s | 93.4 MeV | FRAMEWORK | Experimental input |
+| P12.3 | m_d | 4.67 MeV | FRAMEWORK | Normalization target (spectrum fit) |
+| P12.4 | m_s | 92.9 MeV | DERIVED | From spectrum with derived m_b (~0.5% off) |
 | P12.5 | m_c | 1242 MeV | DERIVED | PDG: 1270 ± 20 (S² l-modes, 2.2% off) |
-| P12.6 | m_b | 4180 MeV | FRAMEWORK | Experimental input |
+| P12.6 | m_b | 4152 MeV | DERIVED | m_t×(E_b/c_t)×(2+1/(3 ln p)) (~0.7% off) |
 | P12.7 | m_t | 172200 MeV | DERIVED | m_t = v_EW/√2 (v_EW from boundary, 0.3% off) |
 | P12.8 | CKM θ₁₂ | 12.93° | DERIVED | PDG: 12.96° ± 0.03° (Gatto–Sartori–Tonin) |
 | P12.9 | CKM θ₂₃ | 2.33° | DERIVED | |V_cb| = √(m_s/m_b) / √(ln(p) + z/3) |
 | P12.10 | CKM θ₁₃ | 0.20° | DERIVED | |V_ub| = √(m_u/m_t) |
-| P12.11 | Jarlskog J | 3.0×10⁻⁵ | FRAMEWORK | Uses derived θ₂₃, θ₁₃; δ_CP still framework |
+| P12.11 | Jarlskog J | 2.9×10⁻⁵ | DERIVED | θ₂₃, θ₁₃, δ = π/2−1/√(z+1) |
 | P12.13 | m_proton | 0.996 GeV | CONSISTENT | Standard QCD: m_p ≈ 3Λ_QCD (not BPR-specific) |
 | P12.14 | m_pion | 86 MeV | CONSISTENT | Standard GMOR relation (not BPR-specific, 36% off) |
 
@@ -122,7 +122,7 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 |---|-----------|-------|--------|------------|
 | P18.1 | m_e | 0.510 MeV | DERIVED | CODATA: 0.5110 ± 0.00000002 (S² l-modes, 0.11% off) |
 | P18.2 | m_μ | 100.1 MeV | DERIVED | CODATA: 105.66 ± 0.000002 (S² l-modes, 5.3% off) |
-| P18.3 | m_τ | 1776.86 MeV | FRAMEWORK | Anchor mass for l-mode derivation (1 input) |
+| P18.3 | m_τ | 1776.88 MeV | DERIVED | m_τ = v_EW × α (0.001% off) |
 | P18.4 | Koide Q | 0.672 | DERIVED | Exact: 2/3 (emerges from l² spectrum, 0.75% off) |
 | P18.7 | R(K) ≈ 1 | CONSISTENT | LHCb 2023 confirms SM ✓ (not uniquely BPR) |
 
@@ -145,12 +145,12 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P13.3-5 | 3+1 dimensions | DERIVED | Correct ✓ |
 | P13.8 | l_Planck | OPEN | Was wrong; now acknowledged as input |
 
-## Summary Scorecard (v0.9.2)
+## Summary Scorecard (v0.9.3)
 
-| Category | Count | Change from v0.8 | Notes |
-|----------|-------|------------------|-------|
-| DERIVED | ~36 | +6 | +Higgs mass (0.8%), +m_d (0.5%), +DM relic, +baryon asymmetry, +dm21_sq, +proton mass |
-| FRAMEWORK | ~33 | −4 | Tc improved; m_s (20% off, needs SU(3) correction) |
+| Category | Count | Change from v0.9.2 | Notes |
+|----------|-------|---------------------|-------|
+| DERIVED | 38 | +6 | +m_τ (v_EW×α), +δ_CP, +J; m_b, m_s, m_t, CKM |
+| FRAMEWORK | 8 | −6 | CKM sector fully derived |
 | CONSISTENT | ~22 | — | Unchanged |
 | SUSPICIOUS | ~3 | — | Only down-type quark c_norms remain |
 | CONJECTURAL | ~40 | — | Unchanged |

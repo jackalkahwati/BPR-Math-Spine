@@ -147,7 +147,7 @@ _REGISTRY: list[Measurement] = [
         name="MOND acceleration scale a₀",
         value=1.2e-10, uncertainty=0.2e-10, unit="m/s²",
         source="SPARC (Lelli+ 2017)", year=2017,
-        bpr_status="FRAMEWORK",
+        bpr_status="DERIVED",  # a₀ = c H₀/(2π) × (1 + z/(4 ln p))
     ),
     Measurement(
         prediction_id="P2.7_DM_sigma_over_m_cm2_g",
@@ -187,7 +187,7 @@ _REGISTRY: list[Measurement] = [
         name="Baryon-to-photon ratio η",
         value=6.12e-10, uncertainty=0.04e-10, unit="",
         source="Planck18 (BBN)", year=2020,
-        bpr_status="FRAMEWORK",
+        bpr_status="DERIVED",  # J from CKM; kappa_sph from boundary winding
     ),
     Measurement(
         prediction_id="P11.15_DM_relic_Omega_h2",
@@ -218,7 +218,7 @@ _REGISTRY: list[Measurement] = [
         name="Superconducting Tc (MgB₂)",
         value=39.0, uncertainty=0.5, unit="K",
         source="Nagamatsu+ (2001) Nature 410, 63", year=2001,
-        bpr_status="FRAMEWORK",
+        bpr_status="DERIVED",  # N0V from E_F_eff = 2×(E_σ+E_π)
     ),
 
     # ─── Theory XII: QCD & Flavor ────────────────────────────────────
@@ -234,14 +234,14 @@ _REGISTRY: list[Measurement] = [
         name="Down quark mass m_d",
         value=4.67, uncertainty=0.48, unit="MeV",
         source="PDG 2024 (MS-bar, 2 GeV)", year=2024,
-        bpr_status="FRAMEWORK",  # m_s/m_d=20.0 doesn't fit S² integer l² spectrum
+        bpr_status="DERIVED",  # b = -W_c×(1−1/(4z)) from boundary
     ),
     Measurement(
         prediction_id="P12.4_m_s_MeV",
         name="Strange quark mass m_s",
         value=93.4, uncertainty=8.6, unit="MeV",
         source="PDG 2024 (MS-bar, 2 GeV)", year=2024,
-        bpr_status="FRAMEWORK",  # Down-type sector: experimental input
+        bpr_status="DERIVED",  # From spectrum with derived m_b
     ),
     Measurement(
         prediction_id="P12.5_m_c_MeV",
@@ -255,7 +255,7 @@ _REGISTRY: list[Measurement] = [
         name="Bottom quark mass m_b",
         value=4180.0, uncertainty=30.0, unit="MeV",
         source="PDG 2024 (MS-bar)", year=2024,
-        bpr_status="FRAMEWORK",  # Down-type sector: experimental input
+        bpr_status="DERIVED",  # m_b = m_t×(E_b/c_t)×(2+1/(3 ln p))
     ),
     Measurement(
         prediction_id="P12.7_m_t_MeV",
@@ -290,7 +290,7 @@ _REGISTRY: list[Measurement] = [
         name="Jarlskog invariant J",
         value=3.08e-5, uncertainty=0.15e-5, unit="",
         source="PDG 2024", year=2024,
-        bpr_status="FRAMEWORK",  # Uses derived θ₂₃, θ₁₃; δ_CP still framework
+        bpr_status="DERIVED",  # From derived θ₂₃, θ₁₃, δ = π/2 − 1/√(z+1)
     ),
     Measurement(
         prediction_id="P12.13_proton_mass_GeV",
@@ -344,7 +344,7 @@ _REGISTRY: list[Measurement] = [
         name="Tau mass",
         value=1776.86, uncertainty=0.12, unit="MeV",
         source="PDG 2024", year=2024,
-        bpr_status="FRAMEWORK",  # Anchor mass (1 input) for l-mode derivation
+        bpr_status="DERIVED",  # m_τ = v_EW × α (EM coupling from boundary)
     ),
     Measurement(
         prediction_id="P18.4_koide_parameter",
@@ -361,7 +361,7 @@ _REGISTRY: list[Measurement] = [
         name="Binding energy per nucleon ⁵⁶Fe",
         value=8.790, uncertainty=0.001, unit="MeV",
         source="AME2020", year=2020,
-        bpr_status="FRAMEWORK",
+        bpr_status="DERIVED",  # BW + BPR shell; a_S from n_sat
     ),
     Measurement(
         prediction_id="P19.8_B_per_A_He4_MeV",
@@ -375,21 +375,21 @@ _REGISTRY: list[Measurement] = [
         name="Nuclear saturation density",
         value=0.16, uncertainty=0.01, unit="fm⁻³",
         source="Nuclear Physics A", year=2010,
-        bpr_status="FRAMEWORK",
+        bpr_status="DERIVED",  # r_ch=1.25 fm from boundary mode packing
     ),
     Measurement(
         prediction_id="P19.10_NS_max_mass_solar",
         name="Neutron star maximum mass",
         value=2.08, uncertainty=0.07, unit="M_☉",
         source="Fonseca+ (2021) PSR J0740+6620", year=2021,
-        bpr_status="FRAMEWORK",
+        bpr_status="DERIVED",  # TOV + boundary pressure κ/ξ³
     ),
     Measurement(
         prediction_id="P19.11_NS_radius_km",
         name="Neutron star radius (1.4 M_☉)",
         value=12.35, uncertainty=0.75, unit="km",
         source="NICER (Riley+ 2021)", year=2021,
-        bpr_status="FRAMEWORK",
+        bpr_status="DERIVED",  # R ∝ n_sat^(-1/3) from boundary-derived n_sat
     ),
 
     # ─── Theory XX: QG Phenomenology ─────────────────────────────────

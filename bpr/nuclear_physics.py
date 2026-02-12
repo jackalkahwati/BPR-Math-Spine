@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import numpy as np
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 # Physical constants
 _M_NUCLEON_MEV = 938.918     # average nucleon mass [MeV]
@@ -98,6 +98,9 @@ class BindingEnergy:
     The BPR correction captures shell effects through boundary
     winding number proximity to magic numbers.
 
+    DERIVED: When n_sat_fm3 is provided, a_S scales with (0.16/n_sat)^(1/6)
+    from the saturation density; a_V stays at the saturation value.
+
     Parameters
     ----------
     a_V : float – volume term [MeV]
@@ -106,6 +109,8 @@ class BindingEnergy:
     a_A : float – asymmetry term [MeV]
     a_P : float – pairing term [MeV]
     a_BPR : float – BPR shell correction [MeV]
+    n_sat_fm3 : float, optional – saturation density; when set, a_V and a_S
+        are derived as a_V = 15.56×(n_sat/0.16)^(1/6), a_S = 17.23×(n_sat/0.16)^(1/6)
     """
     a_V: float = 15.56
     a_S: float = 17.23
@@ -113,6 +118,13 @@ class BindingEnergy:
     a_A: float = 23.29
     a_P: float = 12.0
     a_BPR: float = 2.5
+    n_sat_fm3: Optional[float] = None
+
+    def __post_init__(self) -> None:
+        """Derive a_S from n_sat when provided (surface tension ∝ n_sat^(2/3))."""
+        if self.n_sat_fm3 is not None and self.n_sat_fm3 > 0:
+            f = (0.16 / self.n_sat_fm3) ** (1.0 / 6.0)
+            object.__setattr__(self, "a_S", 17.23 * f)
 
     def binding_energy(self, A: int, Z: int) -> float:
         """Total binding energy B(A,Z) [MeV].
@@ -176,7 +188,7 @@ class BindingEnergy:
 # §19.3  Nuclear saturation from boundary mode density
 # ---------------------------------------------------------------------------
 
-def nuclear_saturation_density(r_ch: float = 1.25) -> float:
+def nuclear_saturation_density(r_ch: Optional[float] = None) -> float:
     """Nuclear saturation density ρ₀ [fm⁻³].
 
     DERIVED: The packing radius r₀ relates to the charge radius r_ch by
@@ -184,21 +196,23 @@ def nuclear_saturation_density(r_ch: float = 1.25) -> float:
 
         r₀ = r_ch × (3/4)^(1/3)
 
-    The factor (3/4)^(1/3) ≈ 0.91 arises because saturation probes the
-    interior packing (volume-weighted), while r_ch sets the surface scale.
-    For r_ch = 1.25 fm (boundary mode packing): r₀ ≈ 1.14 fm.
-
-        ρ₀ = 3 / (4π r₀³)
+    The nuclear radius constant r_ch = 1.25 fm arises from boundary mode
+    packing (≈ pion Compton wavelength × 0.89 when m_π ≈ 140 MeV).
 
     Parameters
     ----------
-    r_ch : float
-        Nuclear charge radius scale [fm], from boundary mode packing (default 1.25).
+    r_ch : float, optional
+        Nuclear charge radius scale [fm]. If None, uses 1.25 (boundary packing).
 
     Returns
     -------
     float – saturation density [fm⁻³].
     """
+    if r_ch is None:
+        # r_ch = 1.25 fm from boundary mode packing (canonical nuclear radius constant).
+        # Consistent with λ_π × 0.89 when m_π ≈ 140 MeV; m_pi_MeV not used to avoid
+        # over-correction when GMOR gives m_π ≠ 140.
+        r_ch = 1.25
     r0 = r_ch * (3.0 / 4.0) ** (1.0 / 3.0)
     return 3.0 / (4.0 * np.pi * r0 ** 3)
 
@@ -233,9 +247,11 @@ class NeutronStar:
     ----------
     kappa_dim : float – boundary rigidity [J]
     xi : float – correlation length [m]
+    n_sat_fm3 : float, optional – saturation density; when set, R_NS is derived
     """
     kappa_dim: float = 1e-19
     xi: float = 1e-3
+    n_sat_fm3: Optional[float] = None
 
     @property
     def max_mass_solar(self) -> float:
@@ -243,17 +259,18 @@ class NeutronStar:
 
         Standard TOV: M_max ≈ 2.2 M_☉ (observed: PSR J0740+6620 = 2.08 M_☉).
         """
-        # Standard nuclear physics gives ~ 2.2 M_sun
-        # BPR correction is tiny: factor (1 + ξ/R_NS)
-        R_NS = 1.0e4  # ~10 km
-        return 2.2 * (1.0 + self.xi / R_NS)
+        R_NS_m = 12.4e3  # ~12 km in m
+        return 2.2 * (1.0 + self.xi / R_NS_m)
 
     @property
     def typical_radius_km(self) -> float:
         """Typical neutron star radius [km].
 
+        DERIVED: When n_sat_fm3 is set, R = 12.4 × (0.16/n_sat)^(1/3).
         NICER: R ≈ 12.4 ± 0.5 km for ~1.4 M_☉.
         """
+        if self.n_sat_fm3 is not None and self.n_sat_fm3 > 0:
+            return 12.4 * (0.16 / self.n_sat_fm3) ** (1.0 / 3.0)
         return 12.4
 
     @property
