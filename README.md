@@ -14,6 +14,8 @@
 >
 > **BENCHMARK SCORECARD** → [`doc/BENCHMARK_SCORECARD.md`](doc/BENCHMARK_SCORECARD.md) *(51 predictions vs PDG/Planck/CODATA data)*
 >
+> **EXPERIMENTS** → [`doc/experiments/`](doc/experiments/) *(papers that confirm or falsify BPR)*
+>
 > **DERIVATION ROADMAP** → [`doc/derivations/DERIVATION_ROADMAP.md`](doc/derivations/DERIVATION_ROADMAP.md) *(41 DERIVED, 5 FRAMEWORK)*
 >
 > One‑pager → [`doc/BPR_one_pager.md`](doc/BPR_one_pager.md) | LaTeX source → [`doc/BPR_one_pager.tex`](doc/BPR_one_pager.tex)
