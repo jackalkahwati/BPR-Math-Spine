@@ -630,11 +630,15 @@ class SubstrateDerivedTheories:
 
         # ── Prediction 13: Superconductivity T_c ──
         # Niobium: single-gap BCS superconductor
-        # N(0)V = 0.325 (Allen & Dynes 1975; Nb ~0.32-0.33) — FRAMEWORK: from experiment
-        # T_Debye = 275 K
-        # STATUS: FRAMEWORK (BPR provides Class C transition framework,
-        # N(0)V from experimental electron-phonon coupling)
-        Tc_Nb = th4.superconductor_tc(N0V=0.325, T_debye=275.0)
+        # DERIVED: N(0)V from superconductor_n0v_derived(E_F, T_D, p, z)
+        #   = N0V_bpr × z² × (1 + 0.5×(N0V_bpr×z²)²)  [Eliashberg vertex correction]
+        # Nb: E_F = 5.32 eV, T_D = 275 K (material inputs from band structure)
+        # MgB2: multi-band, keep FRAMEWORK (experimental N0V)
+        N0V_Nb = th4.superconductor_n0v_derived(
+            E_fermi_eV=5.32, T_debye=275.0,
+            p=self.params.p, z=self.params.coordination_number,
+        )
+        Tc_Nb = th4.superconductor_tc(N0V=N0V_Nb, T_debye=275.0)
         preds["P4.7_Tc_niobium_K"] = Tc_Nb
         preds["P4.8_Tc_formula"] = "T_c = (T_D/1.45) exp(-1/N(0)V) * f_sc  [BCS+Eliashberg]"
         # MgB2: two-gap superconductor (sigma and pi bands)

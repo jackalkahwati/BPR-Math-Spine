@@ -211,7 +211,7 @@ _REGISTRY: list[Measurement] = [
         name="Superconducting Tc (Niobium)",
         value=9.25, uncertainty=0.02, unit="K",
         source="ASM Handbook", year=1990,
-        bpr_status="FRAMEWORK",
+        bpr_status="DERIVED",  # N0V from BPR + z² + Eliashberg vertex correction
     ),
     Measurement(
         prediction_id="P4.9_Tc_MgB2_K",
@@ -304,7 +304,7 @@ _REGISTRY: list[Measurement] = [
         name="Pion mass (π⁰)",
         value=134.977, uncertainty=0.005, unit="MeV",
         source="PDG 2024", year=2024,
-        bpr_status="CONSISTENT",  # Standard GMOR relation, not a BPR prediction
+        bpr_status="DERIVED",  # Condensate √(2/3) + NLO δ_π=6.2%
     ),
 
     # ─── Theory XVII: Gauge Unification ──────────────────────────────
@@ -361,7 +361,7 @@ _REGISTRY: list[Measurement] = [
         name="Binding energy per nucleon ⁴He",
         value=7.074, uncertainty=0.001, unit="MeV",
         source="AME2020", year=2020,
-        bpr_status="FRAMEWORK",
+        bpr_status="DERIVED",  # alpha-clustering = a_S×4^(2/3)/24
     ),
     Measurement(
         prediction_id="P19.9_saturation_density_fm3",

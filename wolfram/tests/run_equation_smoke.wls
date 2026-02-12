@@ -115,14 +115,30 @@ assert["P19.9 (saturation density)",
     r > 0.15 && r < 0.17]
 ];
 
-assert["P4.7 (Tc Nb)",
-  Module[{tc}, tc = BPR`BPRSuperconductorTc[0.325, 275.0];
+assert["P4.7 (Tc Nb, derived N0V)",
+  Module[{n0v, tc},
+    n0v = BPR`BPRSuperconductorN0VDerived[5.32, 275.0, 104729, 6];
+    tc = BPR`BPRSuperconductorTc[n0v, 275.0];
     tc > 9.0 && tc < 9.5]
 ];
 
-assert["P12.14 (pion mass)",
-  Module[{mpi}, mpi = BPR`BPRPionMass[2.16, 4.67, 92.1];
-    mpi > 120 && mpi < 130]
+assert["P12.14 (pion mass, condensate + NLO)",
+  Module[{mpi}, mpi = BPR`BPRPionMass[2.16, 4.67, 92.1, 332.0];
+    mpi > 133 && mpi < 136]
+];
+
+(* alpha_derivation: 1/alpha from substrate *)
+assert["alpha_derivation (1/alpha ~ 137)",
+  Module[{invA}, invA = BPR`BPRInverseAlphaFromSubstrate[104729, 6];
+    invA > 136 && invA < 138]
+];
+
+(* meta_boundary: double-well potential *)
+assert["meta_boundary (constraint potential)",
+  Module[{v0, vEta},
+    v0 = BPR`BPRConstraintPotentialDoubleWell[0.0, 1.0, 1.0];
+    vEta = BPR`BPRConstraintPotentialDoubleWell[1.0, 1.0, 1.0];
+    v0 > 0.2 && v0 < 0.3 && Abs[vEta] < 10^-10]
 ];
 
 Print["---"];

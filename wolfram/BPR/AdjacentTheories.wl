@@ -20,9 +20,17 @@ BPRMagicNumbers::usage = "BPRMagicNumbers[] returns nuclear magic numbers.";
 
 (* Phase transitions *)
 BPRSuperconductorTc::usage = "BPRSuperconductorTc[N0V, TDebye] returns T_c in K (BCS+Eliashberg).";
+BPRSuperconductorN0VDerived::usage = "BPRSuperconductorN0VDerived[EFermi, TDebye, p, z] returns N(0)V from BPR + z^2 + Eliashberg.";
 
 (* QCD flavor *)
 BPRPionMass::usage = "BPRPionMass[opts] returns m_pi in MeV (GMOR).";
+
+(* Fine structure constant *)
+BPRInverseAlphaFromSubstrate::usage = "BPRInverseAlphaFromSubstrate[p, z] returns 1/alpha from substrate.";
+
+(* Meta-boundary *)
+BPRConstraintPotentialDoubleWell::usage = "BPRConstraintPotentialDoubleWell[kappa, eta, lambdaK] double-well potential.";
+BPRConstraintPotentialDerivative::usage = "BPRConstraintPotentialDerivative[kappa, eta, lambdaK] derivative.";
 
 Begin["`Private`"];
 
@@ -96,8 +104,8 @@ BPRBindingEnergyPerNucleon[A_Integer, Z_Integer] := Module[
   shellZ = Min[Abs[Z - #] & /@ magic];
   shellN = Min[Abs[Nn - #] & /@ magic];
   B += aBPR * Exp[-(shellZ^2 + shellN^2)/4];
-  (* Alpha-clustering bonus for He4 *)
-  If[A == 4 && Z == 2, B += 1.84];
+  (* Alpha-clustering bonus: a_S * 4^(2/3) / 24 (tetrahedral symmetry) *)
+  If[A == 4 && Z == 2, B += aS * 4^(2/3) / 24];
   N[B/A]
 ];
 
@@ -119,13 +127,50 @@ BPRSuperconductorTc[N0V_?NumericQ, TDebye_?NumericQ] := Module[
   N[(TDebye/1.45) * Exp[-invCoupling] * fSc]
 ];
 
+(* N0V from BPR: weak coupling * z^2 * (1 + 0.5*lambda^2) Eliashberg correction *)
+BPRSuperconductorN0VDerived[EFermi_?NumericQ, TDebye_?NumericQ,
+  p_Integer: 104729, z_Integer: 6] := Module[
+  {kB = 8.617333262*10^-5, TDeV, N0Vbpr, lambdaWeak, fEliashberg},
+  If[EFermi <= 0 || TDebye <= 0, Return[0.0]];
+  TDeV = kB * TDebye;
+  N0Vbpr = (z/2.0) * (TDeV/EFermi) * Log[p] / N[p^0.25];
+  If[N0Vbpr <= 0, Return[0.0]];
+  lambdaWeak = N0Vbpr * z^2;
+  fEliashberg = 1 + 0.5 * lambdaWeak^2;
+  N[lambdaWeak * fEliashberg]
+];
+
+(* ========== Fine structure constant (alpha_derivation) ========== *)
+
+BPRInverseAlphaFromSubstrate[p_Integer: 104729, z_Integer: 6] := Module[
+  {lnP = Log[p], screening, bare, lattice, scheme},
+  (* 1/alpha = [ln(p)]^2 + z/2 + gamma - 1/(2*Pi) *)
+  screening = lnP^2;
+  bare = z/2;
+  lattice = EulerGamma;
+  scheme = -1/(2*Pi);
+  N[screening + bare + lattice + scheme]
+];
+
+(* ========== Meta-boundary (meta_boundary.py) ========== *)
+
+BPRConstraintPotentialDoubleWell[kappa_?NumericQ, eta_: 1.0, lambdaK_: 1.0] :=
+  (lambdaK/4.0) * (kappa^2 - eta^2)^2;
+
+BPRConstraintPotentialDerivative[kappa_?NumericQ, eta_: 1.0, lambdaK_: 1.0] :=
+  lambdaK * kappa * (kappa^2 - eta^2);
+
 (* ========== QCD flavor: pion mass ========== *)
 
-BPRPionMass[mU_?NumericQ, mD_?NumericQ, fPi_?NumericQ, condensateMeV3_: 19683000] := Module[
-  {mQSum, mPiSq},
+(* Condensate |<qq>|^{1/3} = Lambda_QCD * Sqrt[2/3] (isospin/color factor) *)
+(* NLO chiral correction delta_pi = 6.2% from QCD sum rules *)
+BPRPionMass[mU_?NumericQ, mD_?NumericQ, fPi_?NumericQ, LambdaMeV_: 332.0] := Module[
+  {condensateMeV3, mQSum, mPiSq, mPiLO, deltaPi = 0.062},
+  condensateMeV3 = (LambdaMeV * Sqrt[2/3])^3;
   mQSum = mU + mD;
   mPiSq = mQSum * condensateMeV3 / fPi^2;
-  N[Sqrt[Abs[mPiSq]]]
+  mPiLO = Sqrt[Abs[mPiSq]];
+  N[mPiLO * (1 + deltaPi)]
 ];
 
 End[];

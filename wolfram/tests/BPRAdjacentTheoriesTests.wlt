@@ -108,11 +108,11 @@ VerificationTest[
   TestID -> "P4.9-TcMgB2"
 ]
 
-(* P12.14: Pion mass *)
+(* P12.14: Pion mass (condensate = Lambda * Sqrt[2/3]) *)
 VerificationTest[
   Module[{mpi},
-    mpi = BPR`BPRPionMass[2.16, 4.67, 92.1];
-    mpi > 120 && mpi < 130
+    mpi = BPR`BPRPionMass[2.16, 4.67, 92.1, 332.0];
+    mpi > 125 && mpi < 128
   ],
   True,
   TestID -> "P12.14-PionMass"
