@@ -109,11 +109,11 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P12.4 | m_s | 93.4 MeV | FRAMEWORK | Experimental input |
 | P12.5 | m_c | 1242 MeV | DERIVED | PDG: 1270 ± 20 (S² l-modes, 2.2% off) |
 | P12.6 | m_b | 4180 MeV | FRAMEWORK | Experimental input |
-| P12.7 | m_t | 172760 MeV | FRAMEWORK | Anchor mass for up-type l-mode derivation |
+| P12.7 | m_t | 172200 MeV | DERIVED | m_t = v_EW/√2 (v_EW from boundary, 0.3% off) |
 | P12.8 | CKM θ₁₂ | 12.93° | DERIVED | PDG: 12.96° ± 0.03° (Gatto–Sartori–Tonin) |
-| P12.9 | CKM θ₂₃ | 2.32° | FRAMEWORK | Experimental input (Fritzsch texture 3.7× off) |
-| P12.10 | CKM θ₁₃ | 0.21° | FRAMEWORK | Experimental input |
-| P12.11 | Jarlskog J | 3.0×10⁻⁵ | FRAMEWORK | Depends on underived θ₂₃, θ₁₃, δ_CP |
+| P12.9 | CKM θ₂₃ | 2.33° | DERIVED | |V_cb| = √(m_s/m_b) / √(ln(p) + z/3) |
+| P12.10 | CKM θ₁₃ | 0.20° | DERIVED | |V_ub| = √(m_u/m_t) |
+| P12.11 | Jarlskog J | 3.0×10⁻⁵ | FRAMEWORK | Uses derived θ₂₃, θ₁₃; δ_CP still framework |
 | P12.13 | m_proton | 0.996 GeV | CONSISTENT | Standard QCD: m_p ≈ 3Λ_QCD (not BPR-specific) |
 | P12.14 | m_pion | 86 MeV | CONSISTENT | Standard GMOR relation (not BPR-specific, 36% off) |
 

@@ -27,6 +27,7 @@ BPRPionMass::usage = "BPRPionMass[opts] returns m_pi in MeV (GMOR).";
 
 (* Fine structure constant *)
 BPRInverseAlphaFromSubstrate::usage = "BPRInverseAlphaFromSubstrate[p, z] returns 1/alpha from substrate.";
+BPRElectroweakScaleGeV::usage = "BPRElectroweakScaleGeV[p, z, LambdaQCD] returns v_EW in GeV.";
 
 (* Meta-boundary *)
 BPRConstraintPotentialDoubleWell::usage = "BPRConstraintPotentialDoubleWell[kappa, eta, lambdaK] double-well potential.";
@@ -151,6 +152,10 @@ BPRInverseAlphaFromSubstrate[p_Integer: 104729, z_Integer: 6] := Module[
   scheme = -1/(2*Pi);
   N[screening + bare + lattice + scheme]
 ];
+
+(* Electroweak scale: v = Lambda_QCD * p^(1/3) * (ln(p) + z - 2) *)
+BPRElectroweakScaleGeV[p_Integer: 104729, z_Integer: 6, LambdaQCD_: 0.332] :=
+  N[LambdaQCD * p^(1/3) * (Log[p] + z - 2)];
 
 (* ========== Meta-boundary (meta_boundary.py) ========== *)
 

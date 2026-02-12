@@ -237,7 +237,7 @@ class SubstrateDerivedTheories:
         return th5.neutrino_nature(self.params.p)
 
     def pmns(self) -> th5.PMNSMatrix:
-        return th5.PMNSMatrix()
+        return th5.PMNSMatrix(p=self.params.p)
 
     # ------------------------------------------------------------------
     # Theory VI: Information Geometry
@@ -310,10 +310,14 @@ class SubstrateDerivedTheories:
     # Theory XII: QCD & Flavor Physics
     # ------------------------------------------------------------------
     def quark_masses(self) -> th12.QuarkMassSpectrum:
-        return th12.QuarkMassSpectrum()
+        v_EW = th17.electroweak_scale_GeV(
+            self.params.p, self.params.coordination_number
+        )
+        return th12.QuarkMassSpectrum(v_EW_GeV=v_EW)
 
     def ckm(self) -> th12.CKMMatrix:
-        return th12.CKMMatrix()
+        z = self.params.coordination_number
+        return th12.CKMMatrix(p=self.params.p, z=z)
 
     def color_confinement(self) -> th12.ColorConfinement:
         return th12.ColorConfinement(kappa=self.kappa, xi=self.xi)
@@ -838,10 +842,11 @@ class SubstrateDerivedTheories:
         preds["P17.9_exceeds_superK"] = pdec.exceeds_superK
         preds["P17.10_weinberg_sin2tw_GUT"] = th17.weinberg_angle_from_boundary()
 
-        # ── Higgs boson mass (DERIVED) ──
+        # ── Higgs boson mass & EW scale (DERIVED) ──
         hm = self.higgs_mass()
         preds["P17.11_higgs_mass_GeV"] = hm.higgs_mass_GeV
         preds["P17.12_higgs_lambda"] = hm.lambda_H
+        preds["P17.13_v_EW_GeV"] = hm.v_EW_GeV  # derived from Λ_QCD × p^(1/3) × (ln(p) + z − 2)
 
         # ── Theory XVIII: Charged Leptons ──
         lep = self.charged_leptons()
