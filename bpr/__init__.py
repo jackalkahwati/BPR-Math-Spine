@@ -26,6 +26,7 @@ now implements **21 theories** (Al-Kahwati, 2026):
     XIX   Nuclear Physics & Shell Structure   (bpr.nuclear_physics)
     XX    Quantum Gravity Phenomenology       (bpr.quantum_gravity_pheno)
     XXI   Quantum Chemistry & Periodic Table  (bpr.quantum_chemistry)
+    XXII  Meta-Boundary Dynamics with Decree  (bpr.meta_boundary)
 
 Based on the mathematical framework by Jack Al-Kahwati
 Contact: jack@thestardrive.com
@@ -110,6 +111,7 @@ try:
     from . import nuclear_physics     # Theory XIX  # noqa: F401
     from . import quantum_gravity_pheno  # Theory XX  # noqa: F401
     from . import quantum_chemistry   # Theory XXI  # noqa: F401
+    from . import meta_boundary      # Theory XXII # noqa: F401
 
     ADJACENT_THEORIES_AVAILABLE = True
 except Exception:

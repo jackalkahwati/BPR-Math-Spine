@@ -214,6 +214,8 @@ python -c "import fenics; print('✅ FEniCS installed successfully')"
 python -c "import mshr; print('✅ mshr installed successfully')"
 ```
 
+**If pytest segfaults (macOS + system Python):** NumPy's `_mac_os_check` can crash on some macOS/system-Python combinations. Use the project environment: `conda activate bpr` or `mamba env create -f environment.yml`, then `pytest -q`. `conftest.py` sets BLAS threading env vars to reduce this risk.
+
 ---
 
 ## 2 . Directory tree

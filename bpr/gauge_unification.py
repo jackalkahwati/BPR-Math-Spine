@@ -271,6 +271,26 @@ class GaugeCouplingRunning:
         deltas = [abs(th["delta_1"]), abs(th["delta_2"]), abs(th["delta_3"])]
         return max(deltas) / th["inv_alpha_gut"]
 
+    # ── §22 cross-reference: α_EM from substrate ──────────────────────
+
+    @property
+    def alpha_em_from_substrate(self) -> float:
+        """α_EM(q²=0) derived from substrate via §22 formula.
+
+        1/α = [ln(p)]² + z/2 + γ − 1/(2π)
+
+        This is independent of the bottom-up GUT calculation.
+        """
+        from .alpha_derivation import alpha_em_from_substrate
+        z = 6  # default sphere; override if geometry known
+        return alpha_em_from_substrate(self.p, z)
+
+    @property
+    def inv_alpha_from_substrate(self) -> float:
+        """1/α_EM(q²=0) derived from substrate via §22 formula."""
+        from .alpha_derivation import inverse_alpha_from_substrate
+        return inverse_alpha_from_substrate(self.p, 6)
+
 
 # ---------------------------------------------------------------------------
 # §17.2  Hierarchy problem resolution

@@ -71,6 +71,8 @@ from . import charged_leptons as th18
 from . import nuclear_physics as th19
 from . import quantum_gravity_pheno as th20
 from . import quantum_chemistry as th21
+from . import alpha_derivation as th22
+from . import meta_boundary as th23
 
 
 @dataclass
@@ -408,6 +410,14 @@ class SubstrateDerivedTheories:
         return th20.LorentzInvariance(p=self.params.p)
 
     # ------------------------------------------------------------------
+    # Theory XXIII: Meta-Boundary Dynamics with Decree
+    # ------------------------------------------------------------------
+
+    def meta_boundary_params(self) -> th23.MetaBoundaryParams:
+        """Meta-boundary constraint field parameters."""
+        return th23.MetaBoundaryParams()
+
+    # ------------------------------------------------------------------
     # Theory XXI: Quantum Chemistry
     # ------------------------------------------------------------------
 
@@ -620,7 +630,7 @@ class SubstrateDerivedTheories:
 
         # ── Prediction 13: Superconductivity T_c ──
         # Niobium: single-gap BCS superconductor
-        # N(0)V = 0.325 (electron-phonon coupling, Allen & Dynes 1975)
+        # N(0)V = 0.325 (Allen & Dynes 1975; Nb ~0.32-0.33) — FRAMEWORK: from experiment
         # T_Debye = 275 K
         # STATUS: FRAMEWORK (BPR provides Class C transition framework,
         # N(0)V from experimental electron-phonon coupling)
@@ -881,5 +891,30 @@ class SubstrateDerivedTheories:
             overlap=0.6, n_shared_modes=1).bond_order
         preds["P21.6_N2_bond_order"] = th21.ChemicalBond(
             overlap=0.5, n_shared_modes=3).bond_order
+
+        # ── Theory XXII: Fine Structure Constant ──
+        alpha_result = th22.derive_alpha(p=self.params.p,
+                                          z=self.params.coordination_number)
+        alpha_bd = th22.alpha_breakdown(p=self.params.p,
+                                         z=self.params.coordination_number)
+
+        preds["P22.1_inv_alpha_0_predicted"] = alpha_result.inv_alpha_0
+        preds["P22.2_inv_alpha_0_experiment"] = alpha_result.inv_alpha_0_exp
+        preds["P22.3_alpha_0_deviation_percent"] = alpha_result.deviation_0_percent
+        preds["P22.4_alpha_0_deviation_ppm"] = alpha_bd.deviation_ppm
+        preds["P22.5_inv_alpha_MZ_predicted"] = alpha_result.inv_alpha_MZ
+        preds["P22.6_inv_alpha_MZ_experiment"] = alpha_result.inv_alpha_MZ_exp
+        preds["P22.7_alpha_MZ_deviation_percent"] = alpha_result.deviation_MZ_percent
+        preds["P22.8_screening_term_lnp_sq"] = alpha_bd.screening
+        preds["P22.9_bare_coupling_kappa"] = alpha_bd.bare
+        preds["P22.10_formula"] = "1/α = [ln(p)]² + z/2 + γ − 1/(2π)"
+
+        # ── Theory XXIII: Meta-Boundary Dynamics with Decree ──
+        mb_preds = th23.meta_boundary_predictions(
+            kappa_rigidity=self.kappa,
+            xi=self.xi,
+        )
+        for k, v in mb_preds.items():
+            preds[k] = v
 
         return preds

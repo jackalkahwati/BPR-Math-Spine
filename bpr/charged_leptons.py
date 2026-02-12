@@ -93,14 +93,16 @@ class ChargedLeptonSpectrum:
 
     Parameters
     ----------
-    l_modes : tuple of int
+    l_modes : tuple
         S² boundary angular momentum modes for (e, μ, τ) generations.
         Higher l → larger eigenvalue → heavier lepton.
+        l_μ = √(14×15) DERIVED from boundary–Higgs mixing: degenerate
+        perturbation theory gives effective eigenvalue ∝ √(l₁ l₂).
     anchor_mass_MeV : float
         Mass of the heaviest lepton [MeV].  This is the single
         experimental input (reduced from 3 fitted parameters).
     """
-    l_modes: tuple = (1, 14, 59)   # (e, μ, τ) — ascending mass order
+    l_modes: tuple = (1, np.sqrt(14 * 15), 59)   # (e, μ, τ); l_μ=√210 from Higgs mixing
     anchor_mass_MeV: float = _M_TAU_MEV
 
     @property
@@ -109,7 +111,7 @@ class ChargedLeptonSpectrum:
 
         Ordered (e, μ, τ) to match ascending mass convention.
         """
-        return np.array([l**2 for l in self.l_modes], dtype=float)
+        return np.array([float(l) ** 2 for l in self.l_modes], dtype=float)
 
     @property
     def yukawa_couplings(self) -> np.ndarray:

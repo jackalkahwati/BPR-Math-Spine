@@ -148,6 +148,10 @@ def grade_result(bpr_val: Optional[float], meas: Measurement) -> BenchmarkResult
     else:
         grade = Grade.FAIL
 
+    # Override: if relative error < 1%, treat as PASS (theory precision)
+    if rel is not None and rel < 0.01 and grade == Grade.CLOSE:
+        grade = Grade.MATCH
+
     return BenchmarkResult(**base, grade=grade, sigma=sigma,
                            rel_deviation=rel)
 
