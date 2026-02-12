@@ -93,6 +93,38 @@ assert["Eq7 (phenomenological StateOfArt2024 bound satisfied)",
   ]
 ];
 
+(* Adjacent theories: P11.15, P18.2, P19.8, P19.9, P4.7, P12.14 *)
+(* P11.15: W_c = Sqrt[3] from first principles (kappa = z/2, W_c = Sqrt[kappa]) *)
+assert["P11.15 (DM relic Omega h^2 in range)",
+  Module[{omega}, omega = BPR`BPRDMRelicAbundance[Sqrt[3], 104729];
+    omega > 0.10 && omega < 0.14]
+];
+
+assert["P18.2 (charged lepton masses)",
+  Module[{m}, m = BPR`BPRChargedLeptonMasses[];
+    m["mu"] > 105 && m["mu"] < 110]
+];
+
+assert["P19.8 (B/A He4)",
+  Module[{b}, b = BPR`BPRBindingEnergyPerNucleon[4, 2];
+    b > 6.9 && b < 7.2]
+];
+
+assert["P19.9 (saturation density)",
+  Module[{r}, r = BPR`BPRNuclearSaturationDensity[1.25];
+    r > 0.15 && r < 0.17]
+];
+
+assert["P4.7 (Tc Nb)",
+  Module[{tc}, tc = BPR`BPRSuperconductorTc[0.325, 275.0];
+    tc > 9.0 && tc < 9.5]
+];
+
+assert["P12.14 (pion mass)",
+  Module[{mpi}, mpi = BPR`BPRPionMass[2.16, 4.67, 92.1];
+    mpi > 120 && mpi < 130]
+];
+
 Print["---"];
 Print["Equation smoke tests: ", pass, " passed, ", fail, " failed."];
 If[fail > 0, Exit[1], Exit[0]];

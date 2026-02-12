@@ -4,8 +4,8 @@
 
 The repo currently has **two validated implementations**:
 
-- **Wolfram Language (WL)**: validated for the *WL-native spine modules implemented so far* (boundary spectrum/solver, Eq(3/6b), Eq(4), Eq(5), Eq(7) calibrated Casimir, plus RPST scaffolding).
-- **Python**: includes additional modules (HKLL, symbolic conservation verification, resonance/GUE tooling) that are **not yet ported/validated in WL**.
+- **Wolfram Language (WL)**: validated for the *WL-native spine modules* (boundary spectrum/solver, Eq(3/6b), Eq(4), Eq(5), Eq(7) calibrated Casimir, RPST scaffolding) **plus Adjacent Theories** (cosmology/DM relic, charged leptons, nuclear physics, phase transitions, QCD pion).
+- **Python**: includes additional modules (HKLL, symbolic conservation verification, resonance/GUE tooling, meta-boundary, alpha derivation) that are **not yet ported/validated in WL**.
 
 This doc is intended to be a precise “what is validated where” snapshot, suitable for sharing with reviewers.
 
@@ -20,6 +20,7 @@ cd /Users/jackal-kahwati/BPR-Math-Spine
 wolframscript -timeout 60 -code 'TestReport["wolfram/tests/BPRTests.wlt"]'
 wolframscript -timeout 60 -code 'TestReport["wolfram/tests/BPREquationTests.wlt"]'
 wolframscript -timeout 60 -code 'TestReport["wolfram/tests/BPRRPSTTests.wlt"]'
+wolframscript -timeout 60 -code 'TestReport["wolfram/tests/BPRAdjacentTheoriesTests.wlt"]'
 ```
 
 ### What those WL tests cover
@@ -33,6 +34,7 @@ wolframscript -timeout 60 -code 'TestReport["wolfram/tests/BPRRPSTTests.wlt"]'
   - **λ_theory** (\(\lambda=\kappa \ell_P^2\)) gives essentially zero deviation (λ→0 recovery).
   - **λ_eff** constructed from an experimental bound satisfies \(|\Delta F/F|\le \varepsilon\) at the reference separation.
 - **RPST (Eq 0a–0e, partial)**: finite-field closure, symplectic reversibility, winding number sanity, Hamiltonian matrix/eigenvalues basic properties.
+- **Adjacent Theories**: P11.15 (DM relic Ω h²), P18.2 (charged lepton masses, l_μ=√210), P19.8 (B/A He4, Fe56), P19.9 (saturation density), P4.7/P4.9 (superconductor Tc), P12.14 (pion mass).
 
 ### Not yet covered in WL (important)
 
