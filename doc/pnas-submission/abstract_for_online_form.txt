@@ -1,0 +1,15 @@
+ABSTRACT FOR PNAS ONLINE SUBMISSION FORM
+=========================================
+Copy the text below (between the === markers) and paste it into the abstract field
+in the PNAS Central online submission form. This must match the abstract in your
+manuscript file exactly.
+
+=========================================
+
+We present Boundary Phase Resonance (BPR), a framework that derives the Standard Model particle spectrum from a discrete Z_p lattice Hamiltonian on a boundary surface. The boundary rigidity kappa = z/2, correlation length xi = a sqrt(ln p), and bulk coupling lambda_BPR = ell_P^2 kappa_dim/(8 pi) follow from coarse-graining three substrate parameters (J, p, N) via standard lattice field theory. Using four additional anchor masses (one per fermion sector, 7 total inputs), BPR produces 50 benchmarked predictions (43 degrees of freedom), all within 2 sigma of experiment. Principal results: (i) the Higgs boson mass m_H = 125.2 GeV from lambda_H = z/p^(1/3)(1 + alpha_W cos 2 theta_W), where the electroweak parity asymmetry cos 2 theta_W arises from the opposite-sign contributions of SU(2)_L and U(1)_Y to the boundary effective potential (observed: 125.25 +/- 0.17 GeV); (ii) down-type quark masses from a winding-shifted boundary spectrum E_l = l(l + W_c) with W_c = sqrt(kappa), yielding m_s/m_d = 20.0 (observed: 20.0); (iii) all three neutrino mixing angles within 0.3-0.6 sigma of PDG values; (iv) the baryon asymmetry eta_B = 6.2 x 10^(-10) via boundary-enhanced sphaleron rate (Planck: 6.14 +/- 0.19 x 10^(-10)); and (v) a Casimir force correction with exponent delta = 1.37 +/- 0.05 testable with current MEMS technology. All derivations are implemented as open-source software with 488 automated tests.
+
+=========================================
+
+NOTE: If the online form has a character limit, you may need to use a slightly
+condensed version. The manuscript abstract is the authoritative version—ensure
+any online form entry matches it verbatim.
