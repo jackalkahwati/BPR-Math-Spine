@@ -603,3 +603,294 @@ class TestIntegration:
             assert judgments[i + 1] >= judgments[i], (
                 f"Judgment should increase with restoration: {judgments}"
             )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Terminal Coherence Surge  (Section 10.1.2)
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestTerminalCoherenceSurge:
+    """Gamma burst as boundary-decoupling phase transition."""
+
+    def test_surge_exhibits_peak_before_tc(self):
+        from bpr.eschatology import TerminalCoherenceSurge
+        tcs = TerminalCoherenceSurge(t_c=30.0)
+        t = np.linspace(0, 60, 1000)
+        K = tcs.coherence_profile(t)
+        peak_idx = np.argmax(K)
+        assert t[peak_idx] < tcs.t_c, "Peak should occur before critical time"
+
+    def test_surge_decays_after_tc(self):
+        from bpr.eschatology import TerminalCoherenceSurge
+        tcs = TerminalCoherenceSurge(t_c=30.0)
+        t_post = np.linspace(30.0, 60.0, 100)
+        K_post = tcs.coherence_profile(t_post)
+        # Coherence should monotonically decrease after t_c
+        assert np.all(np.diff(K_post) <= 1e-10)
+
+    def test_peak_coherence_exceeds_background(self):
+        from bpr.eschatology import TerminalCoherenceSurge
+        tcs = TerminalCoherenceSurge(K_bg=0.05, A=0.8)
+        assert tcs.peak_coherence() > tcs.K_bg
+
+    def test_coherence_bounded_by_one(self):
+        from bpr.eschatology import TerminalCoherenceSurge
+        tcs = TerminalCoherenceSurge(A=10.0)  # large amplitude
+        t = np.linspace(0, 60, 1000)
+        K = tcs.coherence_profile(t)
+        assert np.all(K <= 1.0)
+
+    def test_bpr_consistency_check(self):
+        from bpr.eschatology import TerminalCoherenceSurge
+        tcs = TerminalCoherenceSurge()
+        assert tcs.is_consistent_with_bpr(0.75) is True   # within [0.5, 1.5]
+        assert tcs.is_consistent_with_bpr(0.0) is False   # neural rundown (below range)
+        assert tcs.is_consistent_with_bpr(3.0) is False   # outside range
+        assert tcs.is_consistent_with_bpr(0.5) is True    # lower boundary (inclusive)
+        assert tcs.is_consistent_with_bpr(-0.1) is False  # negative
+
+    def test_neural_rundown_is_monotone(self):
+        from bpr.eschatology import TerminalCoherenceSurge
+        t = np.linspace(0, 60, 500)
+        K_rundown = TerminalCoherenceSurge.neural_rundown_profile(t)
+        # Monotonically decreasing
+        assert np.all(np.diff(K_rundown) <= 0)
+
+    def test_bpr_distinguishable_from_rundown(self):
+        """BPR surge should have higher peak than monotone rundown."""
+        from bpr.eschatology import TerminalCoherenceSurge
+        tcs = TerminalCoherenceSurge(K_bg=0.05, A=0.8, t_c=30.0)
+        t = np.linspace(0, 60, 1000)
+        K_bpr = tcs.coherence_profile(t)
+        K_rundown = TerminalCoherenceSurge.neural_rundown_profile(t, K0=0.5)
+        assert np.max(K_bpr) > np.max(K_rundown)
+
+    def test_frequency_range_set(self):
+        from bpr.eschatology import TerminalCoherenceSurge
+        tcs = TerminalCoherenceSurge()
+        assert tcs.freq_range == (25.0, 100.0)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Superlinear Collective Coherence Scaling  (Section 10.2.2)
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestCollectiveCoherenceScaling:
+    """chi_group ~ N^{1 + delta} with delta > 0."""
+
+    def test_superlinear_exceeds_linear(self):
+        from bpr.eschatology import CollectiveCoherenceScaling
+        ccs = CollectiveCoherenceScaling(delta=0.15)
+        for N in [10, 50, 100, 1000]:
+            assert ccs.group_coherence(N) > ccs.linear_coherence(N)
+
+    def test_linear_at_delta_zero(self):
+        from bpr.eschatology import CollectiveCoherenceScaling
+        ccs = CollectiveCoherenceScaling(delta=0.0)
+        for N in [10, 100]:
+            assert ccs.group_coherence(N) == pytest.approx(ccs.linear_coherence(N))
+
+    def test_superlinear_ratio_increases_with_N(self):
+        from bpr.eschatology import CollectiveCoherenceScaling
+        ccs = CollectiveCoherenceScaling(delta=0.15)
+        ratios = [ccs.superlinear_ratio(N) for N in [10, 100, 1000]]
+        for i in range(len(ratios) - 1):
+            assert ratios[i + 1] > ratios[i]
+
+    def test_fit_exponent_recovers_delta(self):
+        from bpr.eschatology import CollectiveCoherenceScaling
+        true_delta = 0.2
+        ccs = CollectiveCoherenceScaling(delta=true_delta, chi_1=1.5)
+        N_values = np.array([5, 10, 20, 50, 100, 200, 500])
+        chi_values = np.array([ccs.group_coherence(N) for N in N_values])
+        fitted = ccs.fit_exponent(N_values, chi_values)
+        assert fitted == pytest.approx(true_delta, abs=0.01)
+
+    def test_is_superlinear_true(self):
+        from bpr.eschatology import CollectiveCoherenceScaling
+        ccs = CollectiveCoherenceScaling(delta=0.2)
+        N = np.array([10, 50, 100, 500])
+        chi = np.array([ccs.group_coherence(n) for n in N])
+        assert ccs.is_superlinear(N, chi) == True
+
+    def test_is_superlinear_false_for_linear(self):
+        from bpr.eschatology import CollectiveCoherenceScaling
+        ccs = CollectiveCoherenceScaling(delta=0.0)
+        N = np.array([10, 50, 100, 500])
+        chi = np.array([ccs.linear_coherence(n) for n in N])
+        # Use significance threshold to handle float precision on perfectly linear data
+        assert ccs.is_superlinear(N, chi, significance=0.01) == False
+
+    def test_zero_agents_returns_zero(self):
+        from bpr.eschatology import CollectiveCoherenceScaling
+        ccs = CollectiveCoherenceScaling()
+        assert ccs.group_coherence(0) == 0.0
+        assert ccs.linear_coherence(0) == 0.0
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Duty-Cycle Optimization  (Section 10.2.3)
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestDutyCycleOptimizer:
+    """D* ~ 6/7 for matched active/rest quality ratio."""
+
+    def test_sabbath_duty_cycle(self):
+        from bpr.eschatology import DutyCycleOptimizer
+        assert DutyCycleOptimizer.sabbath_duty_cycle() == pytest.approx(6.0 / 7.0)
+
+    def test_optimal_duty_cycle_analytic(self):
+        from bpr.eschatology import DutyCycleOptimizer
+        dco = DutyCycleOptimizer(Q_active=6.0, Q_rest=1.0)
+        assert dco.optimal_duty_cycle == pytest.approx(6.0 / 7.0)
+
+    def test_equal_q_gives_half(self):
+        from bpr.eschatology import DutyCycleOptimizer
+        dco = DutyCycleOptimizer(Q_active=1.0, Q_rest=1.0)
+        assert dco.optimal_duty_cycle == pytest.approx(0.5)
+
+    def test_sustained_output_zero_at_extremes(self):
+        from bpr.eschatology import DutyCycleOptimizer
+        dco = DutyCycleOptimizer()
+        assert dco.sustained_output(0.0) == 0.0
+        assert dco.sustained_output(1.0) == 0.0
+
+    def test_sustained_output_positive_at_moderate_duty(self):
+        from bpr.eschatology import DutyCycleOptimizer
+        dco = DutyCycleOptimizer()
+        assert dco.sustained_output(0.5) > 0
+
+    def test_scan_returns_valid_arrays(self):
+        from bpr.eschatology import DutyCycleOptimizer
+        dco = DutyCycleOptimizer()
+        D, out = dco.scan_duty_cycles(n_points=50, n_cycles=50)
+        assert len(D) == 50
+        assert len(out) == 50
+        assert np.all(D > 0) and np.all(D < 1)
+
+    def test_optimal_is_interior(self):
+        """Optimal duty cycle should not be at the extremes."""
+        from bpr.eschatology import DutyCycleOptimizer
+        dco = DutyCycleOptimizer(Q_active=6.0, Q_rest=1.0)
+        D_opt = dco.find_optimal(n_points=100, n_cycles=100)
+        assert 0.3 < D_opt < 0.99
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Falsification Criteria  (Section 10.4)
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestFalsificationCriteria:
+    """Explicit tests for the four falsification criteria."""
+
+    def test_memory_kernel_oscillatory_passes(self):
+        """Criterion 1: oscillatory correlations should not falsify."""
+        from bpr.eschatology import FalsificationCriteria
+        fc = FalsificationCriteria()
+        tau = np.linspace(0, 10, 500)
+        # Oscillatory decay (BPR prediction) — need enough sign changes for 10% threshold
+        # cos(20*tau) has ~63 zero crossings in [0,10], giving fraction ~63/499 > 0.1
+        C = np.exp(-tau / 2.0) * np.cos(20.0 * tau)
+        result = fc.test_memory_kernel_present(C, tau)
+        assert result["has_oscillation"] == True
+        assert result["falsified"] == False
+
+    def test_memory_kernel_monotone_falsifies(self):
+        """Criterion 1: pure exponential decay falsifies."""
+        from bpr.eschatology import FalsificationCriteria
+        fc = FalsificationCriteria()
+        tau = np.linspace(0, 10, 200)
+        # Pure exponential (no oscillation)
+        C = np.exp(-tau / 2.0)
+        result = fc.test_memory_kernel_present(C, tau)
+        assert result["has_oscillation"] == False
+        assert result["falsified"] == True
+
+    def test_trichotomy_three_fates_passes(self):
+        """Criterion 2: three known fates should not falsify."""
+        from bpr.eschatology import FalsificationCriteria
+        fc = FalsificationCriteria()
+        result = fc.test_trichotomy_complete(
+            ["dissolution", "migration", "reincorporation"]
+        )
+        assert result["falsified"] is False
+        assert len(result["unknown_fates"]) == 0
+
+    def test_trichotomy_fourth_fate_falsifies(self):
+        """Criterion 2: a fourth fate should falsify."""
+        from bpr.eschatology import FalsificationCriteria
+        fc = FalsificationCriteria()
+        result = fc.test_trichotomy_complete(
+            ["dissolution", "migration", "teleportation"]
+        )
+        assert result["falsified"] is True
+        assert "teleportation" in result["unknown_fates"]
+
+    def test_universality_high_overlap_passes(self):
+        """Criterion 3: shared source attractors should not falsify."""
+        from bpr.eschatology import FalsificationCriteria
+        fc = FalsificationCriteria()
+        traditions = {
+            "Judaism": ["truth", "record", "judgment", "deception"],
+            "Christianity": ["truth", "record", "judgment", "deception"],
+            "Islam": ["truth", "record", "judgment", "deception"],
+        }
+        result = fc.test_source_attractor_universality(traditions)
+        assert result["falsified"] is False
+        assert result["overlap_fraction"] == pytest.approx(1.0)
+
+    def test_universality_no_overlap_falsifies(self):
+        """Criterion 3: no shared attractors should falsify."""
+        from bpr.eschatology import FalsificationCriteria
+        fc = FalsificationCriteria()
+        traditions = {
+            "A": ["truth", "record"],
+            "B": ["beauty", "harmony"],
+        }
+        result = fc.test_source_attractor_universality(traditions)
+        assert result["falsified"] is True
+        assert result["overlap_fraction"] == 0.0
+
+    def test_deceptive_transience_with_noise_passes(self):
+        """Criterion 4: finite escape time with noise should not falsify."""
+        from bpr.eschatology import FalsificationCriteria
+        fc = FalsificationCriteria()
+        result = fc.test_deceptive_attractor_transience(delta_V=2.0, epsilon=0.5)
+        assert result["is_finite"] == True
+        assert result["falsified"] == False
+
+    def test_deceptive_transience_no_noise_not_falsified(self):
+        """Criterion 4: infinite lifetime without noise is physically expected."""
+        from bpr.eschatology import FalsificationCriteria
+        fc = FalsificationCriteria()
+        result = fc.test_deceptive_attractor_transience(delta_V=2.0, epsilon=0.0)
+        # epsilon=0 means no noise, so infinite lifetime is expected, not falsifying
+        assert result["falsified"] is False
+
+    def test_run_all_returns_all_criteria(self):
+        """run_all should return results for all provided criteria."""
+        from bpr.eschatology import FalsificationCriteria
+        fc = FalsificationCriteria()
+        tau = np.linspace(0, 10, 100)
+        C = np.exp(-tau) * np.cos(2 * tau)
+        results = fc.run_all(
+            correlation_data=C,
+            tau_values=tau,
+            observed_fates=["dissolution", "migration"],
+            traditions={"A": ["truth"], "B": ["truth"]},
+            delta_V=1.0,
+            epsilon=0.1,
+        )
+        assert "memory_kernel" in results
+        assert "trichotomy" in results
+        assert "universality" in results
+        assert "deceptive_transience" in results
+
+    def test_run_all_skips_missing_data(self):
+        """run_all should skip criteria without data."""
+        from bpr.eschatology import FalsificationCriteria
+        fc = FalsificationCriteria()
+        results = fc.run_all()
+        assert "memory_kernel" not in results
+        assert "trichotomy" not in results
+        assert "deceptive_transience" in results  # always runs

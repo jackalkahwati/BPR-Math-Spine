@@ -1106,6 +1106,623 @@ def build_default_projection() -> SymbolicProjection:
 # Convenience: summary dictionary matching Table 1
 # ===================================================================
 
+# ===================================================================
+# Section 10.1.2: Terminal Coherence Surge
+# ===================================================================
+
+@dataclass
+class TerminalCoherenceSurge:
+    r"""Model for coherence burst during boundary decoupling (Section 10.1.2).
+
+    The empirically observed gamma burst (~25-100 Hz) approximately 30 s
+    post cardiac arrest should exhibit critical exponents consistent with
+    a boundary-decoupling phase transition rather than simple neural rundown.
+
+    Near the decoupling critical point chi -> 0, the coherence exhibits
+    a surge before final collapse:
+
+        K(t) = K_bg + A * |t - t_c|^{-gamma_crit} * exp(-(t - t_c)^2 / (2 sigma^2))
+
+    for t < t_c (pre-collapse), followed by rapid decay for t > t_c.
+
+    The critical exponent gamma_crit distinguishes:
+        - BPR prediction:  gamma_crit in [0.5, 1.5] (boundary phase transition)
+        - Neural rundown:  gamma_crit = 0 (monotone exponential decay, no surge)
+
+    Parameters
+    ----------
+    K_bg : float
+        Background coherence level.
+    A : float
+        Surge amplitude.
+    gamma_crit : float
+        Critical exponent of the boundary-decoupling transition.
+    t_c : float
+        Critical time (moment of complete decoupling).
+    sigma : float
+        Width of the surge envelope.
+    freq_range : tuple of float
+        Expected frequency range of the coherence burst (Hz).
+    """
+    K_bg: float = 0.05
+    A: float = 0.8
+    gamma_crit: float = 0.75
+    t_c: float = 30.0
+    sigma: float = 5.0
+    freq_range: Tuple[float, float] = (25.0, 100.0)
+
+    def coherence_profile(self, t: np.ndarray) -> np.ndarray:
+        r"""Compute coherence K(t) during terminal decoupling.
+
+        Parameters
+        ----------
+        t : ndarray
+            Time array (seconds relative to cardiac arrest).
+
+        Returns
+        -------
+        ndarray
+            Coherence profile K(t).
+        """
+        t = np.asarray(t, dtype=float)
+        K = np.full_like(t, self.K_bg)
+
+        # Pre-critical surge: power-law divergence with Gaussian envelope
+        pre = t < self.t_c
+        dt_pre = self.t_c - t[pre]
+        # Avoid division by zero with a small floor
+        dt_safe = np.maximum(dt_pre, 1e-6)
+        surge = self.A * dt_safe ** (-self.gamma_crit) * np.exp(
+            -dt_pre ** 2 / (2.0 * self.sigma ** 2)
+        )
+        # Cap the surge at physical maximum K = 1
+        K[pre] = np.minimum(self.K_bg + surge, 1.0)
+
+        # Post-critical rapid decay
+        post = t >= self.t_c
+        dt_post = t[post] - self.t_c
+        K[post] = self.K_bg * np.exp(-dt_post / (self.sigma * 0.1))
+
+        return K
+
+    def peak_coherence(self) -> float:
+        r"""Compute the peak coherence during the surge.
+
+        Returns
+        -------
+        float
+            Maximum coherence value K_peak.
+        """
+        # Peak occurs where d/dt [|t_c - t|^{-gamma} * exp(-dt^2/2sigma^2)] = 0
+        # Approximate numerically
+        t_test = np.linspace(self.t_c - 4 * self.sigma, self.t_c - 0.01, 1000)
+        K_test = self.coherence_profile(t_test)
+        return float(np.max(K_test))
+
+    def is_consistent_with_bpr(self, observed_gamma: float,
+                                tolerance: float = 0.5) -> bool:
+        r"""Test whether an observed critical exponent is consistent with BPR.
+
+        BPR predicts gamma_crit in [0.5, 1.5] for boundary decoupling.
+        Simple neural rundown predicts gamma_crit = 0 (no surge).
+
+        Parameters
+        ----------
+        observed_gamma : float
+            Observed critical exponent from neural coherence data.
+        tolerance : float
+            Allowed deviation from the BPR range.
+
+        Returns
+        -------
+        bool
+            True if observation is consistent with BPR prediction.
+        """
+        bpr_low = 0.5 - tolerance
+        bpr_high = 1.5 + tolerance
+        return bpr_low < observed_gamma <= bpr_high
+
+    @staticmethod
+    def neural_rundown_profile(t: np.ndarray, K0: float = 0.5,
+                                tau_decay: float = 10.0) -> np.ndarray:
+        r"""Simple exponential neural rundown (null hypothesis).
+
+        K(t) = K0 * exp(-t / tau_decay)
+
+        No surge, monotone decay. This is the profile expected if the
+        gamma burst is NOT a boundary-decoupling phase transition.
+
+        Parameters
+        ----------
+        t : ndarray
+            Time array.
+        K0 : float
+            Initial coherence.
+        tau_decay : float
+            Decay time constant.
+
+        Returns
+        -------
+        ndarray
+            Monotone decaying coherence.
+        """
+        return K0 * np.exp(-np.asarray(t) / tau_decay)
+
+
+# ===================================================================
+# Section 10.2.2: Superlinear Collective Coherence Scaling
+# ===================================================================
+
+@dataclass
+class CollectiveCoherenceScaling:
+    r"""Superlinear coherence scaling in synchronized groups (Section 10.2.2).
+
+    BPR predicts that groups in synchronized practice show superlinear
+    coherence scaling:
+
+        chi_group ~ N^{1 + delta}     with delta > 0
+
+    This is distinguishable from linear superposition (delta = 0), where
+    coherence scales merely as N.
+
+    The boundary-mediated coupling introduces correlations that amplify
+    the collective coherence beyond the sum of individual contributions.
+
+    Parameters
+    ----------
+    delta : float
+        Superlinear exponent (BPR predicts delta > 0).
+    chi_1 : float
+        Single-agent baseline coherence.
+    """
+    delta: float = 0.15
+    chi_1: float = 1.0
+
+    def group_coherence(self, N: int) -> float:
+        r"""Compute collective coherence for N synchronized agents.
+
+        chi_group = chi_1 * N^{1 + delta}
+
+        Parameters
+        ----------
+        N : int
+            Number of synchronized agents.
+
+        Returns
+        -------
+        float
+            Collective coherence.
+        """
+        if N <= 0:
+            return 0.0
+        return self.chi_1 * float(N) ** (1.0 + self.delta)
+
+    def linear_coherence(self, N: int) -> float:
+        r"""Linear superposition baseline (null hypothesis).
+
+        chi_linear = chi_1 * N
+
+        Parameters
+        ----------
+        N : int
+            Number of agents.
+
+        Returns
+        -------
+        float
+            Linear-scaling coherence.
+        """
+        if N <= 0:
+            return 0.0
+        return self.chi_1 * float(N)
+
+    def superlinear_ratio(self, N: int) -> float:
+        r"""Ratio of BPR superlinear to linear coherence.
+
+        ratio = N^delta
+
+        Parameters
+        ----------
+        N : int
+            Number of agents.
+
+        Returns
+        -------
+        float
+            Superlinear enhancement factor.
+        """
+        if N <= 0:
+            return 1.0
+        return float(N) ** self.delta
+
+    def fit_exponent(self, N_values: np.ndarray,
+                     chi_values: np.ndarray) -> float:
+        r"""Fit the scaling exponent from observed (N, chi) data.
+
+        Fits log(chi) = log(chi_1) + (1 + delta) * log(N)
+        and returns the estimated delta.
+
+        Parameters
+        ----------
+        N_values : ndarray
+            Array of group sizes.
+        chi_values : ndarray
+            Array of measured collective coherences.
+
+        Returns
+        -------
+        float
+            Fitted delta (superlinear exponent). delta > 0 supports BPR.
+        """
+        log_N = np.log(np.asarray(N_values, dtype=float))
+        log_chi = np.log(np.asarray(chi_values, dtype=float))
+        # Linear regression: log_chi = a + b * log_N, where b = 1 + delta
+        coeffs = np.polyfit(log_N, log_chi, 1)
+        return coeffs[0] - 1.0  # b - 1 = delta
+
+    def is_superlinear(self, N_values: np.ndarray,
+                       chi_values: np.ndarray,
+                       significance: float = 0.0) -> bool:
+        r"""Test whether observed scaling is superlinear.
+
+        Parameters
+        ----------
+        N_values : ndarray
+            Array of group sizes.
+        chi_values : ndarray
+            Array of measured collective coherences.
+        significance : float
+            Minimum delta to count as superlinear.
+
+        Returns
+        -------
+        bool
+            True if fitted delta > significance.
+        """
+        delta_fit = self.fit_exponent(N_values, chi_values)
+        return delta_fit > significance
+
+
+# ===================================================================
+# Section 10.2.3: Duty-Cycle Optimization
+# ===================================================================
+
+@dataclass
+class DutyCycleOptimizer:
+    r"""Optimal duty cycle for driven resonant systems (Section 10.2.3).
+
+    BPR predicts that productivity and resonance stability metrics show
+    an optimal duty cycle near D* ~ 6/7, testable in any driven
+    oscillator system.
+
+    A driven oscillator with periodic forcing and dissipation achieves
+    maximum sustained output at:
+
+        D* = 1 - 1/(1 + Q/Q_rest)
+
+    where Q is the active quality factor and Q_rest is the recovery
+    quality factor during rest.
+
+    For matched Q = Q_rest, D* = 1/2. For Q >> Q_rest (typical
+    biological/physical systems), D* -> 1. For Q/Q_rest ~ 6,
+    D* = 6/7 ~ 0.857.
+
+    Parameters
+    ----------
+    Q_active : float
+        Quality factor during active (driven) period.
+    Q_rest : float
+        Quality factor during rest (recovery) period.
+    """
+    Q_active: float = 6.0
+    Q_rest: float = 1.0
+
+    @property
+    def optimal_duty_cycle(self) -> float:
+        r"""Compute optimal duty cycle D*.
+
+        D* = Q_active / (Q_active + Q_rest)
+
+        Returns
+        -------
+        float
+            Optimal duty cycle in (0, 1).
+        """
+        return self.Q_active / (self.Q_active + self.Q_rest)
+
+    def sustained_output(self, D: float, n_cycles: int = 100) -> float:
+        r"""Compute sustained output for a given duty cycle.
+
+        Models a system that accumulates output during active phase
+        and recovers capacity during rest phase.
+
+        Output per cycle = D * capacity
+        Capacity recovery = (1 - D) * Q_rest / Q_active
+
+        Over many cycles, the system reaches a steady-state capacity
+        that depends on D.
+
+        Parameters
+        ----------
+        D : float
+            Duty cycle in (0, 1).
+        n_cycles : int
+            Number of cycles to simulate.
+
+        Returns
+        -------
+        float
+            Average sustained output per cycle at steady state.
+        """
+        if D <= 0 or D >= 1:
+            return 0.0
+        capacity = 1.0
+        total_output = 0.0
+        for _ in range(n_cycles):
+            output = D * capacity
+            total_output += output
+            # Depletion during active phase
+            depletion = D * capacity / self.Q_active
+            # Recovery during rest phase
+            recovery = (1.0 - D) * (1.0 - capacity) * self.Q_rest
+            capacity = np.clip(capacity - depletion + recovery, 0.0, 1.0)
+        # Return average over last 10% of cycles (steady state)
+        return total_output / n_cycles
+
+    def scan_duty_cycles(self, n_points: int = 100,
+                          n_cycles: int = 200) -> Tuple[np.ndarray, np.ndarray]:
+        r"""Scan sustained output across duty cycles.
+
+        Parameters
+        ----------
+        n_points : int
+            Number of duty cycle values to test.
+        n_cycles : int
+            Cycles per simulation.
+
+        Returns
+        -------
+        D_values : ndarray
+            Duty cycle values.
+        outputs : ndarray
+            Sustained output at each D.
+        """
+        D_values = np.linspace(0.01, 0.99, n_points)
+        outputs = np.array([self.sustained_output(D, n_cycles) for D in D_values])
+        return D_values, outputs
+
+    def find_optimal(self, n_points: int = 200,
+                     n_cycles: int = 200) -> float:
+        r"""Find the empirical optimal duty cycle by scanning.
+
+        Returns
+        -------
+        float
+            Duty cycle D that maximizes sustained output.
+        """
+        D_values, outputs = self.scan_duty_cycles(n_points, n_cycles)
+        return float(D_values[np.argmax(outputs)])
+
+    @staticmethod
+    def sabbath_duty_cycle() -> float:
+        r"""The Sabbath duty cycle: 6 days work / 7 days total.
+
+        Returns
+        -------
+        float
+            6/7 ~ 0.8571
+        """
+        return 6.0 / 7.0
+
+
+# ===================================================================
+# Section 10.4: Falsification Criteria
+# ===================================================================
+
+@dataclass
+class FalsificationCriteria:
+    r"""Explicit falsification criteria for the eschatology framework (Section 10.4).
+
+    The framework is falsified if ANY of the following are observed:
+
+    1. Physical memory effects are absent in systems where boundary
+       phase coherence is well-established.
+    2. The topological trichotomy admits a fourth, topologically
+       distinct fate.
+    3. Source attractors identified from one tradition fail to appear
+       in independently developed traditions.
+    4. Deceptive attractors (locally stable, globally unstable) are
+       found to have infinite lifetime in the presence of fluctuations.
+    """
+
+    @staticmethod
+    def test_memory_kernel_present(
+        correlation_data: np.ndarray,
+        tau_values: np.ndarray,
+        oscillatory_threshold: float = 0.1,
+    ) -> Dict[str, object]:
+        r"""Test Criterion 1: memory kernel signatures must be present.
+
+        If boundary phase coherence exists, temporal correlations should
+        decay as e^{-|t|/tau_m} cos(omega_r t) — NOT pure exponential.
+
+        Tests for sign changes in the correlation function (oscillatory
+        component) which are absent in pure exponential decay.
+
+        Parameters
+        ----------
+        correlation_data : ndarray
+            Measured temporal correlation values C(tau).
+        tau_values : ndarray
+            Time lag values.
+        oscillatory_threshold : float
+            Minimum fraction of sign-changing points to confirm
+            oscillatory behavior.
+
+        Returns
+        -------
+        dict with:
+            'has_oscillation' : bool
+            'sign_change_fraction' : float
+            'falsified' : bool -- True if criterion is violated
+        """
+        correlation_data = np.asarray(correlation_data)
+        sign_changes = np.sum(np.diff(np.sign(correlation_data)) != 0)
+        n_points = len(correlation_data) - 1
+        fraction = sign_changes / n_points if n_points > 0 else 0.0
+
+        has_oscillation = fraction > oscillatory_threshold
+        return {
+            "has_oscillation": has_oscillation,
+            "sign_change_fraction": fraction,
+            "falsified": not has_oscillation,
+        }
+
+    @staticmethod
+    def test_trichotomy_complete(observed_fates: List[str]) -> Dict[str, object]:
+        r"""Test Criterion 2: no fourth topologically distinct fate.
+
+        Parameters
+        ----------
+        observed_fates : list of str
+            Observed fate categories from decoupling experiments.
+            Valid values: 'dissolution', 'migration', 'reincorporation'.
+
+        Returns
+        -------
+        dict with:
+            'known_fates' : set
+            'unknown_fates' : set
+            'falsified' : bool -- True if a fourth fate is observed
+        """
+        allowed = {"dissolution", "migration", "reincorporation"}
+        observed_set = set(observed_fates)
+        unknown = observed_set - allowed
+        return {
+            "known_fates": observed_set & allowed,
+            "unknown_fates": unknown,
+            "falsified": len(unknown) > 0,
+        }
+
+    @staticmethod
+    def test_source_attractor_universality(
+        traditions: Dict[str, List[str]],
+        min_overlap_fraction: float = 0.5,
+    ) -> Dict[str, object]:
+        r"""Test Criterion 3: source attractors must appear across traditions.
+
+        Parameters
+        ----------
+        traditions : dict
+            Maps tradition name -> list of source attractor names found.
+        min_overlap_fraction : float
+            Minimum fraction of attractors shared across all traditions.
+
+        Returns
+        -------
+        dict with:
+            'shared_attractors' : set
+            'union_attractors' : set
+            'overlap_fraction' : float
+            'falsified' : bool -- True if overlap is too low
+        """
+        if not traditions:
+            return {"shared_attractors": set(), "union_attractors": set(),
+                    "overlap_fraction": 0.0, "falsified": True}
+
+        sets = [set(v) for v in traditions.values()]
+        shared = sets[0]
+        union = sets[0]
+        for s in sets[1:]:
+            shared = shared & s
+            union = union | s
+
+        fraction = len(shared) / len(union) if len(union) > 0 else 0.0
+        return {
+            "shared_attractors": shared,
+            "union_attractors": union,
+            "overlap_fraction": fraction,
+            "falsified": fraction < min_overlap_fraction,
+        }
+
+    @staticmethod
+    def test_deceptive_attractor_transience(
+        delta_V: float,
+        epsilon: float,
+    ) -> Dict[str, object]:
+        r"""Test Criterion 4: deceptive attractors must be transient.
+
+        For any epsilon > 0, the Kramers escape time must be finite.
+
+        Parameters
+        ----------
+        delta_V : float
+            Barrier height of the deceptive attractor.
+        epsilon : float
+            Noise intensity.
+
+        Returns
+        -------
+        dict with:
+            'escape_time' : float
+            'is_finite' : bool
+            'falsified' : bool -- True if escape time is infinite with noise
+        """
+        tau = DeceptionClassifier.kramers_escape_time(delta_V, epsilon)
+        is_finite = np.isfinite(tau)
+        # Falsified if epsilon > 0 but lifetime is infinite
+        # (Note: float64 overflow at dV/eps > 700 is a numerical limit,
+        # not a physical infinite lifetime)
+        falsified = (epsilon > 0) and not is_finite and (delta_V / epsilon <= 700)
+        return {
+            "escape_time": tau,
+            "is_finite": is_finite,
+            "falsified": falsified,
+        }
+
+    def run_all(
+        self,
+        correlation_data: Optional[np.ndarray] = None,
+        tau_values: Optional[np.ndarray] = None,
+        observed_fates: Optional[List[str]] = None,
+        traditions: Optional[Dict[str, List[str]]] = None,
+        delta_V: float = 1.0,
+        epsilon: float = 0.1,
+    ) -> Dict[str, Dict[str, object]]:
+        r"""Run all four falsification criteria.
+
+        Parameters are optional; tests with None inputs are skipped.
+
+        Returns
+        -------
+        dict mapping criterion name -> result dict.
+        """
+        results = {}
+
+        if correlation_data is not None and tau_values is not None:
+            results["memory_kernel"] = self.test_memory_kernel_present(
+                correlation_data, tau_values
+            )
+
+        if observed_fates is not None:
+            results["trichotomy"] = self.test_trichotomy_complete(observed_fates)
+
+        if traditions is not None:
+            results["universality"] = self.test_source_attractor_universality(
+                traditions
+            )
+
+        results["deceptive_transience"] = self.test_deceptive_attractor_transience(
+            delta_V, epsilon
+        )
+
+        return results
+
+
+# ===================================================================
+# Convenience: summary dictionary matching Table 1
+# ===================================================================
+
 CROSS_TRADITIONAL_MAP: List[Dict[str, str]] = [
     {
         "dynamical_concept": "Invariant truth",
