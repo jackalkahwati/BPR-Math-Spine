@@ -3,7 +3,7 @@ BPR-Math-Spine: Minimal, Reproducible Maths for Boundary Phase Resonance
 
 A laser-focused codebase that reproduces every numbered equation in the
 one-page synopsis, generates the falsifiable Casimir-deviation curve, and
-now implements **23 theories** (Al-Kahwati, 2026):
+now implements **24 theories** (Al-Kahwati, 2026):
 
     I     Boundary Memory Dynamics           (bpr.memory)
     II    Vacuum Impedance Mismatch          (bpr.impedance)
@@ -28,6 +28,7 @@ now implements **23 theories** (Al-Kahwati, 2026):
     XXI   Quantum Chemistry & Periodic Table  (bpr.quantum_chemistry)
     XXII  Eschatology & Symbolic Meaning      (bpr.eschatology)
     XXIII Meta-Boundary Dynamics               (bpr.meta_boundary)
+    XXIV  Emergent Speculations (BPR/RPST)     (bpr.emergent_speculations)
 
 Based on the mathematical framework by Jack Al-Kahwati
 Contact: jack@thestardrive.com
@@ -113,7 +114,8 @@ try:
     from . import quantum_gravity_pheno  # Theory XX  # noqa: F401
     from . import quantum_chemistry   # Theory XXI  # noqa: F401
     from . import eschatology         # Theory XXII  # noqa: F401
-    from . import meta_boundary      # Theory XXIII # noqa: F401
+    from . import meta_boundary          # Theory XXIII # noqa: F401
+    from . import emergent_speculations  # Theory XXIV  # noqa: F401
 
     ADJACENT_THEORIES_AVAILABLE = True
 except Exception:
