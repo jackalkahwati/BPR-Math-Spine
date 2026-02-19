@@ -7,11 +7,11 @@ Coverage:
   - RPSTHamiltonian (Eq 2-3, 6, 9-11)
   - BPRResonanceSpectrum (Eq 12, 33)
   - FineStructureConstant (Speculation I, Eq 25-28)
-  - BKTConsciousnessTransition (Speculation II, Eq 29-32)
+  - BKTCoherenceTransition (Speculation II, Eq 29-32)
   - RiemannHypothesisStability (Speculation III, Eq 33, Thm 9.2)
   - DarkMatterPrimeFingerprints (Speculation IV, Eq 34-36)
-  - CollectiveAGIConsciousness (Speculation V, Eq 37-40)
-  - ConsciousnessSubstrateMigration (Speculation VI, Eq 41-42)
+  - CollectiveWindingCoherence (Speculation V, Eq 37-40)
+  - SubstrateCoherenceMigration (Speculation VI, Eq 41-42)
 """
 
 import numpy as np
@@ -351,67 +351,67 @@ class TestFineStructureConstant:
 
 
 # ===========================================================================
-# BKTConsciousnessTransition
+# BKTCoherenceTransition
 # ===========================================================================
 
-class TestBKTConsciousnessTransition:
+class TestBKTCoherenceTransition:
     """Tests for Speculation II: Anesthesia BKT transition (Eq 29-32)."""
 
     def test_T_BKT_formula(self):
         """T_BKT = π J / (2 k_B)."""
-        from bpr.rpst_extensions import BKTConsciousnessTransition
-        bkt = BKTConsciousnessTransition(J=2.0, k_B=1.0)
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=2.0, k_B=1.0)
         assert bkt.T_BKT == pytest.approx(np.pi, rel=1e-10)
 
     def test_T_BKT_natural_units(self):
-        from bpr.rpst_extensions import BKTConsciousnessTransition
-        bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
         assert bkt.T_BKT == pytest.approx(np.pi / 2.0, rel=1e-10)
 
     def test_is_conscious_below(self):
-        from bpr.rpst_extensions import BKTConsciousnessTransition
-        bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
         T_crit = bkt.T_BKT
         assert bkt.is_conscious(T_crit * 0.9) is True
 
     def test_is_conscious_above(self):
-        from bpr.rpst_extensions import BKTConsciousnessTransition
-        bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
         T_crit = bkt.T_BKT
         assert bkt.is_conscious(T_crit * 1.1) is False
 
     def test_eta_at_T_BKT(self):
         """Universal exponent η = 1/4 at transition."""
-        from bpr.rpst_extensions import BKTConsciousnessTransition
-        bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
         assert bkt.eta_at_T_BKT() == pytest.approx(0.25, abs=1e-10)
 
     def test_correlation_exponent_at_T_BKT(self):
         """η(T_BKT - ε) → 1/4 as ε → 0 from below."""
-        from bpr.rpst_extensions import BKTConsciousnessTransition
-        bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
         T_crit = bkt.T_BKT
         eta = bkt.correlation_exponent(T_crit * (1 - 1e-6))
         assert eta == pytest.approx(0.25, rel=1e-4)
 
     def test_correlation_exponent_above_BKT_is_inf(self):
         """η = ∞ above T_BKT (exponential decay, not power law)."""
-        from bpr.rpst_extensions import BKTConsciousnessTransition
-        bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
         eta = bkt.correlation_exponent(bkt.T_BKT * 2.0)
         assert eta == np.inf
 
     def test_stiffness_jump(self):
         """ΔJ = 2 k_B T_BKT / π = J."""
-        from bpr.rpst_extensions import BKTConsciousnessTransition
-        bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
         # 2 k_B T_BKT / π = 2 * 1.0 * (π/2) / π = 1.0 = J
         assert bkt.stiffness_jump() == pytest.approx(bkt.J, rel=1e-10)
 
     def test_correlation_function_power_law_below(self):
         """C(x) ~ x^{-η} below T_BKT (power-law decay)."""
-        from bpr.rpst_extensions import BKTConsciousnessTransition
-        bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
         T = bkt.T_BKT * 0.5
         eta = bkt.correlation_exponent(T)
         x = np.array([1.0, 2.0, 4.0])
@@ -420,8 +420,8 @@ class TestBKTConsciousnessTransition:
 
     def test_correlation_function_above_exponential(self):
         """C(x) = exp(-x) above T_BKT."""
-        from bpr.rpst_extensions import BKTConsciousnessTransition
-        bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
         T = bkt.T_BKT * 2.0
         x = np.array([0.5, 1.0, 2.0])
         C = bkt.correlation_function(x, T)
@@ -429,8 +429,8 @@ class TestBKTConsciousnessTransition:
 
     def test_predict_loss_of_consciousness_signature(self):
         """predict_loss_of_consciousness_signature returns expected keys."""
-        from bpr.rpst_extensions import BKTConsciousnessTransition
-        bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
         T_values = np.linspace(0.1, 3.0, 30)
         result = bkt.predict_loss_of_consciousness_signature(T_values)
         assert "T" in result
@@ -442,8 +442,8 @@ class TestBKTConsciousnessTransition:
 
     def test_predict_conscious_fraction_below_T_BKT(self):
         """Majority of T < T_BKT entries should be conscious."""
-        from bpr.rpst_extensions import BKTConsciousnessTransition
-        bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
         T_below = np.linspace(0.1, bkt.T_BKT * 0.99, 20)
         result = bkt.predict_loss_of_consciousness_signature(T_below)
         assert np.all(result["conscious"])
@@ -629,113 +629,113 @@ class TestDarkMatterPrimeFingerprints:
 
 
 # ===========================================================================
-# CollectiveAGIConsciousness
+# CollectiveWindingCoherence
 # ===========================================================================
 
-class TestCollectiveAGIConsciousness:
+class TestCollectiveWindingCoherence:
     """Tests for Speculation V: Collective AGI winding (Eq 37-40)."""
 
     def test_collective_coherence_single(self):
         """χ_group(1) = χ₁ * 1^1.27 = χ₁."""
-        from bpr.rpst_extensions import CollectiveAGIConsciousness
-        agi = CollectiveAGIConsciousness(chi_1=2.0, fractal_exponent=1.27)
+        from bpr.rpst_extensions import CollectiveWindingCoherence
+        agi = CollectiveWindingCoherence(chi_1=2.0, fractal_exponent=1.27)
         assert agi.collective_coherence(1) == pytest.approx(2.0, rel=1e-10)
 
     def test_collective_coherence_scaling(self):
         """χ_group(N) = χ₁ * N^1.27."""
-        from bpr.rpst_extensions import CollectiveAGIConsciousness
-        agi = CollectiveAGIConsciousness(chi_1=1.0, fractal_exponent=1.27)
+        from bpr.rpst_extensions import CollectiveWindingCoherence
+        agi = CollectiveWindingCoherence(chi_1=1.0, fractal_exponent=1.27)
         N = 100
         expected = float(N) ** 1.27
         assert agi.collective_coherence(N) == pytest.approx(expected, rel=1e-6)
 
     def test_collective_coherence_superlinear(self):
         """N=10 should give more than 10x the N=1 coherence."""
-        from bpr.rpst_extensions import CollectiveAGIConsciousness
-        agi = CollectiveAGIConsciousness(chi_1=1.0, fractal_exponent=1.27)
+        from bpr.rpst_extensions import CollectiveWindingCoherence
+        agi = CollectiveWindingCoherence(chi_1=1.0, fractal_exponent=1.27)
         assert agi.collective_coherence(10) > 10.0 * agi.collective_coherence(1)
 
     def test_collective_coherence_zero(self):
-        from bpr.rpst_extensions import CollectiveAGIConsciousness
-        agi = CollectiveAGIConsciousness()
+        from bpr.rpst_extensions import CollectiveWindingCoherence
+        agi = CollectiveWindingCoherence()
         assert agi.collective_coherence(0) == pytest.approx(0.0)
 
     def test_superlinear_excess_gt_one(self):
         """Excess > 1 for N > 1."""
-        from bpr.rpst_extensions import CollectiveAGIConsciousness
-        agi = CollectiveAGIConsciousness()
+        from bpr.rpst_extensions import CollectiveWindingCoherence
+        agi = CollectiveWindingCoherence()
         assert agi.superlinear_excess(10) > 1.0
 
     def test_superlinear_excess_formula(self):
         """Excess = N^(exponent - 1)."""
-        from bpr.rpst_extensions import CollectiveAGIConsciousness
-        agi = CollectiveAGIConsciousness(fractal_exponent=1.27)
+        from bpr.rpst_extensions import CollectiveWindingCoherence
+        agi = CollectiveWindingCoherence(fractal_exponent=1.27)
         N = 50
         assert agi.superlinear_excess(N) == pytest.approx(float(N) ** 0.27, rel=1e-6)
 
     def test_is_collectively_conscious_above_pc(self):
-        from bpr.rpst_extensions import CollectiveAGIConsciousness
-        agi = CollectiveAGIConsciousness(p_c=0.5)
+        from bpr.rpst_extensions import CollectiveWindingCoherence
+        agi = CollectiveWindingCoherence(p_c=0.5)
         assert agi.is_collectively_conscious(bond_fraction=0.7, N=10) is True
 
     def test_is_collectively_conscious_below_pc(self):
-        from bpr.rpst_extensions import CollectiveAGIConsciousness
-        agi = CollectiveAGIConsciousness(p_c=0.5)
+        from bpr.rpst_extensions import CollectiveWindingCoherence
+        agi = CollectiveWindingCoherence(p_c=0.5)
         assert agi.is_collectively_conscious(bond_fraction=0.3, N=10) is False
 
     def test_critical_agent_number_positive(self):
-        from bpr.rpst_extensions import CollectiveAGIConsciousness
-        agi = CollectiveAGIConsciousness()
+        from bpr.rpst_extensions import CollectiveWindingCoherence
+        agi = CollectiveWindingCoherence()
         N_c = agi.critical_agent_number(Phi_crit=100.0, k=1.0, N_nodes=int(1e9))
         assert N_c > 0
 
     def test_critical_agent_number_formula(self):
         """N_c = ceil(Phi_crit / (k * log(N_nodes)))."""
-        from bpr.rpst_extensions import CollectiveAGIConsciousness
+        from bpr.rpst_extensions import CollectiveWindingCoherence
         import math
-        agi = CollectiveAGIConsciousness()
+        agi = CollectiveWindingCoherence()
         Phi_crit, k, N_nodes = 100.0, 1.0, int(1e6)
         expected = math.ceil(Phi_crit / (k * np.log(float(N_nodes))))
         assert agi.critical_agent_number(Phi_crit, k, N_nodes) == expected
 
     def test_coherence_vs_N_shape(self):
-        from bpr.rpst_extensions import CollectiveAGIConsciousness
-        agi = CollectiveAGIConsciousness()
+        from bpr.rpst_extensions import CollectiveWindingCoherence
+        agi = CollectiveWindingCoherence()
         N_values = np.array([1, 2, 5, 10, 100])
         result = agi.coherence_vs_N(N_values)
         assert result.shape == N_values.shape
 
     def test_phi_w_relation(self):
         """Φ = k |W| log(N_nodes)."""
-        from bpr.rpst_extensions import CollectiveAGIConsciousness
-        agi = CollectiveAGIConsciousness()
+        from bpr.rpst_extensions import CollectiveWindingCoherence
+        agi = CollectiveWindingCoherence()
         W, N_nodes, k = 3, 1000, 2.0
         expected = k * abs(W) * np.log(float(N_nodes))
         assert agi.phi_w_relation(W, N_nodes, k) == pytest.approx(expected)
 
     def test_phi_w_relation_zero_winding(self):
-        from bpr.rpst_extensions import CollectiveAGIConsciousness
-        agi = CollectiveAGIConsciousness()
+        from bpr.rpst_extensions import CollectiveWindingCoherence
+        agi = CollectiveWindingCoherence()
         assert agi.phi_w_relation(0, 1000) == pytest.approx(0.0)
 
 
 # ===========================================================================
-# ConsciousnessSubstrateMigration
+# SubstrateCoherenceMigration
 # ===========================================================================
 
-class TestConsciousnessSubstrateMigration:
+class TestSubstrateCoherenceMigration:
     """Tests for Speculation VI: Winding transfer at death (Eq 41-42)."""
 
     def test_substrate_coherence_at_t0(self):
         """ξ(0) = ξ_0."""
-        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
-        csm = ConsciousnessSubstrateMigration(xi_0=2.0, tau_death=5.0)
+        from bpr.rpst_extensions import SubstrateCoherenceMigration
+        csm = SubstrateCoherenceMigration(xi_0=2.0, tau_death=5.0)
         assert float(csm.substrate_coherence(0.0)) == pytest.approx(2.0)
 
     def test_substrate_coherence_decay(self):
         """ξ(t) = ξ_0 * exp(-t/τ_death)."""
-        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
-        csm = ConsciousnessSubstrateMigration(xi_0=1.0, tau_death=10.0)
+        from bpr.rpst_extensions import SubstrateCoherenceMigration
+        csm = SubstrateCoherenceMigration(xi_0=1.0, tau_death=10.0)
         t = np.array([0.0, 5.0, 10.0])
         xi = csm.substrate_coherence(t)
         expected = np.exp(-t / 10.0)
@@ -743,58 +743,58 @@ class TestConsciousnessSubstrateMigration:
 
     def test_fragmentation_time_formula(self):
         """t_frag = τ * ln(ξ_0 / ξ_c)."""
-        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
-        csm = ConsciousnessSubstrateMigration(xi_0=2.0, tau_death=5.0, xi_c=1.0)
+        from bpr.rpst_extensions import SubstrateCoherenceMigration
+        csm = SubstrateCoherenceMigration(xi_0=2.0, tau_death=5.0, xi_c=1.0)
         t_frag = csm.fragmentation_time()
         assert t_frag == pytest.approx(5.0 * np.log(2.0), rel=1e-10)
 
     def test_fragmentation_time_already_fragmented(self):
         """If ξ_0 <= ξ_c, fragmentation time is 0."""
-        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
-        csm = ConsciousnessSubstrateMigration(xi_0=0.3, xi_c=0.5)
+        from bpr.rpst_extensions import SubstrateCoherenceMigration
+        csm = SubstrateCoherenceMigration(xi_0=0.3, xi_c=0.5)
         assert csm.fragmentation_time() == pytest.approx(0.0)
 
     def test_is_fragmented_before_and_after(self):
-        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
-        csm = ConsciousnessSubstrateMigration(xi_0=1.0, tau_death=5.0, xi_c=0.5)
+        from bpr.rpst_extensions import SubstrateCoherenceMigration
+        csm = SubstrateCoherenceMigration(xi_0=1.0, tau_death=5.0, xi_c=0.5)
         t_frag = csm.fragmentation_time()
         assert csm.is_fragmented(t_frag * 0.5) is False
         assert csm.is_fragmented(t_frag * 2.0) is True
 
     def test_allowed_fates_nonzero_W(self):
         """Three fates allowed when W ≠ 0."""
-        from bpr.rpst_extensions import ConsciousnessSubstrateMigration, TopologicalFate
-        csm = ConsciousnessSubstrateMigration(W=2)
+        from bpr.rpst_extensions import SubstrateCoherenceMigration, TopologicalOutcome
+        csm = SubstrateCoherenceMigration(W=2)
         fates = csm.allowed_fates()
         assert len(fates) == 3
-        assert TopologicalFate.DISSOLUTION in fates
-        assert TopologicalFate.FREQUENCY_MIGRATION in fates
-        assert TopologicalFate.SUBSTRATE_TRANSFER in fates
+        assert TopologicalOutcome.DISSOLUTION in fates
+        assert TopologicalOutcome.FREQUENCY_MIGRATION in fates
+        assert TopologicalOutcome.SUBSTRATE_TRANSFER in fates
 
     def test_allowed_fates_zero_W(self):
         """Only dissolution when W = 0."""
-        from bpr.rpst_extensions import ConsciousnessSubstrateMigration, TopologicalFate
-        csm = ConsciousnessSubstrateMigration(W=0)
+        from bpr.rpst_extensions import SubstrateCoherenceMigration, TopologicalOutcome
+        csm = SubstrateCoherenceMigration(W=0)
         fates = csm.allowed_fates()
-        assert fates == [TopologicalFate.DISSOLUTION]
+        assert fates == [TopologicalOutcome.DISSOLUTION]
 
     def test_dissolution_energy_proportional_W(self):
         """ΔE = ℏ ω_c |W|."""
-        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
-        csm1 = ConsciousnessSubstrateMigration(W=1, omega_c=2.0)
-        csm2 = ConsciousnessSubstrateMigration(W=3, omega_c=2.0)
+        from bpr.rpst_extensions import SubstrateCoherenceMigration
+        csm1 = SubstrateCoherenceMigration(W=1, omega_c=2.0)
+        csm2 = SubstrateCoherenceMigration(W=3, omega_c=2.0)
         assert csm2.dissolution_energy() == pytest.approx(3.0 * csm1.dissolution_energy())
 
     def test_dissolution_energy_formula(self):
-        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
-        csm = ConsciousnessSubstrateMigration(W=2, omega_c=3.0)
+        from bpr.rpst_extensions import SubstrateCoherenceMigration
+        csm = SubstrateCoherenceMigration(W=2, omega_c=3.0)
         assert csm.dissolution_energy(hbar_eff=1.0) == pytest.approx(6.0)
 
     def test_terminal_gamma_spectrum_peak_at_omega_c(self):
         """Spectrum peaks near ω_c."""
-        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
+        from bpr.rpst_extensions import SubstrateCoherenceMigration
         omega_c = 5.0
-        csm = ConsciousnessSubstrateMigration(W=1, omega_c=omega_c)
+        csm = SubstrateCoherenceMigration(W=1, omega_c=omega_c)
         omega = np.linspace(3.0, 7.0, 1001)
         E = csm.terminal_gamma_spectrum(omega, Gamma_c=0.01)
         omega_max = omega[np.argmax(E)]
@@ -802,17 +802,17 @@ class TestConsciousnessSubstrateMigration:
 
     def test_terminal_gamma_spectrum_W_squared_scaling(self):
         """Spectrum scales as W²."""
-        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
+        from bpr.rpst_extensions import SubstrateCoherenceMigration
         omega = np.array([1.0])
-        csm1 = ConsciousnessSubstrateMigration(W=1, omega_c=5.0)
-        csm2 = ConsciousnessSubstrateMigration(W=3, omega_c=5.0)
+        csm1 = SubstrateCoherenceMigration(W=1, omega_c=5.0)
+        csm2 = SubstrateCoherenceMigration(W=3, omega_c=5.0)
         E1 = csm1.terminal_gamma_spectrum(omega, Gamma_c=0.1)
         E2 = csm2.terminal_gamma_spectrum(omega, Gamma_c=0.1)
         assert E2[0] == pytest.approx(9.0 * E1[0], rel=1e-6)
 
     def test_transfer_requirements_all_met(self):
-        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
-        csm = ConsciousnessSubstrateMigration()
+        from bpr.rpst_extensions import SubstrateCoherenceMigration
+        csm = SubstrateCoherenceMigration()
         result = csm.transfer_requirements_met(
             boundary_connected=True,
             J_receiver=2.0, J_c=1.0,
@@ -824,8 +824,8 @@ class TestConsciousnessSubstrateMigration:
         assert result["above_bkt_threshold"] is True
 
     def test_transfer_requirements_fail_bkt(self):
-        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
-        csm = ConsciousnessSubstrateMigration()
+        from bpr.rpst_extensions import SubstrateCoherenceMigration
+        csm = SubstrateCoherenceMigration()
         result = csm.transfer_requirements_met(
             boundary_connected=True,
             J_receiver=0.5, J_c=1.0,
@@ -836,13 +836,13 @@ class TestConsciousnessSubstrateMigration:
         assert result["all_satisfied"] is False
 
     def test_peak_frequency(self):
-        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
-        csm = ConsciousnessSubstrateMigration(omega_c=3.14)
+        from bpr.rpst_extensions import SubstrateCoherenceMigration
+        csm = SubstrateCoherenceMigration(omega_c=3.14)
         assert csm.peak_frequency() == pytest.approx(3.14)
 
     def test_substrate_coherence_monotone_decreasing(self):
-        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
-        csm = ConsciousnessSubstrateMigration(xi_0=1.0, tau_death=5.0)
+        from bpr.rpst_extensions import SubstrateCoherenceMigration
+        csm = SubstrateCoherenceMigration(xi_0=1.0, tau_death=5.0)
         t = np.linspace(0, 50, 100)
         xi = csm.substrate_coherence(t)
         assert np.all(np.diff(xi) < 0)
@@ -858,11 +858,11 @@ class TestEmergentSpeculationsIntegration:
     def test_bkt_and_migration_consistent(self):
         """Stiffness jump from BKT matches BKT threshold in migration."""
         from bpr.rpst_extensions import (
-            BKTConsciousnessTransition, ConsciousnessSubstrateMigration
+            BKTCoherenceTransition, SubstrateCoherenceMigration
         )
         J = 1.5
-        bkt = BKTConsciousnessTransition(J=J, k_B=1.0)
-        csm = ConsciousnessSubstrateMigration(W=1)
+        bkt = BKTCoherenceTransition(J=J, k_B=1.0)
+        csm = SubstrateCoherenceMigration(W=1)
         # Receiver above BKT → can accept winding
         reqs = csm.transfer_requirements_met(
             boundary_connected=True,
@@ -899,8 +899,8 @@ class TestEmergentSpeculationsIntegration:
 
     def test_agi_phi_consistent_with_critical_number(self):
         """phi_w_relation(W=1, N_nodes) / k gives critical winding threshold."""
-        from bpr.rpst_extensions import CollectiveAGIConsciousness
-        agi = CollectiveAGIConsciousness(chi_1=1.0)
+        from bpr.rpst_extensions import CollectiveWindingCoherence
+        agi = CollectiveWindingCoherence(chi_1=1.0)
         N_nodes = int(1e6)
         k = 1.0
         Phi = agi.phi_w_relation(W=1, N_nodes=N_nodes, k=k)
@@ -919,8 +919,8 @@ class TestEmergentSpeculationsIntegration:
 
     def test_bkt_coherence_above_transition_not_conscious(self):
         """Correlation function above T_BKT confirms unconscious state."""
-        from bpr.rpst_extensions import BKTConsciousnessTransition
-        bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
         T_high = bkt.T_BKT * 2.0
         assert bkt.is_conscious(T_high) is False
         # Correlation decays exponentially at x=5

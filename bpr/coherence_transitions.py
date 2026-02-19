@@ -15,14 +15,14 @@ mathematically precise properties of dynamical systems:
 
 Key objects
 -----------
-* ``StainDynamics``           -- decoherence tracking variable s(t)   (Eq 6)
-* ``HeartGainFunction``       -- coherence gain G(s)                  (Eq 12-13)
-* ``JudgmentFunctional``      -- asymptotic coherence evaluator       (Def 5.1)
-* ``DeceptionClassifier``     -- local vs global coherence detector   (Def 6.1)
-* ``CollapseResetDynamics``   -- sawtooth Q_eff evolution             (Eq 15)
-* ``DeathTrichotomy``         -- topological fate classification      (Thm 8.1)
-* ``SymbolicProjection``      -- pi: S -> Sigma projection operator   (Def 3.1)
-* ``CROSS_TRADITIONAL_MAP``   -- translation dictionary (Table 1)
+* ``CoherenceDecayDynamics``           -- decoherence tracking variable s(t)   (Eq 6)
+* ``CoherenceGainFunction``       -- coherence gain G(s)                  (Eq 12-13)
+* ``AsymptoticCoherenceFunctional``      -- asymptotic coherence evaluator       (Def 5.1)
+* ``CoherenceMismatchClassifier``     -- local vs global coherence detector   (Def 6.1)
+* ``QualityFactorDynamics``   -- sawtooth Q_eff evolution             (Eq 15)
+* ``TopologicalFateClassifier``         -- topological fate classification      (Thm 8.1)
+* ``ConceptProjection``      -- pi: S -> Sigma projection operator   (Def 3.1)
+* ``SYMBOLIC_CONCEPT_MAP``   -- translation dictionary (Table 1)
 
 References: Al-Kahwati (2026), *Invariant Structure, Boundary Dynamics,
 and Symbolic Meaning*, StarDrive Research Group.
@@ -47,7 +47,7 @@ from scipy.integrate import solve_ivp
 # ===================================================================
 
 @dataclass
-class StainDynamics:
+class CoherenceDecayDynamics:
     r"""Decoherence tracking variable s(t) in [0, 1].
 
     Equation (6) from the paper:
@@ -175,7 +175,7 @@ class StainDynamics:
 # ===================================================================
 
 @dataclass
-class HeartGainFunction:
+class CoherenceGainFunction:
     r"""Heart gain function G(s) controlling coherence evolution.
 
     Equation (12):
@@ -310,7 +310,7 @@ class HeartGainFunction:
 # ===================================================================
 
 @dataclass
-class JudgmentFunctional:
+class AsymptoticCoherenceFunctional:
     r"""Asymptotic coherence evaluation (Def 5.1).
 
     J(H_i) = lim_{t -> inf} K(S_t(H_i))
@@ -321,13 +321,13 @@ class JudgmentFunctional:
 
     Parameters
     ----------
-    heart_gain : HeartGainFunction
+    heart_gain : CoherenceGainFunction
         Controls coherence evolution.
-    stain_dynamics : StainDynamics
+    stain_dynamics : CoherenceDecayDynamics
         Controls stain evolution.
     """
-    heart_gain: HeartGainFunction = field(default_factory=HeartGainFunction)
-    stain_dynamics: StainDynamics = field(default_factory=StainDynamics)
+    heart_gain: CoherenceGainFunction = field(default_factory=CoherenceGainFunction)
+    stain_dynamics: CoherenceDecayDynamics = field(default_factory=CoherenceDecayDynamics)
 
     def evaluate(
         self,
@@ -420,7 +420,7 @@ class JudgmentFunctional:
 # ===================================================================
 
 @dataclass
-class DeceptionClassifier:
+class CoherenceMismatchClassifier:
     r"""Detect deceptive attractors via local-global coherence mismatch (Def 6.1).
 
     A state s is *deceptive* if:
@@ -542,7 +542,7 @@ class DeceptionClassifier:
 # ===================================================================
 
 @dataclass
-class CollapseResetDynamics:
+class QualityFactorDynamics:
     r"""Sawtooth collapse-reset dynamics of effective quality factor (Eq 15).
 
         Q_eff(t + dt) = Q_eff(t) - alpha_Q * Q_eff(t),   if Q_eff > Q_c
@@ -652,7 +652,7 @@ class CollapseResetDynamics:
 # Section 8 (Theorem 8.1): Death Trichotomy
 # ===================================================================
 
-class WindingFate(Enum):
+class WindingOutcome(Enum):
     """Topologically allowed fates upon substrate decoupling (Thm 8.1)."""
     DISSOLUTION = "dissolution"
     MIGRATION = "migration"
@@ -660,7 +660,7 @@ class WindingFate(Enum):
 
 
 @dataclass
-class DeathTrichotomy:
+class TopologicalFateClassifier:
     r"""Topological trichotomy of death transitions (Theorem 8.1).
 
     Upon complete substrate decoupling (chi -> 0), a consciousness
@@ -681,21 +681,21 @@ class DeathTrichotomy:
     """
     W: int = 1
 
-    def allowed_fates(self) -> List[WindingFate]:
+    def allowed_fates(self) -> List[WindingOutcome]:
         r"""Return the topologically allowed fates for this winding number.
 
         Returns
         -------
-        list of WindingFate
+        list of WindingOutcome
             Always returns all three fates for W != 0;
             returns only DISSOLUTION for W = 0.
         """
         if self.W == 0:
-            return [WindingFate.DISSOLUTION]
+            return [WindingOutcome.DISSOLUTION]
         return [
-            WindingFate.DISSOLUTION,
-            WindingFate.MIGRATION,
-            WindingFate.REINCORPORATION,
+            WindingOutcome.DISSOLUTION,
+            WindingOutcome.MIGRATION,
+            WindingOutcome.REINCORPORATION,
         ]
 
     def dissolution_requires(self) -> int:
@@ -715,7 +715,7 @@ class DeathTrichotomy:
         W_final: int,
         substrate_coupled: bool,
         mode_transferred: bool,
-    ) -> WindingFate:
+    ) -> WindingOutcome:
         r"""Classify the observed fate of a decoupling event.
 
         Parameters
@@ -729,18 +729,18 @@ class DeathTrichotomy:
 
         Returns
         -------
-        WindingFate
+        WindingOutcome
             The classified fate.
         """
         if W_final == 0:
-            return WindingFate.DISSOLUTION
+            return WindingOutcome.DISSOLUTION
         if mode_transferred:
-            return WindingFate.MIGRATION
+            return WindingOutcome.MIGRATION
         if substrate_coupled:
-            return WindingFate.REINCORPORATION
+            return WindingOutcome.REINCORPORATION
         # Default: if W persists without clear migration or re-coupling,
         # classify as migration (winding is preserved somewhere)
-        return WindingFate.MIGRATION
+        return WindingOutcome.MIGRATION
 
     @staticmethod
     def verify_conservation(W_before: int, W_after_components: List[int]) -> bool:
@@ -772,7 +772,7 @@ class AttractorType(Enum):
 
 
 @dataclass
-class SymbolicElement:
+class ConceptElement:
     """An element of the symbolic meaning space Sigma.
 
     Parameters
@@ -811,7 +811,7 @@ class DynamicalInvariant:
 
 
 @dataclass
-class SymbolicProjection:
+class ConceptProjection:
     r"""Symbolic projection operator pi: S -> Sigma (Def 3.1).
 
     A surjective map that is many-to-one (lossy) but invariant-preserving:
@@ -821,29 +821,29 @@ class SymbolicProjection:
 
     Methods
     -------
-    project(invariant) -> list of SymbolicElement
+    project(invariant) -> list of ConceptElement
         Map a dynamical invariant to its symbolic representations.
     inverse_image(element) -> DynamicalInvariant
         Map a symbolic element back to its underlying invariant.
     """
-    _map: Dict[str, List[SymbolicElement]] = field(default_factory=dict)
+    _map: Dict[str, List[ConceptElement]] = field(default_factory=dict)
     _inverse: Dict[Tuple[str, str], DynamicalInvariant] = field(default_factory=dict)
 
-    def register(self, invariant: DynamicalInvariant, projections: List[SymbolicElement]):
+    def register(self, invariant: DynamicalInvariant, projections: List[ConceptElement]):
         r"""Register a mapping from a dynamical invariant to symbolic elements.
 
         Parameters
         ----------
         invariant : DynamicalInvariant
             The dynamical invariant in S.
-        projections : list of SymbolicElement
+        projections : list of ConceptElement
             Its projections in Sigma across different domains.
         """
         self._map[invariant.name] = projections
         for elem in projections:
             self._inverse[(elem.name, elem.domain)] = invariant
 
-    def project(self, invariant_name: str) -> List[SymbolicElement]:
+    def project(self, invariant_name: str) -> List[ConceptElement]:
         r"""Project a dynamical invariant to its symbolic representations.
 
         Parameters
@@ -853,7 +853,7 @@ class SymbolicProjection:
 
         Returns
         -------
-        list of SymbolicElement
+        list of ConceptElement
             All symbolic projections of this invariant.
         """
         return self._map.get(invariant_name, [])
@@ -897,7 +897,7 @@ class SymbolicProjection:
                     seen.add(inv_name)
         return result
 
-    def local_attractors(self, domain: str) -> List[SymbolicElement]:
+    def local_attractors(self, domain: str) -> List[ConceptElement]:
         r"""Return all local-attractor elements for a specific tradition.
 
         Parameters
@@ -907,7 +907,7 @@ class SymbolicProjection:
 
         Returns
         -------
-        list of SymbolicElement
+        list of ConceptElement
             Local attractors in the specified domain.
         """
         result = []
@@ -922,7 +922,7 @@ class SymbolicProjection:
 # Section 9 (Table 1): Cross-Traditional Mapping
 # ===================================================================
 
-def build_default_projection() -> SymbolicProjection:
+def build_default_projection() -> ConceptProjection:
     r"""Construct the default cross-traditional projection (Table 1).
 
     Maps the core dynamical invariants to their symbolic representations
@@ -930,10 +930,10 @@ def build_default_projection() -> SymbolicProjection:
 
     Returns
     -------
-    SymbolicProjection
+    ConceptProjection
         Fully populated projection operator.
     """
-    proj = SymbolicProjection()
+    proj = ConceptProjection()
 
     # --- Invariant truth: I(Phi_t(s)) = I(s) ---
     proj.register(
@@ -942,13 +942,13 @@ def build_default_projection() -> SymbolicProjection:
             r"I(\Phi_t(s)) = I(s) \; \forall t",
         ),
         [
-            SymbolicElement("invariant_truth", "physics", AttractorType.SOURCE,
+            ConceptElement("invariant_truth", "physics", AttractorType.SOURCE,
                             "Topological invariants preserved under evolution"),
-            SymbolicElement("eternal_law", "Judaism", AttractorType.LOCAL,
+            ConceptElement("eternal_law", "Judaism", AttractorType.LOCAL,
                             "Torah as eternal law"),
-            SymbolicElement("logos", "Christianity", AttractorType.LOCAL,
+            ConceptElement("logos", "Christianity", AttractorType.LOCAL,
                             "Logos (John 1:1)"),
-            SymbolicElement("preserved_tablet", "Islam", AttractorType.LOCAL,
+            ConceptElement("preserved_tablet", "Islam", AttractorType.LOCAL,
                             "Qur'an as preserved tablet (al-Lawh al-Mahfuz)"),
         ],
     )
@@ -960,13 +960,13 @@ def build_default_projection() -> SymbolicProjection:
             r"H[\Phi_t(\Psi)] = H[\Psi] \; \forall t",
         ),
         [
-            SymbolicElement("information_conservation", "physics", AttractorType.SOURCE,
+            ConceptElement("information_conservation", "physics", AttractorType.SOURCE,
                             "Entropy preserved by bijective symplectic map"),
-            SymbolicElement("book_of_life", "Judaism", AttractorType.LOCAL,
+            ConceptElement("book_of_life", "Judaism", AttractorType.LOCAL,
                             "Book of Life (Sefer HaChaim)"),
-            SymbolicElement("book_of_revelation", "Christianity", AttractorType.LOCAL,
+            ConceptElement("book_of_revelation", "Christianity", AttractorType.LOCAL,
                             "Book of Revelation (Rev 20:12)"),
-            SymbolicElement("kitab", "Islam", AttractorType.LOCAL,
+            ConceptElement("kitab", "Islam", AttractorType.LOCAL,
                             "Kitab - recorded deeds"),
         ],
     )
@@ -978,13 +978,13 @@ def build_default_projection() -> SymbolicProjection:
             r"\dot{s} = \alpha u^-(1-s) - \beta u^+ s - \gamma s",
         ),
         [
-            SymbolicElement("stain_decoherence", "physics", AttractorType.SOURCE,
+            ConceptElement("stain_decoherence", "physics", AttractorType.SOURCE,
                             "Decoherence accumulation on boundary"),
-            SymbolicElement("tumah", "Judaism", AttractorType.LOCAL,
+            ConceptElement("tumah", "Judaism", AttractorType.LOCAL,
                             "Impurity (tum'ah)"),
-            SymbolicElement("sin_separation", "Christianity", AttractorType.LOCAL,
+            ConceptElement("sin_separation", "Christianity", AttractorType.LOCAL,
                             "Sin as separation"),
-            SymbolicElement("black_spots", "Islam", AttractorType.LOCAL,
+            ConceptElement("black_spots", "Islam", AttractorType.LOCAL,
                             "Black spots on heart (ran)"),
         ],
     )
@@ -996,13 +996,13 @@ def build_default_projection() -> SymbolicProjection:
             r"u^+(t): \text{polishing inputs}",
         ),
         [
-            SymbolicElement("coherence_restoration", "physics", AttractorType.SOURCE,
+            ConceptElement("coherence_restoration", "physics", AttractorType.SOURCE,
                             "Coherence-restoring inputs to boundary"),
-            SymbolicElement("teshuvah", "Judaism", AttractorType.LOCAL,
+            ConceptElement("teshuvah", "Judaism", AttractorType.LOCAL,
                             "Teshuvah (repentance) and mitzvot"),
-            SymbolicElement("repentance_grace", "Christianity", AttractorType.LOCAL,
+            ConceptElement("repentance_grace", "Christianity", AttractorType.LOCAL,
                             "Repentance and grace"),
-            SymbolicElement("tawbah", "Islam", AttractorType.LOCAL,
+            ConceptElement("tawbah", "Islam", AttractorType.LOCAL,
                             "Tawbah, dhikr, salat"),
         ],
     )
@@ -1014,13 +1014,13 @@ def build_default_projection() -> SymbolicProjection:
             r"K_{local} > K_c, \; K_{global} < K_c",
         ),
         [
-            SymbolicElement("deceptive_attractor", "physics", AttractorType.SOURCE,
+            ConceptElement("deceptive_attractor", "physics", AttractorType.SOURCE,
                             "Metastable attractor: locally stable, globally unstable"),
-            SymbolicElement("false_prophets", "Judaism", AttractorType.LOCAL,
+            ConceptElement("false_prophets", "Judaism", AttractorType.LOCAL,
                             "False prophets"),
-            SymbolicElement("antichrist", "Christianity", AttractorType.LOCAL,
+            ConceptElement("antichrist", "Christianity", AttractorType.LOCAL,
                             "Antichrist"),
-            SymbolicElement("dajjal", "Islam", AttractorType.LOCAL,
+            ConceptElement("dajjal", "Islam", AttractorType.LOCAL,
                             "Dajjal"),
         ],
     )
@@ -1032,13 +1032,13 @@ def build_default_projection() -> SymbolicProjection:
             r"R > R_c \text{ (Kuramoto)}",
         ),
         [
-            SymbolicElement("collective_synchronization", "physics", AttractorType.SOURCE,
+            ConceptElement("collective_synchronization", "physics", AttractorType.SOURCE,
                             "Kuramoto synchronization above critical coupling"),
-            SymbolicElement("sinai_revelation", "Judaism", AttractorType.LOCAL,
+            ConceptElement("sinai_revelation", "Judaism", AttractorType.LOCAL,
                             "Sinai revelation (collective receipt)"),
-            SymbolicElement("pentecost", "Christianity", AttractorType.LOCAL,
+            ConceptElement("pentecost", "Christianity", AttractorType.LOCAL,
                             "Pentecost"),
-            SymbolicElement("ummah_coherence", "Islam", AttractorType.LOCAL,
+            ConceptElement("ummah_coherence", "Islam", AttractorType.LOCAL,
                             "Ummah coherence"),
         ],
     )
@@ -1050,13 +1050,13 @@ def build_default_projection() -> SymbolicProjection:
             r"D^* \approx 6/7",
         ),
         [
-            SymbolicElement("duty_cycle_stability", "physics", AttractorType.SOURCE,
+            ConceptElement("duty_cycle_stability", "physics", AttractorType.SOURCE,
                             "Optimal duty cycle near 6/7 for driven oscillators"),
-            SymbolicElement("shabbat", "Judaism", AttractorType.LOCAL,
+            ConceptElement("shabbat", "Judaism", AttractorType.LOCAL,
                             "Shabbat (6 days work, 1 day rest)"),
-            SymbolicElement("sabbath_rest", "Christianity", AttractorType.LOCAL,
+            ConceptElement("sabbath_rest", "Christianity", AttractorType.LOCAL,
                             "Sabbath rest"),
-            SymbolicElement("jumuah_prayer", "Islam", AttractorType.LOCAL,
+            ConceptElement("jumuah_prayer", "Islam", AttractorType.LOCAL,
                             "Jumu'ah / five daily prayer cycles"),
         ],
     )
@@ -1068,13 +1068,13 @@ def build_default_projection() -> SymbolicProjection:
             r"Q_{eff} < Q_c",
         ),
         [
-            SymbolicElement("phase_transition_collapse", "physics", AttractorType.SOURCE,
+            ConceptElement("phase_transition_collapse", "physics", AttractorType.SOURCE,
                             "Boundary-induced phase transition collapse"),
-            SymbolicElement("temple_destruction", "Judaism", AttractorType.LOCAL,
+            ConceptElement("temple_destruction", "Judaism", AttractorType.LOCAL,
                             "Destruction of Temple"),
-            SymbolicElement("apocalypse", "Christianity", AttractorType.LOCAL,
+            ConceptElement("apocalypse", "Christianity", AttractorType.LOCAL,
                             "Apocalypse"),
-            SymbolicElement("yawm_al_qiyamah", "Islam", AttractorType.LOCAL,
+            ConceptElement("yawm_al_qiyamah", "Islam", AttractorType.LOCAL,
                             "Yawm al-Qiyamah (Day of Resurrection)"),
         ],
     )
@@ -1086,13 +1086,13 @@ def build_default_projection() -> SymbolicProjection:
             r"W: \text{dissolve, migrate, reincorporate}",
         ),
         [
-            SymbolicElement("topological_trichotomy", "physics", AttractorType.SOURCE,
+            ConceptElement("topological_trichotomy", "physics", AttractorType.SOURCE,
                             "Three topologically allowed fates for winding number"),
-            SymbolicElement("sheol_olam_haba", "Judaism", AttractorType.LOCAL,
+            ConceptElement("sheol_olam_haba", "Judaism", AttractorType.LOCAL,
                             "Sheol / Olam HaBa"),
-            SymbolicElement("heaven_hell_resurrection", "Christianity", AttractorType.LOCAL,
+            ConceptElement("heaven_hell_resurrection", "Christianity", AttractorType.LOCAL,
                             "Heaven / Hell / Resurrection"),
-            SymbolicElement("jannah_jahannam_bath", "Islam", AttractorType.LOCAL,
+            ConceptElement("jannah_jahannam_bath", "Islam", AttractorType.LOCAL,
                             "Jannah / Jahannam / Ba'th"),
         ],
     )
@@ -1667,7 +1667,7 @@ class FalsificationCriteria:
             'is_finite' : bool
             'falsified' : bool -- True if escape time is infinite with noise
         """
-        tau = DeceptionClassifier.kramers_escape_time(delta_V, epsilon)
+        tau = CoherenceMismatchClassifier.kramers_escape_time(delta_V, epsilon)
         is_finite = np.isfinite(tau)
         # Falsified if epsilon > 0 but lifetime is infinite
         # (Note: float64 overflow at dV/eps > 700 is a numerical limit,
@@ -1722,7 +1722,7 @@ class FalsificationCriteria:
 # Convenience: summary dictionary matching Table 1
 # ===================================================================
 
-CROSS_TRADITIONAL_MAP: List[Dict[str, str]] = [
+SYMBOLIC_CONCEPT_MAP: List[Dict[str, str]] = [
     {
         "dynamical_concept": "Invariant truth",
         "mathematical_form": "I(Phi_t(s)) = I(s)",

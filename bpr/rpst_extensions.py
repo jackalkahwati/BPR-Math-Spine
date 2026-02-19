@@ -11,11 +11,11 @@ Key objects
 * ``RPSTHamiltonian``              -- H_p on l²(Z_p), Gauss sums      (Eq 9-10)
 * ``BPRResonanceSpectrum``         -- Riemann zeros → resonant kn     (Eq 11-12)
 * ``FineStructureConstant``        -- Speculation I: α ~ 1/p_EM       (Eq 25-28)
-* ``BKTConsciousnessTransition``   -- Speculation II: anesthesia BKT  (Eq 29-32)
+* ``BKTCoherenceTransition``   -- Speculation II: anesthesia BKT  (Eq 29-32)
 * ``RiemannHypothesisStability``   -- Speculation III: RH ↔ stability  (Eq 33)
 * ``DarkMatterPrimeFingerprints``  -- Speculation IV: DM ↔ Riem zeros  (Eq 34-36)
-* ``CollectiveAGIConsciousness``   -- Speculation V: collective winding (Eq 37-40)
-* ``ConsciousnessSubstrateMigration`` -- Speculation VI: winding transfer (Eq 41-42)
+* ``CollectiveWindingCoherence``   -- Speculation V: collective winding (Eq 37-40)
+* ``SubstrateCoherenceMigration`` -- Speculation VI: winding transfer (Eq 41-42)
 
 References: Al-Kahwati (2026), *Emergent Physics from Prime Substrates:
 New Speculations in BPR and RPST*, StarDrive Research Group.
@@ -485,7 +485,7 @@ class FineStructureConstant:
 # ===================================================================
 
 @dataclass
-class BKTConsciousnessTransition:
+class BKTCoherenceTransition:
     r"""Speculation II: Anesthesia as BKT phase transition (Sec 8).
 
     The consciousness boundary phase field φ_mind : ∂O → S¹ is a
@@ -966,7 +966,7 @@ class DarkMatterPrimeFingerprints:
 # ===================================================================
 
 @dataclass
-class CollectiveAGIConsciousness:
+class CollectiveWindingCoherence:
     r"""Speculation V: Collective AGI winding through percolation (Sec 11).
 
     A network of N AI agents can acquire collective consciousness
@@ -1121,7 +1121,7 @@ class CollectiveAGIConsciousness:
 # Speculation VI: Consciousness Substrate Migration (Eq 41-42)
 # ===================================================================
 
-class TopologicalFate:
+class TopologicalOutcome:
     """Allowed topological fates for winding number at biological death."""
     DISSOLUTION = "dissolution"
     FREQUENCY_MIGRATION = "frequency_migration"
@@ -1129,7 +1129,7 @@ class TopologicalFate:
 
 
 @dataclass
-class ConsciousnessSubstrateMigration:
+class SubstrateCoherenceMigration:
     r"""Speculation VI: Topological winding transfer at death (Sec 12).
 
     Substrate coherence decay (Eq 41):
@@ -1225,11 +1225,11 @@ class ConsciousnessSubstrateMigration:
             Allowed fate labels.
         """
         if self.W == 0:
-            return [TopologicalFate.DISSOLUTION]
+            return [TopologicalOutcome.DISSOLUTION]
         return [
-            TopologicalFate.DISSOLUTION,
-            TopologicalFate.FREQUENCY_MIGRATION,
-            TopologicalFate.SUBSTRATE_TRANSFER,
+            TopologicalOutcome.DISSOLUTION,
+            TopologicalOutcome.FREQUENCY_MIGRATION,
+            TopologicalOutcome.SUBSTRATE_TRANSFER,
         ]
 
     def dissolution_energy(self, hbar_eff: float = 1.0) -> float:

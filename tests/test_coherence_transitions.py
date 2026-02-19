@@ -22,59 +22,59 @@ import pytest
 # Stain Dynamics  (Eq 6)
 # ═══════════════════════════════════════════════════════════════════════════
 
-class TestStainDynamics:
+class TestCoherenceDecayDynamics:
     """ds/dt = alpha * u_minus * (1 - s) - beta * u_plus * s - gamma * s"""
 
     def test_initial_stain_in_range(self):
-        from bpr.coherence_transitions import StainDynamics
-        sd = StainDynamics(s0=0.0)
+        from bpr.coherence_transitions import CoherenceDecayDynamics
+        sd = CoherenceDecayDynamics(s0=0.0)
         assert sd.s0 == 0.0
-        sd = StainDynamics(s0=0.5)
+        sd = CoherenceDecayDynamics(s0=0.5)
         assert sd.s0 == 0.5
 
     def test_initial_stain_out_of_range_raises(self):
-        from bpr.coherence_transitions import StainDynamics
+        from bpr.coherence_transitions import CoherenceDecayDynamics
         with pytest.raises(ValueError):
-            StainDynamics(s0=-0.1)
+            CoherenceDecayDynamics(s0=-0.1)
         with pytest.raises(ValueError):
-            StainDynamics(s0=1.5)
+            CoherenceDecayDynamics(s0=1.5)
 
     def test_ds_dt_zero_at_equilibrium(self):
-        from bpr.coherence_transitions import StainDynamics
-        sd = StainDynamics(alpha=1.0, beta=0.5, gamma=0.01)
+        from bpr.coherence_transitions import CoherenceDecayDynamics
+        sd = CoherenceDecayDynamics(alpha=1.0, beta=0.5, gamma=0.01)
         s_star = sd.steady_state(u_plus=1.0, u_minus=1.0)
         rate = sd.ds_dt(s_star, u_plus=1.0, u_minus=1.0)
         assert abs(rate) < 1e-10, "Rate should vanish at steady state"
 
     def test_stain_increases_under_pure_noise(self):
-        from bpr.coherence_transitions import StainDynamics
-        sd = StainDynamics(alpha=1.0, beta=0.5, gamma=0.01, s0=0.0)
+        from bpr.coherence_transitions import CoherenceDecayDynamics
+        sd = CoherenceDecayDynamics(alpha=1.0, beta=0.5, gamma=0.01, s0=0.0)
         rate = sd.ds_dt(0.0, u_plus=0.0, u_minus=1.0)
         assert rate > 0, "Stain should increase when only noise is present"
 
     def test_stain_decreases_under_pure_restoration(self):
-        from bpr.coherence_transitions import StainDynamics
-        sd = StainDynamics(alpha=1.0, beta=1.0, gamma=0.1, s0=0.8)
+        from bpr.coherence_transitions import CoherenceDecayDynamics
+        sd = CoherenceDecayDynamics(alpha=1.0, beta=1.0, gamma=0.1, s0=0.8)
         rate = sd.ds_dt(0.8, u_plus=1.0, u_minus=0.0)
         assert rate < 0, "Stain should decrease when only restoration is present"
 
     def test_steady_state_no_noise_is_zero(self):
-        from bpr.coherence_transitions import StainDynamics
-        sd = StainDynamics(alpha=1.0, beta=0.5, gamma=0.01)
+        from bpr.coherence_transitions import CoherenceDecayDynamics
+        sd = CoherenceDecayDynamics(alpha=1.0, beta=0.5, gamma=0.01)
         s_star = sd.steady_state(u_plus=1.0, u_minus=0.0)
         assert s_star == pytest.approx(0.0, abs=1e-12)
 
     def test_steady_state_pure_noise(self):
-        from bpr.coherence_transitions import StainDynamics
-        sd = StainDynamics(alpha=1.0, beta=0.5, gamma=0.01)
+        from bpr.coherence_transitions import CoherenceDecayDynamics
+        sd = CoherenceDecayDynamics(alpha=1.0, beta=0.5, gamma=0.01)
         s_star = sd.steady_state(u_plus=0.0, u_minus=1.0)
         # s* = alpha * u_minus / (alpha * u_minus + gamma)
         expected = 1.0 / (1.0 + 0.01)
         assert s_star == pytest.approx(expected, rel=1e-6)
 
     def test_evolve_returns_valid_shape(self):
-        from bpr.coherence_transitions import StainDynamics
-        sd = StainDynamics(s0=0.1)
+        from bpr.coherence_transitions import CoherenceDecayDynamics
+        sd = CoherenceDecayDynamics(s0=0.1)
         t, s = sd.evolve(
             t_span=(0, 10),
             u_plus=lambda t: 0.5,
@@ -86,8 +86,8 @@ class TestStainDynamics:
         assert np.all(s >= 0.0) and np.all(s <= 1.0)
 
     def test_evolve_converges_to_steady_state(self):
-        from bpr.coherence_transitions import StainDynamics
-        sd = StainDynamics(alpha=1.0, beta=0.5, gamma=0.1, s0=0.0)
+        from bpr.coherence_transitions import CoherenceDecayDynamics
+        sd = CoherenceDecayDynamics(alpha=1.0, beta=0.5, gamma=0.1, s0=0.0)
         u_p, u_m = 1.0, 0.5
         t, s = sd.evolve(
             t_span=(0, 200),
@@ -99,8 +99,8 @@ class TestStainDynamics:
         assert s[-1] == pytest.approx(s_star, abs=0.02)
 
     def test_stain_bounded_0_1(self):
-        from bpr.coherence_transitions import StainDynamics
-        sd = StainDynamics(alpha=5.0, beta=0.1, gamma=0.01, s0=0.0)
+        from bpr.coherence_transitions import CoherenceDecayDynamics
+        sd = CoherenceDecayDynamics(alpha=5.0, beta=0.1, gamma=0.01, s0=0.0)
         t, s = sd.evolve(
             t_span=(0, 50),
             u_plus=lambda t: 0.0,
@@ -114,55 +114,55 @@ class TestStainDynamics:
 # Heart Gain Function  (Eq 12-13)
 # ═══════════════════════════════════════════════════════════════════════════
 
-class TestHeartGainFunction:
+class TestCoherenceGainFunction:
     """G(s) = exp(-kappa_s * s - 0.5 * sigma_s(s)^2)"""
 
     def test_gain_at_zero_stain_is_one(self):
-        from bpr.coherence_transitions import HeartGainFunction
-        hg = HeartGainFunction()
+        from bpr.coherence_transitions import CoherenceGainFunction
+        hg = CoherenceGainFunction()
         assert hg.G(0.0) == pytest.approx(1.0)
 
     def test_gain_decreases_with_stain(self):
-        from bpr.coherence_transitions import HeartGainFunction
-        hg = HeartGainFunction()
+        from bpr.coherence_transitions import CoherenceGainFunction
+        hg = CoherenceGainFunction()
         assert hg.G(0.5) < hg.G(0.0)
         assert hg.G(1.0) < hg.G(0.5)
 
     def test_gain_positive_for_all_stain(self):
-        from bpr.coherence_transitions import HeartGainFunction
-        hg = HeartGainFunction()
+        from bpr.coherence_transitions import CoherenceGainFunction
+        hg = CoherenceGainFunction()
         for s in np.linspace(0, 1, 50):
             assert hg.G(s) > 0
 
     def test_asymptotic_coherence_at_zero_stain(self):
-        from bpr.coherence_transitions import HeartGainFunction
-        hg = HeartGainFunction(K_bar=1.0, nu=0.1)
+        from bpr.coherence_transitions import CoherenceGainFunction
+        hg = CoherenceGainFunction(K_bar=1.0, nu=0.1)
         K_star = hg.asymptotic_coherence(0.0)
         # G(0) = 1, so K* = 1.0 / (1.0 + 0.1) = 10/11
         expected = 1.0 / (1.0 + 0.1)
         assert K_star == pytest.approx(expected, rel=1e-6)
 
     def test_asymptotic_coherence_at_max_stain_is_low(self):
-        from bpr.coherence_transitions import HeartGainFunction
-        hg = HeartGainFunction(K_bar=1.0, nu=0.1, kappa_s=5.0)
+        from bpr.coherence_transitions import CoherenceGainFunction
+        hg = CoherenceGainFunction(K_bar=1.0, nu=0.1, kappa_s=5.0)
         K_star = hg.asymptotic_coherence(1.0)
         assert K_star < 0.1, "High stain should drive asymptotic coherence near zero"
 
     def test_dK_dt_positive_when_K_low_s_low(self):
-        from bpr.coherence_transitions import HeartGainFunction
-        hg = HeartGainFunction()
+        from bpr.coherence_transitions import CoherenceGainFunction
+        hg = CoherenceGainFunction()
         rate = hg.dK_dt(K=0.0, s=0.0)
         assert rate > 0, "Coherence should increase from zero when stain is zero"
 
     def test_dK_dt_negative_when_K_high_s_high(self):
-        from bpr.coherence_transitions import HeartGainFunction
-        hg = HeartGainFunction(kappa_s=5.0, nu=1.0)
+        from bpr.coherence_transitions import CoherenceGainFunction
+        hg = CoherenceGainFunction(kappa_s=5.0, nu=1.0)
         rate = hg.dK_dt(K=0.9, s=0.99)
         assert rate < 0, "Coherence should decrease when stain is high"
 
     def test_evolve_coherence_shape(self):
-        from bpr.coherence_transitions import HeartGainFunction
-        hg = HeartGainFunction()
+        from bpr.coherence_transitions import CoherenceGainFunction
+        hg = CoherenceGainFunction()
         t, K = hg.evolve_coherence(
             t_span=(0, 20),
             K0=0.5,
@@ -174,8 +174,8 @@ class TestHeartGainFunction:
         assert np.all(K >= 0.0) and np.all(K <= 1.0)
 
     def test_evolve_coherence_converges(self):
-        from bpr.coherence_transitions import HeartGainFunction
-        hg = HeartGainFunction(K_bar=1.0, nu=0.1, kappa_s=2.0)
+        from bpr.coherence_transitions import CoherenceGainFunction
+        hg = CoherenceGainFunction(K_bar=1.0, nu=0.1, kappa_s=2.0)
         s_fixed = 0.3
         t, K = hg.evolve_coherence(
             t_span=(0, 200),
@@ -191,12 +191,12 @@ class TestHeartGainFunction:
 # Judgment Functional  (Def 5.1)
 # ═══════════════════════════════════════════════════════════════════════════
 
-class TestJudgmentFunctional:
+class TestAsymptoticCoherenceFunctional:
     """J(H_i) = lim_{t->inf} K(S_t(H_i))"""
 
     def test_high_restoration_gives_high_judgment(self):
-        from bpr.coherence_transitions import JudgmentFunctional
-        jf = JudgmentFunctional()
+        from bpr.coherence_transitions import AsymptoticCoherenceFunctional
+        jf = AsymptoticCoherenceFunctional()
         result = jf.evaluate(
             u_plus=lambda t: 5.0,
             u_minus=lambda t: 0.1,
@@ -206,10 +206,10 @@ class TestJudgmentFunctional:
         assert result["J"] > 0.7, "Strong restoration should yield high judgment"
 
     def test_high_noise_gives_low_judgment(self):
-        from bpr.coherence_transitions import JudgmentFunctional, HeartGainFunction, StainDynamics
-        hg = HeartGainFunction(kappa_s=5.0)  # stronger stain coupling
-        sd = StainDynamics(alpha=2.0, beta=0.1, gamma=0.01)
-        jf = JudgmentFunctional(heart_gain=hg, stain_dynamics=sd)
+        from bpr.coherence_transitions import AsymptoticCoherenceFunctional, CoherenceGainFunction, CoherenceDecayDynamics
+        hg = CoherenceGainFunction(kappa_s=5.0)  # stronger stain coupling
+        sd = CoherenceDecayDynamics(alpha=2.0, beta=0.1, gamma=0.01)
+        jf = AsymptoticCoherenceFunctional(heart_gain=hg, stain_dynamics=sd)
         result = jf.evaluate(
             u_plus=lambda t: 0.1,
             u_minus=lambda t: 5.0,
@@ -219,8 +219,8 @@ class TestJudgmentFunctional:
         assert result["J"] < 0.3, "Strong noise should yield low judgment"
 
     def test_analytic_matches_numeric(self):
-        from bpr.coherence_transitions import JudgmentFunctional
-        jf = JudgmentFunctional()
+        from bpr.coherence_transitions import AsymptoticCoherenceFunctional
+        jf = AsymptoticCoherenceFunctional()
         u_p, u_m = 1.0, 0.5
         J_analytic = jf.evaluate_analytic(u_p, u_m)
         result = jf.evaluate(
@@ -233,8 +233,8 @@ class TestJudgmentFunctional:
         assert result["J"] == pytest.approx(J_analytic, abs=0.05)
 
     def test_result_keys_present(self):
-        from bpr.coherence_transitions import JudgmentFunctional
-        jf = JudgmentFunctional()
+        from bpr.coherence_transitions import AsymptoticCoherenceFunctional
+        jf = AsymptoticCoherenceFunctional()
         result = jf.evaluate(
             u_plus=lambda t: 1.0,
             u_minus=lambda t: 1.0,
@@ -247,10 +247,10 @@ class TestJudgmentFunctional:
 
     def test_stain_determines_asymptotic_fate(self):
         """Proposition 5.1: high stain drives K* -> 0."""
-        from bpr.coherence_transitions import JudgmentFunctional, HeartGainFunction, StainDynamics
-        hg = HeartGainFunction(kappa_s=5.0)
-        sd = StainDynamics(alpha=2.0, beta=0.01, gamma=0.001, s0=0.0)
-        jf = JudgmentFunctional(heart_gain=hg, stain_dynamics=sd)
+        from bpr.coherence_transitions import AsymptoticCoherenceFunctional, CoherenceGainFunction, CoherenceDecayDynamics
+        hg = CoherenceGainFunction(kappa_s=5.0)
+        sd = CoherenceDecayDynamics(alpha=2.0, beta=0.01, gamma=0.001, s0=0.0)
+        jf = AsymptoticCoherenceFunctional(heart_gain=hg, stain_dynamics=sd)
         result = jf.evaluate(
             u_plus=lambda t: 0.01,
             u_minus=lambda t: 5.0,
@@ -264,62 +264,62 @@ class TestJudgmentFunctional:
 # Deception Classifier  (Def 6.1, Eq 14)
 # ═══════════════════════════════════════════════════════════════════════════
 
-class TestDeceptionClassifier:
+class TestCoherenceMismatchClassifier:
     """Deception: K_local > K_c AND K_global < K_c"""
 
     def test_deceptive_state_detected(self):
-        from bpr.coherence_transitions import DeceptionClassifier
-        dc = DeceptionClassifier(K_c=0.5)
+        from bpr.coherence_transitions import CoherenceMismatchClassifier
+        dc = CoherenceMismatchClassifier(K_c=0.5)
         assert dc.is_deceptive(K_local=0.8, K_global=0.2) is True
 
     def test_truthful_state_not_deceptive(self):
-        from bpr.coherence_transitions import DeceptionClassifier
-        dc = DeceptionClassifier(K_c=0.5)
+        from bpr.coherence_transitions import CoherenceMismatchClassifier
+        dc = CoherenceMismatchClassifier(K_c=0.5)
         assert dc.is_deceptive(K_local=0.8, K_global=0.8) is False
 
     def test_disordered_state_not_deceptive(self):
-        from bpr.coherence_transitions import DeceptionClassifier
-        dc = DeceptionClassifier(K_c=0.5)
+        from bpr.coherence_transitions import CoherenceMismatchClassifier
+        dc = CoherenceMismatchClassifier(K_c=0.5)
         assert dc.is_deceptive(K_local=0.3, K_global=0.2) is False
 
     def test_deception_degree_positive_when_deceptive(self):
-        from bpr.coherence_transitions import DeceptionClassifier
-        dc = DeceptionClassifier(K_c=0.5)
+        from bpr.coherence_transitions import CoherenceMismatchClassifier
+        dc = CoherenceMismatchClassifier(K_c=0.5)
         d = dc.deception_degree(K_local=0.9, K_global=0.1)
         assert d == pytest.approx(0.8, abs=1e-10)
 
     def test_deception_degree_zero_when_truthful(self):
-        from bpr.coherence_transitions import DeceptionClassifier
-        dc = DeceptionClassifier(K_c=0.5)
+        from bpr.coherence_transitions import CoherenceMismatchClassifier
+        dc = CoherenceMismatchClassifier(K_c=0.5)
         d = dc.deception_degree(K_local=0.8, K_global=0.8)
         assert d == 0.0
 
     def test_kramers_escape_finite(self):
-        from bpr.coherence_transitions import DeceptionClassifier
-        tau = DeceptionClassifier.kramers_escape_time(delta_V=1.0, epsilon=0.5)
+        from bpr.coherence_transitions import CoherenceMismatchClassifier
+        tau = CoherenceMismatchClassifier.kramers_escape_time(delta_V=1.0, epsilon=0.5)
         assert np.isfinite(tau)
         assert tau > 0
         assert tau == pytest.approx(np.exp(2.0))
 
     def test_kramers_escape_infinite_without_noise(self):
-        from bpr.coherence_transitions import DeceptionClassifier
-        tau = DeceptionClassifier.kramers_escape_time(delta_V=1.0, epsilon=0.0)
+        from bpr.coherence_transitions import CoherenceMismatchClassifier
+        tau = CoherenceMismatchClassifier.kramers_escape_time(delta_V=1.0, epsilon=0.0)
         assert tau == np.inf
 
     def test_kramers_escape_zero_without_barrier(self):
-        from bpr.coherence_transitions import DeceptionClassifier
-        tau = DeceptionClassifier.kramers_escape_time(delta_V=0.0, epsilon=0.5)
+        from bpr.coherence_transitions import CoherenceMismatchClassifier
+        tau = CoherenceMismatchClassifier.kramers_escape_time(delta_V=0.0, epsilon=0.5)
         assert tau == 0.0
 
     def test_kramers_escape_increases_with_barrier(self):
-        from bpr.coherence_transitions import DeceptionClassifier
-        tau1 = DeceptionClassifier.kramers_escape_time(delta_V=1.0, epsilon=0.5)
-        tau2 = DeceptionClassifier.kramers_escape_time(delta_V=2.0, epsilon=0.5)
+        from bpr.coherence_transitions import CoherenceMismatchClassifier
+        tau1 = CoherenceMismatchClassifier.kramers_escape_time(delta_V=1.0, epsilon=0.5)
+        tau2 = CoherenceMismatchClassifier.kramers_escape_time(delta_V=2.0, epsilon=0.5)
         assert tau2 > tau1
 
     def test_classify_attractor_landscape(self):
-        from bpr.coherence_transitions import DeceptionClassifier
-        dc = DeceptionClassifier(K_c=0.5)
+        from bpr.coherence_transitions import CoherenceMismatchClassifier
+        dc = CoherenceMismatchClassifier(K_c=0.5)
         K_local = np.array([0.8, 0.9, 0.2, 0.3])
         K_global = np.array([0.8, 0.2, 0.3, 0.7])
         classes = dc.classify_attractor_landscape(K_local, K_global)
@@ -330,10 +330,10 @@ class TestDeceptionClassifier:
 
     def test_deceptive_attractor_finite_lifetime(self):
         """Theorem 6.1: deceptive attractors have finite lifetime for any epsilon > 0."""
-        from bpr.coherence_transitions import DeceptionClassifier
+        from bpr.coherence_transitions import CoherenceMismatchClassifier
         # Use epsilon values large enough that exp(delta_V/eps) fits in float64
         for eps in [0.01, 0.1, 1.0, 10.0]:
-            tau = DeceptionClassifier.kramers_escape_time(delta_V=5.0, epsilon=eps)
+            tau = CoherenceMismatchClassifier.kramers_escape_time(delta_V=5.0, epsilon=eps)
             assert np.isfinite(tau), f"Lifetime must be finite for epsilon={eps}"
             assert tau > 0, f"Lifetime must be positive for epsilon={eps}"
 
@@ -342,27 +342,27 @@ class TestDeceptionClassifier:
 # Collapse-Reset Dynamics  (Eq 15)
 # ═══════════════════════════════════════════════════════════════════════════
 
-class TestCollapseResetDynamics:
+class TestQualityFactorDynamics:
     """Q_eff(t+dt) = Q_eff - alpha_Q * Q_eff if Q > Q_c, else Q_0"""
 
     def test_single_step_degrades(self):
-        from bpr.coherence_transitions import CollapseResetDynamics
-        cr = CollapseResetDynamics(Q_0=1.0, Q_c=0.1, alpha_Q=0.02)
+        from bpr.coherence_transitions import QualityFactorDynamics
+        cr = QualityFactorDynamics(Q_0=1.0, Q_c=0.1, alpha_Q=0.02)
         Q_next = cr.step(1.0)
         assert Q_next < 1.0
         assert Q_next == pytest.approx(0.98)
 
     def test_reset_at_threshold(self):
-        from bpr.coherence_transitions import CollapseResetDynamics
-        cr = CollapseResetDynamics(Q_0=1.0, Q_c=0.1, alpha_Q=0.5)
+        from bpr.coherence_transitions import QualityFactorDynamics
+        cr = QualityFactorDynamics(Q_0=1.0, Q_c=0.1, alpha_Q=0.5)
         # Start at Q_c, next step should go below and reset
         Q_next = cr.step(0.15)
         # 0.15 - 0.5*0.15 = 0.075 < 0.1, so resets to 1.0
         assert Q_next == pytest.approx(1.0)
 
     def test_evolve_sawtooth_pattern(self):
-        from bpr.coherence_transitions import CollapseResetDynamics
-        cr = CollapseResetDynamics(Q_0=1.0, Q_c=0.1, alpha_Q=0.02)
+        from bpr.coherence_transitions import QualityFactorDynamics
+        cr = QualityFactorDynamics(Q_0=1.0, Q_c=0.1, alpha_Q=0.02)
         Q = cr.evolve(500)
         assert len(Q) == 501
         # Should show at least one collapse-reset cycle
@@ -370,14 +370,14 @@ class TestCollapseResetDynamics:
         assert len(resets) >= 1, "Should have at least one collapse-reset event"
 
     def test_quality_bounded_above(self):
-        from bpr.coherence_transitions import CollapseResetDynamics
-        cr = CollapseResetDynamics(Q_0=1.0, Q_c=0.1, alpha_Q=0.02)
+        from bpr.coherence_transitions import QualityFactorDynamics
+        cr = QualityFactorDynamics(Q_0=1.0, Q_c=0.1, alpha_Q=0.02)
         Q = cr.evolve(1000)
         assert np.max(Q) <= cr.Q_0 + 1e-10
 
     def test_collapse_period_analytic(self):
-        from bpr.coherence_transitions import CollapseResetDynamics
-        cr = CollapseResetDynamics(Q_0=1.0, Q_c=0.1, alpha_Q=0.02)
+        from bpr.coherence_transitions import QualityFactorDynamics
+        cr = QualityFactorDynamics(Q_0=1.0, Q_c=0.1, alpha_Q=0.02)
         T_analytic = cr.collapse_period()
         assert T_analytic > 0
         assert np.isfinite(T_analytic)
@@ -386,8 +386,8 @@ class TestCollapseResetDynamics:
         assert T_analytic == pytest.approx(expected, rel=1e-6)
 
     def test_multiple_collapse_cycles(self):
-        from bpr.coherence_transitions import CollapseResetDynamics
-        cr = CollapseResetDynamics(Q_0=1.0, Q_c=0.1, alpha_Q=0.05)
+        from bpr.coherence_transitions import QualityFactorDynamics
+        cr = QualityFactorDynamics(Q_0=1.0, Q_c=0.1, alpha_Q=0.05)
         Q = cr.evolve(500)
         resets = cr.collapse_times(500)
         assert len(resets) >= 2, "Should have multiple collapse-reset cycles"
@@ -397,56 +397,56 @@ class TestCollapseResetDynamics:
 # Death Trichotomy  (Theorem 8.1)
 # ═══════════════════════════════════════════════════════════════════════════
 
-class TestDeathTrichotomy:
+class TestTopologicalFateClassifier:
     """W != 0 => exactly three topologically allowed fates."""
 
     def test_nonzero_winding_has_three_fates(self):
-        from bpr.coherence_transitions import DeathTrichotomy, WindingFate
-        dt = DeathTrichotomy(W=3)
+        from bpr.coherence_transitions import TopologicalFateClassifier, WindingOutcome
+        dt = TopologicalFateClassifier(W=3)
         fates = dt.allowed_fates()
         assert len(fates) == 3
-        assert WindingFate.DISSOLUTION in fates
-        assert WindingFate.MIGRATION in fates
-        assert WindingFate.REINCORPORATION in fates
+        assert WindingOutcome.DISSOLUTION in fates
+        assert WindingOutcome.MIGRATION in fates
+        assert WindingOutcome.REINCORPORATION in fates
 
     def test_zero_winding_only_dissolution(self):
-        from bpr.coherence_transitions import DeathTrichotomy, WindingFate
-        dt = DeathTrichotomy(W=0)
+        from bpr.coherence_transitions import TopologicalFateClassifier, WindingOutcome
+        dt = TopologicalFateClassifier(W=0)
         fates = dt.allowed_fates()
         assert len(fates) == 1
-        assert fates[0] == WindingFate.DISSOLUTION
+        assert fates[0] == WindingOutcome.DISSOLUTION
 
     def test_dissolution_requires_anti_winding(self):
-        from bpr.coherence_transitions import DeathTrichotomy
-        dt = DeathTrichotomy(W=5)
+        from bpr.coherence_transitions import TopologicalFateClassifier
+        dt = TopologicalFateClassifier(W=5)
         assert dt.dissolution_requires() == -5
 
     def test_classify_dissolution(self):
-        from bpr.coherence_transitions import DeathTrichotomy, WindingFate
-        dt = DeathTrichotomy(W=3)
+        from bpr.coherence_transitions import TopologicalFateClassifier, WindingOutcome
+        dt = TopologicalFateClassifier(W=3)
         fate = dt.classify_fate(W_final=0, substrate_coupled=False, mode_transferred=False)
-        assert fate == WindingFate.DISSOLUTION
+        assert fate == WindingOutcome.DISSOLUTION
 
     def test_classify_migration(self):
-        from bpr.coherence_transitions import DeathTrichotomy, WindingFate
-        dt = DeathTrichotomy(W=3)
+        from bpr.coherence_transitions import TopologicalFateClassifier, WindingOutcome
+        dt = TopologicalFateClassifier(W=3)
         fate = dt.classify_fate(W_final=3, substrate_coupled=False, mode_transferred=True)
-        assert fate == WindingFate.MIGRATION
+        assert fate == WindingOutcome.MIGRATION
 
     def test_classify_reincorporation(self):
-        from bpr.coherence_transitions import DeathTrichotomy, WindingFate
-        dt = DeathTrichotomy(W=3)
+        from bpr.coherence_transitions import TopologicalFateClassifier, WindingOutcome
+        dt = TopologicalFateClassifier(W=3)
         fate = dt.classify_fate(W_final=3, substrate_coupled=True, mode_transferred=False)
-        assert fate == WindingFate.REINCORPORATION
+        assert fate == WindingOutcome.REINCORPORATION
 
     def test_winding_conservation(self):
-        from bpr.coherence_transitions import DeathTrichotomy
-        assert DeathTrichotomy.verify_conservation(5, [3, 2]) is True
-        assert DeathTrichotomy.verify_conservation(5, [3, 1]) is False
+        from bpr.coherence_transitions import TopologicalFateClassifier
+        assert TopologicalFateClassifier.verify_conservation(5, [3, 2]) is True
+        assert TopologicalFateClassifier.verify_conservation(5, [3, 1]) is False
 
     def test_negative_winding(self):
-        from bpr.coherence_transitions import DeathTrichotomy, WindingFate
-        dt = DeathTrichotomy(W=-2)
+        from bpr.coherence_transitions import TopologicalFateClassifier, WindingOutcome
+        dt = TopologicalFateClassifier(W=-2)
         fates = dt.allowed_fates()
         assert len(fates) == 3
         assert dt.dissolution_requires() == 2
@@ -456,7 +456,7 @@ class TestDeathTrichotomy:
 # Symbolic Projection  (Def 3.1)
 # ═══════════════════════════════════════════════════════════════════════════
 
-class TestSymbolicProjection:
+class TestConceptProjection:
     """pi: S -> Sigma surjective, invariant-preserving."""
 
     def test_build_default_projection(self):
@@ -522,22 +522,22 @@ class TestCrossTraditionalMap:
     """Verify the translation dictionary structure."""
 
     def test_map_has_nine_entries(self):
-        from bpr.coherence_transitions import CROSS_TRADITIONAL_MAP
-        assert len(CROSS_TRADITIONAL_MAP) == 9
+        from bpr.coherence_transitions import SYMBOLIC_CONCEPT_MAP
+        assert len(SYMBOLIC_CONCEPT_MAP) == 9
 
     def test_all_entries_have_required_keys(self):
-        from bpr.coherence_transitions import CROSS_TRADITIONAL_MAP
+        from bpr.coherence_transitions import SYMBOLIC_CONCEPT_MAP
         required_keys = {"dynamical_concept", "mathematical_form", "Judaism", "Christianity", "Islam"}
-        for entry in CROSS_TRADITIONAL_MAP:
+        for entry in SYMBOLIC_CONCEPT_MAP:
             assert required_keys.issubset(entry.keys()), f"Missing keys in {entry}"
 
     def test_first_entry_is_invariant_truth(self):
-        from bpr.coherence_transitions import CROSS_TRADITIONAL_MAP
-        assert CROSS_TRADITIONAL_MAP[0]["dynamical_concept"] == "Invariant truth"
+        from bpr.coherence_transitions import SYMBOLIC_CONCEPT_MAP
+        assert SYMBOLIC_CONCEPT_MAP[0]["dynamical_concept"] == "Invariant truth"
 
     def test_last_entry_is_topological_trichotomy(self):
-        from bpr.coherence_transitions import CROSS_TRADITIONAL_MAP
-        assert CROSS_TRADITIONAL_MAP[-1]["dynamical_concept"] == "Topological trichotomy"
+        from bpr.coherence_transitions import SYMBOLIC_CONCEPT_MAP
+        assert SYMBOLIC_CONCEPT_MAP[-1]["dynamical_concept"] == "Topological trichotomy"
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -549,25 +549,25 @@ class TestIntegration:
 
     def test_restoration_beats_noise(self):
         """When restoration dominates noise, judgment should be high."""
-        from bpr.coherence_transitions import JudgmentFunctional
-        jf = JudgmentFunctional()
+        from bpr.coherence_transitions import AsymptoticCoherenceFunctional
+        jf = AsymptoticCoherenceFunctional()
         J = jf.evaluate_analytic(u_plus_const=5.0, u_minus_const=0.1)
         assert J > 0.8
 
     def test_noise_beats_restoration(self):
         """When noise dominates restoration, judgment should be low."""
-        from bpr.coherence_transitions import JudgmentFunctional, HeartGainFunction, StainDynamics
-        hg = HeartGainFunction(kappa_s=5.0)
-        sd = StainDynamics(alpha=2.0, beta=0.1, gamma=0.01)
-        jf = JudgmentFunctional(heart_gain=hg, stain_dynamics=sd)
+        from bpr.coherence_transitions import AsymptoticCoherenceFunctional, CoherenceGainFunction, CoherenceDecayDynamics
+        hg = CoherenceGainFunction(kappa_s=5.0)
+        sd = CoherenceDecayDynamics(alpha=2.0, beta=0.1, gamma=0.01)
+        jf = AsymptoticCoherenceFunctional(heart_gain=hg, stain_dynamics=sd)
         J = jf.evaluate_analytic(u_plus_const=0.1, u_minus_const=5.0)
         assert J < 0.3
 
     def test_deceptive_state_collapses_under_judgment(self):
         """Deceptive states should not survive judgment."""
-        from bpr.coherence_transitions import DeceptionClassifier, JudgmentFunctional
-        dc = DeceptionClassifier(K_c=0.5)
-        jf = JudgmentFunctional()
+        from bpr.coherence_transitions import CoherenceMismatchClassifier, AsymptoticCoherenceFunctional
+        dc = CoherenceMismatchClassifier(K_c=0.5)
+        jf = AsymptoticCoherenceFunctional()
 
         # Deceptive state: high local coherence maintained by self-deception
         # But globally, noise is high
@@ -582,17 +582,17 @@ class TestIntegration:
 
     def test_collapse_reset_preserves_winding(self):
         """Phase transitions should not violate winding conservation."""
-        from bpr.coherence_transitions import DeathTrichotomy
+        from bpr.coherence_transitions import TopologicalFateClassifier
         # Before collapse: W = 5
         # After collapse: must distribute W across components
-        assert DeathTrichotomy.verify_conservation(5, [5]) is True
-        assert DeathTrichotomy.verify_conservation(5, [3, 2]) is True
-        assert DeathTrichotomy.verify_conservation(5, [2, 2]) is False
+        assert TopologicalFateClassifier.verify_conservation(5, [5]) is True
+        assert TopologicalFateClassifier.verify_conservation(5, [3, 2]) is True
+        assert TopologicalFateClassifier.verify_conservation(5, [2, 2]) is False
 
     def test_full_pipeline_monotonicity(self):
         """More restoration relative to noise should always improve judgment."""
-        from bpr.coherence_transitions import JudgmentFunctional
-        jf = JudgmentFunctional()
+        from bpr.coherence_transitions import AsymptoticCoherenceFunctional
+        jf = AsymptoticCoherenceFunctional()
         ratios = [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
         judgments = []
         for ratio in ratios:
