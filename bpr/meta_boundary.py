@@ -40,7 +40,6 @@ from scipy.special import gamma as gamma_func
 # ---------------------------------------------------------------------------
 # Physical constants
 # ---------------------------------------------------------------------------
-_HBAR = 1.054571817e-34   # J s
 _E_PLANCK = 1.22e19 * 1.6e-10  # Planck energy in Joules (~1.22e19 GeV)
 _L_PLANCK = 1.616e-35     # Planck length in meters
 
@@ -229,7 +228,7 @@ class GaugeStructure:
     r"""Gauge structure of boundary phase operators (Section 3).
 
     The boundary phase Phi_AB = Arg Tr(rho Pi_A Pi_B) transforms under
-    local phase rotations as Phi_AB -> Phi_AB + theta_A + theta_B.
+    local phase rotations as Phi_AB -> Phi_AB + theta_A - theta_B.
 
     The gauge-invariant boundary phase curvature (Def 3.1):
         Omega_ABC = Phi_AB + Phi_BC + Phi_CA
@@ -259,7 +258,7 @@ class GaugeStructure:
     def gauge_transform(phi_AB: float, theta_A: float, theta_B: float) -> float:
         r"""Apply gauge transformation (Eq 15).
 
-        Phi_AB -> Phi_AB + theta_A + theta_B
+        Phi_AB -> Phi_AB + theta_A - theta_B
 
         Parameters
         ----------
@@ -273,7 +272,7 @@ class GaugeStructure:
         float
             Transformed boundary phase.
         """
-        return phi_AB + theta_A + theta_B
+        return phi_AB + theta_A - theta_B
 
     @staticmethod
     def boundary_phase_curvature(phi_AB: float, phi_BC: float,
@@ -300,8 +299,9 @@ class GaugeStructure:
                                    theta_C: float) -> float:
         r"""Compute gauge-transformed curvature (from Thm 3.2 proof).
 
-        Under rotations theta_A, theta_B, theta_C:
-            Omega' = Omega + 2(theta_A + theta_B + theta_C)
+        Under rotations theta_A, theta_B, theta_C with Phi_AB -> Phi_AB + theta_A - theta_B:
+            delta Omega = (theta_A - theta_B) + (theta_B - theta_C) + (theta_C - theta_A) = 0
+        so Omega_ABC is gauge invariant: Omega' = Omega.
 
         Parameters
         ----------
@@ -313,9 +313,9 @@ class GaugeStructure:
         Returns
         -------
         float
-            Transformed curvature.
+            Transformed curvature (unchanged — gauge invariant).
         """
-        return omega_ABC + 2.0 * (theta_A + theta_B + theta_C)
+        return omega_ABC
 
     @staticmethod
     def gauge_invariant_curvature_exp(phi_AB: float, phi_BC: float,

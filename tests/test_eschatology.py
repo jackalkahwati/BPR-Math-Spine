@@ -643,11 +643,11 @@ class TestTerminalCoherenceSurge:
     def test_bpr_consistency_check(self):
         from bpr.eschatology import TerminalCoherenceSurge
         tcs = TerminalCoherenceSurge()
-        assert tcs.is_consistent_with_bpr(0.75) is True   # within [0.5, 1.5]
-        assert tcs.is_consistent_with_bpr(0.0) is False   # neural rundown (below range)
-        assert tcs.is_consistent_with_bpr(3.0) is False   # outside range
-        assert tcs.is_consistent_with_bpr(0.5) is True    # lower boundary (inclusive)
-        assert tcs.is_consistent_with_bpr(-0.1) is False  # negative
+        assert tcs.is_consistent_with_bpr(0.75) is True             # within [0.5, 1.5]
+        assert tcs.is_consistent_with_bpr(0.0, tolerance=0) is False  # neural rundown (below BPR range)
+        assert tcs.is_consistent_with_bpr(3.0) is False              # outside range
+        assert tcs.is_consistent_with_bpr(0.5, tolerance=0) is True  # lower boundary inclusive (Bugbot fix)
+        assert tcs.is_consistent_with_bpr(-0.1) is False             # negative
 
     def test_neural_rundown_is_monotone(self):
         from bpr.eschatology import TerminalCoherenceSurge

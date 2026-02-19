@@ -143,8 +143,9 @@ class TestGaugeStructure:
 
     def test_gauge_transform(self):
         from bpr.meta_boundary import GaugeStructure
+        # Phi_AB -> Phi_AB + theta_A - theta_B (antisymmetric convention)
         phi = GaugeStructure.gauge_transform(0.5, 0.3, 0.2)
-        assert phi == pytest.approx(1.0)
+        assert phi == pytest.approx(0.6)
 
     def test_curvature_simple(self):
         from bpr.meta_boundary import GaugeStructure
@@ -152,7 +153,7 @@ class TestGaugeStructure:
         assert omega == pytest.approx(0.6)
 
     def test_gauge_transform_curvature(self):
-        """Thm 3.2: Omega_ABC transforms as Omega + 2*(sum of thetas)."""
+        """Thm 3.2: Omega_ABC is gauge invariant (unchanged under any rotation)."""
         from bpr.meta_boundary import GaugeStructure
         phi_AB, phi_BC, phi_CA = 0.5, 0.7, -0.3
         omega_orig = GaugeStructure.boundary_phase_curvature(phi_AB, phi_BC, phi_CA)
@@ -160,8 +161,7 @@ class TestGaugeStructure:
         omega_new = GaugeStructure.gauge_transform_curvature(
             omega_orig, theta_A, theta_B, theta_C,
         )
-        expected = omega_orig + 2.0 * (theta_A + theta_B + theta_C)
-        assert omega_new == pytest.approx(expected)
+        assert omega_new == pytest.approx(omega_orig)
 
     def test_gauge_invariant_curvature_exp(self):
         """Eq 19: exp(i*Omega_ABC) is the gauge-invariant observable."""

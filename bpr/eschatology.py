@@ -40,8 +40,6 @@ from scipy.integrate import solve_ivp
 # ---------------------------------------------------------------------------
 # Physical constants
 # ---------------------------------------------------------------------------
-_HBAR = 1.054571817e-34   # J s
-_K_B = 1.380649e-23       # J/K
 
 
 # ===================================================================
@@ -625,8 +623,8 @@ class CollapseResetDynamics:
         Q_traj = self.evolve(n_steps, Q_init)
         resets = []
         for i in range(1, len(Q_traj)):
-            # Detect reset: Q jumps upward to Q_0 from a decayed value
-            if Q_traj[i] > Q_traj[i - 1] * 1.5:
+            # Detect reset: Q jumps upward (only possible via reset to Q_0)
+            if Q_traj[i] > Q_traj[i - 1]:
                 resets.append(i)
         return resets
 
@@ -1220,7 +1218,7 @@ class TerminalCoherenceSurge:
         """
         bpr_low = 0.5 - tolerance
         bpr_high = 1.5 + tolerance
-        return bpr_low < observed_gamma <= bpr_high
+        return bpr_low <= observed_gamma <= bpr_high
 
     @staticmethod
     def neural_rundown_profile(t: np.ndarray, K0: float = 0.5,
@@ -1457,17 +1455,18 @@ class DutyCycleOptimizer:
         if D <= 0 or D >= 1:
             return 0.0
         capacity = 1.0
-        total_output = 0.0
+        outputs = []
         for _ in range(n_cycles):
             output = D * capacity
-            total_output += output
+            outputs.append(output)
             # Depletion during active phase
             depletion = D * capacity / self.Q_active
             # Recovery during rest phase
             recovery = (1.0 - D) * (1.0 - capacity) * self.Q_rest
             capacity = np.clip(capacity - depletion + recovery, 0.0, 1.0)
         # Return average over last 10% of cycles (steady state)
-        return total_output / n_cycles
+        steady_start = max(0, int(n_cycles * 0.9))
+        return float(np.mean(outputs[steady_start:]))
 
     def scan_duty_cycles(self, n_points: int = 100,
                           n_cycles: int = 200) -> Tuple[np.ndarray, np.ndarray]:
