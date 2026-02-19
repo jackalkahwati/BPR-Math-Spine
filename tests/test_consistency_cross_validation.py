@@ -37,8 +37,9 @@ def test_python_wolfram_pion_mass_consistent():
     """P12.14: Pion mass from derived condensate."""
     from bpr.qcd_flavor import pion_mass
     mpi = pion_mass(m_u_MeV=2.16, m_d_MeV=4.67, f_pi_MeV=92.1, Lambda_QCD_MeV=332.0)
-    # Derived: |<qq>|^{1/3} = Lambda * sqrt(2/3) ≈ 271 MeV
-    assert 125 < mpi < 128, f"m_pi={mpi}"
+    # Derived: |<qq>|^{1/3} = Lambda * sqrt(2/3) ≈ 271 MeV (LO ~126.7 MeV)
+    # With 6.2% NLO chiral correction -> ~134.5 MeV (physical pi0: 134.98 MeV)
+    assert 130 < mpi < 140, f"m_pi={mpi}"
 
 
 @pytest.mark.skipif(not _wolfram_available(), reason="wolframscript not available")
