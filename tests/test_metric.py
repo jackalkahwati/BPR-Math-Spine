@@ -87,18 +87,23 @@ class TestMetricPerturbation:
             delta_g1 = metric_perturbation(phi_test, coupling_lambda=lambda1)
             delta_g2 = metric_perturbation(phi_test, coupling_lambda=lambda2)
             
-            # Check linear scaling (approximately)
-            ratio = delta_g2.delta_g / delta_g1.delta_g
             expected_ratio = lambda2 / lambda1
             
-            # Check a few non-zero elements
-            for i in range(1, 4):  # Skip time components which might be zero
-                if delta_g1.delta_g[i, i] != 0:
-                    computed_ratio = delta_g2.delta_g[i, i] / delta_g1.delta_g[i, i]
-                    assert abs(computed_ratio - expected_ratio) < 0.1, (
+            # Check element-wise linear scaling for non-zero diagonal elements
+            checked = False
+            for i in range(4):
+                elem1 = delta_g1.delta_g[i, i]
+                elem2 = delta_g2.delta_g[i, i]
+                if elem1 != 0:
+                    computed_ratio = sp.nsimplify(elem2 / elem1)
+                    assert abs(float(computed_ratio) - expected_ratio) < 0.1, (
                         f"Scaling not linear: ratio {computed_ratio} ≠ {expected_ratio}"
                     )
+                    checked = True
                     break
+            
+            if not checked:
+                pytest.skip("No non-zero diagonal elements to test scaling")
                     
         except Exception as e:
             pytest.skip(f"Scaling test failed: {e}")
@@ -351,9 +356,6 @@ def test_mathematical_checkpoint_2():
         else:
             print("\n⚠️  MATHEMATICAL CHECKPOINT 2: NEEDS ATTENTION")
             print("   Some conservation laws may be violated")
-        
-        # Note: For symbolic tests, we're more lenient than numerical tests
-        return True  # Consider symbolic verification as passing
         
     except Exception as e:
         print(f"\n❌ MATHEMATICAL CHECKPOINT 2: ERROR")

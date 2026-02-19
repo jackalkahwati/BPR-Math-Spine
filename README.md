@@ -6,7 +6,25 @@
 >
 > **KEY RESULT**: Testable prediction at 10⁻⁸ level via phonon-MEMS experiments
 >
+> **EXPERIMENTAL ROADMAP** → [`doc/EXPERIMENTAL_ROADMAP.md`](doc/EXPERIMENTAL_ROADMAP.md) *(10 concrete tests with falsification criteria)*
+>
+> **VALIDATION AUDIT** → [`VALIDATION_STATUS.md`](VALIDATION_STATUS.md) *(honest classification of all 205 predictions)*
+>
+> **CONSISTENCY AUDIT** → [`doc/CONSISTENCY_AUDIT.md`](doc/CONSISTENCY_AUDIT.md) *(58 internal math consistency tests — no experiments needed)*
+>
+> **BENCHMARK SCORECARD** → [`doc/BENCHMARK_SCORECARD.md`](doc/BENCHMARK_SCORECARD.md) *(51 predictions vs PDG/Planck/CODATA data)*
+>
+> **EXPERIMENTS** → [`doc/experiments/`](doc/experiments/) *(papers that confirm or falsify BPR)*
+>
+> **DERIVATION ROADMAP** → [`doc/derivations/DERIVATION_ROADMAP.md`](doc/derivations/DERIVATION_ROADMAP.md) *(41 DERIVED, 5 FRAMEWORK)*
+>
 > One‑pager → [`doc/BPR_one_pager.md`](doc/BPR_one_pager.md) | LaTeX source → [`doc/BPR_one_pager.tex`](doc/BPR_one_pager.tex)
+
+---
+
+## For Physicists: How to Read This
+
+BPR is a **testable framework** with explicit falsification criteria. See [EXPERIMENTAL_ROADMAP.md](doc/EXPERIMENTAL_ROADMAP.md) for concrete tests and [LIMITATIONS_AND_FALSIFICATION.md](doc/LIMITATIONS_AND_FALSIFICATION.md) for known limitations and BPR-unique vs shared predictions. One-page reviewer summary: [FOR_REVIEWERS.md](doc/FOR_REVIEWERS.md).
 
 ---
 
@@ -205,6 +223,8 @@ $ python scripts/run_casimir_demo.py --no-fenics
 python -c "import fenics; print('✅ FEniCS installed successfully')"
 python -c "import mshr; print('✅ mshr installed successfully')"
 ```
+
+**If pytest segfaults (macOS + system Python):** NumPy's `_mac_os_check` can crash on some macOS/system-Python combinations. Use the project environment: `conda activate bpr` or `mamba env create -f environment.yml`, then `pytest -q`. `conftest.py` sets BLAS threading env vars to reduce this risk.
 
 ---
 
@@ -418,7 +438,10 @@ The BPR-Math-Spine framework is **feature-complete** and ready for:
 * **7/7** BPR equations complete
 * **21 theories** — 10 adjacent + 6 extended + 5 frontier (Gauge, Leptons, Nuclear, QG, Chemistry)
 * **205** falsifiable predictions (from 3 substrate numbers: J, p, N)
-* **395** tests passing, 21 skipped (FEniCS auto-skip)
+* **488** tests passing, 21 skipped (FEniCS auto-skip)
+* **58** mathematical consistency tests (no experiments needed)
+* **29** benchmark regression tests (predictions vs experiment)
+* **51** predictions benchmarked (41 DERIVED, 5 FRAMEWORK; 50 PASS, 1 CLOSE)
 * **3/3** mathematical checkpoints verified
 
 ---

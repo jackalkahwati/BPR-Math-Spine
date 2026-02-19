@@ -120,3 +120,7 @@ instant/
 
 # Local runtime caches
 .mplcache/
+
+# Private paper submissions (unpublished)
+doc/pnas-submission/
+doc/prd-submission/

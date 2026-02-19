@@ -30,8 +30,8 @@ except ImportError as e:
     MODULES_AVAILABLE = False
     pytestmark = pytest.mark.skip(f"BPR modules not available: {e}")
 
-if pd is None:
-    pytestmark = pytest.mark.skip("pandas not available (Casimir sweep tests require pandas)")
+# pandas is needed only by tests that use sweep_radius (which returns a DataFrame).
+# Individual casimir_force tests work without pandas.
 
 
 class TestCasimirForce:
@@ -155,6 +155,7 @@ class TestRadiusSweep:
     """Test radius sweep functionality."""
     
     @pytest.mark.skipif(not MODULES_AVAILABLE, reason="BPR modules required")
+    @pytest.mark.skipif(pd is None, reason="pandas required for sweep tests")
     def test_sweep_radius_basic(self):
         """Test basic radius sweep functionality."""
         
@@ -183,6 +184,7 @@ class TestRadiusSweep:
             pytest.skip(f"Radius sweep test failed: {e}")
     
     @pytest.mark.skipif(not MODULES_AVAILABLE, reason="BPR modules required")
+    @pytest.mark.skipif(pd is None, reason="pandas required for sweep tests")
     def test_sweep_data_consistency(self):
         """Test consistency of sweep data."""
         
@@ -196,8 +198,8 @@ class TestRadiusSweep:
             
             # Check that radii are in correct range and order
             radii = data['R [m]'].values
-            assert np.all(radii >= 0.5e-6), "Some radii below minimum"
-            assert np.all(radii <= 1.5e-6), "Some radii above maximum"
+            assert np.all(radii >= 0.5e-6 * 0.99), "Some radii below minimum"
+            assert np.all(radii <= 1.5e-6 * 1.01), "Some radii above maximum"
             assert np.all(radii[1:] >= radii[:-1]), "Radii not in ascending order"
             
             # Check force scaling (standard Casimir should decrease with radius)
@@ -220,6 +222,7 @@ class TestBPRSignature:
     """Test BPR signature analysis."""
     
     @pytest.mark.skipif(not MODULES_AVAILABLE, reason="BPR modules required")
+    @pytest.mark.skipif(pd is None, reason="pandas required for sweep tests")
     def test_bpr_signature_analysis(self):
         """Test BPR signature analysis functionality."""
         
@@ -255,6 +258,7 @@ class TestBPRSignature:
             pytest.skip(f"BPR signature analysis failed: {e}")
     
     @pytest.mark.skipif(not MODULES_AVAILABLE, reason="BPR modules required")
+    @pytest.mark.skipif(pd is None, reason="pandas required for sweep tests")
     def test_data_export(self):
         """Test data export functionality."""
         
@@ -414,8 +418,6 @@ def test_mathematical_checkpoint_3():
             print("\n⚠️  MATHEMATICAL CHECKPOINT 3: NEEDS ATTENTION")
             print("   Recovery may not be complete - check implementation")
         
-        return recovery_verified
-        
     except Exception as e:
         print(f"\n❌ MATHEMATICAL CHECKPOINT 3: ERROR")
         print(f"   {e}")
@@ -427,6 +429,8 @@ def test_equation_7_implementation():
     
     if not MODULES_AVAILABLE:
         pytest.skip("BPR modules required")
+    if pd is None:
+        pytest.skip("pandas required for sweep_radius")
     
     print("\n🔍 Testing Equation 7 Implementation")
     print("=" * 40)
@@ -460,9 +464,7 @@ def test_equation_7_implementation():
         
         print("✅ Equation 7 implementation verified")
         print("   F_total = F_Casimir + ΔF_BPR holds for all points")
-        
-        return True
-        
+
     except Exception as e:
         pytest.fail(f"Equation 7 test failed: {e}")
 

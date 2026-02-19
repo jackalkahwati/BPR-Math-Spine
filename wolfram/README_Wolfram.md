@@ -53,7 +53,7 @@ Output:
 ## Run all WL tests (equation-by-equation)
 
 ```bash
-wolframscript -code 'TestReport[{"wolfram/tests/BPRTests.wlt","wolfram/tests/BPREquationTests.wlt"}]'
+wolframscript -code 'TestReport[{"wolfram/tests/BPRTests.wlt","wolfram/tests/BPREquationTests.wlt","wolfram/tests/BPRAdjacentTheoriesTests.wlt"}]'
 ```
 
 ## If `TestReport` trips a license error (fallback smoke runner)
@@ -80,6 +80,7 @@ wolframscript -script wolfram/tests/run_equation_smoke.wls
 - **Eq (5)**: Consciousness coupling — numeric and nonnegative
 - **Eq (7a)**: Casimir with \(\lambda_{\text{theory}}=\kappa\ell_P^2\) — \(|\Delta F/F|\) extremely small (λ→0 recovery)
 - **Eq (7b)**: Casimir with phenomenological \(\lambda_{\text{eff}}\) — satisfies the named bound at the reference separation (by construction)
+- **Adjacent Theories**: P11.15 (DM relic Ω h²), P18.2 (charged leptons), P19.8 (B/A He4), P19.9 (saturation density), P4.7 (Tc Nb), P12.14 (pion mass)
 
 ### Partial / structural only (not a full symbolic proof)
 
@@ -92,6 +93,7 @@ wolframscript -script wolfram/tests/run_equation_smoke.wls
 - **Metric + conservation scaffold**: WL-native symbolic tensor + simplified conservation check matching the current repo’s “math spine” intent (`wolfram/BPR/Metric.wl`).
 - **Information + consciousness**: WL-native IIT-inspired Φ and six-factor coupling (`wolfram/BPR/Information.wl`).
 - **E8**: WL-native E8 objects via `RootSystemData` (`wolfram/BPR/E8.wl`).
+- **Adjacent Theories**: cosmology (DM relic), charged leptons (l_μ=√210), nuclear physics (saturation, binding), superconductivity (Tc), QCD (pion mass) — `wolfram/BPR/AdjacentTheories.wl`.
 
 ## WL notebooks
 

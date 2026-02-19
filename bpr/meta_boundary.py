@@ -1863,3 +1863,40 @@ class CERNScenario:
             "transition_possible": (energy_ratio >= 1.0
                                     and delta_omega >= 1.0),
         }
+
+
+# ---------------------------------------------------------------------------
+# Compatibility shim: falsifiable predictions dict for first_principles.py
+# ---------------------------------------------------------------------------
+
+def meta_boundary_predictions(
+    kappa_rigidity: float = 3.0,
+    xi: float = 1e-6,
+) -> dict:
+    """Return falsifiable predictions from meta-boundary dynamics (Theory XXIII).
+
+    Parameters
+    ----------
+    kappa_rigidity : float
+        Constraint field rigidity (maps to alpha in ConstraintPotential).
+    xi : float
+        Small coupling scale (unused directly; reserved for future extensions).
+
+    Returns
+    -------
+    dict
+        Prediction keys P23.1–P23.5.
+    """
+    pot = ConstraintPotential(alpha=kappa_rigidity)
+    front = FrontSolution(potential=pot)
+    v_max = front.max_velocity()
+    sigma = front.wall_tension()
+    cost = EnergyCostScaling(sigma_wall=sigma)
+    C_barrier = cost.region_cost(pot.critical_radius() if hasattr(pot, "critical_radius") else 1.0)
+    return {
+        "P23.1_front_velocity_bound": v_max,
+        "P23.2_domain_wall_tension": sigma,
+        "P23.3_barrier_cost": C_barrier,
+        "P23.4_tau_kappa": front.tau_kappa,
+        "P23.5_detectability_theorem": "nontrivial transition implies ≥1 nonzero signature",
+    }
