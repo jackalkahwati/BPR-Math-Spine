@@ -3,15 +3,15 @@ Theory XXII: Invariant Structure, Boundary Dynamics, and Symbolic Meaning
 ==========================================================================
 
 Constructs a formal translation layer between BPR substrate dynamics and
-symbolic meaning spaces.  Religious eschatological concepts are mapped to
+symbolic meaning spaces.  Abstract symbolic concepts are mapped to
 mathematically precise properties of dynamical systems:
 
     Truth        -> Dynamical invariance under Phi_t          (Def 4.1)
     Record       -> Information conservation H[Phi_t] = H     (Thm 5.1)
     Judgment     -> Asymptotic coherence evaluation J(H_i)    (Def 5.1)
     Deception    -> Local-global coherence inconsistency      (Def 6.1)
-    Eschatology  -> Boundary-induced phase transition         (Sec 7)
-    Death        -> Topological trichotomy of winding number  (Thm 8.1)
+    Transition   -> Boundary-induced phase transition         (Sec 7)
+    Fate         -> Topological trichotomy of winding number  (Thm 8.1)
 
 Key objects
 -----------
@@ -1520,7 +1520,7 @@ class DutyCycleOptimizer:
 
 @dataclass
 class FalsificationCriteria:
-    r"""Explicit falsification criteria for the eschatology framework (Section 10.4).
+    r"""Explicit falsification criteria for the coherence transitions framework (Section 10.4).
 
     The framework is falsified if ANY of the following are observed:
 

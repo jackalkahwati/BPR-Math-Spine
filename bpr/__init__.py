@@ -26,9 +26,9 @@ now implements **24 theories** (Al-Kahwati, 2026):
     XIX   Nuclear Physics & Shell Structure   (bpr.nuclear_physics)
     XX    Quantum Gravity Phenomenology       (bpr.quantum_gravity_pheno)
     XXI   Quantum Chemistry & Periodic Table  (bpr.quantum_chemistry)
-    XXII  Eschatology & Symbolic Meaning      (bpr.eschatology)
-    XXIII Meta-Boundary Dynamics               (bpr.meta_boundary)
-    XXIV  Emergent Speculations (BPR/RPST)     (bpr.emergent_speculations)
+    XXII  Coherence Transitions & Symbolic Meaning  (bpr.coherence_transitions)
+    XXIII Meta-Boundary Dynamics                    (bpr.meta_boundary)
+    XXIV  RPST Extensions (BPR/RPST)                (bpr.rpst_extensions)
 
 Based on the mathematical framework by Jack Al-Kahwati
 Contact: jack@thestardrive.com
@@ -113,9 +113,9 @@ try:
     from . import nuclear_physics     # Theory XIX  # noqa: F401
     from . import quantum_gravity_pheno  # Theory XX  # noqa: F401
     from . import quantum_chemistry   # Theory XXI  # noqa: F401
-    from . import eschatology         # Theory XXII  # noqa: F401
+    from . import coherence_transitions  # Theory XXII  # noqa: F401
     from . import meta_boundary          # Theory XXIII # noqa: F401
-    from . import emergent_speculations  # Theory XXIV  # noqa: F401
+    from . import rpst_extensions        # Theory XXIV  # noqa: F401
 
     ADJACENT_THEORIES_AVAILABLE = True
 except Exception:

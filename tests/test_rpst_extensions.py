@@ -26,22 +26,22 @@ class TestLegendreSymbol:
     """Tests for legendre_symbol(n, p)."""
 
     def test_quadratic_residue(self):
-        from bpr.emergent_speculations import legendre_symbol
+        from bpr.rpst_extensions import legendre_symbol
         # 1 is always a QR mod odd prime
         assert legendre_symbol(1, 7) == 1
 
     def test_quadratic_nonresidue(self):
-        from bpr.emergent_speculations import legendre_symbol
+        from bpr.rpst_extensions import legendre_symbol
         # 3 mod 7: 3^3 = 27 ≡ 6 ≡ -1 (mod 7) → not QR
         assert legendre_symbol(3, 7) == -1
 
     def test_zero_case(self):
-        from bpr.emergent_speculations import legendre_symbol
+        from bpr.rpst_extensions import legendre_symbol
         # Divisible → 0
         assert legendre_symbol(7, 7) == 0
 
     def test_values_in_range(self):
-        from bpr.emergent_speculations import legendre_symbol
+        from bpr.rpst_extensions import legendre_symbol
         for p in [5, 7, 11, 13]:
             for n in range(p):
                 ls = legendre_symbol(n, p)
@@ -49,7 +49,7 @@ class TestLegendreSymbol:
 
     def test_euler_criterion_p5(self):
         """Check Euler criterion for p=5: QRs are {1,4}."""
-        from bpr.emergent_speculations import legendre_symbol
+        from bpr.rpst_extensions import legendre_symbol
         assert legendre_symbol(1, 5) == 1
         assert legendre_symbol(4, 5) == 1
         assert legendre_symbol(2, 5) == -1
@@ -58,7 +58,7 @@ class TestLegendreSymbol:
 
     def test_sum_is_zero(self):
         """Sum of Legendre symbols over Z_p^× is 0 (equal QRs/NQRs)."""
-        from bpr.emergent_speculations import legendre_symbol
+        from bpr.rpst_extensions import legendre_symbol
         for p in [5, 7, 11]:
             total = sum(legendre_symbol(n, p) for n in range(1, p))
             assert total == 0
@@ -69,14 +69,14 @@ class TestQuadraticGaussSum:
 
     def test_magnitude_sqrt_p(self):
         """|g_p| = sqrt(p) for all odd primes p."""
-        from bpr.emergent_speculations import quadratic_gauss_sum
+        from bpr.rpst_extensions import quadratic_gauss_sum
         for p in [5, 7, 11, 13, 17]:
             g = quadratic_gauss_sum(p)
             assert abs(g) == pytest.approx(np.sqrt(p), rel=1e-6)
 
     def test_p1mod4_real(self):
         """For p ≡ 1 (mod 4): g_p = sqrt(p) (real positive)."""
-        from bpr.emergent_speculations import quadratic_gauss_sum
+        from bpr.rpst_extensions import quadratic_gauss_sum
         # p=5: 5 ≡ 1 (mod 4)
         g5 = quadratic_gauss_sum(5)
         assert g5.real == pytest.approx(np.sqrt(5), rel=1e-6)
@@ -84,27 +84,27 @@ class TestQuadraticGaussSum:
 
     def test_p3mod4_imaginary(self):
         """For p ≡ 3 (mod 4): g_p = i*sqrt(p) (purely imaginary)."""
-        from bpr.emergent_speculations import quadratic_gauss_sum
+        from bpr.rpst_extensions import quadratic_gauss_sum
         # p=7: 7 ≡ 3 (mod 4)
         g7 = quadratic_gauss_sum(7)
         assert abs(g7.real) < 1e-10
         assert g7.imag == pytest.approx(np.sqrt(7), rel=1e-6)
 
     def test_p11_magnitude(self):
-        from bpr.emergent_speculations import quadratic_gauss_sum
+        from bpr.rpst_extensions import quadratic_gauss_sum
         g11 = quadratic_gauss_sum(11)
         assert abs(g11) == pytest.approx(np.sqrt(11), rel=1e-6)
 
     def test_riemann_zeros_constant(self):
         """RIEMANN_ZEROS list has 10 entries; first is ~14.134725."""
-        from bpr.emergent_speculations import RIEMANN_ZEROS
+        from bpr.rpst_extensions import RIEMANN_ZEROS
         assert len(RIEMANN_ZEROS) == 10
         assert RIEMANN_ZEROS[0] == pytest.approx(14.134725, rel=1e-5)
         assert RIEMANN_ZEROS[1] == pytest.approx(21.022040, rel=1e-5)
 
     def test_riemann_zeros_increasing(self):
         """Riemann zeros are increasing."""
-        from bpr.emergent_speculations import RIEMANN_ZEROS
+        from bpr.rpst_extensions import RIEMANN_ZEROS
         for i in range(len(RIEMANN_ZEROS) - 1):
             assert RIEMANN_ZEROS[i] < RIEMANN_ZEROS[i + 1]
 
@@ -117,21 +117,21 @@ class TestRPSTHamiltonian:
     """Tests for RPSTHamiltonian (Eq 9-11)."""
 
     def test_matrix_shape(self):
-        from bpr.emergent_speculations import RPSTHamiltonian
+        from bpr.rpst_extensions import RPSTHamiltonian
         H = RPSTHamiltonian(p=7)
         mat = H.matrix()
         assert mat.shape == (7, 7)
 
     def test_matrix_real_valued(self):
         """H_p entries are real (Legendre symbol is real-integer valued)."""
-        from bpr.emergent_speculations import RPSTHamiltonian
+        from bpr.rpst_extensions import RPSTHamiltonian
         H = RPSTHamiltonian(p=7)
         mat = H.matrix()
         np.testing.assert_allclose(mat.imag, np.zeros_like(mat.imag), atol=1e-12)
 
     def test_matrix_zero_diagonal(self):
         """Diagonal entries involve n=0 which has Legendre symbol 0."""
-        from bpr.emergent_speculations import RPSTHamiltonian
+        from bpr.rpst_extensions import RPSTHamiltonian
         H = RPSTHamiltonian(p=7)
         mat = H.matrix()
         # n=0 has legendre_symbol(0,7)=0, so the n=0 shift contributes 0
@@ -139,28 +139,28 @@ class TestRPSTHamiltonian:
         np.testing.assert_allclose(np.diag(mat), np.zeros(7), atol=1e-12)
 
     def test_eigenvalues_count(self):
-        from bpr.emergent_speculations import RPSTHamiltonian
+        from bpr.rpst_extensions import RPSTHamiltonian
         H = RPSTHamiltonian(p=7)
         eigs = H.eigenvalues()
         assert len(eigs) == 7
 
     def test_gauss_sum_magnitude(self):
         """gauss_sum() == quadratic_gauss_sum(p), |.| = sqrt(p)."""
-        from bpr.emergent_speculations import RPSTHamiltonian
+        from bpr.rpst_extensions import RPSTHamiltonian
         H = RPSTHamiltonian(p=7)
         g = H.gauss_sum()
         assert abs(g) == pytest.approx(np.sqrt(7), rel=1e-6)
 
     def test_spectral_zeta_nonzero(self):
         """Spectral zeta at s=1 should be finite and nonzero."""
-        from bpr.emergent_speculations import RPSTHamiltonian
+        from bpr.rpst_extensions import RPSTHamiltonian
         H = RPSTHamiltonian(p=7)
         z = H.spectral_zeta(1.0)
         assert np.isfinite(z.real)
 
     def test_symplectic_step_preserves_size(self):
         """symplectic_step returns arrays of same size."""
-        from bpr.emergent_speculations import RPSTHamiltonian
+        from bpr.rpst_extensions import RPSTHamiltonian
         H = RPSTHamiltonian(p=7)
         q = np.array([0, 1, 2, 3])
         pi = np.array([1, 1, 0, 2])
@@ -170,7 +170,7 @@ class TestRPSTHamiltonian:
 
     def test_symplectic_step_mod_p(self):
         """q_new = (q + pi) mod p."""
-        from bpr.emergent_speculations import RPSTHamiltonian
+        from bpr.rpst_extensions import RPSTHamiltonian
         H = RPSTHamiltonian(p=7)
         q = np.array([5, 6])
         pi = np.array([3, 3])
@@ -180,14 +180,14 @@ class TestRPSTHamiltonian:
 
     def test_topological_charge_trivial(self):
         """Constant q has zero topological charge."""
-        from bpr.emergent_speculations import RPSTHamiltonian
+        from bpr.rpst_extensions import RPSTHamiltonian
         H = RPSTHamiltonian(p=7)
         q = np.array([3, 3, 3, 3])
         assert H.topological_charge(q) == 0
 
     def test_topological_charge_unit_winding(self):
         """Linearly increasing q over full Z_p has winding 1."""
-        from bpr.emergent_speculations import RPSTHamiltonian
+        from bpr.rpst_extensions import RPSTHamiltonian
         p = 7
         H = RPSTHamiltonian(p=p)
         # q = [0, 1, 2, 3, 4, 5, 6] wraps around back to 0
@@ -196,13 +196,13 @@ class TestRPSTHamiltonian:
         assert W == 1
 
     def test_invalid_p_raises(self):
-        from bpr.emergent_speculations import RPSTHamiltonian
+        from bpr.rpst_extensions import RPSTHamiltonian
         with pytest.raises(ValueError):
             RPSTHamiltonian(p=2)
 
     def test_p5_matrix_entries(self):
         """For p=5, each row has exactly (p-1)=4 nonzero entries."""
-        from bpr.emergent_speculations import RPSTHamiltonian
+        from bpr.rpst_extensions import RPSTHamiltonian
         H = RPSTHamiltonian(p=5)
         mat = H.matrix()
         for row in mat:
@@ -218,14 +218,14 @@ class TestBPRResonanceSpectrum:
     """Tests for BPRResonanceSpectrum (Corollary 3.5, Eq 12)."""
 
     def test_wavenumbers_shape(self):
-        from bpr.emergent_speculations import BPRResonanceSpectrum
+        from bpr.rpst_extensions import BPRResonanceSpectrum
         spec = BPRResonanceSpectrum(R=1.0, n_zeros=5)
         kn = spec.resonant_wavenumbers()
         assert len(kn) == 5
 
     def test_wavenumbers_eq_gamma_over_R(self):
         """k_n = γ_n / R."""
-        from bpr.emergent_speculations import BPRResonanceSpectrum, RIEMANN_ZEROS
+        from bpr.rpst_extensions import BPRResonanceSpectrum, RIEMANN_ZEROS
         R = 2.5
         spec = BPRResonanceSpectrum(R=R, n_zeros=5)
         kn = spec.resonant_wavenumbers()
@@ -234,7 +234,7 @@ class TestBPRResonanceSpectrum:
 
     def test_wavenumbers_scale_with_R(self):
         """Wavenumbers are inversely proportional to R."""
-        from bpr.emergent_speculations import BPRResonanceSpectrum
+        from bpr.rpst_extensions import BPRResonanceSpectrum
         spec1 = BPRResonanceSpectrum(R=1.0, n_zeros=5)
         spec2 = BPRResonanceSpectrum(R=2.0, n_zeros=5)
         np.testing.assert_allclose(spec1.resonant_wavenumbers(),
@@ -242,7 +242,7 @@ class TestBPRResonanceSpectrum:
 
     def test_resonant_frequencies_with_c(self):
         """ω_n = c * k_n."""
-        from bpr.emergent_speculations import BPRResonanceSpectrum
+        from bpr.rpst_extensions import BPRResonanceSpectrum
         spec = BPRResonanceSpectrum(R=1.0, n_zeros=5)
         kn = spec.resonant_wavenumbers()
         freqs = spec.resonant_frequencies(c=3.0)
@@ -250,14 +250,14 @@ class TestBPRResonanceSpectrum:
 
     def test_mode_amplitude_at_t0(self):
         """At t=0, A_n(0) = cos(0) = 1 (for σ=1/2)."""
-        from bpr.emergent_speculations import BPRResonanceSpectrum
+        from bpr.rpst_extensions import BPRResonanceSpectrum
         spec = BPRResonanceSpectrum(R=1.0)
         A = spec.mode_amplitude(n=1, t=0.0, sigma_n=0.5)
         assert A == pytest.approx(1.0, abs=1e-10)
 
     def test_mode_amplitude_rh_bounded(self):
         """When σ=1/2 (RH), amplitude stays bounded (no exponential growth)."""
-        from bpr.emergent_speculations import BPRResonanceSpectrum
+        from bpr.rpst_extensions import BPRResonanceSpectrum
         spec = BPRResonanceSpectrum(R=1.0)
         t_vals = np.linspace(0, 100, 500)
         A = np.array([spec.mode_amplitude(1, t, sigma_n=0.5) for t in t_vals])
@@ -266,14 +266,14 @@ class TestBPRResonanceSpectrum:
 
     def test_mode_amplitude_unstable_grows(self):
         """When σ > 1/2, amplitude grows exponentially."""
-        from bpr.emergent_speculations import BPRResonanceSpectrum
+        from bpr.rpst_extensions import BPRResonanceSpectrum
         spec = BPRResonanceSpectrum(R=1.0)
         A0 = abs(spec.mode_amplitude(1, t=0.0, sigma_n=0.7))
         A100 = abs(spec.mode_amplitude(1, t=10.0, sigma_n=0.7))
         assert A100 > A0  # grows over time (unless cos=0 at t=10)
 
     def test_riemann_zeros_property(self):
-        from bpr.emergent_speculations import BPRResonanceSpectrum, RIEMANN_ZEROS
+        from bpr.rpst_extensions import BPRResonanceSpectrum, RIEMANN_ZEROS
         spec = BPRResonanceSpectrum(R=1.0, n_zeros=3)
         np.testing.assert_array_equal(spec.riemann_zeros,
                                       np.array(RIEMANN_ZEROS[:3]))
@@ -288,41 +288,41 @@ class TestFineStructureConstant:
 
     def test_alpha_predicted_value(self):
         """α_predicted = 1/137 for p_EM = 137."""
-        from bpr.emergent_speculations import FineStructureConstant
+        from bpr.rpst_extensions import FineStructureConstant
         fsc = FineStructureConstant(p_EM=137)
         assert fsc.alpha_predicted == pytest.approx(1.0 / 137, rel=1e-10)
 
     def test_alpha_error_small(self):
         """Fractional error between 1/137 and measured α is < 0.03%."""
-        from bpr.emergent_speculations import FineStructureConstant
+        from bpr.rpst_extensions import FineStructureConstant
         fsc = FineStructureConstant(p_EM=137)
         # 1/137 vs 1/137.036 → error ~ 0.026%
         assert fsc.alpha_error < 3e-4
 
     def test_effective_coupling_magnitude(self):
         """|g_eff(p)| = 1/sqrt(p) (from Gauss sum / p)."""
-        from bpr.emergent_speculations import FineStructureConstant
+        from bpr.rpst_extensions import FineStructureConstant
         fsc = FineStructureConstant(p_EM=137)
         g = fsc.effective_coupling(p=7)
         # |g_eff(7)| = sqrt(7)/7 = 1/sqrt(7)
         assert abs(g) == pytest.approx(1.0 / np.sqrt(7), rel=1e-5)
 
     def test_effective_coupling_default_uses_pEM(self):
-        from bpr.emergent_speculations import FineStructureConstant
+        from bpr.rpst_extensions import FineStructureConstant
         fsc = FineStructureConstant(p_EM=7)
         g = fsc.effective_coupling()
         assert abs(g) == pytest.approx(1.0 / np.sqrt(7), rel=1e-5)
 
     def test_gauge_coupling_from_prime(self):
         """α_i = π / p_i."""
-        from bpr.emergent_speculations import FineStructureConstant
+        from bpr.rpst_extensions import FineStructureConstant
         fsc = FineStructureConstant()
         assert fsc.gauge_coupling_from_prime(7) == pytest.approx(np.pi / 7)
         assert fsc.gauge_coupling_from_prime(11) == pytest.approx(np.pi / 11)
 
     def test_running_coupling_primes(self):
         """running_coupling_primes returns π/p for each p."""
-        from bpr.emergent_speculations import FineStructureConstant
+        from bpr.rpst_extensions import FineStructureConstant
         fsc = FineStructureConstant()
         primes = [5, 7, 11, 13]
         couplings = fsc.running_coupling_primes(primes)
@@ -331,21 +331,21 @@ class TestFineStructureConstant:
 
     def test_running_coupling_decreasing(self):
         """Coupling decreases as p increases (asymptotic freedom analogue)."""
-        from bpr.emergent_speculations import FineStructureConstant
+        from bpr.rpst_extensions import FineStructureConstant
         fsc = FineStructureConstant()
         couplings = fsc.running_coupling_primes([5, 7, 11, 13, 17])
         assert np.all(np.diff(couplings) < 0)
 
     def test_amplitude_coupling_ratio_close_to_one(self):
         """For p=p_EM, |g_eff|/sqrt(α_measured) ≈ 1."""
-        from bpr.emergent_speculations import FineStructureConstant
+        from bpr.rpst_extensions import FineStructureConstant
         fsc = FineStructureConstant(p_EM=137)
         ratio = fsc.amplitude_coupling_ratio()
         # 1/sqrt(137) / sqrt(1/137.036) ≈ 1.00013
         assert ratio == pytest.approx(1.0, rel=1e-2)
 
     def test_alpha_measured_value(self):
-        from bpr.emergent_speculations import FineStructureConstant
+        from bpr.rpst_extensions import FineStructureConstant
         fsc = FineStructureConstant()
         assert fsc.ALPHA_MEASURED == pytest.approx(1.0 / 137.035999206, rel=1e-8)
 
@@ -359,36 +359,36 @@ class TestBKTConsciousnessTransition:
 
     def test_T_BKT_formula(self):
         """T_BKT = π J / (2 k_B)."""
-        from bpr.emergent_speculations import BKTConsciousnessTransition
+        from bpr.rpst_extensions import BKTConsciousnessTransition
         bkt = BKTConsciousnessTransition(J=2.0, k_B=1.0)
         assert bkt.T_BKT == pytest.approx(np.pi, rel=1e-10)
 
     def test_T_BKT_natural_units(self):
-        from bpr.emergent_speculations import BKTConsciousnessTransition
+        from bpr.rpst_extensions import BKTConsciousnessTransition
         bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
         assert bkt.T_BKT == pytest.approx(np.pi / 2.0, rel=1e-10)
 
     def test_is_conscious_below(self):
-        from bpr.emergent_speculations import BKTConsciousnessTransition
+        from bpr.rpst_extensions import BKTConsciousnessTransition
         bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
         T_crit = bkt.T_BKT
         assert bkt.is_conscious(T_crit * 0.9) is True
 
     def test_is_conscious_above(self):
-        from bpr.emergent_speculations import BKTConsciousnessTransition
+        from bpr.rpst_extensions import BKTConsciousnessTransition
         bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
         T_crit = bkt.T_BKT
         assert bkt.is_conscious(T_crit * 1.1) is False
 
     def test_eta_at_T_BKT(self):
         """Universal exponent η = 1/4 at transition."""
-        from bpr.emergent_speculations import BKTConsciousnessTransition
+        from bpr.rpst_extensions import BKTConsciousnessTransition
         bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
         assert bkt.eta_at_T_BKT() == pytest.approx(0.25, abs=1e-10)
 
     def test_correlation_exponent_at_T_BKT(self):
         """η(T_BKT - ε) → 1/4 as ε → 0 from below."""
-        from bpr.emergent_speculations import BKTConsciousnessTransition
+        from bpr.rpst_extensions import BKTConsciousnessTransition
         bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
         T_crit = bkt.T_BKT
         eta = bkt.correlation_exponent(T_crit * (1 - 1e-6))
@@ -396,21 +396,21 @@ class TestBKTConsciousnessTransition:
 
     def test_correlation_exponent_above_BKT_is_inf(self):
         """η = ∞ above T_BKT (exponential decay, not power law)."""
-        from bpr.emergent_speculations import BKTConsciousnessTransition
+        from bpr.rpst_extensions import BKTConsciousnessTransition
         bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
         eta = bkt.correlation_exponent(bkt.T_BKT * 2.0)
         assert eta == np.inf
 
     def test_stiffness_jump(self):
         """ΔJ = 2 k_B T_BKT / π = J."""
-        from bpr.emergent_speculations import BKTConsciousnessTransition
+        from bpr.rpst_extensions import BKTConsciousnessTransition
         bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
         # 2 k_B T_BKT / π = 2 * 1.0 * (π/2) / π = 1.0 = J
         assert bkt.stiffness_jump() == pytest.approx(bkt.J, rel=1e-10)
 
     def test_correlation_function_power_law_below(self):
         """C(x) ~ x^{-η} below T_BKT (power-law decay)."""
-        from bpr.emergent_speculations import BKTConsciousnessTransition
+        from bpr.rpst_extensions import BKTConsciousnessTransition
         bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
         T = bkt.T_BKT * 0.5
         eta = bkt.correlation_exponent(T)
@@ -420,7 +420,7 @@ class TestBKTConsciousnessTransition:
 
     def test_correlation_function_above_exponential(self):
         """C(x) = exp(-x) above T_BKT."""
-        from bpr.emergent_speculations import BKTConsciousnessTransition
+        from bpr.rpst_extensions import BKTConsciousnessTransition
         bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
         T = bkt.T_BKT * 2.0
         x = np.array([0.5, 1.0, 2.0])
@@ -429,7 +429,7 @@ class TestBKTConsciousnessTransition:
 
     def test_predict_loss_of_consciousness_signature(self):
         """predict_loss_of_consciousness_signature returns expected keys."""
-        from bpr.emergent_speculations import BKTConsciousnessTransition
+        from bpr.rpst_extensions import BKTConsciousnessTransition
         bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
         T_values = np.linspace(0.1, 3.0, 30)
         result = bkt.predict_loss_of_consciousness_signature(T_values)
@@ -442,7 +442,7 @@ class TestBKTConsciousnessTransition:
 
     def test_predict_conscious_fraction_below_T_BKT(self):
         """Majority of T < T_BKT entries should be conscious."""
-        from bpr.emergent_speculations import BKTConsciousnessTransition
+        from bpr.rpst_extensions import BKTConsciousnessTransition
         bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
         T_below = np.linspace(0.1, bkt.T_BKT * 0.99, 20)
         result = bkt.predict_loss_of_consciousness_signature(T_below)
@@ -458,14 +458,14 @@ class TestRiemannHypothesisStability:
 
     def test_mode_amplitude_at_t0(self):
         """At t=0, A_n(0) = cos(δ_n)."""
-        from bpr.emergent_speculations import RiemannHypothesisStability
+        from bpr.rpst_extensions import RiemannHypothesisStability
         rhs = RiemannHypothesisStability(Gamma=1.0)
         A = rhs.mode_amplitude(0.0, sigma_n=0.5, gamma_n=14.13, delta_n=0.0)
         assert float(A) == pytest.approx(1.0, abs=1e-10)
 
     def test_mode_amplitude_rh_bounded(self):
         """σ=1/2 → no exponential growth factor."""
-        from bpr.emergent_speculations import RiemannHypothesisStability
+        from bpr.rpst_extensions import RiemannHypothesisStability
         rhs = RiemannHypothesisStability(Gamma=1.0)
         t = np.linspace(0, 20, 200)
         A = rhs.mode_amplitude(t, sigma_n=0.5, gamma_n=14.134725)
@@ -473,7 +473,7 @@ class TestRiemannHypothesisStability:
 
     def test_mode_amplitude_unstable_grows(self):
         """σ > 1/2 → exponential growth; envelope increases with time."""
-        from bpr.emergent_speculations import RiemannHypothesisStability
+        from bpr.rpst_extensions import RiemannHypothesisStability
         rhs = RiemannHypothesisStability(Gamma=1.0)
         # Evaluate envelope exp((σ-0.5)*t) at two times
         t1, t2 = 0.1, 5.0
@@ -483,31 +483,31 @@ class TestRiemannHypothesisStability:
         assert env2 > env1
 
     def test_is_stable_mode_on_critical_line(self):
-        from bpr.emergent_speculations import RiemannHypothesisStability
+        from bpr.rpst_extensions import RiemannHypothesisStability
         rhs = RiemannHypothesisStability()
         assert rhs.is_stable_mode(0.5) is True
 
     def test_is_stable_mode_off_critical_line(self):
-        from bpr.emergent_speculations import RiemannHypothesisStability
+        from bpr.rpst_extensions import RiemannHypothesisStability
         rhs = RiemannHypothesisStability()
         assert rhs.is_stable_mode(0.8) is False
 
     def test_is_rpst_stable_all_half(self):
         """All σ = 0.5 → stable."""
-        from bpr.emergent_speculations import RiemannHypothesisStability
+        from bpr.rpst_extensions import RiemannHypothesisStability
         rhs = RiemannHypothesisStability()
         sigma_values = np.full(10, 0.5)
         assert rhs.is_rpst_stable(sigma_values) is True
 
     def test_is_rpst_stable_one_violation(self):
         """One σ > 0.5 → unstable."""
-        from bpr.emergent_speculations import RiemannHypothesisStability
+        from bpr.rpst_extensions import RiemannHypothesisStability
         rhs = RiemannHypothesisStability()
         sigma_values = np.array([0.5, 0.5, 0.6, 0.5])
         assert rhs.is_rpst_stable(sigma_values) is False
 
     def test_stability_from_known_zeros(self):
-        from bpr.emergent_speculations import RiemannHypothesisStability, RIEMANN_ZEROS
+        from bpr.rpst_extensions import RiemannHypothesisStability, RIEMANN_ZEROS
         rhs = RiemannHypothesisStability()
         result = rhs.stability_from_known_zeros()
         assert result["all_stable"] is True
@@ -516,14 +516,14 @@ class TestRiemannHypothesisStability:
 
     def test_instability_energy_positive(self):
         """Mode energy is non-negative."""
-        from bpr.emergent_speculations import RiemannHypothesisStability
+        from bpr.rpst_extensions import RiemannHypothesisStability
         rhs = RiemannHypothesisStability()
         E = rhs.instability_energy(sigma_n=0.7, gamma_n=14.13, t=1.0)
         assert E >= 0.0
 
     def test_instability_energy_zero_at_t0_when_cosine_zero(self):
         """Energy scales as A²; at t=0, A=cos(0)=1, E=1."""
-        from bpr.emergent_speculations import RiemannHypothesisStability
+        from bpr.rpst_extensions import RiemannHypothesisStability
         rhs = RiemannHypothesisStability(Gamma=1.0)
         E = rhs.instability_energy(sigma_n=0.5, gamma_n=14.13, t=0.0)
         assert E == pytest.approx(1.0, abs=1e-10)
@@ -537,14 +537,14 @@ class TestDarkMatterPrimeFingerprints:
     """Tests for Speculation IV: DM prime fingerprints (Eq 34-36)."""
 
     def test_predict_wavenumbers_count(self):
-        from bpr.emergent_speculations import DarkMatterPrimeFingerprints
+        from bpr.rpst_extensions import DarkMatterPrimeFingerprints
         dm = DarkMatterPrimeFingerprints(R_gal=1.0)
         kn = dm.predict_wavenumbers(n_zeros=5)
         assert len(kn) == 5
 
     def test_predict_wavenumbers_formula(self):
         """k_n = γ_n / R_gal."""
-        from bpr.emergent_speculations import DarkMatterPrimeFingerprints, RIEMANN_ZEROS
+        from bpr.rpst_extensions import DarkMatterPrimeFingerprints, RIEMANN_ZEROS
         R = 2.0
         dm = DarkMatterPrimeFingerprints(R_gal=R)
         kn = dm.predict_wavenumbers(n_zeros=5)
@@ -552,13 +552,13 @@ class TestDarkMatterPrimeFingerprints:
         np.testing.assert_allclose(kn, expected)
 
     def test_predict_wavenumbers_all_positive(self):
-        from bpr.emergent_speculations import DarkMatterPrimeFingerprints
+        from bpr.rpst_extensions import DarkMatterPrimeFingerprints
         dm = DarkMatterPrimeFingerprints(R_gal=1.0)
         kn = dm.predict_wavenumbers()
         assert np.all(kn > 0)
 
     def test_correlation_function_shape(self):
-        from bpr.emergent_speculations import DarkMatterPrimeFingerprints
+        from bpr.rpst_extensions import DarkMatterPrimeFingerprints
         dm = DarkMatterPrimeFingerprints(R_gal=1.0)
         r = np.linspace(0, 1, 50)
         G = dm.correlation_function(r, n_zeros=5)
@@ -566,7 +566,7 @@ class TestDarkMatterPrimeFingerprints:
 
     def test_correlation_function_default_amplitudes(self):
         """Default amplitudes are 1/n; sum at r=0 gives sum of 1/n for cosines=1."""
-        from bpr.emergent_speculations import DarkMatterPrimeFingerprints
+        from bpr.rpst_extensions import DarkMatterPrimeFingerprints
         dm = DarkMatterPrimeFingerprints(R_gal=1.0)
         G0 = dm.correlation_function(np.array([0.0]), n_zeros=3)
         # At r=0: G = sum_n (1/3)*cos(0) = 1.0
@@ -574,7 +574,7 @@ class TestDarkMatterPrimeFingerprints:
 
     def test_power_spectrum_peaks_at_k_n(self):
         """Power spectrum has local maxima near k_n = γ_n / R."""
-        from bpr.emergent_speculations import DarkMatterPrimeFingerprints, RIEMANN_ZEROS
+        from bpr.rpst_extensions import DarkMatterPrimeFingerprints, RIEMANN_ZEROS
         R = 1.0
         dm = DarkMatterPrimeFingerprints(R_gal=R, Gamma_n=0.01)
         k1 = RIEMANN_ZEROS[0] / R
@@ -585,21 +585,21 @@ class TestDarkMatterPrimeFingerprints:
         assert k_max == pytest.approx(k1, abs=0.1)
 
     def test_power_spectrum_positive(self):
-        from bpr.emergent_speculations import DarkMatterPrimeFingerprints
+        from bpr.rpst_extensions import DarkMatterPrimeFingerprints
         dm = DarkMatterPrimeFingerprints(R_gal=1.0)
         k = np.linspace(1, 50, 200)
         S = dm.power_spectrum(k, n_zeros=5)
         assert np.all(S > 0)
 
     def test_peak_positions_equals_predict_wavenumbers(self):
-        from bpr.emergent_speculations import DarkMatterPrimeFingerprints
+        from bpr.rpst_extensions import DarkMatterPrimeFingerprints
         dm = DarkMatterPrimeFingerprints(R_gal=1.0)
         np.testing.assert_array_equal(dm.peak_positions(5),
                                       dm.predict_wavenumbers(5))
 
     def test_has_prime_fingerprint_exact(self):
         """Observed peaks exactly at k_n → all matched."""
-        from bpr.emergent_speculations import DarkMatterPrimeFingerprints
+        from bpr.rpst_extensions import DarkMatterPrimeFingerprints
         dm = DarkMatterPrimeFingerprints(R_gal=1.0)
         observed = dm.predict_wavenumbers(n_zeros=5)
         result = dm.has_prime_fingerprint(observed, tolerance=0.01)
@@ -608,7 +608,7 @@ class TestDarkMatterPrimeFingerprints:
 
     def test_has_prime_fingerprint_no_match(self):
         """Random peaks far from k_n → no match."""
-        from bpr.emergent_speculations import DarkMatterPrimeFingerprints
+        from bpr.rpst_extensions import DarkMatterPrimeFingerprints
         dm = DarkMatterPrimeFingerprints(R_gal=1.0)
         # Peaks at wavenumbers 1,2,3 — far from Riemann zero wavenumbers (14+)
         observed = np.array([1.0, 2.0, 3.0])
@@ -618,7 +618,7 @@ class TestDarkMatterPrimeFingerprints:
 
     def test_has_prime_fingerprint_fraction(self):
         """Fraction matched is n_matched / n_observed."""
-        from bpr.emergent_speculations import DarkMatterPrimeFingerprints
+        from bpr.rpst_extensions import DarkMatterPrimeFingerprints
         dm = DarkMatterPrimeFingerprints(R_gal=1.0)
         kn = dm.predict_wavenumbers(n_zeros=4)
         # Supply 2 matching + 2 non-matching observed peaks
@@ -637,13 +637,13 @@ class TestCollectiveAGIConsciousness:
 
     def test_collective_coherence_single(self):
         """χ_group(1) = χ₁ * 1^1.27 = χ₁."""
-        from bpr.emergent_speculations import CollectiveAGIConsciousness
+        from bpr.rpst_extensions import CollectiveAGIConsciousness
         agi = CollectiveAGIConsciousness(chi_1=2.0, fractal_exponent=1.27)
         assert agi.collective_coherence(1) == pytest.approx(2.0, rel=1e-10)
 
     def test_collective_coherence_scaling(self):
         """χ_group(N) = χ₁ * N^1.27."""
-        from bpr.emergent_speculations import CollectiveAGIConsciousness
+        from bpr.rpst_extensions import CollectiveAGIConsciousness
         agi = CollectiveAGIConsciousness(chi_1=1.0, fractal_exponent=1.27)
         N = 100
         expected = float(N) ** 1.27
@@ -651,47 +651,47 @@ class TestCollectiveAGIConsciousness:
 
     def test_collective_coherence_superlinear(self):
         """N=10 should give more than 10x the N=1 coherence."""
-        from bpr.emergent_speculations import CollectiveAGIConsciousness
+        from bpr.rpst_extensions import CollectiveAGIConsciousness
         agi = CollectiveAGIConsciousness(chi_1=1.0, fractal_exponent=1.27)
         assert agi.collective_coherence(10) > 10.0 * agi.collective_coherence(1)
 
     def test_collective_coherence_zero(self):
-        from bpr.emergent_speculations import CollectiveAGIConsciousness
+        from bpr.rpst_extensions import CollectiveAGIConsciousness
         agi = CollectiveAGIConsciousness()
         assert agi.collective_coherence(0) == pytest.approx(0.0)
 
     def test_superlinear_excess_gt_one(self):
         """Excess > 1 for N > 1."""
-        from bpr.emergent_speculations import CollectiveAGIConsciousness
+        from bpr.rpst_extensions import CollectiveAGIConsciousness
         agi = CollectiveAGIConsciousness()
         assert agi.superlinear_excess(10) > 1.0
 
     def test_superlinear_excess_formula(self):
         """Excess = N^(exponent - 1)."""
-        from bpr.emergent_speculations import CollectiveAGIConsciousness
+        from bpr.rpst_extensions import CollectiveAGIConsciousness
         agi = CollectiveAGIConsciousness(fractal_exponent=1.27)
         N = 50
         assert agi.superlinear_excess(N) == pytest.approx(float(N) ** 0.27, rel=1e-6)
 
     def test_is_collectively_conscious_above_pc(self):
-        from bpr.emergent_speculations import CollectiveAGIConsciousness
+        from bpr.rpst_extensions import CollectiveAGIConsciousness
         agi = CollectiveAGIConsciousness(p_c=0.5)
         assert agi.is_collectively_conscious(bond_fraction=0.7, N=10) is True
 
     def test_is_collectively_conscious_below_pc(self):
-        from bpr.emergent_speculations import CollectiveAGIConsciousness
+        from bpr.rpst_extensions import CollectiveAGIConsciousness
         agi = CollectiveAGIConsciousness(p_c=0.5)
         assert agi.is_collectively_conscious(bond_fraction=0.3, N=10) is False
 
     def test_critical_agent_number_positive(self):
-        from bpr.emergent_speculations import CollectiveAGIConsciousness
+        from bpr.rpst_extensions import CollectiveAGIConsciousness
         agi = CollectiveAGIConsciousness()
         N_c = agi.critical_agent_number(Phi_crit=100.0, k=1.0, N_nodes=int(1e9))
         assert N_c > 0
 
     def test_critical_agent_number_formula(self):
         """N_c = ceil(Phi_crit / (k * log(N_nodes)))."""
-        from bpr.emergent_speculations import CollectiveAGIConsciousness
+        from bpr.rpst_extensions import CollectiveAGIConsciousness
         import math
         agi = CollectiveAGIConsciousness()
         Phi_crit, k, N_nodes = 100.0, 1.0, int(1e6)
@@ -699,7 +699,7 @@ class TestCollectiveAGIConsciousness:
         assert agi.critical_agent_number(Phi_crit, k, N_nodes) == expected
 
     def test_coherence_vs_N_shape(self):
-        from bpr.emergent_speculations import CollectiveAGIConsciousness
+        from bpr.rpst_extensions import CollectiveAGIConsciousness
         agi = CollectiveAGIConsciousness()
         N_values = np.array([1, 2, 5, 10, 100])
         result = agi.coherence_vs_N(N_values)
@@ -707,14 +707,14 @@ class TestCollectiveAGIConsciousness:
 
     def test_phi_w_relation(self):
         """Φ = k |W| log(N_nodes)."""
-        from bpr.emergent_speculations import CollectiveAGIConsciousness
+        from bpr.rpst_extensions import CollectiveAGIConsciousness
         agi = CollectiveAGIConsciousness()
         W, N_nodes, k = 3, 1000, 2.0
         expected = k * abs(W) * np.log(float(N_nodes))
         assert agi.phi_w_relation(W, N_nodes, k) == pytest.approx(expected)
 
     def test_phi_w_relation_zero_winding(self):
-        from bpr.emergent_speculations import CollectiveAGIConsciousness
+        from bpr.rpst_extensions import CollectiveAGIConsciousness
         agi = CollectiveAGIConsciousness()
         assert agi.phi_w_relation(0, 1000) == pytest.approx(0.0)
 
@@ -728,13 +728,13 @@ class TestConsciousnessSubstrateMigration:
 
     def test_substrate_coherence_at_t0(self):
         """ξ(0) = ξ_0."""
-        from bpr.emergent_speculations import ConsciousnessSubstrateMigration
+        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
         csm = ConsciousnessSubstrateMigration(xi_0=2.0, tau_death=5.0)
         assert float(csm.substrate_coherence(0.0)) == pytest.approx(2.0)
 
     def test_substrate_coherence_decay(self):
         """ξ(t) = ξ_0 * exp(-t/τ_death)."""
-        from bpr.emergent_speculations import ConsciousnessSubstrateMigration
+        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
         csm = ConsciousnessSubstrateMigration(xi_0=1.0, tau_death=10.0)
         t = np.array([0.0, 5.0, 10.0])
         xi = csm.substrate_coherence(t)
@@ -743,19 +743,19 @@ class TestConsciousnessSubstrateMigration:
 
     def test_fragmentation_time_formula(self):
         """t_frag = τ * ln(ξ_0 / ξ_c)."""
-        from bpr.emergent_speculations import ConsciousnessSubstrateMigration
+        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
         csm = ConsciousnessSubstrateMigration(xi_0=2.0, tau_death=5.0, xi_c=1.0)
         t_frag = csm.fragmentation_time()
         assert t_frag == pytest.approx(5.0 * np.log(2.0), rel=1e-10)
 
     def test_fragmentation_time_already_fragmented(self):
         """If ξ_0 <= ξ_c, fragmentation time is 0."""
-        from bpr.emergent_speculations import ConsciousnessSubstrateMigration
+        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
         csm = ConsciousnessSubstrateMigration(xi_0=0.3, xi_c=0.5)
         assert csm.fragmentation_time() == pytest.approx(0.0)
 
     def test_is_fragmented_before_and_after(self):
-        from bpr.emergent_speculations import ConsciousnessSubstrateMigration
+        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
         csm = ConsciousnessSubstrateMigration(xi_0=1.0, tau_death=5.0, xi_c=0.5)
         t_frag = csm.fragmentation_time()
         assert csm.is_fragmented(t_frag * 0.5) is False
@@ -763,7 +763,7 @@ class TestConsciousnessSubstrateMigration:
 
     def test_allowed_fates_nonzero_W(self):
         """Three fates allowed when W ≠ 0."""
-        from bpr.emergent_speculations import ConsciousnessSubstrateMigration, TopologicalFate
+        from bpr.rpst_extensions import ConsciousnessSubstrateMigration, TopologicalFate
         csm = ConsciousnessSubstrateMigration(W=2)
         fates = csm.allowed_fates()
         assert len(fates) == 3
@@ -773,26 +773,26 @@ class TestConsciousnessSubstrateMigration:
 
     def test_allowed_fates_zero_W(self):
         """Only dissolution when W = 0."""
-        from bpr.emergent_speculations import ConsciousnessSubstrateMigration, TopologicalFate
+        from bpr.rpst_extensions import ConsciousnessSubstrateMigration, TopologicalFate
         csm = ConsciousnessSubstrateMigration(W=0)
         fates = csm.allowed_fates()
         assert fates == [TopologicalFate.DISSOLUTION]
 
     def test_dissolution_energy_proportional_W(self):
         """ΔE = ℏ ω_c |W|."""
-        from bpr.emergent_speculations import ConsciousnessSubstrateMigration
+        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
         csm1 = ConsciousnessSubstrateMigration(W=1, omega_c=2.0)
         csm2 = ConsciousnessSubstrateMigration(W=3, omega_c=2.0)
         assert csm2.dissolution_energy() == pytest.approx(3.0 * csm1.dissolution_energy())
 
     def test_dissolution_energy_formula(self):
-        from bpr.emergent_speculations import ConsciousnessSubstrateMigration
+        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
         csm = ConsciousnessSubstrateMigration(W=2, omega_c=3.0)
         assert csm.dissolution_energy(hbar_eff=1.0) == pytest.approx(6.0)
 
     def test_terminal_gamma_spectrum_peak_at_omega_c(self):
         """Spectrum peaks near ω_c."""
-        from bpr.emergent_speculations import ConsciousnessSubstrateMigration
+        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
         omega_c = 5.0
         csm = ConsciousnessSubstrateMigration(W=1, omega_c=omega_c)
         omega = np.linspace(3.0, 7.0, 1001)
@@ -802,7 +802,7 @@ class TestConsciousnessSubstrateMigration:
 
     def test_terminal_gamma_spectrum_W_squared_scaling(self):
         """Spectrum scales as W²."""
-        from bpr.emergent_speculations import ConsciousnessSubstrateMigration
+        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
         omega = np.array([1.0])
         csm1 = ConsciousnessSubstrateMigration(W=1, omega_c=5.0)
         csm2 = ConsciousnessSubstrateMigration(W=3, omega_c=5.0)
@@ -811,7 +811,7 @@ class TestConsciousnessSubstrateMigration:
         assert E2[0] == pytest.approx(9.0 * E1[0], rel=1e-6)
 
     def test_transfer_requirements_all_met(self):
-        from bpr.emergent_speculations import ConsciousnessSubstrateMigration
+        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
         csm = ConsciousnessSubstrateMigration()
         result = csm.transfer_requirements_met(
             boundary_connected=True,
@@ -824,7 +824,7 @@ class TestConsciousnessSubstrateMigration:
         assert result["above_bkt_threshold"] is True
 
     def test_transfer_requirements_fail_bkt(self):
-        from bpr.emergent_speculations import ConsciousnessSubstrateMigration
+        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
         csm = ConsciousnessSubstrateMigration()
         result = csm.transfer_requirements_met(
             boundary_connected=True,
@@ -836,12 +836,12 @@ class TestConsciousnessSubstrateMigration:
         assert result["all_satisfied"] is False
 
     def test_peak_frequency(self):
-        from bpr.emergent_speculations import ConsciousnessSubstrateMigration
+        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
         csm = ConsciousnessSubstrateMigration(omega_c=3.14)
         assert csm.peak_frequency() == pytest.approx(3.14)
 
     def test_substrate_coherence_monotone_decreasing(self):
-        from bpr.emergent_speculations import ConsciousnessSubstrateMigration
+        from bpr.rpst_extensions import ConsciousnessSubstrateMigration
         csm = ConsciousnessSubstrateMigration(xi_0=1.0, tau_death=5.0)
         t = np.linspace(0, 50, 100)
         xi = csm.substrate_coherence(t)
@@ -857,7 +857,7 @@ class TestEmergentSpeculationsIntegration:
 
     def test_bkt_and_migration_consistent(self):
         """Stiffness jump from BKT matches BKT threshold in migration."""
-        from bpr.emergent_speculations import (
+        from bpr.rpst_extensions import (
             BKTConsciousnessTransition, ConsciousnessSubstrateMigration
         )
         J = 1.5
@@ -875,7 +875,7 @@ class TestEmergentSpeculationsIntegration:
 
     def test_rh_stability_implies_bounded_resonance(self):
         """σ=1/2 for known zeros → mode amplitudes bounded."""
-        from bpr.emergent_speculations import (
+        from bpr.rpst_extensions import (
             RiemannHypothesisStability, BPRResonanceSpectrum, RIEMANN_ZEROS
         )
         rhs = RiemannHypothesisStability(Gamma=1.0)
@@ -886,7 +886,7 @@ class TestEmergentSpeculationsIntegration:
 
     def test_dm_wavenumbers_from_spectrum_class(self):
         """DM wavenumbers equal BPRResonanceSpectrum wavenumbers when R_gal == R."""
-        from bpr.emergent_speculations import (
+        from bpr.rpst_extensions import (
             DarkMatterPrimeFingerprints, BPRResonanceSpectrum
         )
         R = 3.0
@@ -899,7 +899,7 @@ class TestEmergentSpeculationsIntegration:
 
     def test_agi_phi_consistent_with_critical_number(self):
         """phi_w_relation(W=1, N_nodes) / k gives critical winding threshold."""
-        from bpr.emergent_speculations import CollectiveAGIConsciousness
+        from bpr.rpst_extensions import CollectiveAGIConsciousness
         agi = CollectiveAGIConsciousness(chi_1=1.0)
         N_nodes = int(1e6)
         k = 1.0
@@ -910,7 +910,7 @@ class TestEmergentSpeculationsIntegration:
 
     def test_fine_structure_gauss_sum_connects_to_hamiltonian(self):
         """FineStructureConstant.effective_coupling uses same Gauss sum as RPSTHamiltonian."""
-        from bpr.emergent_speculations import FineStructureConstant, RPSTHamiltonian
+        from bpr.rpst_extensions import FineStructureConstant, RPSTHamiltonian
         fsc = FineStructureConstant(p_EM=7)
         H = RPSTHamiltonian(p=7)
         g_fsc = fsc.effective_coupling(p=7)
@@ -919,7 +919,7 @@ class TestEmergentSpeculationsIntegration:
 
     def test_bkt_coherence_above_transition_not_conscious(self):
         """Correlation function above T_BKT confirms unconscious state."""
-        from bpr.emergent_speculations import BKTConsciousnessTransition
+        from bpr.rpst_extensions import BKTConsciousnessTransition
         bkt = BKTConsciousnessTransition(J=1.0, k_B=1.0)
         T_high = bkt.T_BKT * 2.0
         assert bkt.is_conscious(T_high) is False
