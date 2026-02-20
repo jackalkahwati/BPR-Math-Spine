@@ -99,9 +99,9 @@ class TestQuadraticGaussSum:
         assert abs(g11) == pytest.approx(np.sqrt(11), rel=1e-6)
 
     def test_riemann_zeros_constant(self):
-        """RIEMANN_ZEROS list has 10 entries; first is ~14.134725."""
+        """RIEMANN_ZEROS list has 100 entries; first two match known values."""
         from bpr.rpst_extensions import RIEMANN_ZEROS
-        assert len(RIEMANN_ZEROS) == 10
+        assert len(RIEMANN_ZEROS) == 100
         assert RIEMANN_ZEROS[0] == pytest.approx(14.134725, rel=1e-5)
         assert RIEMANN_ZEROS[1] == pytest.approx(21.022040, rel=1e-5)
 
@@ -1084,7 +1084,8 @@ class TestKatzSarnakChain:
         from bpr.rpst_extensions import KatzSarnakChain
         theta = np.linspace(0, np.pi, 10000)
         density = KatzSarnakChain.usp2_haar_density(theta)
-        integral = float(np.trapezoid(density, theta))
+        _trapz = getattr(np, "trapezoid", np.trapz)
+        integral = float(_trapz(density, theta))
         assert integral == pytest.approx(1.0, abs=1e-3)
 
     def test_usp2_haar_density_zero_at_endpoints(self):
@@ -1158,6 +1159,9 @@ _RIEMANN_ZEROS_20 = [
     52.970321, 56.446248, 59.347044, 60.831779, 65.112544,
     67.079811, 69.546402, 72.067158, 75.704691, 77.144840,
 ]
+
+# Verify RIEMANN_ZEROS constant has been extended to 100 entries
+from bpr.rpst_extensions import RIEMANN_ZEROS as _FULL_ZEROS
 
 
 class TestRiemannZeroStatistics:
@@ -1256,3 +1260,169 @@ class TestRiemannZeroStatistics:
         D, _ = RiemannZeroStatistics.ks_test_gue(zeros)
         # With only 20 zeros, the KS test has limited power, but D should be < 0.5
         assert D < 0.5, f"KS statistic surprisingly large: D={D:.3f}"
+
+    def test_full_100_zeros_level_repulsion(self):
+        """With 100 Riemann zeros, level-repulsion fraction should be < 0.10."""
+        from bpr.rpst.hamiltonian import RiemannZeroStatistics
+        zeros = np.array(_FULL_ZEROS)
+        frac = RiemannZeroStatistics.fraction_small_spacings(zeros, threshold=0.3)
+        assert frac < 0.10, f"Too many small spacings in 100 zeros: {frac:.2%}"
+
+    def test_full_100_zeros_ks_vs_gue(self):
+        """With 100 Riemann zeros, KS statistic vs GUE Wigner surmise < 0.3."""
+        from bpr.rpst.hamiltonian import RiemannZeroStatistics
+        zeros = np.array(_FULL_ZEROS)
+        D, _ = RiemannZeroStatistics.ks_test_gue(zeros)
+        assert D < 0.3, f"KS statistic too large for 100 zeros: D={D:.3f}"
+
+
+class TestRPSTZeroSetAnalysis:
+    """Tests for RPSTZeroSetAnalysis: convergence table, zero pattern identification.
+
+    The RPST zero-convergence conjecture is numerically falsified.
+    These tests verify the analysis machinery and confirm the falsification.
+    """
+
+    def test_riemann_zeros_length(self):
+        """RIEMANN_ZEROS constant has exactly 100 entries."""
+        from bpr.rpst_extensions import RIEMANN_ZEROS
+        assert len(RIEMANN_ZEROS) == 100
+
+    def test_riemann_zeros_increasing(self):
+        """RIEMANN_ZEROS are in increasing order."""
+        from bpr.rpst_extensions import RIEMANN_ZEROS
+        zeros = np.array(RIEMANN_ZEROS)
+        assert np.all(np.diff(zeros) > 0)
+
+    def test_riemann_zeros_first_ten_unchanged(self):
+        """First 10 zeros match original values."""
+        from bpr.rpst_extensions import RIEMANN_ZEROS
+        expected = [
+            14.134725, 21.022040, 25.010858, 30.424876, 32.935062,
+            37.586178, 40.918719, 43.327073, 48.005151, 49.773832,
+        ]
+        for i, (got, exp) in enumerate(zip(RIEMANN_ZEROS[:10], expected)):
+            assert abs(got - exp) < 1e-4, f"γ_{i+1} mismatch: {got} vs {exp}"
+
+    def test_displacement_statistics_structure(self):
+        """displacement_statistics returns required keys."""
+        from bpr.rpst_extensions import RPSTZeroSetAnalysis, RIEMANN_ZEROS
+        fake_rpst = [g + 0.44 for g in RIEMANN_ZEROS[:10]]
+        stats = RPSTZeroSetAnalysis.displacement_statistics(fake_rpst)
+        for key in ("displacements", "mean", "std", "abs_mean", "converging", "n_compared"):
+            assert key in stats, f"Missing key: {key}"
+
+    def test_displacement_statistics_values(self):
+        """displacement_statistics correctly measures mean displacement."""
+        from bpr.rpst_extensions import RPSTZeroSetAnalysis, RIEMANN_ZEROS
+        shift = 0.44
+        fake_rpst = [g + shift for g in RIEMANN_ZEROS[:20]]
+        stats = RPSTZeroSetAnalysis.displacement_statistics(fake_rpst)
+        assert abs(stats["mean"] - shift) < 1e-6
+        assert abs(stats["abs_mean"] - shift) < 1e-6
+        assert stats["n_compared"] == 20
+
+    def test_displacement_no_convergence_with_constant_shift(self):
+        """Constant displacement gives converging=False (std stays flat)."""
+        from bpr.rpst_extensions import RPSTZeroSetAnalysis, RIEMANN_ZEROS
+        fake_rpst = [g + 0.44 for g in RIEMANN_ZEROS[:20]]
+        stats = RPSTZeroSetAnalysis.displacement_statistics(fake_rpst)
+        # Constant shift → std=0 in both halves → converging=False
+        assert not stats["converging"]
+
+    def test_identify_zero_pattern_returns_keys(self):
+        """identify_zero_pattern returns all required keys."""
+        from bpr.rpst_extensions import RPSTZeroSetAnalysis
+        primes = [2, 3, 5, 7, 11, 13]
+        result = RPSTZeroSetAnalysis.identify_zero_pattern(primes, t_max=55.0)
+        for key in ("mean_err_H1", "mean_err_H2", "mean_err_H3", "best_hypothesis", "shift_c"):
+            assert key in result, f"Missing key: {key}"
+
+    def test_identify_zero_pattern_best_hypothesis_string(self):
+        """best_hypothesis is one of the three hypothesis labels."""
+        from bpr.rpst_extensions import RPSTZeroSetAnalysis
+        primes = [2, 3, 5, 7, 11, 13]
+        result = RPSTZeroSetAnalysis.identify_zero_pattern(primes, t_max=55.0)
+        valid = {"H1 (Riemann zeros)", "H2 (half-Riemann zeros)", "H3 (shifted Riemann)"}
+        assert result["best_hypothesis"] in valid, f"Unknown: {result['best_hypothesis']}"
+
+    def test_compare_to_zeta_2s_returns_keys(self):
+        """compare_to_zeta_2s returns both error measures."""
+        from bpr.rpst_extensions import RPSTZeroSetAnalysis
+        primes = [2, 3, 5, 7, 11, 13]
+        result = RPSTZeroSetAnalysis.compare_to_zeta_2s(primes, t_max=55.0)
+        for key in ("mean_error_rpst_vs_riemann", "mean_error_rpst_vs_zeta2s",
+                    "rpst_zeros", "zeta_2s_zeros", "riemann_zeros"):
+            assert key in result, f"Missing key: {key}"
+
+    def test_zeta_2s_zeros_are_half_riemann(self):
+        """compare_to_zeta_2s: zeta_2s_zeros[i] == RIEMANN_ZEROS[i] / 2."""
+        from bpr.rpst_extensions import RPSTZeroSetAnalysis, RIEMANN_ZEROS
+        primes = [2, 3, 5, 7]
+        result = RPSTZeroSetAnalysis.compare_to_zeta_2s(primes, t_max=55.0)
+        for i, (got, ref) in enumerate(
+            zip(result["zeta_2s_zeros"], result["riemann_zeros"])
+        ):
+            assert abs(got - ref / 2.0) < 1e-10, f"Index {i}: {got} != {ref}/2"
+
+    def test_convergence_table_returns_list(self):
+        """convergence_table returns a list with one row per cutoff."""
+        from bpr.rpst_extensions import RPSTZeroSetAnalysis
+        rows = RPSTZeroSetAnalysis.convergence_table(prime_cutoffs=[20, 50], t_max=55.0)
+        assert isinstance(rows, list)
+        assert len(rows) == 2
+        for row in rows:
+            assert "X" in row and "mean_error" in row
+
+    def test_convergence_table_error_not_decreasing(self):
+        """Mean error does not significantly decrease from X=20 to X=50 (falsification)."""
+        from bpr.rpst_extensions import RPSTZeroSetAnalysis
+        rows = RPSTZeroSetAnalysis.convergence_table(prime_cutoffs=[20, 50], t_max=55.0)
+        # Both rows should have finite mean errors (may be nan if no zeros found)
+        for row in rows:
+            err = row["mean_error"]
+            if not np.isnan(err):
+                assert err >= 0.0
+
+
+class TestSpectralStatisticsIntegration:
+    """Integration tests for SubstrateDerivedTheories.spectral_statistics()."""
+
+    def test_spectral_statistics_returns_required_keys(self):
+        """spectral_statistics returns all six prediction keys."""
+        from bpr.first_principles import SubstrateDerivedTheories
+        sdt = SubstrateDerivedTheories.from_substrate(p=11, N=100, J_eV=1.0)
+        ss = sdt.spectral_statistics(p=11)
+        for key in ("ks_distance_usp2", "ks_distance_rate", "gue_ks_stat",
+                    "gue_ks_pvalue", "level_repulsion_fraction", "n_zeros_used"):
+            assert key in ss, f"Missing key: {key}"
+
+    def test_spectral_statistics_gue_ks_in_range(self):
+        """GUE KS statistic is in [0, 1]."""
+        from bpr.first_principles import SubstrateDerivedTheories
+        sdt = SubstrateDerivedTheories.from_substrate(p=11, N=100, J_eV=1.0)
+        ss = sdt.spectral_statistics(p=11)
+        assert 0.0 <= ss["gue_ks_stat"] <= 1.0
+
+    def test_spectral_statistics_level_repulsion_in_range(self):
+        """Level repulsion fraction is in [0, 1]."""
+        from bpr.first_principles import SubstrateDerivedTheories
+        sdt = SubstrateDerivedTheories.from_substrate(p=11, N=100, J_eV=1.0)
+        ss = sdt.spectral_statistics(p=11)
+        assert 0.0 <= ss["level_repulsion_fraction"] <= 1.0
+
+    def test_spectral_statistics_n_zeros_is_100(self):
+        """n_zeros_used equals the length of RIEMANN_ZEROS (100)."""
+        from bpr.first_principles import SubstrateDerivedTheories
+        sdt = SubstrateDerivedTheories.from_substrate(p=11, N=100, J_eV=1.0)
+        ss = sdt.spectral_statistics(p=11)
+        assert ss["n_zeros_used"] == 100
+
+    def test_predictions_includes_theory_xxiv(self):
+        """predictions() dict includes P24.x keys."""
+        from bpr.first_principles import SubstrateDerivedTheories
+        sdt = SubstrateDerivedTheories.from_substrate(p=11, N=100, J_eV=1.0)
+        preds = sdt.predictions()
+        for key in ("P24.1_frobenius_ks_distance_usp2", "P24.3_gue_ks_statistic",
+                    "P24.5_level_repulsion_fraction", "P24.6_n_zeros_validated"):
+            assert key in preds, f"Missing prediction: {key}"

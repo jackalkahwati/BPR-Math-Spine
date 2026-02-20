@@ -73,6 +73,8 @@ from . import quantum_gravity_pheno as th20
 from . import quantum_chemistry as th21
 from . import alpha_derivation as th22
 from . import meta_boundary as th23
+from .rpst_extensions import KatzSarnakChain
+from .rpst.hamiltonian import RiemannZeroStatistics
 
 
 @dataclass
@@ -441,6 +443,71 @@ class SubstrateDerivedTheories:
     def meta_boundary_params(self) -> th23.MetaBoundaryParams:
         """Meta-boundary constraint field parameters."""
         return th23.MetaBoundaryParams()
+
+    # ------------------------------------------------------------------
+    # Theory XXIV: Spectral Statistics (Katz-Sarnak + GUE)
+    # ------------------------------------------------------------------
+
+    def spectral_statistics(self, p: Optional[int] = None) -> Dict[str, Any]:
+        """Katz-Sarnak Frobenius equidistribution + Riemann zero GUE statistics.
+
+        Connects the two proven spectral-statistics results of Theory XXIV:
+
+        1. **Katz-Sarnak chain** (Theorem 5.1): Frobenius eigenangles of the
+           family E_{a,1}: y²=x³+ax+1 over F_p equidistribute toward USp(2)
+           Haar measure at rate D_p = O(1/√p).
+
+        2. **GUE statistics** (Table 2 of numerical paper): The first 100
+           Riemann zeros pass the Wigner GUE spacing test with D < 0.2.
+
+        Parameters
+        ----------
+        p : int, optional
+            Prime for Katz-Sarnak computation. Defaults to ``self.params.p``.
+            Use a small prime (≤ 100) for speed.
+
+        Returns
+        -------
+        dict with keys:
+            ``ks_distance_usp2``        – Frobenius angle KS distance vs USp(2)
+            ``ks_distance_rate``        – C in D_p ≈ C / √p
+            ``gue_ks_stat``             – KS statistic vs GUE Wigner surmise
+            ``gue_ks_pvalue``           – p-value (nan if scipy absent)
+            ``level_repulsion_fraction``– fraction of spacings < 0.3
+            ``n_zeros_used``            – number of Riemann zeros used
+        """
+        from .rpst_extensions import RIEMANN_ZEROS as _ZEROS
+        q = int(p) if p is not None else self.params.p
+        # For large p the point-counting is slow; cap to a representative prime
+        if q > 200:
+            # Find nearest prime ≤ 199 to keep runtime reasonable
+            for candidate in range(199, 1, -1):
+                ks_d, _ = KatzSarnakChain.ks_distance_usp2(candidate)
+                if not np.isnan(ks_d):
+                    rate_C = ks_d * candidate ** 0.5
+                    break
+            else:
+                ks_d = float("nan")
+                rate_C = float("nan")
+        else:
+            ks_d, _ = KatzSarnakChain.ks_distance_usp2(q)
+            rate_C = ks_d * q ** 0.5
+
+        zeros = np.array(_ZEROS)
+        gue_D, gue_p = RiemannZeroStatistics.ks_test_gue(zeros)
+        frac_small = RiemannZeroStatistics.fraction_small_spacings(zeros, threshold=0.3)
+        # Use -1.0 as sentinel for "scipy unavailable / p-value undefined"
+        # to keep predictions() results finite and idempotent.
+        gue_p_out = float(gue_p) if np.isfinite(gue_p) else -1.0
+
+        return {
+            "ks_distance_usp2": float(ks_d),
+            "ks_distance_rate": float(rate_C),
+            "gue_ks_stat": float(gue_D),
+            "gue_ks_pvalue": gue_p_out,
+            "level_repulsion_fraction": float(frac_small),
+            "n_zeros_used": len(zeros),
+        }
 
     # ------------------------------------------------------------------
     # Theory XXI: Quantum Chemistry
@@ -957,5 +1024,15 @@ class SubstrateDerivedTheories:
         )
         for k, v in mb_preds.items():
             preds[k] = v
+
+        # ── Theory XXIV: Katz-Sarnak + GUE spectral statistics ──
+        # Use small prime (p=97) for speed; full results via spectral_statistics()
+        ss = self.spectral_statistics(p=97)
+        preds["P24.1_frobenius_ks_distance_usp2"] = ss["ks_distance_usp2"]
+        preds["P24.2_frobenius_convergence_rate_C"] = ss["ks_distance_rate"]
+        preds["P24.3_gue_ks_statistic"] = ss["gue_ks_stat"]
+        preds["P24.4_gue_ks_pvalue"] = ss["gue_ks_pvalue"]
+        preds["P24.5_level_repulsion_fraction"] = ss["level_repulsion_fraction"]
+        preds["P24.6_n_zeros_validated"] = ss["n_zeros_used"]
 
         return preds

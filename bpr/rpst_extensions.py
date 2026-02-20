@@ -33,16 +33,36 @@ from scipy.integrate import quad
 # Known Riemann zeros (imaginary parts γ_n) — fixed by mathematics
 # ---------------------------------------------------------------------------
 RIEMANN_ZEROS: List[float] = [
-    14.134725,  # γ₁
-    21.022040,  # γ₂
-    25.010858,  # γ₃
-    30.424876,  # γ₄
-    32.935062,  # γ₅
-    37.586178,  # γ₆
-    40.918719,  # γ₇
-    43.327073,  # γ₈
-    48.005151,  # γ₉
-    49.773832,  # γ₁₀
+    # γ₁–γ₁₀
+    14.134725, 21.022040, 25.010858, 30.424876, 32.935062,
+    37.586178, 40.918719, 43.327073, 48.005151, 49.773832,
+    # γ₁₁–γ₂₀
+    52.970321, 56.446248, 59.347044, 60.831779, 65.112544,
+    67.079811, 69.546402, 72.067158, 75.704691, 77.144840,
+    # γ₂₁–γ₃₀
+    79.337375, 82.910381, 84.735493, 87.425275, 88.809111,
+    92.491899, 94.651344, 95.870634, 98.831194, 101.317851,
+    # γ₃₁–γ₄₀
+    103.725538, 105.446623, 107.168611, 111.029536, 111.874659,
+    114.320221, 116.226680, 118.790783, 121.370125, 122.946829,
+    # γ₄₁–γ₅₀
+    124.256819, 127.516684, 129.578704, 131.087689, 133.497737,
+    134.756510, 138.116042, 139.736209, 141.123707, 143.111846,
+    # γ₅₁–γ₆₀
+    146.000982, 147.422765, 150.053520, 150.925258, 153.024694,
+    156.112909, 157.597591, 158.849988, 161.188964, 163.030710,
+    # γ₆₁–γ₇₀
+    165.537068, 167.184440, 169.094515, 169.911976, 173.411537,
+    174.754192, 176.441434, 178.377408, 179.916484, 182.207078,
+    # γ₇₁–γ₈₀
+    184.874468, 185.598784, 187.228922, 189.416158, 192.026656,
+    193.079727, 195.265397, 196.876482, 198.015310, 201.264752,
+    # γ₈₁–γ₉₀
+    202.493595, 204.189672, 205.394697, 207.906259, 209.576510,
+    211.690863, 213.347919, 214.547045, 216.169539, 219.067596,
+    # γ₉₁–γ₁₀₀
+    220.714919, 221.430706, 224.007000, 224.983325, 227.421444,
+    229.337413, 231.250189, 231.987235, 233.693404, 236.524230,
 ]
 
 
@@ -585,6 +605,239 @@ class RPSTSpectralZeta:
             "riemann_zeros": list(riemann_zeros[:n]),
             "errors": errors,
             "mean_error": float(np.mean(errors)),
+        }
+
+
+# ===================================================================
+# RPST Zero Set Analysis: identifying the numerically observed zeros
+# ===================================================================
+
+@dataclass
+class RPSTZeroSetAnalysis:
+    r"""Analysis of the RPST zero set {γ̃_n} and its displacement from Riemann zeros.
+
+    Paper 3 (Al-Kahwati 2026) shows numerically that the zeros of ζ_RPST(s; P)
+    do **not** converge to the Riemann zeros γ_n as |P| → ∞.  The mean absolute
+    error at X = 500 is ~0.44 and does not decrease with X.  Two structural
+    reasons are identified:
+
+    1. **Argument mismatch**: the corrected local factor is ``det(I - p^{-s} H_p)^{-1}``
+       which contributes an argument ``2s`` (not ``s``) via the exponent in
+       ``(1 - p^{-2s})^{-(p-1)/2}``.
+    2. **Weight mismatch**: the factor ``(p-1)/2`` accumulates a different
+       Euler product than the Riemann zeta function.
+
+    This class provides:
+    - ``convergence_table``: mean error vs prime truncation level X
+    - ``compare_to_zeta_2s``: compare zeros to those of ζ(2s) (shifted zeros)
+    - ``displacement_statistics``: statistical summary of {γ̃_n - γ_n}
+    - ``identify_zero_pattern``: test the γ̃_n ≈ γ_n / 2 hypothesis
+    """
+
+    @classmethod
+    def convergence_table(
+        cls,
+        prime_cutoffs: Optional[List[int]] = None,
+        n_zeros: int = 10,
+        t_max: float = 55.0,
+    ) -> List[Dict]:
+        r"""Convergence table: mean |γ̃_n - γ_n| vs prime truncation X.
+
+        For each X in ``prime_cutoffs``, builds ζ_RPST(s; {p ≤ X}) and
+        compares its first ``n_zeros`` zeros to the Riemann zeros.
+
+        Parameters
+        ----------
+        prime_cutoffs : list of int, optional
+            Values of X to test.  Defaults to [50, 100, 200, 500].
+        n_zeros : int
+            How many zeros to compare.
+        t_max : float
+            Search range on the critical line.
+
+        Returns
+        -------
+        list of dict
+            Each entry has keys ``X``, ``n_primes``, ``mean_error``,
+            ``max_error``, ``rpst_zeros``, ``riemann_zeros``.
+        """
+        if prime_cutoffs is None:
+            prime_cutoffs = [50, 100, 200, 500]
+
+        def sieve(limit: int) -> List[int]:
+            is_prime = [True] * (limit + 1)
+            is_prime[0] = is_prime[1] = False
+            for i in range(2, int(limit**0.5) + 1):
+                if is_prime[i]:
+                    for j in range(i * i, limit + 1, i):
+                        is_prime[j] = False
+            return [i for i in range(2, limit + 1) if is_prime[i]]
+
+        rows = []
+        for X in prime_cutoffs:
+            primes = sieve(X)
+            result = RPSTSpectralZeta.compare_zeros_to_riemann(
+                primes, riemann_zeros=RIEMANN_ZEROS, t_max=t_max
+            )
+            n = min(result["n_compared"], n_zeros)
+            errors = result["errors"][:n]
+            rows.append({
+                "X": X,
+                "n_primes": len(primes),
+                "mean_error": float(np.mean(errors)) if errors else float("nan"),
+                "max_error": float(np.max(errors)) if errors else float("nan"),
+                "rpst_zeros": result["rpst_zeros"][:n],
+                "riemann_zeros": result["riemann_zeros"][:n],
+            })
+        return rows
+
+    @classmethod
+    def compare_to_zeta_2s(
+        cls,
+        primes: List[int],
+        t_max: float = 55.0,
+    ) -> Dict:
+        r"""Compare ζ_RPST zeros to the zeros of ζ(2s).
+
+        The zeros of ζ(2s) on the critical line Re(s)=1/2 occur at
+        s = 1/2 + i γ_n/2.  This tests whether the RPST zeros satisfy
+        γ̃_n ≈ γ_n / 2.
+
+        Parameters
+        ----------
+        primes : list of int
+            Primes for the Euler product.
+        t_max : float
+            Search range.
+
+        Returns
+        -------
+        dict with keys ``rpst_zeros``, ``zeta_2s_zeros``, ``riemann_zeros``,
+        ``mean_error_rpst_vs_riemann``, ``mean_error_rpst_vs_zeta2s``.
+        """
+        riemann_zeros = np.array(RIEMANN_ZEROS)
+        zeta_2s_zeros = riemann_zeros / 2.0  # zeros of ζ(2s) on Im axis
+
+        rpst_zeros = RPSTSpectralZeta.find_zeros(primes, t_min=5.0, t_max=t_max)
+        n = min(len(rpst_zeros), len(zeta_2s_zeros))
+
+        err_riemann = [abs(rpst_zeros[i] - float(riemann_zeros[i])) for i in range(n)]
+        err_zeta2s = [abs(rpst_zeros[i] - float(zeta_2s_zeros[i])) for i in range(n)]
+
+        return {
+            "rpst_zeros": rpst_zeros[:n],
+            "zeta_2s_zeros": list(zeta_2s_zeros[:n]),
+            "riemann_zeros": list(riemann_zeros[:n]),
+            "mean_error_rpst_vs_riemann": float(np.mean(err_riemann)) if err_riemann else float("nan"),
+            "mean_error_rpst_vs_zeta2s": float(np.mean(err_zeta2s)) if err_zeta2s else float("nan"),
+            "n_compared": n,
+        }
+
+    @staticmethod
+    def displacement_statistics(
+        rpst_zeros: List[float],
+        riemann_zeros: Optional[List[float]] = None,
+    ) -> Dict:
+        r"""Statistical summary of the displacement {γ̃_n - γ_n}.
+
+        Parameters
+        ----------
+        rpst_zeros : list of float
+            Observed RPST zero imaginary parts.
+        riemann_zeros : list of float, optional
+            Reference Riemann zeros.  Defaults to ``RIEMANN_ZEROS``.
+
+        Returns
+        -------
+        dict with keys ``displacements``, ``mean``, ``std``, ``min``, ``max``,
+        ``abs_mean``, ``converging`` (bool: std decreasing with n).
+        """
+        if riemann_zeros is None:
+            riemann_zeros = RIEMANN_ZEROS
+        n = min(len(rpst_zeros), len(riemann_zeros))
+        displacements = [
+            float(rpst_zeros[i]) - float(riemann_zeros[i]) for i in range(n)
+        ]
+        d = np.array(displacements)
+        # Test for convergence: compare std of first half vs second half.
+        # Only meaningful if std_first is large enough to compare.
+        if n >= 4:
+            std_first = float(np.std(d[: n // 2]))
+            std_second = float(np.std(d[n // 2 :]))
+            converging = (std_first > 1e-10) and (std_second < std_first)
+        else:
+            converging = False
+        return {
+            "displacements": displacements,
+            "mean": float(np.mean(d)),
+            "std": float(np.std(d)),
+            "min": float(np.min(d)),
+            "max": float(np.max(d)),
+            "abs_mean": float(np.mean(np.abs(d))),
+            "converging": converging,
+            "n_compared": n,
+        }
+
+    @classmethod
+    def identify_zero_pattern(
+        cls,
+        primes: List[int],
+        t_max: float = 55.0,
+    ) -> Dict:
+        r"""Test the three leading hypotheses for the RPST zero pattern.
+
+        H1: γ̃_n ≈ γ_n          (convergence to Riemann zeros — **falsified**)
+        H2: γ̃_n ≈ γ_n / 2      (zeros of ζ(2s))
+        H3: γ̃_n ≈ γ_n + c      (constant shift from RPST weight)
+
+        For each hypothesis, reports mean absolute error.  The best-fit
+        hypothesis is identified by minimum mean error.
+
+        Parameters
+        ----------
+        primes : list of int
+        t_max : float
+
+        Returns
+        -------
+        dict with keys ``rpst_zeros``, ``mean_err_H1``, ``mean_err_H2``,
+        ``mean_err_H3``, ``best_hypothesis``, ``shift_c``.
+        """
+        riemann = np.array(RIEMANN_ZEROS)
+        rpst_zeros = RPSTSpectralZeta.find_zeros(primes, t_min=5.0, t_max=t_max)
+        n = min(len(rpst_zeros), len(riemann))
+        if n == 0:
+            return {
+                "rpst_zeros": [], "mean_err_H1": float("nan"),
+                "mean_err_H2": float("nan"), "mean_err_H3": float("nan"),
+                "best_hypothesis": "none", "shift_c": float("nan"),
+            }
+
+        rpst = np.array(rpst_zeros[:n])
+        ref = riemann[:n]
+
+        err_H1 = float(np.mean(np.abs(rpst - ref)))
+        err_H2 = float(np.mean(np.abs(rpst - ref / 2.0)))
+        # H3: estimate constant shift c as mean(γ̃_n - γ_n)
+        shift_c = float(np.mean(rpst - ref))
+        err_H3 = float(np.mean(np.abs(rpst - (ref + shift_c))))
+
+        best = min(
+            [("H1 (Riemann zeros)", err_H1),
+             ("H2 (half-Riemann zeros)", err_H2),
+             ("H3 (shifted Riemann)", err_H3)],
+            key=lambda x: x[1],
+        )[0]
+
+        return {
+            "rpst_zeros": list(rpst_zeros[:n]),
+            "riemann_zeros": list(ref),
+            "mean_err_H1": err_H1,
+            "mean_err_H2": err_H2,
+            "mean_err_H3": err_H3,
+            "best_hypothesis": best,
+            "shift_c": shift_c,
+            "n_compared": n,
         }
 
 
