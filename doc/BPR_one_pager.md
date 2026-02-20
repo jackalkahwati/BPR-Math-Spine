@@ -94,6 +94,6 @@ where **δ = 1.37 ± 0.05** is the critical BPR exponent.
 
 ## Computable Verification
 
-Given any triangulated Σ, equations (2-3) are solved by a single Poisson step. The repository `github.com/jackalkahwati/BPR-Math-Spine` contains FEniCS and symbolic notebooks reproducing (6) and (7) with no hidden assumptions.
+Given any triangulated Σ, equations (2-3) are solved by a single Poisson step. The repository [github.com/jackalkahwati/BPR-Math-Spine](https://github.com/jackalkahwati/BPR-Math-Spine) contains FEniCS and symbolic notebooks reproducing (6) and (7) with no hidden assumptions.
 
 **Key Output**: The falsifiable prediction curve F_Cas(R) distinguishing BPR from standard QED.

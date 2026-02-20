@@ -282,7 +282,20 @@ class BPRResonanceSpectrum:
     where R is the boundary radius and γ_n are imaginary parts of
     Riemann zeros (ρ_n = 1/2 + i γ_n).
 
-    As p → ∞, zeros of ζ_{RPST}(s; p) converge to Riemann zeros (Thm 3.4).
+    .. note::
+        The claim that ζ_{RPST}(s; P) zeros converge to Riemann zeros as
+        |P| → ∞ is **numerically falsified** in Al-Kahwati (2026), "Spectral
+        Statistics in the RPST Framework: A Proven Pathway via Katz–Sarnak".
+        RPST zeros converge to a stable displaced set with mean error ~0.44
+        from γ_n (vs 0.018 for the standard Euler product at X = 500 primes).
+        The displacement is structural, arising from the s → 2s shift and
+        non-unit weights in the local factor (Eq. 3 of that paper).
+
+        GUE statistics in RPST are instead proven unconditionally via the
+        Katz–Sarnak chain:
+            Hp → Frobenius on H¹(E) → |λ| = 1 (Deligne) →
+            USp(2g) equidistribution (Katz–Sarnak) → GUE (classical RMT)
+        See ``KatzSarnakChain`` for the implementation.
 
     Parameters
     ----------
@@ -352,6 +365,544 @@ class BPRResonanceSpectrum:
         growth = np.exp((sigma_n - 0.5) * Gamma * t)
         oscillation = np.cos(gamma_n * t)
         return growth * oscillation
+
+
+# ===================================================================
+# RPST Spectral Zeta — Corrected Product Formula & Numerical Falsification
+# ===================================================================
+
+@dataclass
+class RPSTSpectralZeta:
+    r"""Corrected RPST spectral zeta and its numerical falsification.
+
+    The RPST Hamiltonian Hp has eigenvalues +1 and -1 (each with
+    multiplicity (p-1)/2) and 0 (multiplicity 1).  The local factor is
+    therefore (Eq. 3 of the Katz–Sarnak paper):
+
+        det(I - p^{-s} H_p)^{-1}
+            = (1 - p^{-s})^{-(p-1)/2} (1 + p^{-s})^{-(p-1)/2}
+            = (1 - p^{-2s})^{-(p-1)/2}
+
+    and the spectral zeta logarithm is (Eq. 4):
+
+        log ζ_RPST(s; P) = Σ_{p∈P} (p-1)/2 · log 1/(1 - p^{-2s})
+
+    This is *structurally different* from log ζ(s) = Σ_p log 1/(1-p^{-s})
+    in two ways:
+      - the argument is 2s (not s)
+      - the weight is (p-1)/2 (not 1)
+
+    Consequence: RPST zeros converge to a *displaced* set, not the
+    Riemann zeros γ_n.  At X = 500 primes the mean displacement is 0.44
+    (vs 0.018 for the standard Euler product) and *does not decrease* with
+    X (Table 1, Katz–Sarnak paper).  The original RPST Riemann-zero
+    convergence conjecture is thereby numerically falsified.
+
+    GUE statistics are instead proven via the Katz–Sarnak chain —
+    see ``KatzSarnakChain``.
+
+    References
+    ----------
+    Al-Kahwati (2026), *Spectral Statistics in the RPST Framework:
+    A Proven Pathway via Katz–Sarnak*, StarDrive Research Group, Sec. 2.
+    """
+
+    @staticmethod
+    def local_factor_log(p: int, s: complex) -> complex:
+        r"""Log of the local factor det(I - p^{-s} H_p)^{-1} (Eq. 3).
+
+        Returns -(p-1)/2 · log(1 - p^{-2s}).
+
+        Parameters
+        ----------
+        p : int
+            Prime.
+        s : complex
+            Spectral parameter.
+
+        Returns
+        -------
+        complex
+            Log of local factor.
+        """
+        p_factor = float(p) ** (-2.0 * s)
+        return -((p - 1) / 2.0) * np.log(1.0 - p_factor + 0j)
+
+    @classmethod
+    def log_zeta_rpst(cls, s: complex, primes: List[int]) -> complex:
+        r"""Compute log ζ_RPST(s; P) = Σ_{p∈P} (p-1)/2 · log 1/(1-p^{-2s}).
+
+        Eq. 4 of the Katz–Sarnak paper.
+
+        Parameters
+        ----------
+        s : complex
+            Spectral parameter.
+        primes : list of int
+            Finite prime set P.
+
+        Returns
+        -------
+        complex
+            Log spectral zeta value.
+        """
+        result = 0.0 + 0.0j
+        for p in primes:
+            result += cls.local_factor_log(p, s)
+        return result
+
+    @staticmethod
+    def riemann_siegel_theta(t: float) -> float:
+        r"""Riemann–Siegel theta function θ(t) ≈ t/2 · log(t/2πe) - π/8.
+
+        Parameters
+        ----------
+        t : float
+            Height on critical line (t > 0).
+
+        Returns
+        -------
+        float
+            θ(t) value.
+        """
+        if t <= 1e-6:
+            return 0.0
+        return (t / 2.0) * np.log(t / (2.0 * np.pi * np.e)) - np.pi / 8.0
+
+    @classmethod
+    def hardy_z_rpst(cls, t: float, primes: List[int]) -> float:
+        r"""RPST Hardy Z-function (Eq. 5 of Katz–Sarnak paper).
+
+        Z_RPST(t; P) = 2 Re[e^{iθ(t)} · exp(log ζ_RPST(1/2 + it; P))]
+
+        Sign changes locate zeros on the critical line.
+
+        Parameters
+        ----------
+        t : float
+            Imaginary part of s on the critical line.
+        primes : list of int
+            Finite prime set P.
+
+        Returns
+        -------
+        float
+            Real-valued Z-function.
+        """
+        s = 0.5 + 1j * t
+        theta = cls.riemann_siegel_theta(t)
+        log_z = cls.log_zeta_rpst(s, primes)
+        return 2.0 * float(np.real(np.exp(1j * theta) * np.exp(log_z)))
+
+    @classmethod
+    def find_zeros(
+        cls,
+        primes: List[int],
+        t_min: float = 10.0,
+        t_max: float = 55.0,
+        n_points: int = 10000,
+    ) -> List[float]:
+        r"""Find zeros of Z_RPST on the critical line via sign changes + bisection.
+
+        Parameters
+        ----------
+        primes : list of int
+            Finite prime set P.
+        t_min, t_max : float
+            Search range for imaginary parts.
+        n_points : int
+            Number of evaluation points for sign-change detection.
+
+        Returns
+        -------
+        list of float
+            Imaginary parts of detected zeros.
+        """
+        t_values = np.linspace(t_min, t_max, n_points)
+        z_values = np.array(
+            [cls.hardy_z_rpst(float(tv), primes) for tv in t_values]
+        )
+
+        zeros: List[float] = []
+        for i in range(len(t_values) - 1):
+            if z_values[i] * z_values[i + 1] < 0:
+                a, b = float(t_values[i]), float(t_values[i + 1])
+                for _ in range(52):
+                    mid = (a + b) / 2.0
+                    if cls.hardy_z_rpst(mid, primes) * cls.hardy_z_rpst(a, primes) < 0:
+                        b = mid
+                    else:
+                        a = mid
+                zeros.append((a + b) / 2.0)
+        return zeros
+
+    @classmethod
+    def compare_zeros_to_riemann(
+        cls,
+        primes: List[int],
+        riemann_zeros: Optional[List[float]] = None,
+        t_max: float = 55.0,
+    ) -> Dict[str, object]:
+        r"""Compare RPST zeros to Riemann zeros — reproduces Table 1.
+
+        Shows that RPST zeros converge to a displaced set, not γ_n.
+        Mean error ≈ 0.44 at X = 500 (vs 0.018 for standard Euler product).
+
+        Parameters
+        ----------
+        primes : list of int
+            Finite prime set P.
+        riemann_zeros : list of float, optional
+            Known Riemann zero imaginary parts.  Defaults to the first
+            10 tabulated values.
+        t_max : float
+            Upper bound for zero search.
+
+        Returns
+        -------
+        dict with keys:
+            n_compared, rpst_zeros, riemann_zeros, errors, mean_error.
+        """
+        if riemann_zeros is None:
+            riemann_zeros = RIEMANN_ZEROS
+
+        rpst_zeros = cls.find_zeros(primes, t_min=10.0, t_max=t_max)
+        n = min(len(rpst_zeros), len(riemann_zeros))
+
+        if n == 0:
+            return {
+                "n_compared": 0,
+                "rpst_zeros": [],
+                "riemann_zeros": list(riemann_zeros),
+                "errors": [],
+                "mean_error": float("nan"),
+            }
+
+        errors = [abs(rpst_zeros[i] - riemann_zeros[i]) for i in range(n)]
+        return {
+            "n_compared": n,
+            "rpst_zeros": rpst_zeros[:n],
+            "riemann_zeros": list(riemann_zeros[:n]),
+            "errors": errors,
+            "mean_error": float(np.mean(errors)),
+        }
+
+
+# ===================================================================
+# Katz–Sarnak Chain: proven GUE statistics from first principles
+# ===================================================================
+
+@dataclass
+class KatzSarnakChain:
+    r"""The proven Katz–Sarnak chain: H_p → Deligne → equidistribution → GUE.
+
+    Establishes RPST-native GUE statistics unconditionally (no Riemann
+    Hypothesis assumed) via the chain:
+
+        Weil          Deligne          Katz–Sarnak        RMT
+    H_p ──────→ Frobenius on H¹ ──────→ |λ|=1 ─────────→ USp(2g) ──→ GUE
+
+    Every arrow is a proven theorem:
+      * Weil (1948): quadratic Gauss sum |g_p|² = p  (Theorem 3.3)
+      * Deligne (1974): Weil Conjectures → |λ_k| = 1  (Theorem 4.1)
+      * Katz–Sarnak (1999): Frobenius angles → USp(2) Haar measure
+        at rate O(1/√p)  (Theorem 5.1)
+      * Classical RMT: USp(2g) → GUE as g → ∞  (Theorem 6.1)
+
+    Main result (Theorem 6.2): The RPST Hamiltonian H_p, for the family
+    of elliptic curves E_{a,1}: y² = x³ + ax + 1 over F_p, has Frobenius
+    eigenangles equidistributing with USp(2) Haar measure at rate O(1/√p),
+    and the spacing distribution converges to GUE as p → ∞.
+
+    References
+    ----------
+    Al-Kahwati (2026), *Spectral Statistics in the RPST Framework:
+    A Proven Pathway via Katz–Sarnak*, StarDrive Research Group.
+    Katz, N.M. and Sarnak, P. (1999). *Random Matrices, Frobenius
+    Eigenvalues, and Monodromy*, AMS.
+    Deligne, P. (1974). La conjecture de Weil. I. IHÉS 43, 273–307.
+    """
+
+    @staticmethod
+    def count_elliptic_curve_points(a: int, b: int, p: int) -> int:
+        r"""Count #E_{a,b}(F_p) = #{(x,y) ∈ F_p²: y² = x³+ax+b} + 1.
+
+        Uses the identity #{y: y² ≡ m (mod p)} = 1 + (m/p):
+
+            #E_{a,b}(F_p) = 1 + Σ_{x∈F_p} (1 + ((x³+ax+b)/p))
+
+        Parameters
+        ----------
+        a, b : int
+            Curve coefficients (mod p).
+        p : int
+            Odd prime (field size).
+
+        Returns
+        -------
+        int
+            Number of F_p-rational points including the point at infinity.
+        """
+        count = 1  # point at infinity
+        for x in range(p):
+            rhs = (pow(x, 3, p) + a * x % p + b % p) % p
+            # Legendre symbol via Euler criterion
+            if rhs == 0:
+                leg = 0
+            else:
+                leg = 1 if pow(int(rhs), (p - 1) // 2, p) == 1 else -1
+            count += 1 + leg
+        return count
+
+    @classmethod
+    def frobenius_trace(cls, a: int, b: int, p: int) -> int:
+        r"""Frobenius trace tr(φ_p) = p + 1 - #E_{a,b}(F_p) (Prop. 3.4).
+
+        Parameters
+        ----------
+        a, b : int
+            Curve coefficients.
+        p : int
+            Odd prime.
+
+        Returns
+        -------
+        int
+            Frobenius trace (Hasse bound: |tr| ≤ 2√p).
+        """
+        return p + 1 - cls.count_elliptic_curve_points(a, b, p)
+
+    @classmethod
+    def frobenius_angle(cls, a: int, b: int, p: int) -> Optional[float]:
+        r"""Frobenius eigenangle θ ∈ [0, π] for E_{a,b}/F_p.
+
+        Writing the Frobenius eigenvalue α = √p · e^{iθ}, the angle is:
+            θ = arccos(tr(φ_p) / (2√p))
+
+        Returns None if the curve is singular (discriminant ≡ 0 mod p).
+
+        Parameters
+        ----------
+        a, b : int
+            Curve coefficients.
+        p : int
+            Odd prime.
+
+        Returns
+        -------
+        float or None
+            Frobenius angle in [0, π], or None for singular curve.
+        """
+        # Singularity check: Δ = -16(4a³ + 27b²) ≡ 0 (mod p)
+        disc = (-16 * (4 * pow(a, 3, p) + 27 * (b * b % p))) % p
+        if disc == 0:
+            return None
+
+        tr = cls.frobenius_trace(a, b, p)
+        arg = float(np.clip(tr / (2.0 * np.sqrt(float(p))), -1.0, 1.0))
+        return float(np.arccos(arg))
+
+    @classmethod
+    def frobenius_angle_family(cls, p: int) -> np.ndarray:
+        r"""Frobenius eigenangles for the family E_{a,1}: y²=x³+ax+1 over F_p.
+
+        This is the family used in the Katz–Sarnak numerical verification
+        (Panel A of Figure 2 in the Katz–Sarnak paper).
+
+        Parameters
+        ----------
+        p : int
+            Prime determining the field F_p.
+
+        Returns
+        -------
+        ndarray
+            Frobenius angles θ ∈ [0, π] for all non-singular E_{a,1}.
+        """
+        angles = []
+        for a in range(1, p):
+            theta = cls.frobenius_angle(a, 1, p)
+            if theta is not None:
+                angles.append(theta)
+        return np.array(angles)
+
+    @staticmethod
+    def usp2_haar_density(theta: np.ndarray) -> np.ndarray:
+        r"""USp(2) Haar measure density (Theorem 5.1, Eq. 11).
+
+        μ_{USp(2)}(θ) = (2/π) sin²(θ),   θ ∈ [0, π]
+
+        This is the semicircle law restricted to [0, π] and is the
+        proven limiting distribution for Frobenius eigenangles.
+
+        Parameters
+        ----------
+        theta : ndarray
+            Angle values in [0, π].
+
+        Returns
+        -------
+        ndarray
+            Density values.
+        """
+        theta = np.asarray(theta, dtype=float)
+        return (2.0 / np.pi) * np.sin(theta) ** 2
+
+    @staticmethod
+    def usp2_haar_cdf(theta: float) -> float:
+        r"""CDF of USp(2) Haar measure.
+
+        F_{USp(2)}(θ) = θ/π - sin(2θ)/(2π),   θ ∈ [0, π]
+
+        Parameters
+        ----------
+        theta : float
+            Angle in [0, π].
+
+        Returns
+        -------
+        float
+            CDF value.
+        """
+        theta = float(np.clip(theta, 0.0, np.pi))
+        return float(theta / np.pi - np.sin(2.0 * theta) / (2.0 * np.pi))
+
+    @classmethod
+    def ks_distance_usp2(cls, p: int) -> Tuple[float, np.ndarray]:
+        r"""KS distance of Frobenius angle family from USp(2) Haar measure.
+
+        Convergence rate: D_p = C/√p (Theorem 5.1, Eq. 12).
+
+        Parameters
+        ----------
+        p : int
+            Prime.
+
+        Returns
+        -------
+        D : float
+            KS statistic D_p.
+        angles : ndarray
+            Frobenius angles used.
+        """
+        angles = cls.frobenius_angle_family(p)
+        if len(angles) == 0:
+            return 1.0, angles
+
+        x = np.sort(angles)
+        n = len(x)
+        ecdf = np.arange(1, n + 1) / n
+        cdf_vals = np.array([cls.usp2_haar_cdf(float(v)) for v in x])
+        D = float(np.max(np.abs(ecdf - cdf_vals)))
+        return D, angles
+
+    @classmethod
+    def convergence_rate_data(
+        cls, primes: List[int]
+    ) -> Dict[str, np.ndarray]:
+        r"""Compute KS distances vs p and fit D_p = C/√p (Sec. 7.2).
+
+        Panel D of Figure 2 in the Katz–Sarnak paper shows empirical
+        KS distances consistent with C ≈ 1.12.
+
+        Parameters
+        ----------
+        primes : list of int
+            Primes at which to evaluate D_p.
+
+        Returns
+        -------
+        dict with keys:
+            'primes'       - array of primes
+            'ks_distances' - D_p values
+            'sqrt_p_inv'   - 1/√p values
+            'C_fit'        - least-squares fit coefficient C
+        """
+        distances = []
+        for p in primes:
+            D, _ = cls.ks_distance_usp2(p)
+            distances.append(D)
+
+        primes_arr = np.array(primes, dtype=float)
+        dist_arr = np.array(distances)
+        sqrt_p_inv = 1.0 / np.sqrt(primes_arr)
+
+        # Least-squares fit: D = C / √p
+        denom = float(np.dot(sqrt_p_inv, sqrt_p_inv))
+        C_fit = float(np.dot(dist_arr, sqrt_p_inv) / denom) if denom > 0 else float("nan")
+
+        return {
+            "primes": primes_arr,
+            "ks_distances": dist_arr,
+            "sqrt_p_inv": sqrt_p_inv,
+            "C_fit": C_fit,
+        }
+
+    @classmethod
+    def verify_spectral_stability(cls, p: int) -> Dict[str, object]:
+        r"""Verify spectral stability |λ_k| = 1 for the normalized H_p.
+
+        The RPST Hamiltonian has eigenvalues λ_k = (k/p) g_p / √p with
+        |λ_k| = |g_p| / √p = √p / √p = 1 (Corollary 4.2 via Deligne).
+
+        Parameters
+        ----------
+        p : int
+            Prime.
+
+        Returns
+        -------
+        dict with keys:
+            'p', 'n_nonzero_eigenvalues',
+            'max_deviation_from_unit_circle', 'all_on_unit_circle'.
+        """
+        hp = RPSTHamiltonian(p=p)
+        eigs = hp.eigenvalues()
+        nonzero = eigs[np.abs(eigs) > 1e-10]
+        # Normalize: divide by √p to obtain unit-circle eigenvalues
+        mods = np.abs(nonzero) / np.sqrt(float(p))
+        max_dev = float(np.max(np.abs(mods - 1.0))) if len(mods) > 0 else float("nan")
+        return {
+            "p": p,
+            "n_nonzero_eigenvalues": int(len(nonzero)),
+            "max_deviation_from_unit_circle": max_dev,
+            "all_on_unit_circle": max_dev < 1e-8,
+        }
+
+    @classmethod
+    def gauss_sum_verification_table(
+        cls, primes: List[int]
+    ) -> List[Dict[str, object]]:
+        r"""Reproduce Table 1 of the numerical paper: |g_p| vs √p.
+
+        Theorem 2.4 (Gauss/Weil): |g_p|² = p for every odd prime p.
+        Numerical verification to machine precision (< 10⁻¹⁴).
+
+        Parameters
+        ----------
+        primes : list of int
+            Primes to verify.
+
+        Returns
+        -------
+        list of dict
+            Each dict has 'p', 'gp_abs', 'sqrt_p', 'error', 'p_mod_4'.
+        """
+        rows: List[Dict[str, object]] = []
+        for p in primes:
+            gp = quadratic_gauss_sum(p)
+            gp_abs = abs(gp)
+            sqrt_p = float(np.sqrt(float(p)))
+            rows.append(
+                {
+                    "p": p,
+                    "gp_abs": gp_abs,
+                    "sqrt_p": sqrt_p,
+                    "error": abs(gp_abs - sqrt_p),
+                    "p_mod_4": p % 4,
+                }
+            )
+        return rows
 
 
 # ===================================================================

@@ -19,7 +19,7 @@
 | **FALSIFY** | 0 | — |
 | **INCONCLUSIVE** | 11 | LIV, Casimir, mass ordering, Born rule, GUP, decoherence, Hubble tension, anyons, proton radius, muon g−2, GRB LIV, JWST H₀ |
 
-**Papers:** 270+ cited across 129 tests. **All 21 theories** have CONFIRM. Feb 2026: added papers for BPR-unique topics (Casimir superconducting, Born rule many-photon, decoherence mass scaling, LIV CTA/GRB, m_s/m_d lattice).
+**Papers:** 250+ cited across 129 tests (see papers.md totals). **All 21 theories** have CONFIRM. Feb 2026: added papers for BPR-unique topics (Casimir superconducting, Born rule many-photon, decoherence mass scaling, LIV CTA/GRB, m_s/m_d lattice).
 
 ## How to Use
 

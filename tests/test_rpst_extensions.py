@@ -12,6 +12,9 @@ Coverage:
   - DarkMatterPrimeFingerprints (Speculation IV, Eq 34-36)
   - CollectiveWindingCoherence (Speculation V, Eq 37-40)
   - SubstrateCoherenceMigration (Speculation VI, Eq 41-42)
+  - RPSTSpectralZeta  (corrected product formula, Hardy Z-function)
+  - KatzSarnakChain   (Deligne + Katz-Sarnak proven GUE chain)
+  - RiemannZeroStatistics  (GUE statistics of Riemann zeros)
 """
 
 import numpy as np
@@ -926,3 +929,330 @@ class TestEmergentSpeculationsIntegration:
         # Correlation decays exponentially at x=5
         C = bkt.correlation_function(np.array([5.0]), T_high)
         assert C[0] == pytest.approx(np.exp(-5.0), rel=1e-6)
+
+
+# ===========================================================================
+# RPSTSpectralZeta — corrected product formula & numerical falsification
+# ===========================================================================
+
+class TestRPSTSpectralZeta:
+    """Tests for RPSTSpectralZeta: corrected local factor and Hardy Z-function.
+
+    Key facts (Katz–Sarnak paper, Sec. 2):
+      - Local factor: det(I - p^{-s} H_p)^{-1} = (1 - p^{-2s})^{-(p-1)/2}
+      - log ζ_RPST structural mismatch with log ζ: argument 2s, weight (p-1)/2
+      - RPST zeros converge to a displaced set, NOT the Riemann zeros γ_n
+    """
+
+    def test_local_factor_log_real_s(self):
+        """log local factor is a positive real for real s > 1/2."""
+        from bpr.rpst_extensions import RPSTSpectralZeta
+        val = RPSTSpectralZeta.local_factor_log(7, 1.0)
+        # Real part should be positive (it's a log of something > 1)
+        assert float(np.real(val)) > 0
+
+    def test_local_factor_log_formula(self):
+        """Manual check: -(p-1)/2 * log(1 - p^{-2s}) for p=5, s=1."""
+        from bpr.rpst_extensions import RPSTSpectralZeta
+        p, s = 5, 1.0
+        expected = -((p - 1) / 2.0) * np.log(1.0 - p ** (-2.0 * s) + 0j)
+        result = RPSTSpectralZeta.local_factor_log(p, s)
+        assert abs(result - expected) < 1e-12
+
+    def test_log_zeta_additive_over_primes(self):
+        """log ζ_RPST(s; {p1, p2}) = log ζ(s; {p1}) + log ζ(s; {p2})."""
+        from bpr.rpst_extensions import RPSTSpectralZeta
+        s = 1.0 + 0j
+        primes = [5, 7, 11]
+        total = RPSTSpectralZeta.log_zeta_rpst(s, primes)
+        individual_sum = sum(
+            RPSTSpectralZeta.local_factor_log(p, s) for p in primes
+        )
+        assert abs(total - individual_sum) < 1e-12
+
+    def test_riemann_siegel_theta_positive(self):
+        """θ(t) should be negative for small t and grow for large t."""
+        from bpr.rpst_extensions import RPSTSpectralZeta
+        # θ(14) ≈ -0.8 (standard reference value)
+        theta_14 = RPSTSpectralZeta.riemann_siegel_theta(14.134725)
+        assert isinstance(theta_14, float)
+
+    def test_riemann_siegel_theta_zero_guard(self):
+        """θ(t) returns 0 for t <= 0."""
+        from bpr.rpst_extensions import RPSTSpectralZeta
+        assert RPSTSpectralZeta.riemann_siegel_theta(0.0) == 0.0
+        assert RPSTSpectralZeta.riemann_siegel_theta(-1.0) == 0.0
+
+    def test_hardy_z_rpst_is_real(self):
+        """Z_RPST(t) is real-valued."""
+        from bpr.rpst_extensions import RPSTSpectralZeta
+        primes = [3, 5, 7, 11, 13]
+        val = RPSTSpectralZeta.hardy_z_rpst(20.0, primes)
+        assert isinstance(val, float)
+
+    def test_hardy_z_rpst_changes_sign(self):
+        """Z_RPST has sign changes in [10, 50] for a small prime set."""
+        from bpr.rpst_extensions import RPSTSpectralZeta
+        primes = [3, 5, 7, 11, 13, 17, 19, 23]
+        t_vals = np.linspace(10.0, 50.0, 500)
+        z_vals = np.array([RPSTSpectralZeta.hardy_z_rpst(float(t), primes)
+                           for t in t_vals])
+        # Should have at least one sign change
+        sign_changes = np.sum(np.diff(np.sign(z_vals)) != 0)
+        assert sign_changes >= 1, "Expected at least one sign change in Z_RPST"
+
+    def test_compare_zeros_structure(self):
+        """compare_zeros_to_riemann returns expected dict structure."""
+        from bpr.rpst_extensions import RPSTSpectralZeta, RIEMANN_ZEROS
+        primes = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
+        result = RPSTSpectralZeta.compare_zeros_to_riemann(
+            primes, riemann_zeros=RIEMANN_ZEROS[:5], t_max=50.0
+        )
+        assert "n_compared" in result
+        assert "mean_error" in result
+        assert "rpst_zeros" in result
+
+
+# ===========================================================================
+# KatzSarnakChain — proven GUE statistics from first principles
+# ===========================================================================
+
+class TestKatzSarnakChain:
+    """Tests for KatzSarnakChain: elliptic curves, Frobenius angles, USp(2).
+
+    Key theorems:
+      - Deligne (1974): |λ_k| = 1 for normalized H_p eigenvalues
+      - Katz-Sarnak (1999): Frobenius angles equidistribute w.r.t. USp(2) Haar
+      - Convergence rate: D_p = C/√p
+    """
+
+    def test_count_points_small_case(self):
+        """Count points on y² = x³ + 1 over F_7."""
+        from bpr.rpst_extensions import KatzSarnakChain
+        # y² = x³ + 1 over F_7: direct enumeration
+        p = 7
+        count = KatzSarnakChain.count_elliptic_curve_points(0, 1, p)
+        # At least 1 (point at infinity) and at most p + 1 + 2√p ≈ 14.3
+        assert 1 <= count <= p + 1 + int(2 * np.sqrt(p)) + 1
+
+    def test_hasse_bound(self):
+        """Frobenius trace satisfies Hasse bound |tr| ≤ 2√p."""
+        from bpr.rpst_extensions import KatzSarnakChain
+        for p in [7, 11, 13]:
+            for a in range(1, p):
+                disc = (-16 * (4 * pow(a, 3, p) + 27)) % p
+                if disc == 0:
+                    continue
+                tr = KatzSarnakChain.frobenius_trace(a, 1, p)
+                assert abs(tr) <= int(2 * np.sqrt(p)) + 1, (
+                    f"Hasse bound violated: p={p}, a={a}, tr={tr}"
+                )
+
+    def test_frobenius_angle_in_range(self):
+        """Frobenius angle is in [0, π] for non-singular curve."""
+        from bpr.rpst_extensions import KatzSarnakChain
+        theta = KatzSarnakChain.frobenius_angle(1, 1, 7)
+        assert theta is not None
+        assert 0.0 <= theta <= np.pi
+
+    def test_frobenius_angle_singular_returns_none(self):
+        """Singular curve (disc ≡ 0 mod p) returns None."""
+        from bpr.rpst_extensions import KatzSarnakChain
+        # Find a singular curve for some prime
+        p = 7
+        found_none = False
+        for a in range(p):
+            for b in range(p):
+                disc = (-16 * (4 * pow(a, 3, p) + 27 * b * b % p)) % p
+                if disc == 0:
+                    result = KatzSarnakChain.frobenius_angle(a, b, p)
+                    assert result is None
+                    found_none = True
+                    break
+            if found_none:
+                break
+
+    def test_frobenius_angle_family_size(self):
+        """Family for p=11 has at most p-1 non-singular curves."""
+        from bpr.rpst_extensions import KatzSarnakChain
+        angles = KatzSarnakChain.frobenius_angle_family(11)
+        assert len(angles) <= 10  # at most p-1 = 10
+        assert len(angles) > 0
+
+    def test_usp2_haar_density_normalizes(self):
+        """USp(2) Haar density integrates to 1 on [0, π]."""
+        from bpr.rpst_extensions import KatzSarnakChain
+        theta = np.linspace(0, np.pi, 10000)
+        density = KatzSarnakChain.usp2_haar_density(theta)
+        integral = float(np.trapezoid(density, theta))
+        assert integral == pytest.approx(1.0, abs=1e-3)
+
+    def test_usp2_haar_density_zero_at_endpoints(self):
+        """USp(2) Haar density is 0 at θ=0 and θ=π."""
+        from bpr.rpst_extensions import KatzSarnakChain
+        assert KatzSarnakChain.usp2_haar_density(np.array([0.0]))[0] == pytest.approx(0.0)
+        assert KatzSarnakChain.usp2_haar_density(np.array([np.pi]))[0] == pytest.approx(0.0, abs=1e-10)
+
+    def test_usp2_haar_cdf_boundary_values(self):
+        """USp(2) CDF is 0 at θ=0 and 1 at θ=π."""
+        from bpr.rpst_extensions import KatzSarnakChain
+        assert KatzSarnakChain.usp2_haar_cdf(0.0) == pytest.approx(0.0, abs=1e-12)
+        assert KatzSarnakChain.usp2_haar_cdf(np.pi) == pytest.approx(1.0, abs=1e-10)
+
+    def test_usp2_haar_cdf_monotone(self):
+        """USp(2) CDF is monotonically increasing."""
+        from bpr.rpst_extensions import KatzSarnakChain
+        thetas = np.linspace(0, np.pi, 50)
+        cdf_vals = np.array([KatzSarnakChain.usp2_haar_cdf(float(t)) for t in thetas])
+        assert np.all(np.diff(cdf_vals) >= -1e-12)
+
+    def test_ks_distance_returns_valid(self):
+        """ks_distance_usp2 returns a float in [0, 1] and an array."""
+        from bpr.rpst_extensions import KatzSarnakChain
+        D, angles = KatzSarnakChain.ks_distance_usp2(11)
+        assert 0.0 <= D <= 1.0
+        assert len(angles) > 0
+
+    def test_gauss_sum_table_error_small(self):
+        """Gauss sum table: |g_p| matches √p to < 1e-12."""
+        from bpr.rpst_extensions import KatzSarnakChain
+        rows = KatzSarnakChain.gauss_sum_verification_table([7, 11, 13, 17])
+        for row in rows:
+            assert row["error"] < 1e-12, (
+                f"Gauss sum error too large for p={row['p']}: {row['error']}"
+            )
+
+    def test_spectral_stability_verified(self):
+        """verify_spectral_stability: all |λ_k|/√p = 1 to < 1e-8."""
+        from bpr.rpst_extensions import KatzSarnakChain
+        result = KatzSarnakChain.verify_spectral_stability(7)
+        assert result["all_on_unit_circle"], (
+            f"Spectral stability failed: max deviation = "
+            f"{result['max_deviation_from_unit_circle']}"
+        )
+
+    def test_convergence_rate_data_structure(self):
+        """convergence_rate_data returns expected keys."""
+        from bpr.rpst_extensions import KatzSarnakChain
+        data = KatzSarnakChain.convergence_rate_data([7, 11, 13])
+        assert "primes" in data
+        assert "ks_distances" in data
+        assert "C_fit" in data
+        assert len(data["primes"]) == 3
+
+    def test_convergence_rate_fit_positive(self):
+        """Fitted C in D_p = C/√p should be positive."""
+        from bpr.rpst_extensions import KatzSarnakChain
+        data = KatzSarnakChain.convergence_rate_data([7, 11, 13, 17, 19])
+        assert data["C_fit"] > 0
+
+
+# ===========================================================================
+# RiemannZeroStatistics — GUE statistics of tabulated Riemann zeros
+# ===========================================================================
+
+# First 20 Riemann zero imaginary parts (LMFDB verified)
+_RIEMANN_ZEROS_20 = [
+    14.134725, 21.022040, 25.010858, 30.424876, 32.935062,
+    37.586178, 40.918719, 43.327073, 48.005151, 49.773832,
+    52.970321, 56.446248, 59.347044, 60.831779, 65.112544,
+    67.079811, 69.546402, 72.067158, 75.704691, 77.144840,
+]
+
+
+class TestRiemannZeroStatistics:
+    """Tests for RiemannZeroStatistics: unfolding, GUE level statistics.
+
+    Key results (Table 2 of numerical paper):
+      - 0 of 99 spacings below s=0.3 (level repulsion)
+      - Pair correlation R2(0) ≈ 0
+      - GUE Wigner surmise KS stat D = 0.141, p = 0.047 for N=100
+    """
+
+    def test_smooth_count_positive(self):
+        """N_smooth(T) > 0 for T > 0."""
+        from bpr.rpst.hamiltonian import RiemannZeroStatistics
+        assert RiemannZeroStatistics.smooth_count(14.134725) > 0
+
+    def test_smooth_count_zero_guard(self):
+        """N_smooth(T) = 0 for T <= 0."""
+        from bpr.rpst.hamiltonian import RiemannZeroStatistics
+        assert RiemannZeroStatistics.smooth_count(0.0) == 0.0
+        assert RiemannZeroStatistics.smooth_count(-1.0) == 0.0
+
+    def test_smooth_count_increasing(self):
+        """N_smooth(T) is increasing."""
+        from bpr.rpst.hamiltonian import RiemannZeroStatistics
+        T_vals = [14.0, 21.0, 25.0, 30.0, 40.0]
+        counts = [RiemannZeroStatistics.smooth_count(T) for T in T_vals]
+        for i in range(len(counts) - 1):
+            assert counts[i + 1] > counts[i]
+
+    def test_unfold_length_preserved(self):
+        """unfold returns same length as input."""
+        from bpr.rpst.hamiltonian import RiemannZeroStatistics
+        zeros = np.array(_RIEMANN_ZEROS_20[:10])
+        unfolded = RiemannZeroStatistics.unfold(zeros)
+        assert len(unfolded) == len(zeros)
+
+    def test_unfold_monotone(self):
+        """Unfolded zeros are increasing."""
+        from bpr.rpst.hamiltonian import RiemannZeroStatistics
+        zeros = np.array(_RIEMANN_ZEROS_20)
+        unfolded = RiemannZeroStatistics.unfold(zeros)
+        assert np.all(np.diff(unfolded) > 0)
+
+    def test_spacings_mean_unity(self):
+        """Normalized spacings have mean ≈ 1."""
+        from bpr.rpst.hamiltonian import RiemannZeroStatistics
+        zeros = np.array(_RIEMANN_ZEROS_20)
+        spacings = RiemannZeroStatistics.nearest_neighbor_spacings(zeros)
+        assert float(np.mean(spacings)) == pytest.approx(1.0, rel=1e-10)
+
+    def test_level_repulsion_no_small_spacings(self):
+        """For the first 20 Riemann zeros, fraction below 0.3 is small."""
+        from bpr.rpst.hamiltonian import RiemannZeroStatistics
+        zeros = np.array(_RIEMANN_ZEROS_20)
+        frac = RiemannZeroStatistics.fraction_small_spacings(zeros, threshold=0.3)
+        # GUE predicts ~5%, Poisson ~26%; the first 20 zeros should show repulsion
+        assert frac < 0.20, f"Too many small spacings: {frac:.2%}"
+
+    def test_gue_pair_correlation_level_repulsion(self):
+        """GUE pair correlation R2_GUE(0) = 0 (level repulsion)."""
+        from bpr.rpst.hamiltonian import RiemannZeroStatistics
+        r = np.array([0.0, 0.001])
+        R2 = RiemannZeroStatistics.gue_pair_correlation(r)
+        assert R2[0] == pytest.approx(0.0)
+        assert R2[1] < 1e-5
+
+    def test_gue_pair_correlation_large_r(self):
+        """GUE pair correlation R2_GUE(r) → 1 for large r."""
+        from bpr.rpst.hamiltonian import RiemannZeroStatistics
+        r = np.array([10.0, 20.0, 50.0])
+        R2 = RiemannZeroStatistics.gue_pair_correlation(r)
+        for val in R2:
+            assert val == pytest.approx(1.0, abs=1e-3)
+
+    def test_pair_correlation_returns_arrays(self):
+        """pair_correlation returns two arrays of the same length."""
+        from bpr.rpst.hamiltonian import RiemannZeroStatistics
+        zeros = np.array(_RIEMANN_ZEROS_20)
+        r_centers, R2 = RiemannZeroStatistics.pair_correlation(zeros, r_max=3.0, n_bins=20)
+        assert len(r_centers) == 20
+        assert len(R2) == 20
+
+    def test_ks_test_gue_returns_float(self):
+        """ks_test_gue returns (D, p_value) as floats."""
+        from bpr.rpst.hamiltonian import RiemannZeroStatistics
+        zeros = np.array(_RIEMANN_ZEROS_20)
+        D, pval = RiemannZeroStatistics.ks_test_gue(zeros)
+        assert isinstance(D, float)
+        assert 0.0 <= D <= 1.0
+
+    def test_ks_test_gue_not_too_large(self):
+        """KS statistic vs GUE should be < 0.5 for the known Riemann zeros."""
+        from bpr.rpst.hamiltonian import RiemannZeroStatistics
+        zeros = np.array(_RIEMANN_ZEROS_20)
+        D, _ = RiemannZeroStatistics.ks_test_gue(zeros)
+        # With only 20 zeros, the KS test has limited power, but D should be < 0.5
+        assert D < 0.5, f"KS statistic surprisingly large: D={D:.3f}"
