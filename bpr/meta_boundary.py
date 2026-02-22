@@ -1,5 +1,5 @@
 """
-Theory XXIII: Meta-Boundary Dynamics and Global Phase Reindexing
+Meta-Boundary Dynamics
 =================================================================
 
 Extends BPR to include dynamics on the space of admissible boundary
@@ -1873,7 +1873,7 @@ def meta_boundary_predictions(
     kappa_rigidity: float = 3.0,
     xi: float = 1e-6,
 ) -> dict:
-    """Return falsifiable predictions from meta-boundary dynamics (Theory XXIII).
+    """Return falsifiable predictions from meta-boundary dynamics (Meta-Boundary Dynamics).
 
     Parameters
     ----------

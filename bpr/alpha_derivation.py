@@ -1,5 +1,5 @@
 """
-Theory XXII: Fine Structure Constant from Substrate
+Fine Structure Constant from Substrate
 =====================================================
 
 Derives the electromagnetic fine structure constant α from BPR

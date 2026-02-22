@@ -246,7 +246,7 @@ BPR-math-spine/
 │   ├── neutrino.py         # V   Boundary-Mediated Neutrino Dynamics
 │   ├── info_geometry.py    # VI  Substrate Information Geometry
 │   ├── gravitational_waves.py # VII Gravitational Wave Phenomenology
-│   ├── complexity.py       # VIII Substrate Complexity Theory
+│   ├── complexity.py       # VIII Substrate Complexity
 │   ├── bioelectric.py      # IX  Bioelectric Substrate Coupling
 │   ├── collective.py       # X   Resonant Collective Dynamics
 │   ├── cosmology.py       # XI   Cosmology & Early Universe
@@ -386,41 +386,41 @@ Pull requests must:
 
 ### ✅ **Ten Adjacent Theories** (Feb 2026 — 10 modules, 56 new tests)
 
-- [x] **Theory I**: Boundary Memory Dynamics — memory kernel M(t,t'), non-Markovian correlations, consciousness temporal integration
-- [x] **Theory II**: Vacuum Impedance Mismatch — dark matter as high-winding solitons, dark energy from phase frustration, MOND acceleration scale, flat rotation curves
-- [x] **Theory III**: Boundary-Induced Decoherence — rates from impedance mismatch (Γ ∝ ΔZ²), pointer basis selection, quantum–classical boundary W_crit, decoherence-free subspaces
-- [x] **Theory IV**: Universal Phase Transition Taxonomy — Classes A–D mapping all known transitions, substrate critical exponents (ν, β, γ), Kibble–Zurek defect formation
-- [x] **Theory V**: Boundary-Mediated Neutrino Dynamics — normal hierarchy, Σm_i ≈ 0.06 eV, PMNS matrix from boundary overlaps, Majorana/Dirac from p mod 4, sterile neutrinos
-- [x] **Theory VI**: Substrate Information Geometry — Fisher metric on boundary configurations, topological Cramér–Rao bound (Var ∝ 1/|W|²), thermodynamic length, K_r as parallel transport
-- [x] **Theory VII**: Gravitational Wave Phenomenology — v_GW = c from substrate isotropy, quadrupole formula from boundary dynamics, GW memory via Theory I kernel
-- [x] **Theory VIII**: Substrate Complexity Theory — P/NP/BQP as substrate properties, N_parallel = p^W, topological complexity bound (physical P ≠ NP argument), adiabatic gap
-- [x] **Theory IX**: Bioelectric Substrate Coupling — morphogenetic fields φ_morph, cellular winding W_cell (cancer = aberrant W), aging as coherence decay τ_coh(age) = τ₀ e^{-age/τ_aging}
-- [x] **Theory X**: Resonant Collective Dynamics — Kuramoto flocking, market impedance matching (crash = resonance), social tipping points (f_c ~ 1/⟨k⟩), cooperation from winding alignment
+- [x] **Boundary Memory Dynamics** — memory kernel M(t,t'), non-Markovian correlations, consciousness temporal integration
+- [x] **Vacuum Impedance Mismatch** — dark matter as high-winding solitons, dark energy from phase frustration, MOND acceleration scale, flat rotation curves
+- [x] **Boundary-Induced Decoherence** — rates from impedance mismatch (Γ ∝ ΔZ²), pointer basis selection, quantum–classical boundary W_crit, decoherence-free subspaces
+- [x] **Universal Phase Transition Taxonomy** — Classes A–D mapping all known transitions, substrate critical exponents (ν, β, γ), Kibble–Zurek defect formation
+- [x] **Boundary-Mediated Neutrino Dynamics** — normal hierarchy, Σm_i ≈ 0.06 eV, PMNS matrix from boundary overlaps, Majorana/Dirac from p mod 4, sterile neutrinos
+- [x] **Substrate Information Geometry** — Fisher metric on boundary configurations, topological Cramér–Rao bound (Var ∝ 1/|W|²), thermodynamic length, K_r as parallel transport
+- [x] **Gravitational Wave Phenomenology** — v_GW = c from substrate isotropy, quadrupole formula from boundary dynamics, GW memory via Boundary Memory Dynamics kernel
+- [x] **Substrate Complexity** — P/NP/BQP as substrate properties, N_parallel = p^W, topological complexity bound (physical P ≠ NP argument), adiabatic gap
+- [x] **Bioelectric Substrate Coupling** — morphogenetic fields φ_morph, cellular winding W_cell (cancer = aberrant W), aging as coherence decay τ_coh(age) = τ₀ e^{-age/τ_aging}
+- [x] **Resonant Collective Dynamics** — Kuramoto flocking, market impedance matching (crash = resonance), social tipping points (f_c ~ 1/⟨k⟩), cooperation from winding alignment
 
 ### ✅ **First-Principles Pipeline** (v0.3.0 → v0.6.0)
 
 - [x] **Coupling derivation** — `bpr.first_principles.SubstrateDerivedTheories` wires `(J, p, N)` → `boundary_energy.py` → all 21 theories, **zero hand-picked constants**
-- [x] **Inter-theory integration tests** — `tests/test_inter_theory.py`: 14 tests chaining Theory I↔III, I↔VII, II↔V, III↔IV, VI↔VIII, IV↔X, IX↔(I,III), VIII↔I
+- [x] **Inter-theory integration tests** — `tests/test_inter_theory.py`: 14 tests chaining Boundary Memory Dynamics↔III, I↔VII, II↔V, III↔IV, VI↔VIII, IV↔X, IX↔(I,III), VIII↔I
 - [x] **Predictions generator** — `scripts/generate_predictions.py` produces **205** falsifiable predictions as CSV
 - [x] **Lyapunov bug fix** — numpy broadcasting bug in regression; all 23 Lyapunov tests now pass
 - [x] **FEniCS CI path** — `tests/test_fenics_integration.py` auto-skipped locally, runs in Docker
 
 ### ✅ **Extended Theories** (v0.5.0)
 
-- [x] **Theory XI: Cosmology** — inflation (n_s ≈ 0.968, r ≈ 0.003), baryogenesis, CMB anomalies
-- [x] **Theory XII: QCD & Flavor** — 6 quark masses, CKM matrix, strong CP (θ = 0), confinement
-- [x] **Theory XIII: Emergent Spacetime** — 3+1 dimensions, holographic entropy, Bekenstein bound, ER=EPR
-- [x] **Theory XIV: Topological Matter** — QHE, fractional QHE, topological insulators, anyons, Majorana modes
-- [x] **Theory XV: Clifford Algebra** — multivector fields in Cl(3,0), spinor modules, Cliffordon spectrum
-- [x] **Theory XVI: Quantum Foundations** — Born rule (1 − 1/p accuracy), arrow of time, Bell bound → Tsirelson
+- [x] **BPR Cosmology & Early Universe** — inflation (n_s ≈ 0.968, r ≈ 0.003), baryogenesis, CMB anomalies
+- [x] **QCD & Flavor Physics** — 6 quark masses, CKM matrix, strong CP (θ = 0), confinement
+- [x] **Emergent Spacetime & Holography** — 3+1 dimensions, holographic entropy, Bekenstein bound, ER=EPR
+- [x] **Topological Condensed Matter** — QHE, fractional QHE, topological insulators, anyons, Majorana modes
+- [x] **Clifford Algebra Embedding** — multivector fields in Cl(3,0), spinor modules, Cliffordon spectrum
+- [x] **Quantum Foundations** — Born rule (1 − 1/p accuracy), arrow of time, Bell bound → Tsirelson
 
 ### ✅ **Frontier Theories** (v0.6.0)
 
-- [x] **Theory XVII: Gauge Unification** — GUT scale = M_Pl/p^{1/4}, coupling running, hierarchy = √(pN), proton decay
-- [x] **Theory XVIII: Charged Leptons** — e/μ/τ masses from cohomology norms, Koide formula = 2/3 from S², lepton universality
-- [x] **Theory XIX: Nuclear Physics** — magic numbers (2,8,20,28,50,82,126) from winding shells, binding energies, neutron star M_max
-- [x] **Theory XX: Quantum Gravity Pheno** — modified dispersion (ξ₁=0, ξ₂=1/p), GUP (β=1/p), Lorentz invariance to exp(-p^{1/3})
-- [x] **Theory XXI: Quantum Chemistry** — noble gas Z from shell filling, chemical bonds, electronegativity, chirality, periodic table
+- [x] **Gauge Unification & Hierarchy** — GUT scale = M_Pl/p^{1/4}, coupling running, hierarchy = √(pN), proton decay
+- [x] **Charged Lepton Masses** — e/μ/τ masses from cohomology norms, Koide formula = 2/3 from S², lepton universality
+- [x] **Nuclear Physics from Boundary Shell** — magic numbers (2,8,20,28,50,82,126) from winding shells, binding energies, neutron star M_max
+- [x] **Quantum Gravity Phenomenology** — modified dispersion (ξ₁=0, ξ₂=1/p), GUP (β=1/p), Lorentz invariance to exp(-p^{1/3})
+- [x] **Quantum Chemistry & Periodic Table** — noble gas Z from shell filling, chemical bonds, electronegativity, chirality, periodic table
 
 ### 🚀 **Ready for Use**
 

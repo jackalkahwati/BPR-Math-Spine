@@ -50,7 +50,7 @@ class TestMemoryDecoherence:
 # ══════════════════════════════════════════════════════════════════════
 
 class TestMemoryGW:
-    """§13: GW memory is Theory I kernel applied to gravitational sector."""
+    """§13: GW memory is Boundary Memory Dynamics kernel applied to gravitational sector."""
 
     def test_gw_memory_uses_memory_kernel(self, sdt):
         from bpr.memory import memory_kernel

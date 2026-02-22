@@ -1,5 +1,5 @@
 """
-Theory XXVI: Toward a Functional Architecture of Reality
+Functional Architecture of Reality
 ==========================================================
 
 Identifies nine minimal mathematical operators required for internal

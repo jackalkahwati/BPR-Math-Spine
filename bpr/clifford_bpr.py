@@ -1,5 +1,5 @@
 """
-Theory XV: Clifford Algebra Embedding of BPR
+Clifford Algebra Embedding
 ==============================================
 
 Upgrades the scalar boundary phase field to a Clifford-algebra-valued

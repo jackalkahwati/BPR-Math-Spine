@@ -1,9 +1,9 @@
 """
-Theory XVIII: Charged Lepton Masses from Boundary Mode Spectrum
+Charged Lepton Masses
 ================================================================
 
 Derives electron, muon, and tau masses from the S² boundary mode
-eigenvalue spectrum, using the same mechanism as neutrinos (Theory V).
+eigenvalue spectrum, using the same mechanism as neutrinos (Boundary-Mediated Neutrino Dynamics).
 
 DERIVATION (BPR §18.1)
 ──────────────────────

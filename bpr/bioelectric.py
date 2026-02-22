@@ -1,5 +1,5 @@
 """
-Theory IX: Bioelectric Substrate Coupling
+Bioelectric Substrate Coupling
 ==========================================
 
 Extends BPR into biology: morphogenetic fields as boundary phase patterns,

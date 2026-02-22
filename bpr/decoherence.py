@@ -1,5 +1,5 @@
 """
-Theory III: Boundary-Induced Decoherence Theory
+Boundary-Induced Decoherence
 =================================================
 
 Derives explicit decoherence rates from impedance mismatch between

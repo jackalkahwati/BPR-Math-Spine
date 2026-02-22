@@ -1,5 +1,5 @@
 """
-Theory XXI: Quantum Chemistry & Periodic Table from BPR
+Quantum Chemistry & Periodic Table
 =========================================================
 
 Derives the structure of the periodic table, chemical bonding,

@@ -1,5 +1,5 @@
 """
-Theory I: Boundary Memory Dynamics
+Boundary Memory Dynamics
 ===================================
 
 Formalises non-Markovian temporal correlations in BPR via a prime-periodic

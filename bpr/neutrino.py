@@ -1,5 +1,5 @@
 """
-Theory V: Boundary-Mediated Neutrino Dynamics
+Boundary-Mediated Neutrino Dynamics
 ===============================================
 
 Derives neutrino masses, the PMNS mixing matrix, and the Majorana-vs-Dirac
@@ -317,7 +317,7 @@ class SterileNeutrino:
     m_sterile ~ κ / R_decoupled
 
     Heavy sterile neutrinos are simultaneously high-winding dark-matter
-    candidates (connection to Theory II).
+    candidates (connection to Vacuum Impedance Mismatch).
     """
     kappa: float = 1.0              # boundary stiffness (natural units)
     R_decoupled: float = 1e-20      # decoupled boundary radius (m)

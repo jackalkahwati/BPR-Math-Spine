@@ -1,5 +1,5 @@
 """
-Theory XIII: Emergent Spacetime & Holography
+Emergent Spacetime & Holography
 =============================================
 
 Derives the dimensionality of spacetime, holographic entanglement entropy,

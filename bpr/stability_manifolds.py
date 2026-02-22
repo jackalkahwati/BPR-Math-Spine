@@ -1,5 +1,5 @@
 """
-Theory XXV: RPST Stability Manifolds — Explicit Derivation
+RPST Stability Manifolds
 ============================================================
 
 Derives the RPST stability manifold S directly from the discrete

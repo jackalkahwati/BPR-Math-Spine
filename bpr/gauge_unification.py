@@ -1,5 +1,5 @@
 """
-Theory XVII: Gauge Unification & Hierarchy Problem
+Gauge Unification & Hierarchy
 ====================================================
 
 Derives gauge coupling unification, the GUT scale, and the resolution

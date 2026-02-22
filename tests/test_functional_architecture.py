@@ -1,5 +1,5 @@
 """
-Tests for Theory XXVI: Functional Architecture of Reality
+Tests for Functional Architecture of Reality
 ==========================================================
 
 Coverage:
@@ -586,7 +586,7 @@ class TestBPRStabilityMeasure:
 # ===========================================================================
 
 class TestFunctionalArchitectureIntegration:
-    """Cross-class integration tests for Theory XXVI."""
+    """Cross-class integration tests for Functional Architecture of Reality."""
 
     def test_kernel_projection_pipeline(self):
         """Resonance kernel → projection → realized state."""

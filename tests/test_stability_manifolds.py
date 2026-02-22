@@ -1,5 +1,5 @@
 """
-Tests for Theory XXV: RPST Stability Manifolds
+Tests for RPST Stability Manifolds
 ================================================
 
 Coverage:
@@ -249,7 +249,8 @@ class TestSpectralStabilityDeligne:
         from bpr.stability_manifolds import SpectralStabilityDeligne
         theta = np.linspace(0, np.pi, 10000)
         density = SpectralStabilityDeligne.katz_sarnak_density(theta)
-        integral = np.trapezoid(density, theta)
+        _trapz = getattr(np, "trapezoid", np.trapz)
+        integral = _trapz(density, theta)
         assert integral == pytest.approx(1.0, abs=0.01)
 
     def test_katz_sarnak_density_nonnegative(self):
@@ -696,7 +697,7 @@ class TestStabilityManifold:
 # ===========================================================================
 
 class TestStabilityManifoldsIntegration:
-    """Cross-class integration tests for Theory XXV."""
+    """Cross-class integration tests for RPST Stability Manifolds."""
 
     def test_laplacian_spectrum_determines_stability(self):
         """Ring with small J → all λ ≤ 4 → stable."""
