@@ -1,5 +1,5 @@
 """
-Theory XXIV: Emergent Physics from Prime Substrates — Speculative Extensions
+Emergent Physics from Prime Substrates— Speculative Extensions
 =============================================================================
 
 Implements six speculative extensions of BPR/RPST, together with the

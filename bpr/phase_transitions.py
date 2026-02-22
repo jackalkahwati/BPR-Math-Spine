@@ -1,5 +1,5 @@
 """
-Theory IV: Universal Phase Transition Taxonomy
+Universal Phase Transition Taxonomy
 ================================================
 
 Maps all known phase transitions to BPR substrate topology changes.

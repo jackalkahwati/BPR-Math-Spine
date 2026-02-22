@@ -1,10 +1,10 @@
 """
-Theory VII: Gravitational Wave Phenomenology in BPR
+Gravitational Wave Phenomenology
 =====================================================
 
 Treats gravitational waves as propagating boundary stress perturbations,
 derives vGW = c from substrate parameters, implements the quadrupole formula
-from boundary dynamics, and connects GW memory to Theory I's memory kernel.
+from boundary dynamics, and connects GW memory to Boundary Memory Dynamics's memory kernel.
 
 Key objects
 -----------
@@ -133,7 +133,7 @@ def gw_memory_displacement(memory_kernel_func, delta_T: np.ndarray,
     Parameters
     ----------
     memory_kernel_func : callable(t, t') → float or ndarray
-        Memory kernel from Theory I.
+        Memory kernel from Boundary Memory Dynamics.
     delta_T : ndarray, shape (n_times,)
         Boundary stress perturbation δT(t).
     times : ndarray, shape (n_times,)
@@ -211,7 +211,7 @@ def gw_memory_ringing(times: np.ndarray, p: int = 7,
 def stochastic_gw_background(frequencies: np.ndarray,
                               T_transition: float = 160e9,  # eV (electroweak)
                               amplitude: float = 1e-15) -> np.ndarray:
-    """Stochastic GW background from Class D phase transitions (Theory IV).
+    """Stochastic GW background from Class D phase transitions (Universal Phase Transition Taxonomy).
 
     Simple power-law + prime-periodic modulation.
     """

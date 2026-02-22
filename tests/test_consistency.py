@@ -185,7 +185,7 @@ class TestCrossModuleConsistency:
         assert bary.cp_phase < 1e-3
 
     def test_decoherence_vs_measurement(self):
-        """Decoherence (Theory III) must be compatible with measurement (XVI)."""
+        """Decoherence (Boundary-Induced Decoherence) must be compatible with measurement (XVI)."""
         from bpr.quantum_foundations import MeasurementDynamics
         from bpr.decoherence import DecoherenceRate
         # Measurement time from XVI

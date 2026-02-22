@@ -290,7 +290,7 @@
 
 ## 20. Quark Masses — **CONFIRM**
 
-**BPR predicts:** Six quark masses from boundary mode spectrum (Theory XII). **BPR-unique:** m_s/m_d = 20.0 (SM has no explanation).
+**BPR predicts:** Six quark masses from boundary mode spectrum (QCD & Flavor Physics). **BPR-unique:** m_s/m_d = 20.0 (SM has no explanation).
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
@@ -320,7 +320,7 @@
 
 ## 22. Charged Leptons & Koide Formula — **CONFIRM**
 
-**BPR predicts:** Q = (m_e + m_μ + m_τ)/(√m_e + √m_μ + √m_τ)² = 2/3 exactly (Theory XVIII).
+**BPR predicts:** Q = (m_e + m_μ + m_τ)/(√m_e + √m_μ + √m_τ)² = 2/3 exactly (Charged Lepton Masses).
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
@@ -346,7 +346,7 @@
 
 ## 24. Quantum Hall / von Klitzing Constant — **CONFIRM**
 
-**BPR predicts:** R_K = h/e² from boundary quantization (Theory XIV).
+**BPR predicts:** R_K = h/e² from boundary quantization (Topological Condensed Matter).
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
@@ -373,7 +373,7 @@
 
 ## 26. Planck Length — **CONFIRM**
 
-**BPR predicts:** ℓ_P emergent from substrate (Theory XIII).
+**BPR predicts:** ℓ_P emergent from substrate (Emergent Spacetime & Holography).
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
@@ -385,7 +385,7 @@
 
 ## 27. Anyon Braiding — **INCONCLUSIVE**
 
-**BPR predicts:** Exchange phase θ = π/p for abelian anyons (Theory XIV).
+**BPR predicts:** Exchange phase θ = π/p for abelian anyons (Topological Condensed Matter).
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
@@ -398,7 +398,7 @@
 
 ## 28. Tsirelson Bound (Bell/CHSH) — **CONFIRM**
 
-**BPR predicts:** Bell-BPR bound → 2√2 (Tsirelson) as p → ∞ (Theory XVI).
+**BPR predicts:** Bell-BPR bound → 2√2 (Tsirelson) as p → ∞ (Quantum Foundations).
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
@@ -412,7 +412,7 @@
 
 ## 29. Critical Exponents (3D Ising) — **CONFIRM**
 
-**BPR predicts:** ν, β, γ from substrate Class B (Theory IV).
+**BPR predicts:** ν, β, γ from substrate Class B (Universal Phase Transition Taxonomy).
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
@@ -425,7 +425,7 @@
 
 ## 30. Dark Energy — **CONFIRM**
 
-**BPR predicts:** ρ_DE from phase frustration at Hubble scale (Theory II).
+**BPR predicts:** ρ_DE from phase frustration at Hubble scale (Vacuum Impedance Mismatch).
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
@@ -438,7 +438,7 @@
 
 ## 31. Higgs Mass — **CONFIRM**
 
-**BPR predicts:** m_H from boundary mode counting (Theory XVII).
+**BPR predicts:** m_H from boundary mode counting (Gauge Unification & Hierarchy).
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
@@ -505,7 +505,7 @@
 
 ## 36. Proton Mass — **CONFIRM**
 
-**BPR predicts:** m_p from confinement (Theory XII).
+**BPR predicts:** m_p from confinement (QCD & Flavor Physics).
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
@@ -558,7 +558,7 @@
 
 ## 40. Electron Mass — **CONFIRM**
 
-**BPR predicts:** m_e from boundary (Theory XVIII).
+**BPR predicts:** m_e from boundary (Charged Lepton Masses).
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
@@ -700,7 +700,7 @@
 
 ---
 
-## 51. Theory I: Non-Markovian Memory — **CONFIRM**
+## 51. Boundary Memory Dynamics— **CONFIRM**
 
 **BPR predicts:** Memory kernel M(t,t'); instrument-specific memory effects.
 
@@ -714,7 +714,7 @@
 
 ---
 
-## 52. Theory III: Decoherence (Molecule Interferometry) — **CONFIRM**
+## 52. Boundary-Induced Decoherence(Molecule Interferometry) — **CONFIRM**
 
 **BPR predicts:** Γ ∝ ΔZ²; collisional decoherence scaling.
 
@@ -729,7 +729,7 @@
 
 ---
 
-## 53. Theory VI: Quantum Fisher Information / Cramér–Rao — **CONFIRM**
+## 53. Substrate Information Geometry— **CONFIRM**
 
 **BPR predicts:** Fisher metric on boundary; topological Cramér–Rao bound.
 
@@ -743,7 +743,7 @@
 
 ---
 
-## 54. Theory VIII: Adiabatic Quantum Computing — **CONFIRM**
+## 54. Substrate Complexity— **CONFIRM**
 
 **BPR predicts:** Adiabatic gap; runtime T ∝ 1/g_min².
 
@@ -758,7 +758,7 @@
 
 ---
 
-## 55. Theory IX: Bioelectric Morphogenesis — **CONFIRM**
+## 55. Bioelectric Substrate Coupling— **CONFIRM**
 
 **BPR predicts:** Morphogenetic fields φ_morph; bioelectric gradients guide patterning.
 
@@ -773,7 +773,7 @@
 
 ---
 
-## 56. Theory X: Kuramoto & Collective Synchronization — **CONFIRM**
+## 56. Resonant Collective Dynamics— **CONFIRM**
 
 **BPR predicts:** Kuramoto critical coupling; tipping f_c ~ 1/⟨k⟩.
 
@@ -787,7 +787,7 @@
 
 ---
 
-## 57. Theory XV: Clifford Algebra & Spinors — **CONFIRM**
+## 57. Clifford Algebra Embedding— **CONFIRM**
 
 **BPR predicts:** Cl(3,0) spinor modules; Dirac equation from Clifford structure.
 
@@ -802,7 +802,7 @@
 
 ---
 
-## 58. Theory XXI: Noble Gas & Ionization — **CONFIRM**
+## 58. Quantum Chemistry & Periodic Table— **CONFIRM**
 
 **BPR predicts:** Noble gas Z from shell filling; periodic structure.
 
@@ -817,7 +817,7 @@
 
 ---
 
-## 59. Theory IV: Kibble-Zurek Defect Scaling — **CONFIRM**
+## 59. Universal Phase Transition Taxonomy— **CONFIRM**
 
 **BPR predicts:** KZ defect density; universal scaling.
 
@@ -1185,7 +1185,7 @@
 | 48 | Bell loophole-free | 2√2 | saturated | **CONFIRM** |
 | 49 | Higgs combined | 125 GeV | 125.09 GeV | **CONFIRM** |
 | 50 | d = 4 | derived | observed | **CONFIRM** |
-| 51–59 | Theory I, III, VI, VIII, IX, X, XV, XXI, KZ | — | — | **CONFIRM** |
+| 51–59 | Boundary Memory Dynamics, III, VI, VIII, IX, X, XV, XXI, KZ | — | — | **CONFIRM** |
 | 60–129 | (Individual predictions; see above) | — | — | **CONFIRM** |
 
 ---

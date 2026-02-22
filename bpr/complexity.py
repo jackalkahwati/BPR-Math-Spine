@@ -1,5 +1,5 @@
 """
-Theory VIII: Substrate Complexity Theory
+Substrate Complexity
 ==========================================
 
 Maps computational complexity classes onto BPR substrate properties.
@@ -45,7 +45,7 @@ class TopologicalParallelism:
 
     where p is the substrate modulus and W is the maintained winding number.
     This exponential parallelism is the resource exploited by quantum algorithms.
-    Decoherence (Theory III) limits the effective W.
+    Decoherence (Boundary-Induced Decoherence) limits the effective W.
 
     Parameters
     ----------

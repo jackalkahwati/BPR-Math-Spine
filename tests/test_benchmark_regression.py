@@ -150,7 +150,7 @@ class TestDerivedPredictions:
     def test_proton_lifetime_exceeds_superK(self, predictions):
         """Proton lifetime exceeds Super-K bound.
 
-        BPR:  ~10⁴³ yr (Theory XVII) and ~10⁵⁰ yr (Theory II)
+        BPR:  ~10⁴³ yr (Gauge Unification & Hierarchy) and ~10⁵⁰ yr (Vacuum Impedance Mismatch)
         Super-K: > 2.4 × 10³⁴ yr
         """
         tau_gut = predictions["P17.8_proton_lifetime_GUT_years"]
@@ -353,7 +353,7 @@ class TestCrossModuleConsistency:
     """Same quantity computed in two different ways must agree."""
 
     def test_proton_lifetime_theories_agree(self, predictions):
-        """Proton lifetime from Theory II and XVII should both exceed Super-K.
+        """Proton lifetime from Vacuum Impedance Mismatch and XVII should both exceed Super-K.
 
         These use different mechanisms (impedance vs GUT) but both
         must predict τ_p > 2.4 × 10³⁴ yr.

@@ -1,5 +1,5 @@
 """
-Theory XII: QCD & Flavor Physics from Boundary Topology
+QCD & Flavor Physics
 ========================================================
 
 Derives color confinement, quark mass hierarchy, the CKM mixing matrix,
@@ -85,7 +85,7 @@ class ColorConfinement:
 class QuarkMassSpectrum:
     """Quark masses from boundary mode spectrum in the color sector.
 
-    UP-TYPE QUARKS — DERIVED from S² boundary modes (same as Theory XVIII)
+    UP-TYPE QUARKS — DERIVED from S² boundary modes (same as Charged Lepton Masses)
     ─────────────────────────────────────────────────────────────────────────
     The up-type mass eigenvalue for generation k is proportional to the
     square of the S² boundary angular momentum quantum number:

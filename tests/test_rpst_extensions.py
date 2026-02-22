@@ -1,5 +1,5 @@
 """
-Tests for Theory XXIV: Emergent Physics from Prime Substrates
+Tests for Emergent Physics from Prime Substrates
 =============================================================
 
 Coverage:
@@ -856,7 +856,7 @@ class TestSubstrateCoherenceMigration:
 # ===========================================================================
 
 class TestEmergentSpeculationsIntegration:
-    """Cross-class integration tests for Theory XXIV."""
+    """Cross-class integration tests for Emergent Physics from Prime Substrates."""
 
     def test_bkt_and_migration_consistent(self):
         """Stiffness jump from BKT matches BKT threshold in migration."""

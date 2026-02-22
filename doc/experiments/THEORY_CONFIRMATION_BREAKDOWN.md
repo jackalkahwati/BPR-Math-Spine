@@ -36,7 +36,7 @@
 
 ## Detailed Breakdown by Theory
 
-### Theory I: Boundary Memory Dynamics
+### Boundary Memory Dynamics
 **Module:** `memory.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -49,7 +49,7 @@
 
 ---
 
-### Theory II: Vacuum Impedance Mismatch (Dark Sector)
+### Vacuum Impedance Mismatch(Dark Sector)
 **Module:** `impedance.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -64,7 +64,7 @@
 
 ---
 
-### Theory III: Boundary-Induced Decoherence
+### Boundary-Induced Decoherence
 **Module:** `decoherence.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -76,7 +76,7 @@
 
 ---
 
-### Theory IV: Universal Phase Transition Taxonomy
+### Universal Phase Transition Taxonomy
 **Module:** `phase_transitions.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -90,7 +90,7 @@
 
 ---
 
-### Theory V: Boundary-Mediated Neutrino Dynamics
+### Boundary-Mediated Neutrino Dynamics
 **Module:** `neutrino.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -108,7 +108,7 @@
 
 ---
 
-### Theory VI: Substrate Information Geometry
+### Substrate Information Geometry
 **Module:** `info_geometry.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -120,7 +120,7 @@
 
 ---
 
-### Theory VII: Gravitational Wave Phenomenology
+### Gravitational Wave Phenomenology
 **Module:** `gravitational_waves.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -131,7 +131,7 @@
 
 ---
 
-### Theory VIII: Substrate Complexity Theory
+### Substrate Complexity
 **Module:** `complexity.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -143,7 +143,7 @@
 
 ---
 
-### Theory IX: Bioelectric Substrate Coupling
+### Bioelectric Substrate Coupling
 **Module:** `bioelectric.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -156,7 +156,7 @@
 
 ---
 
-### Theory X: Resonant Collective Dynamics
+### Resonant Collective Dynamics
 **Module:** `collective.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -168,7 +168,7 @@
 
 ---
 
-### Theory XI: Cosmology & Early Universe
+### BPR Cosmology & Early Universe
 **Module:** `cosmology.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -183,7 +183,7 @@
 
 ---
 
-### Theory XII: QCD & Flavor Physics
+### QCD & Flavor Physics
 **Module:** `qcd_flavor.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -207,7 +207,7 @@
 
 ---
 
-### Theory XIII: Emergent Spacetime
+### Emergent Spacetime & Holography
 **Module:** `emergent_spacetime.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -221,7 +221,7 @@
 
 ---
 
-### Theory XIV: Topological Condensed Matter
+### Topological Condensed Matter
 **Module:** `topological_matter.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -234,7 +234,7 @@
 
 ---
 
-### Theory XV: Clifford Algebra Embedding
+### Clifford Algebra Embedding
 **Module:** `clifford_bpr.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -246,7 +246,7 @@
 
 ---
 
-### Theory XVI: Quantum Foundations
+### Quantum Foundations
 **Module:** `quantum_foundations.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -258,7 +258,7 @@
 
 ---
 
-### Theory XVII: Gauge Unification & Hierarchy
+### Gauge Unification & Hierarchy
 **Module:** `gauge_unification.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -271,7 +271,7 @@
 
 ---
 
-### Theory XVIII: Charged Leptons
+### Charged Lepton Masses
 **Module:** `charged_leptons.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -286,7 +286,7 @@
 
 ---
 
-### Theory XIX: Nuclear Physics
+### Nuclear Physics from Boundary Shell
 **Module:** `nuclear_physics.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -303,7 +303,7 @@
 
 ---
 
-### Theory XX: Quantum Gravity Phenomenology
+### Quantum Gravity Phenomenology
 **Module:** `quantum_gravity_pheno.py`
 
 | Prediction | CONFIRM Test # | Experiment |
@@ -316,7 +316,7 @@
 
 ---
 
-### Theory XXI: Quantum Chemistry
+### Quantum Chemistry & Periodic Table
 **Module:** `quantum_chemistry.py`
 
 | Prediction | CONFIRM Test # | Experiment |

@@ -11,7 +11,7 @@ import pytest
 
 
 # =====================================================================
-# Theory XI: Cosmology
+# BPR Cosmology & Early Universe
 # =====================================================================
 
 class TestInflation:
@@ -111,7 +111,7 @@ class TestDarkMatterRelic:
 
 
 # =====================================================================
-# Theory XII: QCD & Flavor
+# QCD & Flavor Physics
 # =====================================================================
 
 class TestColorConfinement:
@@ -198,7 +198,7 @@ class TestProtonMass:
 
 
 # =====================================================================
-# Theory XIII: Emergent Spacetime
+# Emergent Spacetime & Holography
 # =====================================================================
 
 class TestEmergentDimensions:
@@ -264,7 +264,7 @@ class TestScramblingTime:
 
 
 # =====================================================================
-# Theory XIV: Topological Condensed Matter
+# Topological Condensed Matter
 # =====================================================================
 
 class TestQuantumHall:
@@ -346,7 +346,7 @@ class TestQuantizedConductance:
 
 
 # =====================================================================
-# Theory XV: Clifford Algebra
+# Clifford Algebra Embedding
 # =====================================================================
 
 class TestMultivectorField:
@@ -429,7 +429,7 @@ class TestCliffordDimensions:
 
 
 # =====================================================================
-# Theory XVI: Quantum Foundations
+# Quantum Foundations
 # =====================================================================
 
 class TestBornRule:

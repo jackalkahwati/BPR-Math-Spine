@@ -1,5 +1,5 @@
 """
-Theory X: Resonant Collective Dynamics
+Resonant Collective Dynamics
 ========================================
 
 Maps collective phenomena (flocking, markets, tipping points, cooperation)

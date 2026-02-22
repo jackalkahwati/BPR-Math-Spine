@@ -1,5 +1,5 @@
 """
-Theory XX: Quantum Gravity Phenomenology
+Quantum Gravity Phenomenology
 ==========================================
 
 Derives observable quantum gravity corrections from the discrete

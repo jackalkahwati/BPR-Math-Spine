@@ -1,5 +1,5 @@
 """
-Tests for Theory XXIII: Meta-Boundary Dynamics and Global Phase Reindexing.
+Tests for Meta-Boundary Dynamics
 
 Tests cover all core mathematical constructs from the meta_boundary module:
     - Constraint field and state triple (Def 1.1)

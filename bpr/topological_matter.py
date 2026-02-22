@@ -1,5 +1,5 @@
 """
-Theory XIV: Topological Condensed Matter from BPR
+Topological Condensed Matter
 ==================================================
 
 Derives quantum Hall effect, topological insulators, anyon statistics,

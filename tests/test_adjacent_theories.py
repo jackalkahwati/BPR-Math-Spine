@@ -10,7 +10,7 @@ import pytest
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# Theory I : Boundary Memory Dynamics  (bpr.memory)
+# Boundary Memory Dynamics  (bpr.memory)
 # ═══════════════════════════════════════════════════════════════════════════
 
 class TestMemoryKernel:
@@ -61,7 +61,7 @@ class TestMemoryKernel:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# Theory II : Vacuum Impedance Mismatch  (bpr.impedance)
+# Vacuum Impedance Mismatch  (bpr.impedance)
 # ═══════════════════════════════════════════════════════════════════════════
 
 class TestImpedance:
@@ -121,7 +121,7 @@ class TestImpedance:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# Theory III : Boundary-Induced Decoherence  (bpr.decoherence)
+# Boundary-Induced Decoherence  (bpr.decoherence)
 # ═══════════════════════════════════════════════════════════════════════════
 
 class TestDecoherence:
@@ -173,7 +173,7 @@ class TestDecoherence:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# Theory IV : Universal Phase Transition Taxonomy  (bpr.phase_transitions)
+# Universal Phase Transition Taxonomy  (bpr.phase_transitions)
 # ═══════════════════════════════════════════════════════════════════════════
 
 class TestPhaseTransitions:
@@ -204,7 +204,7 @@ class TestPhaseTransitions:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# Theory V : Boundary-Mediated Neutrino Dynamics  (bpr.neutrino)
+# Boundary-Mediated Neutrino Dynamics  (bpr.neutrino)
 # ═══════════════════════════════════════════════════════════════════════════
 
 class TestNeutrino:
@@ -241,7 +241,7 @@ class TestNeutrino:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# Theory VI : Substrate Information Geometry  (bpr.info_geometry)
+# Substrate Information Geometry  (bpr.info_geometry)
 # ═══════════════════════════════════════════════════════════════════════════
 
 class TestInfoGeometry:
@@ -283,7 +283,7 @@ class TestInfoGeometry:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# Theory VII : Gravitational Wave Phenomenology  (bpr.gravitational_waves)
+# Gravitational Wave Phenomenology  (bpr.gravitational_waves)
 # ═══════════════════════════════════════════════════════════════════════════
 
 class TestGravitationalWaves:
@@ -313,7 +313,7 @@ class TestGravitationalWaves:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# Theory VIII : Substrate Complexity Theory  (bpr.complexity)
+# Substrate Complexity  (bpr.complexity)
 # ═══════════════════════════════════════════════════════════════════════════
 
 class TestComplexity:
@@ -341,7 +341,7 @@ class TestComplexity:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# Theory IX : Bioelectric Substrate Coupling  (bpr.bioelectric)
+# Bioelectric Substrate Coupling  (bpr.bioelectric)
 # ═══════════════════════════════════════════════════════════════════════════
 
 class TestBioelectric:
@@ -388,7 +388,7 @@ class TestBioelectric:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# Theory X : Resonant Collective Dynamics  (bpr.collective)
+# Resonant Collective Dynamics  (bpr.collective)
 # ═══════════════════════════════════════════════════════════════════════════
 
 class TestCollective:

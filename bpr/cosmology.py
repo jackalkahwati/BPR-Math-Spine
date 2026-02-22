@@ -1,5 +1,5 @@
 """
-Theory XI: BPR Cosmology & Early Universe
+BPR Cosmology & Early Universe
 ==========================================
 
 Derives inflationary parameters, baryogenesis, CMB anomalies, and

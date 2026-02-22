@@ -32,50 +32,50 @@
 
 ## DERIVED Predictions (41)
 
-### Theory II: Impedance / Dark Sector
+### Vacuum Impedance Mismatch
 - **P2.2 MOND a₀**
 - P2.7 DM σ/m (bound)
 - P2.15 Proton lifetime (bound)
 
-### Theory IV: Phase Transitions
+### Universal Phase Transition Taxonomy
 - P4.7 Tc(Niobium)
 
-### Theory V: Neutrino
+### Boundary-Mediated Neutrino Dynamics
 - P5.1 Normal hierarchy
 - P5.2 Σm_ν (bound)
 - P5.5 θ₁₂, P5.6 θ₂₃, P5.7 θ₁₃
 - P5.8 Δm²₂₁, P5.9 \|Δm²₃₂\|
 - P5.10 3 generations
 
-### Theory XI: Cosmology
+### BPR Cosmology & Early Universe
 - P11.2 n_s, P11.3 r
 - **P11.7 η (baryogenesis)**
 - P11.14 ΔN_eff (bound)
 - P11.15 Ω_DM h²
 
-### Theory XII: QCD & Flavor
+### QCD & Flavor Physics
 - P12.2 m_u, **P12.3 m_d**, **P12.4 m_s**, P12.5 m_c, **P12.6 m_b**, **P12.7 m_t**
 - P12.8 θ₁₂, **P12.9 θ₂₃**, **P12.10 θ₁₃**, **P12.11 Jarlskog J**
 - P12.14 m_π
 
-### Theory XIII: Emergent Spacetime
+### Emergent Spacetime & Holography
 - P13.3–5 Dimensions (3+1)
 
-### Theory XVI: Quantum Foundations
+### Quantum Foundations
 - P16.7 Bell/Tsirelson bound
 
-### Theory XVII: Gauge Unification
+### Gauge Unification & Hierarchy
 - P17.8 Proton lifetime (GUT)
 - P17.13 v_EW
 
-### Theory XVIII: Charged Leptons
+### Charged Lepton Masses
 - P18.1 m_e, P18.2 m_μ, **P18.3 m_τ**
 - P18.4 Koide Q
 
-### Theory XIX: Nuclear Physics
+### Nuclear Physics from Boundary Shell
 - P19.8 B/A(⁴He)
 
-### Theory XX: QG Phenomenology
+### Quantum Gravity Phenomenology
 - P20.1 ξ₁=0, P20.4 GUP β, P20.7 \|δc/c\|
 
 ---

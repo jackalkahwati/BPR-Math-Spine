@@ -44,27 +44,27 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 
 ## Full Prediction Audit
 
-### Theory I: Boundary Memory (P1.x)
+### Boundary Memory Dynamics (P1.x)
 | # | Prediction | Status | Notes |
 |---|-----------|--------|-------|
 | P1.1 | Oscillatory memory decay | CONJECTURAL | No direct test yet |
 | P1.2 | Prime harmonic ω | DERIVED | ω = 2π/p, from substrate |
 | P1.5 | Casimir fine-structure wiggles | CONJECTURAL | Below current precision |
 
-### Theory II: Impedance / Dark Sector (P2.x)
+### Vacuum Impedance Mismatch (P2.x)
 | # | Prediction | Value | Status | Comparison |
 |---|-----------|-------|--------|------------|
 | P2.2 | MOND a₀ | 1.04×10⁻¹⁰ m/s² | FRAMEWORK | Obs: 1.2×10⁻¹⁰ (13% off) |
 | P2.7 | DM σ/m | 0.019 cm²/g | DERIVED | Bound: < 0.6 cm²/g ✓ |
 | P2.15 | Proton lifetime | ~10⁵⁰ yr | DERIVED | Bound: > 2.4×10³⁴ yr ✓ |
 
-### Theory III: Decoherence (P3.x)
+### Boundary-Induced Decoherence (P3.x)
 | # | Prediction | Status | Notes |
 |---|-----------|--------|-------|
 | P3.1 | Γ ∝ ΔZ² | DERIVED | Testable in molecule interferometry |
 | P3.7 | W_crit(C60) = 10⁻³ | CONJECTURAL | Implies C60 is quantum ✓ |
 
-### Theory V: Neutrino (P5.x)
+### Boundary-Mediated Neutrino Dynamics (P5.x)
 | # | Prediction | Value | Status | Comparison |
 |---|-----------|-------|--------|------------|
 | P5.1 | Normal hierarchy | YES | DERIVED | T2K+NOvA: slight preference ✓ |
@@ -74,12 +74,12 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P5.7 | θ₁₃ | 8.63° | DERIVED | PDG: 8.54° ± 0.15° ✓ |
 | P5.10 | 3 generations | 3 | DERIVED | Observed: 3 ✓ |
 
-### Theory VII: GW (P7.x)
+### Gravitational Wave Phenomenology (P7.x)
 | # | Prediction | Status | Comparison |
 |---|-----------|--------|------------|
 | P7.1 | v_GW = c | CONSISTENT | GW170817: |δv/c| < 7×10⁻¹⁶ ✓ (also GR prediction) |
 
-### Theory XI: Cosmology (P11.x)
+### BPR Cosmology & Early Universe (P11.x)
 | # | Prediction | Value | Status | Comparison |
 |---|-----------|-------|--------|------------|
 | P11.2 | n_s | 0.968 | FRAMEWORK | Planck: 0.9649 ± 0.004 (N derived from p, but Starobinsky potential assumed) |
@@ -87,13 +87,13 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P11.7 | η_baryon | 6.2×10⁻¹⁰ | DERIVED | Obs: 6.14×10⁻¹⁰ ± 0.19×10⁻¹⁰ (boundary-enhanced sphaleron, 0.4σ) |
 | P11.15 | Ω_DM h² | ~0.11 | DERIVED | Planck: 0.120 ± 0.001 (boundary collective freeze-out, within 10%) |
 
-### Theory IV: Phase Transitions (P4.x)
+### Universal Phase Transition Taxonomy (P4.x)
 | # | Prediction | Value | Status | Notes |
 |---|-----------|-------|--------|-------|
 | P4.7 | Tc(Nb) | 8.8 K | FRAMEWORK | Obs: 9.25 K (N(0)V=0.32 + strong-coupling, 5% off) |
 | P4.9 | Tc(MgB₂) | 41 K | FRAMEWORK | Obs: 39 K (two-gap effective N(0)V=0.36 + strong-coupling, 5% off) |
 
-### Theory XVII: Gauge Unification (P17.x)
+### Gauge Unification & Hierarchy (P17.x)
 | # | Prediction | Value | Status | Notes |
 |---|-----------|-------|--------|-------|
 | P17.1 | GUT scale | 6.8×10¹⁷ GeV | DERIVED | Standard: ~2×10¹⁶ (30× off) |
@@ -101,7 +101,7 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P17.6 | Higgs mass protected | YES | DERIVED | UV cutoff from boundary |
 | P17.8 | τ_proton(GUT) | ~10⁴³ yr | DERIVED | Bound: > 2.4×10³⁴ yr ✓ |
 
-### Theory XII: QCD & Flavor (P12.x)
+### QCD & Flavor Physics (P12.x)
 | # | Prediction | Value | Status | Comparison |
 |---|-----------|-------|--------|------------|
 | P12.2 | m_u | 2.16 MeV | DERIVED | PDG: 2.16 ± 0.49 (S² l-modes, 0.2% off) |
@@ -117,7 +117,7 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P12.13 | m_proton | 0.996 GeV | CONSISTENT | Standard QCD: m_p ≈ 3Λ_QCD (not BPR-specific) |
 | P12.14 | m_pion | 86 MeV | CONSISTENT | Standard GMOR relation (not BPR-specific, 36% off) |
 
-### Theory XVIII: Charged Leptons (P18.x)
+### Charged Lepton Masses (P18.x)
 | # | Prediction | Value | Status | Comparison |
 |---|-----------|-------|--------|------------|
 | P18.1 | m_e | 0.510 MeV | DERIVED | CODATA: 0.5110 ± 0.00000002 (S² l-modes, 0.11% off) |
@@ -126,20 +126,20 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P18.4 | Koide Q | 0.672 | DERIVED | Exact: 2/3 (emerges from l² spectrum, 0.75% off) |
 | P18.7 | R(K) ≈ 1 | CONSISTENT | LHCb 2023 confirms SM ✓ (not uniquely BPR) |
 
-### Theory XIX: Nuclear Physics (P19.x)
+### Nuclear Physics from Boundary Shell (P19.x)
 | # | Prediction | Status | Notes |
 |---|-----------|--------|-------|
 | P19.5 | Magic numbers | CONSISTENT | Known since 1949 (hardcoded list) |
 | P19.7 | B/A(Fe56) = 8.85 MeV | FRAMEWORK | Obs: 8.79 MeV (BW formula + BPR term) |
 
-### Theory XX: QG Phenomenology (P20.x)
+### Quantum Gravity Phenomenology (P20.x)
 | # | Prediction | Value | Status | Comparison |
 |---|-----------|-------|--------|------------|
 | P20.1 | ξ₁ = 0 (no linear LIV) | 0 | DERIVED | LHAASO: E_QG,1 > 10 M_Pl ✓ |
 | P20.4 | GUP β = 1/p | 9.5×10⁻⁶ | DERIVED | Bound: β < 4×10⁴ (well within) |
 | P20.7 | |δc/c| | 3.4×10⁻²¹ | DERIVED | Fermi: < 6×10⁻²¹ (just below — testable!) |
 
-### Theory XIII: Emergent Spacetime (P13.x)
+### Emergent Spacetime & Holography (P13.x)
 | # | Prediction | Status | Notes |
 |---|-----------|--------|-------|
 | P13.3-5 | 3+1 dimensions | DERIVED | Correct ✓ |
