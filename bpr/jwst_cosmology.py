@@ -703,6 +703,184 @@ class BPRCosmologyV3(BPRCosmologyV2):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+#  BPR V4 — IMPEDANCE-WEIGHTED COLLAPSE THRESHOLD
+# ═══════════════════════════════════════════════════════════════════════════
+
+# SI constants for virial computation (module-level to avoid per-call lookup)
+_G_SI   = 6.674e-11        # m³/(kg s²)
+_MSUN   = 1.989e30         # kg
+_MPC_SI = 3.086e22         # m
+
+
+class BPRCosmologyV4(BPRCosmologyV2):
+    """BPR V4 — Universal Phase Transition Taxonomy + Impedance-Weighted Collapse Threshold.
+
+    Replaces the hard MOND / Newtonian step in V2 with a continuous,
+    mass-dependent collapse threshold derived from the Vacuum Impedance
+    Mismatch interpolation function μ(a/a₀).
+
+    DERIVATION
+    ----------
+    Vacuum Impedance Mismatch gives MOND with scale a₀ ≈ 1.18×10⁻¹⁰ m/s².
+    In standard MOND, μ(a/a₀) interpolates between two regimes:
+        μ → 0  (a ≪ a₀):  deep MOND  → gravity ∝ 1/r
+        μ → 1  (a ≫ a₀):  Newtonian  → gravity ∝ 1/r²
+
+    For spherical collapse, the same interpolation determines the effective
+    overdensity threshold δ_c.  For a virialized halo with mass M at
+    redshift z, the characteristic internal acceleration is:
+
+        a_vir(M, z) = G M / R_vir(M, z)²
+
+    where R_vir = (3M / (4π × 200 ρ_crit(z)))^{1/3}.
+
+    The impedance interpolation then gives the collapse threshold:
+
+        δ_c(M, z) = δ_c^{MOND} + (δ_c^{Newton} − δ_c^{MOND}) × μ(a_vir/a₀)
+                  = 1.330 + 0.356 × μ(a_vir/a₀)
+
+    using μ(x) = x/√(1+x²) (standard form 2 from Famaey & McGaugh 2012).
+
+    TRANSITION MASS M★(z)
+    ----------------------
+    At a_vir(M★) = a₀, setting to zero:
+        G M★^{1/3} × (800π ρ_crit(z)/3)^{2/3} = a₀
+        M★(z) = (a₀/G)³ / (800π ρ_crit(z)/3)²
+
+    Key values (from Vacuum Impedance Mismatch a₀):
+        M★(z=9)  = 5.4×10¹¹ M☉  — both z=9 halos below M★ → MOND-like
+        M★(z=10) = 3.1×10¹¹ M☉  — bright z=10 halos near M★ → transition
+        M★(z=12) = 1.1×10¹¹ M☉  — z=12 bright halos above M★ → Newtonian
+        M★(z=16) = 2.3×10¹⁰ M☉  — z=16 halos well above M★ → Newtonian
+
+    PHYSICAL PICTURE
+    ----------------
+    At higher z the universe is denser → R_vir smaller → a_vir larger →
+    crosses a₀ at lower halo mass.  Galaxy formation at z=12–16 operates
+    in the Newtonian regime (a_vir > a₀), reducing the runaway overshoot
+    that plagues V2 at those redshifts.  At z=9 halos remain below M★
+    and still receive a partial MOND boost (δ_c ≈ 1.53, vs 1.33 in V2).
+
+    ZERO FREE PARAMETERS
+    --------------------
+    a₀ from Vacuum Impedance Mismatch (p, c, H₀ only); μ is fixed
+    by theory; z_PT from V2; 200×ρ_crit is the standard virial convention.
+    """
+
+    # ── virial acceleration ────────────────────────────────────────────────
+
+    def _virial_acceleration(self, M_halo_Msun: float, z: float) -> float:
+        """Characteristic gravitational acceleration of a virialized halo [m/s²].
+
+        a_vir = G M / R_vir²,   R_vir = (3M / (4π × 200 ρ_crit(z)))^{1/3}
+
+        Uses ΛCDM E(z)² = Ωm(1+z)³ + ΩΛ for ρ_crit(z).
+        """
+        M_si  = M_halo_Msun * _MSUN
+        H0_si = _H0_PLANCK * 1e3 / _MPC_SI
+        om, ol = _OMEGA_M, 1.0 - _OMEGA_M
+        a_scale = 1.0 / (1.0 + z)
+        E2    = om / a_scale ** 3 + ol
+        rho_c = 3.0 * (H0_si * math.sqrt(E2)) ** 2 / (8.0 * math.pi * _G_SI)
+        R_vir = (3.0 * M_si / (4.0 * math.pi * 200.0 * rho_c)) ** (1.0 / 3.0)
+        return _G_SI * M_si / R_vir ** 2
+
+    def m_star(self, z: float) -> float:
+        """Transition mass M★(z) [M☉] where a_vir = a₀.
+
+        M★(z) = (a₀/G)³ / (800π ρ_crit(z)/3)²
+
+        Above M★, halos are Newtonian; below M★, they are MOND-like.
+        M★ decreases with z (higher z → denser halos → Newtonian at lower M).
+        """
+        H0_si = _H0_PLANCK * 1e3 / _MPC_SI
+        om, ol = _OMEGA_M, 1.0 - _OMEGA_M
+        a_scale = 1.0 / (1.0 + z)
+        E2    = om / a_scale ** 3 + ol
+        rho_c = 3.0 * (H0_si * math.sqrt(E2)) ** 2 / (8.0 * math.pi * _G_SI)
+        rho_vir_f = 800.0 * math.pi * rho_c / 3.0
+        return (self.mond_a0 / _G_SI) ** 3 / rho_vir_f ** 2 / _MSUN
+
+    # ── continuous collapse threshold ──────────────────────────────────────
+
+    def delta_c_v4(self, M_halo_Msun: float, z: float) -> float:
+        """Mass-dependent collapse threshold from Vacuum Impedance Mismatch.
+
+        z < z_PT  →  1.686  (Newtonian, same as V2)
+        z > z_PT  →  1.330 + 0.356 × μ(a_vir/a₀)
+
+        μ(x) = x/√(1+x²) is the MOND interpolation function
+        (Famaey & McGaugh 2012, form 2).
+        """
+        delta_c_newton = 1.686
+        if z <= self.z_pt:
+            return delta_c_newton
+
+        a_vir = self._virial_acceleration(M_halo_Msun, z)
+        x     = a_vir / self.mond_a0
+        mu    = x / math.sqrt(1.0 + x * x)
+
+        delta_c_mond = 1.33
+        return delta_c_mond + (delta_c_newton - delta_c_mond) * mu
+
+    # ── σ₈ / S₈ (unchanged from V2 — z=0 is always Newtonian) ─────────────
+
+    @property
+    def sigma8_v4(self) -> float:
+        """σ₈ for V4: identical to V2 (collapse threshold irrelevant at z=0)."""
+        return self.sigma8_v2
+
+    @property
+    def S8_v4(self) -> float:
+        """BPR V4 S₈ = σ₈_V4 √(Ωm / 0.3)."""
+        return self.sigma8_v4 * math.sqrt(_OMEGA_M / 0.3)
+
+    # ── UV luminosity function ─────────────────────────────────────────────
+
+    def uv_luminosity_function_v4(self, M_UV: float, z: float) -> float:
+        """log₁₀(φ) with impedance-weighted continuous δ_c(M, z).
+
+        z < z_PT → Newtonian (same as V2)
+        z > z_PT → δ_c = 1.33 + 0.356 × μ(a_vir/a₀)
+
+        This replaces V2's hard step with a smooth mass-dependent threshold:
+        • Low-mass / low-z halos (a_vir ≪ a₀): δ_c → 1.33 (deep MOND boost)
+        • High-mass / high-z halos (a_vir ≫ a₀): δ_c → 1.686 (Newtonian)
+        """
+        log_phi_lcdm = self._lcdm.uv_luminosity_function(M_UV, z)
+
+        M_halo  = 1e11 * 10.0 ** (-0.4 * (M_UV + 21.0))
+        sigma_z = self._lcdm.sigma_M_at_z(M_halo, z)
+        sigma_z = max(sigma_z, 1e-6)
+
+        delta_c_newton = 1.686
+        delta_c_eff    = self.delta_c_v4(M_halo, z)
+
+        nu_n = delta_c_newton / sigma_z
+        nu_e = delta_c_eff   / sigma_z
+
+        # PS ratio from continuous MOND interpolation
+        if delta_c_eff < delta_c_newton:
+            log_ratio = (math.log10(nu_e / nu_n)
+                         + (nu_n ** 2 - nu_e ** 2) / (2.0 * math.log(10.0)))
+            log_ratio = max(-4.0, min(4.0, log_ratio))
+        else:
+            log_ratio = 0.0
+
+        # Δn_s spectral correction (same as V2)
+        rho_m0 = 2.775e11 * _OMEGA_M * (_H0_PLANCK / 100.0) ** 2
+        R      = (3.0 * M_halo / (4.0 * math.pi * rho_m0)) ** (1.0 / 3.0)
+        k_halo = 2.0 * math.pi / max(R, 0.01)
+        delta_ns_corr = 3.0 * math.log10(self.sigma_ratio(k_halo))
+
+        # Boundary dissipation (only active at z < z_PT, same as V2)
+        f_growth    = self.boundary_growth_suppression_v2(z_form=z)
+        dissip_corr = 3.0 * math.log10(max(f_growth, 1e-10))
+
+        return log_phi_lcdm + log_ratio + delta_ns_corr + dissip_corr
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 #  COUPLING GAP ANALYSIS
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -754,6 +932,7 @@ def run_jwst_comparison(p: int = _P) -> dict:
     bpr    = BPRCosmology(p=p)
     bpr_v2 = BPRCosmologyV2(p=p)
     bpr_v3 = BPRCosmologyV3(p=p)
+    bpr_v4 = BPRCosmologyV4(p=p)
     lcdm   = LambdaCDM()
 
     results = {}
@@ -774,10 +953,12 @@ def run_jwst_comparison(p: int = _P) -> dict:
     S8_bpr    = bpr.S8_bpr
     S8_bpr_v2 = bpr_v2.S8_v2
     S8_bpr_v3 = bpr_v3.S8_v3
+    S8_bpr_v4 = bpr_v4.S8_v4
     S8_tension_sigma = (_S8_PLANCK - _S8_WL_OBS) / _S8_WL_ERR
     raw_fraction    = (_S8_PLANCK - S8_bpr)    / (_S8_PLANCK - _S8_WL_OBS)
     raw_fraction_v2 = (_S8_PLANCK - S8_bpr_v2) / (_S8_PLANCK - _S8_WL_OBS)
     raw_fraction_v3 = (_S8_PLANCK - S8_bpr_v3) / (_S8_PLANCK - _S8_WL_OBS)
+    raw_fraction_v4 = (_S8_PLANCK - S8_bpr_v4) / (_S8_PLANCK - _S8_WL_OBS)
     results["s8_tension"] = {
         "S8_planck":            _S8_PLANCK,
         "S8_observed_WL":       _S8_WL_OBS,
@@ -787,16 +968,21 @@ def run_jwst_comparison(p: int = _P) -> dict:
         "sigma8_bpr_v2":        bpr_v2.sigma8_v2,
         "S8_bpr_v3":            S8_bpr_v3,
         "sigma8_bpr_v3":        bpr_v3.sigma8_v3,
+        "S8_bpr_v4":            S8_bpr_v4,
+        "sigma8_bpr_v4":        bpr_v4.sigma8_v4,
         "tension_sigma_lcdm":   S8_tension_sigma,
         "tension_sigma_bpr":    abs(S8_bpr    - _S8_WL_OBS) / _S8_WL_ERR,
         "tension_sigma_bpr_v2": abs(S8_bpr_v2 - _S8_WL_OBS) / _S8_WL_ERR,
         "tension_sigma_bpr_v3": abs(S8_bpr_v3 - _S8_WL_OBS) / _S8_WL_ERR,
+        "tension_sigma_bpr_v4": abs(S8_bpr_v4 - _S8_WL_OBS) / _S8_WL_ERR,
         "fraction_explained":   raw_fraction,      # may exceed 1.0 (overshoot)
         "fraction_explained_v2": raw_fraction_v2,
         "fraction_explained_v3": raw_fraction_v3,
+        "fraction_explained_v4": raw_fraction_v4,
         "overshoots":    S8_bpr    < _S8_WL_OBS,
         "overshoots_v2": S8_bpr_v2 < _S8_WL_OBS,
         "overshoots_v3": S8_bpr_v3 < _S8_WL_OBS,
+        "overshoots_v4": S8_bpr_v4 < _S8_WL_OBS,
     }
 
     # ── 3. JWST UV LF ─────────────────────────────────────────────────────
@@ -807,15 +993,18 @@ def run_jwst_comparison(p: int = _P) -> dict:
         log_phi_mond = bpr.uv_luminosity_function_mond(pt.M_UV, pt.z)
         log_phi_v2   = bpr_v2.uv_luminosity_function_v2(pt.M_UV, pt.z)
         log_phi_v3   = bpr_v3.uv_luminosity_function_v3(pt.M_UV, pt.z)
+        log_phi_v4   = bpr_v4.uv_luminosity_function_v4(pt.M_UV, pt.z)
         gap_lcdm     = pt.log_phi - log_phi_lcdm
         gap_bpr      = pt.log_phi - log_phi_bpr
         gap_mond     = pt.log_phi - log_phi_mond
         gap_v2       = pt.log_phi - log_phi_v2
         gap_v3       = pt.log_phi - log_phi_v3
+        gap_v4       = pt.log_phi - log_phi_v4
         bpr_closes   = (gap_lcdm - gap_bpr)  / abs(gap_lcdm) if gap_lcdm != 0 else 0
         mond_closes  = (gap_lcdm - gap_mond) / abs(gap_lcdm) if gap_lcdm != 0 else 0
         v2_closes    = (gap_lcdm - gap_v2)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
         v3_closes    = (gap_lcdm - gap_v3)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
+        v4_closes    = (gap_lcdm - gap_v4)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
 
         sigma_needed = required_sigma_enhancement(pt.log_phi, log_phi_lcdm)
         n_s_needed   = required_n_s(sigma_needed, k_Mpc=5.0)
@@ -829,15 +1018,18 @@ def run_jwst_comparison(p: int = _P) -> dict:
             "log_phi_mond": log_phi_mond,
             "log_phi_v2":  log_phi_v2,
             "log_phi_v3":  log_phi_v3,
+            "log_phi_v4":  log_phi_v4,
             "gap_lcdm_dex": gap_lcdm,
             "gap_bpr_dex":  gap_bpr,
             "gap_mond_dex": gap_mond,
             "gap_v2_dex":   gap_v2,
             "gap_v3_dex":   gap_v3,
+            "gap_v4_dex":   gap_v4,
             "bpr_fraction_closed":  bpr_closes,
             "mond_fraction_closed": mond_closes,
             "v2_fraction_closed":   v2_closes,
             "v3_fraction_closed":   v3_closes,
+            "v4_fraction_closed":   v4_closes,
             "sigma_ratio_needed": sigma_needed,
             "n_s_needed_to_explain": n_s_needed,
             "source": pt.source,
@@ -853,6 +1045,9 @@ def run_jwst_comparison(p: int = _P) -> dict:
         "mond_a0_m_s2": bpr.mond_a0,
         "z_pt":         bpr_v2.z_pt,
         "k_star_Mpc":   bpr_v3.k_star,
+        "m_star_v4_z9":  bpr_v4.m_star(9.0),
+        "m_star_v4_z10": bpr_v4.m_star(10.0),
+        "m_star_v4_z12": bpr_v4.m_star(12.0),
     }
 
     return results

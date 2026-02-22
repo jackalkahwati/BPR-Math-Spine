@@ -127,16 +127,35 @@ def run(args: argparse.Namespace) -> None:
     k_star = results["bpr_params"]["k_star_Mpc"]
     print(f"  {f'BPR V3 (k_★={k_star:.2f})':<22}  {s8['sigma8_bpr_v3']:>6.4f}  "
           f"{s8['S8_bpr_v3']:>6.4f}  {s8['tension_sigma_bpr_v3']:>8.2f}σ  {v3_verdict}")
+
+    # V4 row
+    frac_v4 = s8["fraction_explained_v4"]
+    overshoots_v4 = s8.get("overshoots_v4", False)
+    if overshoots_v4:
+        v4_verdict = f"{RED}OVERSHOOTS{RESET}"
+    elif frac_v4 > 0.4:
+        v4_verdict = f"{GREEN}closes {frac_v4*100:.0f}% of tension{RESET}"
+    elif frac_v4 > 0.2:
+        v4_verdict = f"{YELLOW}closes {frac_v4*100:.0f}% of tension{RESET}"
+    else:
+        v4_verdict = f"{RED}closes {frac_v4*100:.0f}% of tension{RESET}"
+    print(f"  {'BPR V4 (impedance μ)':<22}  {s8['sigma8_bpr_v4']:>6.4f}  "
+          f"{s8['S8_bpr_v4']:>6.4f}  {s8['tension_sigma_bpr_v4']:>8.2f}σ  {v4_verdict}")
     print()
     print(f"  {BOLD}Universal Phase Transition Taxonomy derivation of z_PT:{RESET}")
     print(f"    Γ_b(z_PT) = ω_MOND  →  H(z_PT)/p^{{1/3}} = a₀/c")
     print(f"    Solved in ΛCDM:  z_PT = {z_pt:.2f}  (zero free parameters)")
     print(f"    At z < z_PT: Newtonian gravity, dissipation from z_PT only")
     print(f"    At z > z_PT: MOND active (δ_c=1.33), dissipation suspended")
-    print(f"  {BOLD}Substrate Zone-Boundary Enhancement derivation of k_★:{RESET}")
-    print(f"    k_★ = 2π p^{{2/3}} H₀/c  →  {k_star:.2f} Mpc⁻¹  (zero free parameters)")
-    print(f"    f_ZB(k) = logistic step; sharpness p^{{1/3}} ≈ 47")
-    print(f"    f_ZB(0.2) ≈ 0  →  σ₈ unchanged;  f_ZB(5) ≈ 1  →  σ enhanced by 4/3")
+    ms9  = results["bpr_params"]["m_star_v4_z9"]
+    ms10 = results["bpr_params"]["m_star_v4_z10"]
+    ms12 = results["bpr_params"]["m_star_v4_z12"]
+    print(f"  {BOLD}Impedance-Weighted Collapse Threshold (V4) — M★(z):{RESET}")
+    print(f"    δ_c(M,z) = 1.33 + 0.356×μ(a_vir/a₀),  μ = x/√(1+x²)")
+    print(f"    M★ = (a₀/G)³/(800π ρ_crit(z)/3)²  (zero free parameters)")
+    print(f"    M★(z=9)  = {ms9:.2e} M☉  — z=9 halos below M★ → MOND-like")
+    print(f"    M★(z=10) = {ms10:.2e} M☉  — z=10 bright halos near M★ → transition")
+    print(f"    M★(z=12) = {ms12:.2e} M☉  — z=12 halos above M★ → Newtonian")
 
     # ── 3. JWST UV Luminosity Function ─────────────────────────────────────
     print_header("ANOMALY 3 — JWST 'Too-Early Galaxies'  (UV luminosity function z=9–16)")
@@ -145,13 +164,14 @@ def run(args: argparse.Namespace) -> None:
     print(f"  Vacuum Impedance Mismatch MOND:  a₀ = {mond_a0:.2e} m/s²  (observed: 1.2×10⁻¹⁰, off by "
           f"{abs(mond_a0/1.2e-10 - 1)*100:.1f}%)")
     print(f"  Universal Phase Transition Taxonomy z_PT = {z_pt:.2f}: MOND active at z > z_PT, Newtonian at z < z_PT")
-    print(f"  Substrate Zone-Boundary Enhancement k_★ = {k_star:.2f} Mpc⁻¹  "
-          f"(= 2π p^{{2/3}} H₀/c, galaxy formation band)")
-    print(f"  At M~10¹¹ M☉: a_char ≈ 10⁻¹⁴ m/s² ≪ a₀  →  deep MOND  →  δ_c = 1.33\n")
-    print(f"  {'z':>4}  {'M_UV':>6}  {'obs':>7}  {'ΛCDM':>7}  {'BPR':>7}  "
-          f"{'MOND':>7}  {'V2':>7}  {'V3':>7}  {'gap':>6}  {'BPR':>6}  {'MOND':>6}  {'V2':>6}  {'V3':>6}  source")
+    print(f"  V4 M★(z=9/10/12) = {results['bpr_params']['m_star_v4_z9']:.1e} / "
+          f"{results['bpr_params']['m_star_v4_z10']:.1e} / "
+          f"{results['bpr_params']['m_star_v4_z12']:.1e} M☉  "
+          f"(continuous δ_c via μ(a_vir/a₀))\n")
+    print(f"  {'z':>4}  {'M_UV':>6}  {'obs':>7}  {'ΛCDM':>7}  {'V2':>7}  "
+          f"{'V3':>7}  {'V4':>7}  {'gap':>6}  {'V2':>6}  {'V3':>6}  {'V4':>6}  source")
     print(f"  {'-'*4}  {'-'*6}  {'-'*7}  {'-'*7}  {'-'*7}  "
-          f"{'-'*7}  {'-'*7}  {'-'*7}  {'-'*6}  {'-'*6}  {'-'*6}  {'-'*6}  {'-'*6}  {'-'*15}")
+          f"{'-'*7}  {'-'*7}  {'-'*6}  {'-'*6}  {'-'*6}  {'-'*6}  {'-'*15}")
 
     n_points       = len(results["jwst_uv_lf"])
     total_gap_lcdm = 0.0
@@ -159,6 +179,7 @@ def run(args: argparse.Namespace) -> None:
     total_gap_mond = 0.0
     total_gap_v2   = 0.0
     total_gap_v3   = 0.0
+    total_gap_v4   = 0.0
 
     def _frac_col(f: float) -> str:
         c = GREEN if 0.3 < f <= 1.0 else (YELLOW if f > 0 else RED)
@@ -170,25 +191,25 @@ def run(args: argparse.Namespace) -> None:
         gap_mond = row["gap_mond_dex"]
         gap_v2   = row["gap_v2_dex"]
         gap_v3   = row["gap_v3_dex"]
+        gap_v4   = row["gap_v4_dex"]
         total_gap_lcdm += abs(gap_lcdm)
         total_gap_bpr  += abs(gap_bpr)
         total_gap_mond += abs(gap_mond)
         total_gap_v2   += abs(gap_v2)
         total_gap_v3   += abs(gap_v3)
+        total_gap_v4   += abs(gap_v4)
 
         print(
             f"  {row['z']:>4.0f}  {row['M_UV']:>6.1f}  "
             f"{row['log_phi_obs']:>7.2f}  "
             f"{row['log_phi_lcdm']:>7.2f}  "
-            f"{row['log_phi_bpr']:>7.2f}  "
-            f"{row['log_phi_mond']:>7.2f}  "
             f"{row['log_phi_v2']:>7.2f}  "
             f"{row['log_phi_v3']:>7.2f}  "
+            f"{row['log_phi_v4']:>7.2f}  "
             f"{gap_lcdm:>+6.2f}  "
-            f"{_frac_col(row['bpr_fraction_closed'])}  "
-            f"{_frac_col(row['mond_fraction_closed'])}  "
             f"{_frac_col(row['v2_fraction_closed'])}  "
             f"{_frac_col(row['v3_fraction_closed'])}  "
+            f"{_frac_col(row['v4_fraction_closed'])}  "
             f"{row['source']}"
         )
 
@@ -197,14 +218,12 @@ def run(args: argparse.Namespace) -> None:
 
     print()
     print(f"  Average ΛCDM gap:  {total_gap_lcdm/n_points:.2f} dex")
-    print(f"  Standard BPR:      closes {_mean_pct(total_gap_bpr):+.1f}%  "
-          f"(gap → {total_gap_bpr/n_points:.2f} dex)")
-    print(f"  MOND (no z_PT):    closes {_mean_pct(total_gap_mond):+.1f}%  "
-          f"(gap → {total_gap_mond/n_points:.2f} dex)")
     print(f"  V2  (z_PT={z_pt:.1f}):   closes {_mean_pct(total_gap_v2):+.1f}%  "
           f"(gap → {total_gap_v2/n_points:.2f} dex)")
     print(f"  V3  (k_★={k_star:.2f}):  closes {_mean_pct(total_gap_v3):+.1f}%  "
-          f"(gap → {total_gap_v3/n_points:.2f} dex)")
+          f"(gap → {total_gap_v3/n_points:.2f} dex)  [V2+ZB, worsens average]")
+    print(f"  V4  (μ interp):    closes {_mean_pct(total_gap_v4):+.1f}%  "
+          f"(gap → {total_gap_v4/n_points:.2f} dex)")
 
     # ── Overall verdict ────────────────────────────────────────────────────
     print_header("OVERALL VERDICT")
@@ -219,61 +238,56 @@ def run(args: argparse.Namespace) -> None:
     s8_v3_str = (f"overshoots"
                  if overshoots_v3 else f"closes {frac_v3*100:.0f}%  "
                  f"(σ₈={s8['sigma8_bpr_v3']:.3f}, {s8['tension_sigma_bpr_v3']:.1f}σ residual)")
+    s8_v4_str = (f"overshoots"
+                 if overshoots_v4 else f"closes {frac_v4*100:.0f}%  "
+                 f"(σ₈={s8['sigma8_bpr_v4']:.3f}, {s8['tension_sigma_bpr_v4']:.1f}σ residual)")
     bpr_mean  = _mean_pct(total_gap_bpr)
     mond_mean = _mean_pct(total_gap_mond)
     v2_mean   = _mean_pct(total_gap_v2)
     v3_mean   = _mean_pct(total_gap_v3)
+    v4_mean   = _mean_pct(total_gap_v4)
     print(f"""
   {BOLD}MECHANISM COMPARISON — three JWST-era anomalies:{RESET}
 
   Hubble tension (4.9σ):
-    Standard BPR:                          closes  ~7%   (ΔNeff = {results['bpr_params']['delta_Neff']:.3f}, needs ~0.4)
-    Vacuum Impedance Mismatch MOND:        same   ~7%   (MOND does not shift sound horizon)
-    BPR V2 (Phase Transition):             same   ~7%   (transition does not affect ΔNeff)
-    BPR V3 (+ Zone-Boundary):             same   ~7%   (k_★ affects matter only, not ΔNeff)
-    Needed: 11× more boundary radiation species
+    All BPR mechanisms:  closes ~7%  (ΔNeff = {results['bpr_params']['delta_Neff']:.3f}, needs ~0.4)
+    Needed: 11× more boundary radiation species.  Unsolved.
 
   S8 tension (3.3σ):
     Standard BPR:                          {s8_std_str}
-    Vacuum Impedance (no z_PT):            WORSENS  (MOND at z=0 boosts 8 Mpc clustering)
+    Vacuum Impedance MOND (no z_PT):       WORSENS  (MOND at z=0 boosts 8 Mpc clustering)
     {BOLD}BPR V2 (Phase Transition):{RESET}             {GREEN}{s8_v2_str}{RESET}
     {BOLD}BPR V3 (+ Zone-Boundary):{RESET}              {GREEN}{s8_v3_str}{RESET}
-    → k_★ = {k_star:.2f} Mpc⁻¹ ≫ k_σ₈ = 0.2 Mpc⁻¹  →  S8 scale unaffected by zone boundary
-    → σ₈_V3 ≈ σ₈_V2  (zone-boundary does not degrade the S8 solution)
+    {BOLD}BPR V4 (impedance μ):{RESET}                  {GREEN}{s8_v4_str}{RESET}
+    → V4 S8 = V2 S8 (both integrate dissipation from z_PT at z=0)
 
   JWST UV LF (z=9–16):
-    Standard BPR:                          closes {bpr_mean:+.0f}%   (dissipation suppresses early structure)
-    Vacuum Impedance (no z_PT):           {YELLOW}closes {mond_mean:+.0f}%{RESET}  (δ_c=1.33, but worsens S8)
-    BPR V2 (Phase Transition):            {YELLOW}closes {v2_mean:+.0f}%{RESET}  (MOND at z>{z_pt:.1f}, S8 preserved)
-    {BOLD}BPR V3 (+ Zone-Boundary):{RESET}             {YELLOW}closes {v3_mean:+.0f}%{RESET}  (V2 + k_★ scale cutoff)
-    CAVEAT: z=10 bright-end overshoot persists — PS exponential tail
-    is sensitive to Δδ_c at high ν; exact amplitude requires N-body.
+    Standard BPR:                          closes {bpr_mean:+.0f}%
+    Vacuum Impedance MOND (no z_PT):      {YELLOW}closes {mond_mean:+.0f}%{RESET}  (worsens S8)
+    BPR V2 (Phase Transition):            {YELLOW}closes {v2_mean:+.0f}%{RESET}  (S8 preserved)
+    BPR V3 (+ Zone-Boundary):            {YELLOW}closes {v3_mean:+.0f}%{RESET}  (worsens average vs V2)
+    {BOLD}BPR V4 (impedance μ):{RESET}                 \
+{GREEN if v4_mean > v2_mean else YELLOW}closes {v4_mean:+.0f}%{RESET}  \
+({GREEN if v4_mean > v2_mean else RED}{v4_mean - v2_mean:+.0f}% vs V2{RESET}, S8 preserved)
 
-  {BOLD}Substrate Zone-Boundary Enhancement — derivation:{RESET}
-  p^{{2/3}} = {int(round(results['bpr_params']['p']**(2/3)))} → R_H/p^{{2/3}} = 2.00 Mpc → k_★ = 2π p^{{2/3}} H₀/c = {k_star:.2f} Mpc⁻¹
-  Enhancement: σ_eff(k) = σ_V1(k)×[1 + (1/3)×f_ZB(k)]  (1/3 = 1/d, d=3)
-  Logistic sharpness p^{{1/3}} ≈ 47  →  f_ZB(0.2)≈0,  f_ZB(5)≈1  (zero params)
+  {BOLD}V4 Impedance-Weighted δ_c — derivation:{RESET}
+  δ_c(M,z) = 1.33 + 0.356×μ(a_vir/a₀),  where μ(x) = x/√(1+x²)
+  a_vir = GM/R_vir²  (virial halo acceleration),  a₀ from Vacuum Impedance Mismatch
+  M★(z) from a_vir(M★) = a₀:
+    z=9:  M★={results['bpr_params']['m_star_v4_z9']:.2e} M☉  z=10: M★={results['bpr_params']['m_star_v4_z10']:.2e} M☉  z=12: M★={results['bpr_params']['m_star_v4_z12']:.2e} M☉
+  At higher z: universe denser → R_vir smaller → a_vir/a₀ larger → more Newtonian
 
-  {BOLD}Combined V3 — what it achieves:{RESET}
-  • Hubble:     unchanged (~7%)
-  • S8 tension: 3.3σ → {s8['tension_sigma_bpr_v3']:.1f}σ  ({GREEN}closes {frac_v3*100:.0f}%{RESET})  [same as V2; k_★ preserves σ₈]
-  • JWST UV LF: closes {v3_mean:+.0f}% on average  \
-({RED if v3_mean < v2_mean else GREEN}{v3_mean - v2_mean:+.0f}% vs V2{RESET})
+  {BOLD}Best current state (V4):{RESET}
+  • Hubble:     {s8['tension_sigma_bpr_v4']:.1f}σ residual  (7% closed — unsolved)
+  • S8 tension: {GREEN}closes {frac_v4*100:.0f}%{RESET}  ({s8['tension_sigma_bpr_v4']:.1f}σ residual)
+  • JWST UV LF: closes {v4_mean:+.0f}% on average
 
-  {BOLD}Honest diagnosis of V3 JWST result:{RESET}
-  V3 WORSENS the average JWST fit relative to V2 because V2 already overshoots
-  at z=10 (by ~1 dex from MOND δ_c=1.33) and the zone-boundary boost amplifies
-  those points further.  V3 correctly helps z=9 where V2 undershoots, but the
-  net effect on total |gap| is negative because z=10 dominates.
-  Root cause: MOND at z>z_PT is uniformly applied at all halo masses, making
-  it too strong at the bright end (M_UV < -22).
-
-  {BOLD}Remaining gap to a full solution:{RESET}
-  A mass-dependent collapse threshold δ_c(M) that reverts toward 1.686 for
-  M > 10¹² M☉ halos would selectively suppress the z=10 bright-end overshoot
-  while preserving the z=12–16 enhancement.  The zone-boundary k_★ derivation
-  stands as a genuine BPR prediction; combining it with a mass-dependent
-  MOND onset is the next derivation target.
+  {BOLD}Remaining gap:{RESET}
+  The JWST z=9 undershoots and z=10–16 overshoots reflect the PS exponential
+  tail's extreme sensitivity to δ_c at high-ν.  The continuous impedance μ
+  interpolation (V4) partially addresses this but the semi-analytic PS model
+  is not accurate enough for precision comparison — full N-body is required.
+  Hubble tension remains untouched by all four mechanisms.
 """)
 
 
