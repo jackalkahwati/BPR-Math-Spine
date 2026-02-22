@@ -416,6 +416,146 @@ class BPRCosmology:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+#  BPR V2 — THEORY IV PHASE-TRANSITION MECHANISM
+# ═══════════════════════════════════════════════════════════════════════════
+
+class BPRCosmologyV2(BPRCosmology):
+    """BPR + Theory IV Phase Transition: epoch-dependent MOND / Newtonian switch.
+
+    Derives a critical phase-transition redshift z_PT where the boundary
+    substrate undergoes a Class C (Impedance) transition, gating MOND collapse
+    enhancement to early cosmic epochs only.
+
+    DERIVATION OF z_PT
+    ------------------
+    Theory II (Vacuum Impedance) gives MOND frequency ω_MOND = a₀/c.
+    Theory IV (Phase Transitions) Class C: the substrate switches state when
+    the boundary dissipation rate Γ_b = H(z)/p^{1/3} equals ω_MOND.
+
+        Γ_b(z_PT) = ω_MOND
+        H(z_PT) / p^{1/3} = a₀ / c
+        H(z_PT) = p^{1/3} × a₀ / c
+
+    In a flat ΛCDM background, E(z) = H(z)/H₀ = √(Ωm(1+z)³ + ΩΛ):
+
+        z_PT ≈ 5.1  (derived from p and a₀, zero free parameters)
+
+    PHYSICAL BEHAVIOUR
+    ------------------
+    z > z_PT  (Γ_b > ω_MOND — boundary modes oscillate above MOND scale):
+        • Substrate in Class C "frustrated" high-impedance state
+        • MOND gravity active: collapse threshold δ_c = 1.33 (Nusser 2002)
+        • Boundary dissipation suspended (modes can't damp below a₀/c)
+        → Galaxy formation ENHANCED vs ΛCDM  (helps JWST z=9–16)
+
+    z < z_PT  (Γ_b < ω_MOND — boundary modes relax below MOND scale):
+        • Class C transition: substrate orders into low-impedance state
+        • Gravity reverts to Newtonian: δ_c = 1.686
+        • Boundary dissipation resumes, integrated from z_PT (not from z_eq)
+        → σ₈ less suppressed than standard BPR  (improves S8 tension)
+
+    QUANTITATIVE IMPROVEMENT
+    ------------------------
+    Standard BPR:  σ₈ = 0.684 (overshoots WL = 0.748), S8 tension worsened
+    This (V2):     σ₈ ≈ 0.781, S8 ≈ 0.800 — closes ~45% of S8 tension
+    MOND (no PT):  S8 unchanged, JWST boosted but S8 tension worsened
+    """
+
+    @property
+    def z_pt(self) -> float:
+        """Critical phase-transition redshift from Γ_b(z_PT) = ω_MOND.
+
+        Condition: H(z_PT) = p^{1/3} × a₀ / c
+
+        Solved in ΛCDM:  (1+z_PT)³ = (E_target² − Ω_Λ) / Ω_m
+        where E_target = p^{1/3} × a₀ / (c H₀).
+        """
+        H0_si      = _H0_PLANCK * 1000.0 / 3.086e22   # s⁻¹
+        omega_MOND = self.mond_a0 / 3e8                 # a₀/c  [s⁻¹]
+        H_target   = self.p ** (1.0 / 3.0) * omega_MOND
+        E_target   = H_target / H0_si
+        om = _OMEGA_M
+        ol = 1.0 - om
+        one_plus_z_cubed = max((E_target ** 2 - ol) / om, 1.0)
+        return one_plus_z_cubed ** (1.0 / 3.0) - 1.0
+
+    def boundary_growth_suppression_v2(self, z_form: float) -> float:
+        """Boundary dissipation integrated from z_PT to z_form (not from z_eq).
+
+        At z > z_PT the boundary is in the MOND-active (high-impedance) state
+        and dissipation is suspended.  After the Class C transition at z_PT,
+        dissipation resumes from z_PT downward.
+
+            f = exp(−Δln(a) / p^{1/3}),  Δln(a) = ln((1+z_PT)/(1+z_form))
+        """
+        z_pt = self.z_pt
+        if z_form >= z_pt:
+            return 1.0   # dissipation suspended during MOND epoch
+        delta_lna = math.log((1.0 + z_pt) / (1.0 + z_form))
+        return math.exp(-delta_lna / self.p ** (1.0 / 3.0))
+
+    @property
+    def sigma8_v2(self) -> float:
+        """σ₈ from Theory IV V2.
+
+        At z=0 << z_PT: gravity is Newtonian (no MOND boost), dissipation
+        integrated only from z_PT ≈ 5.1 to z=0 (shorter lever arm than
+        standard BPR which integrates from z_eq=3400).
+
+        Result is less suppressed than standard BPR → improves S8 tension.
+        """
+        k_sigma8 = 0.2
+        sigma_r  = self.sigma_ratio(k_sigma8)
+        f_growth = self.boundary_growth_suppression_v2(z_form=0.0)
+        G_ratio  = self.G_eff_ratio(k_sigma8)
+        return _SIGMA8_PLANCK * sigma_r * f_growth * math.sqrt(G_ratio)
+
+    @property
+    def S8_v2(self) -> float:
+        """BPR V2  S₈ = σ₈_V2 √(Ωm / 0.3)."""
+        return self.sigma8_v2 * math.sqrt(_OMEGA_M / 0.3)
+
+    def uv_luminosity_function_v2(self, M_UV: float, z: float) -> float:
+        """log₁₀(φ) with Theory IV phase-transition gated MOND.
+
+        z > z_PT : MOND δ_c=1.33, boundary dissipation suspended (f=1)
+        z ≤ z_PT : Newtonian δ_c=1.686, dissipation from z_PT to z
+        """
+        log_phi_lcdm = self._lcdm.uv_luminosity_function(M_UV, z)
+
+        M_halo  = 1e11 * 10.0 ** (-0.4 * (M_UV + 21.0))
+        sigma_z = self._lcdm.sigma_M_at_z(M_halo, z)
+        sigma_z = max(sigma_z, 1e-6)
+
+        z_pt = self.z_pt
+        delta_c_newton = 1.686
+        delta_c_eff    = 1.33 if z > z_pt else delta_c_newton
+
+        nu_n = delta_c_newton / sigma_z
+        nu_e = delta_c_eff   / sigma_z
+
+        # PS ratio in log₁₀; zero if still Newtonian (z ≤ z_PT)
+        if delta_c_eff < delta_c_newton:
+            log_ratio = (math.log10(nu_e / nu_n)
+                         + (nu_n ** 2 - nu_e ** 2) / (2.0 * math.log(10.0)))
+            log_ratio = max(-4.0, min(4.0, log_ratio))
+        else:
+            log_ratio = 0.0
+
+        # Δn_s spectral correction (always active)
+        rho_m0 = 2.775e11 * _OMEGA_M * (_H0_PLANCK / 100.0) ** 2
+        R      = (3.0 * M_halo / (4.0 * math.pi * rho_m0)) ** (1.0 / 3.0)
+        k_halo = 2.0 * math.pi / max(R, 0.01)
+        delta_ns_corr = 3.0 * math.log10(self.sigma_ratio(k_halo))
+
+        # Boundary dissipation (only active at z < z_PT)
+        f_growth    = self.boundary_growth_suppression_v2(z_form=z)
+        dissip_corr = 3.0 * math.log10(max(f_growth, 1e-10))
+
+        return log_phi_lcdm + log_ratio + delta_ns_corr + dissip_corr
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 #  COUPLING GAP ANALYSIS
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -464,8 +604,9 @@ def hubble_tension_fraction(H0_bpr: float) -> float:
 
 def run_jwst_comparison(p: int = _P) -> dict:
     """Run all three JWST anomaly comparisons and return a results dict."""
-    bpr   = BPRCosmology(p=p)
-    lcdm  = LambdaCDM()
+    bpr    = BPRCosmology(p=p)
+    bpr_v2 = BPRCosmologyV2(p=p)
+    lcdm   = LambdaCDM()
 
     results = {}
 
@@ -482,19 +623,25 @@ def run_jwst_comparison(p: int = _P) -> dict:
     }
 
     # ── 2. S8 tension ─────────────────────────────────────────────────────
-    S8_bpr = bpr.S8_bpr
+    S8_bpr    = bpr.S8_bpr
+    S8_bpr_v2 = bpr_v2.S8_v2
     S8_tension_sigma = (_S8_PLANCK - _S8_WL_OBS) / _S8_WL_ERR
-    raw_fraction = (_S8_PLANCK - S8_bpr) / (_S8_PLANCK - _S8_WL_OBS)
-    # fraction > 1.0 means BPR overshoots (suppresses MORE than required)
+    raw_fraction    = (_S8_PLANCK - S8_bpr)    / (_S8_PLANCK - _S8_WL_OBS)
+    raw_fraction_v2 = (_S8_PLANCK - S8_bpr_v2) / (_S8_PLANCK - _S8_WL_OBS)
     results["s8_tension"] = {
-        "S8_planck":       _S8_PLANCK,
-        "S8_observed_WL":  _S8_WL_OBS,
-        "S8_bpr":          S8_bpr,
-        "sigma8_bpr":      bpr.sigma8_bpr,
-        "tension_sigma_lcdm": S8_tension_sigma,
-        "tension_sigma_bpr":  abs(S8_bpr - _S8_WL_OBS) / _S8_WL_ERR,
-        "fraction_explained": raw_fraction,      # may exceed 1.0 (overshoot)
-        "overshoots": S8_bpr < _S8_WL_OBS,      # True if BPR goes past target
+        "S8_planck":            _S8_PLANCK,
+        "S8_observed_WL":       _S8_WL_OBS,
+        "S8_bpr":               S8_bpr,
+        "sigma8_bpr":           bpr.sigma8_bpr,
+        "S8_bpr_v2":            S8_bpr_v2,
+        "sigma8_bpr_v2":        bpr_v2.sigma8_v2,
+        "tension_sigma_lcdm":   S8_tension_sigma,
+        "tension_sigma_bpr":    abs(S8_bpr    - _S8_WL_OBS) / _S8_WL_ERR,
+        "tension_sigma_bpr_v2": abs(S8_bpr_v2 - _S8_WL_OBS) / _S8_WL_ERR,
+        "fraction_explained":   raw_fraction,      # may exceed 1.0 (overshoot)
+        "fraction_explained_v2": raw_fraction_v2,
+        "overshoots":    S8_bpr    < _S8_WL_OBS,
+        "overshoots_v2": S8_bpr_v2 < _S8_WL_OBS,
     }
 
     # ── 3. JWST UV LF ─────────────────────────────────────────────────────
@@ -503,11 +650,14 @@ def run_jwst_comparison(p: int = _P) -> dict:
         log_phi_lcdm = lcdm.uv_luminosity_function(pt.M_UV, pt.z)
         log_phi_bpr  = bpr.uv_luminosity_function(pt.M_UV, pt.z)
         log_phi_mond = bpr.uv_luminosity_function_mond(pt.M_UV, pt.z)
+        log_phi_v2   = bpr_v2.uv_luminosity_function_v2(pt.M_UV, pt.z)
         gap_lcdm     = pt.log_phi - log_phi_lcdm
         gap_bpr      = pt.log_phi - log_phi_bpr
         gap_mond     = pt.log_phi - log_phi_mond
+        gap_v2       = pt.log_phi - log_phi_v2
         bpr_closes   = (gap_lcdm - gap_bpr)  / abs(gap_lcdm) if gap_lcdm != 0 else 0
         mond_closes  = (gap_lcdm - gap_mond) / abs(gap_lcdm) if gap_lcdm != 0 else 0
+        v2_closes    = (gap_lcdm - gap_v2)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
 
         sigma_needed = required_sigma_enhancement(pt.log_phi, log_phi_lcdm)
         n_s_needed   = required_n_s(sigma_needed, k_Mpc=5.0)
@@ -519,11 +669,14 @@ def run_jwst_comparison(p: int = _P) -> dict:
             "log_phi_lcdm": log_phi_lcdm,
             "log_phi_bpr": log_phi_bpr,
             "log_phi_mond": log_phi_mond,
+            "log_phi_v2":  log_phi_v2,
             "gap_lcdm_dex": gap_lcdm,
             "gap_bpr_dex":  gap_bpr,
             "gap_mond_dex": gap_mond,
+            "gap_v2_dex":   gap_v2,
             "bpr_fraction_closed":  bpr_closes,
             "mond_fraction_closed": mond_closes,
+            "v2_fraction_closed":   v2_closes,
             "sigma_ratio_needed": sigma_needed,
             "n_s_needed_to_explain": n_s_needed,
             "source": pt.source,
@@ -531,12 +684,13 @@ def run_jwst_comparison(p: int = _P) -> dict:
 
     results["jwst_uv_lf"] = uv_comparisons
     results["bpr_params"] = {
-        "p":          p,
-        "n_s_bpr":    bpr.n_s,
-        "n_s_lcdm":   0.9649,
-        "delta_n_s":  bpr.n_s - 0.9649,
-        "delta_Neff": bpr.delta_Neff,
+        "p":            p,
+        "n_s_bpr":      bpr.n_s,
+        "n_s_lcdm":     0.9649,
+        "delta_n_s":    bpr.n_s - 0.9649,
+        "delta_Neff":   bpr.delta_Neff,
         "mond_a0_m_s2": bpr.mond_a0,
+        "z_pt":         bpr_v2.z_pt,
     }
 
     return results
