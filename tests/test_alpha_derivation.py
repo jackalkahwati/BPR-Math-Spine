@@ -1,5 +1,5 @@
 """
-Tests for Theory XXII: Fine Structure Constant from Substrate.
+Tests for Fine Structure Constant from Substrate
 
 Run with:  pytest -v tests/test_alpha_derivation.py
 """

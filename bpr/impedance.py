@@ -1,5 +1,5 @@
 """
-Theory II: Vacuum Impedance Mismatch Theory
+Vacuum Impedance Mismatch
 =============================================
 
 Derives dark-matter phenomenology, dark-energy density, and the MOND

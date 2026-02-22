@@ -173,7 +173,7 @@ class SubstrateDerivedTheories:
         return obj
 
     # ------------------------------------------------------------------
-    # Theory I: Memory
+    # Boundary Memory Dynamics
     # ------------------------------------------------------------------
     def memory_kernel_params(self, W: float = 0.0,
                               alpha: float = 1.0) -> th1.MemoryKernelParams:
@@ -187,7 +187,7 @@ class SubstrateDerivedTheories:
         )
 
     # ------------------------------------------------------------------
-    # Theory II: Impedance / Dark Sector
+    # Vacuum Impedance Mismatch
     # ------------------------------------------------------------------
     def topological_impedance(self) -> th2.TopologicalImpedance:
         return th2.TopologicalImpedance(W_c=self.W_c)
@@ -209,7 +209,7 @@ class SubstrateDerivedTheories:
         )
 
     # ------------------------------------------------------------------
-    # Theory III: Decoherence
+    # Boundary-Induced Decoherence
     # ------------------------------------------------------------------
     def decoherence_rate_obj(self, T: float = 300.0,
                               Z_system: float = 376.73,
@@ -223,7 +223,7 @@ class SubstrateDerivedTheories:
         )
 
     # ------------------------------------------------------------------
-    # Theory IV: Phase Transitions
+    # Universal Phase Transition Taxonomy
     # ------------------------------------------------------------------
     def critical_exponents(self) -> dict:
         """Substrate critical exponents for d=3 Class B transitions."""
@@ -234,7 +234,7 @@ class SubstrateDerivedTheories:
         return th4.kibble_zurek_defect_density(tau_quench, d=d)
 
     # ------------------------------------------------------------------
-    # Theory V: Neutrinos
+    # Boundary-Mediated Neutrino Dynamics
     # ------------------------------------------------------------------
     def neutrino_spectrum(self) -> th5.NeutrinoMassSpectrum:
         return th5.NeutrinoMassSpectrum()
@@ -246,7 +246,7 @@ class SubstrateDerivedTheories:
         return th5.PMNSMatrix(p=self.params.p)
 
     # ------------------------------------------------------------------
-    # Theory VI: Information Geometry
+    # Substrate Information Geometry
     # ------------------------------------------------------------------
     def cramer_rao(self, N_measurements: int = 100,
                     W: float = 1.0) -> th6.TopologicalCramerRao:
@@ -254,13 +254,13 @@ class SubstrateDerivedTheories:
         return th6.TopologicalCramerRao(N=N_measurements, F_max=F_max, W=W)
 
     # ------------------------------------------------------------------
-    # Theory VII: Gravitational Waves
+    # Gravitational Wave Phenomenology
     # ------------------------------------------------------------------
     def gw_propagation(self) -> th7.GWPropagation:
         return th7.GWPropagation()
 
     # ------------------------------------------------------------------
-    # Theory VIII: Complexity
+    # Substrate Complexity
     # ------------------------------------------------------------------
     def topological_parallelism(self, W: float = 1.0) -> th8.TopologicalParallelism:
         return th8.TopologicalParallelism(p=self.params.p, W=W)
@@ -269,7 +269,7 @@ class SubstrateDerivedTheories:
         return th8.TopologicalComplexityBound(n=n_input, p=self.params.p)
 
     # ------------------------------------------------------------------
-    # Theory IX: Bioelectric
+    # Bioelectric Substrate Coupling
     # ------------------------------------------------------------------
     def morphogenetic_field(self, n_cells: int = 100,
                              V_mem: Optional[np.ndarray] = None) -> th9.MorphogeneticField:
@@ -288,7 +288,7 @@ class SubstrateDerivedTheories:
         )
 
     # ------------------------------------------------------------------
-    # Theory X: Collective
+    # Resonant Collective Dynamics
     # ------------------------------------------------------------------
     def kuramoto(self, N_agents: int = 100,
                   K: Optional[float] = None) -> th10.KuramotoFlocking:
@@ -301,7 +301,7 @@ class SubstrateDerivedTheories:
         return th10.TippingPoint(mean_degree=mean_degree, N=N_pop)
 
     # ------------------------------------------------------------------
-    # Theory XI: Cosmology
+    # BPR Cosmology & Early Universe
     # ------------------------------------------------------------------
     def inflation(self) -> th11.InflationaryParameters:
         return th11.InflationaryParameters(p=self.params.p, d=3)
@@ -314,7 +314,7 @@ class SubstrateDerivedTheories:
         return th11.CMBAnomaly(p=self.params.p)
 
     # ------------------------------------------------------------------
-    # Theory XII: QCD & Flavor Physics
+    # QCD & Flavor Physics
     # ------------------------------------------------------------------
     def quark_masses(self) -> th12.QuarkMassSpectrum:
         v_EW = th17.electroweak_scale_GeV(
@@ -331,7 +331,7 @@ class SubstrateDerivedTheories:
         return th12.ColorConfinement(kappa=self.kappa, xi=self.xi)
 
     # ------------------------------------------------------------------
-    # Theory XIII: Emergent Spacetime
+    # Emergent Spacetime & Holography
     # ------------------------------------------------------------------
     def emergent_dimensions(self) -> th13.EmergentDimensions:
         geo = self.params.geometry.value
@@ -345,7 +345,7 @@ class SubstrateDerivedTheories:
         return th13.BekensteinBound(R=R, E=E)
 
     # ------------------------------------------------------------------
-    # Theory XIV: Topological Condensed Matter
+    # Topological Condensed Matter
     # ------------------------------------------------------------------
     def quantum_hall(self, nu: int = 1) -> th14.QuantumHallEffect:
         return th14.QuantumHallEffect(nu=nu)
@@ -357,13 +357,13 @@ class SubstrateDerivedTheories:
         return th14.AnyonStatistics(W=W, p=self.params.p)
 
     # ------------------------------------------------------------------
-    # Theory XV: Clifford Algebra
+    # Clifford Algebra Embedding
     # ------------------------------------------------------------------
     def cliffordon_spectrum(self) -> th15.CliffordonSpectrum:
         return th15.CliffordonSpectrum(p=self.params.p)
 
     # ------------------------------------------------------------------
-    # Theory XVI: Quantum Foundations
+    # Quantum Foundations
     # ------------------------------------------------------------------
     def born_rule(self) -> th16.BornRule:
         return th16.BornRule(p=self.params.p)
@@ -375,7 +375,7 @@ class SubstrateDerivedTheories:
         return th16.BellInequality(p=self.params.p)
 
     # ------------------------------------------------------------------
-    # Theory XVII: Gauge Unification
+    # Gauge Unification & Hierarchy
     # ------------------------------------------------------------------
     def gauge_running(self) -> th17.GaugeCouplingRunning:
         return th17.GaugeCouplingRunning(p=self.params.p)
@@ -392,7 +392,7 @@ class SubstrateDerivedTheories:
         return th17.HiggsMass(p=self.params.p, z=z)
 
     # ------------------------------------------------------------------
-    # Theory XVIII: Charged Leptons
+    # Charged Lepton Masses
     # ------------------------------------------------------------------
     def charged_leptons(self) -> th18.ChargedLeptonSpectrum:
         v_EW = th17.electroweak_scale_GeV(
@@ -409,7 +409,7 @@ class SubstrateDerivedTheories:
         return th18.LeptonUniversality(p=self.params.p)
 
     # ------------------------------------------------------------------
-    # Theory XIX: Nuclear Physics
+    # Nuclear Physics from Boundary Shell
     # ------------------------------------------------------------------
     def _nuclear_saturation_density(self) -> float:
         """Saturation density from boundary mode packing (r_ch = 1.25 fm)."""
@@ -425,7 +425,7 @@ class SubstrateDerivedTheories:
             kappa_dim=self.kappa_dim, xi=self.xi, n_sat_fm3=n_sat)
 
     # ------------------------------------------------------------------
-    # Theory XX: Quantum Gravity Phenomenology
+    # Quantum Gravity Phenomenology
     # ------------------------------------------------------------------
     def modified_dispersion(self) -> th20.ModifiedDispersion:
         return th20.ModifiedDispersion(p=self.params.p)
@@ -437,7 +437,7 @@ class SubstrateDerivedTheories:
         return th20.LorentzInvariance(p=self.params.p)
 
     # ------------------------------------------------------------------
-    # Theory XXIII: Meta-Boundary Dynamics with Decree
+    # Meta-Boundary Dynamics
     # ------------------------------------------------------------------
 
     def meta_boundary_params(self) -> th23.MetaBoundaryParams:
@@ -445,15 +445,13 @@ class SubstrateDerivedTheories:
         return th23.MetaBoundaryParams()
 
     # ------------------------------------------------------------------
-    # Theory XXIV: Spectral Statistics (Katz-Sarnak + GUE)
+    # Emergent Physics from Prime Substrates(Katz-Sarnak + GUE)
     # ------------------------------------------------------------------
 
     def spectral_statistics(self, p: Optional[int] = None) -> Dict[str, Any]:
         """Katz-Sarnak Frobenius equidistribution + Riemann zero GUE statistics.
 
-        Connects the two proven spectral-statistics results of Theory XXIV:
-
-        1. **Katz-Sarnak chain** (Theorem 5.1): Frobenius eigenangles of the
+        Connects the two proven spectral-statistics results of Emergent Physics from Prime Substrates**Katz-Sarnak chain** (Theorem 5.1): Frobenius eigenangles of the
            family E_{a,1}: y²=x³+ax+1 over F_p equidistribute toward USp(2)
            Haar measure at rate D_p = O(1/√p).
 
@@ -510,7 +508,7 @@ class SubstrateDerivedTheories:
         }
 
     # ------------------------------------------------------------------
-    # Theory XXI: Quantum Chemistry
+    # Quantum Chemistry & Periodic Table
     # ------------------------------------------------------------------
 
     # ==================================================================
@@ -575,61 +573,61 @@ class SubstrateDerivedTheories:
         # ORIGINAL 40 PREDICTIONS
         # ==================================================================
 
-        # ── Theory I: Memory ──
+        # ── Boundary Memory Dynamics──
         preds["P1.1_oscillatory_decay"] = "sign-changing C(τ), not pure exponential"
         preds["P1.2_prime_harmonic_omega"] = mk.omega_r
         preds["P1.3_memory_time_scales_with_Phi"] = "τ_m ∝ Φ^α, α ≥ 1"
         preds["P1.4_error_rate_period"] = 2.0 * np.pi / mk.omega_r
 
-        # ── Theory II: Dark Sector ──
+        # ── Vacuum Impedance Mismatch──
         preds["P2.1_DM_prime_periodic"] = "ρ_DM(r) has Fourier components at γ_n/R"
         preds["P2.2_MOND_a0"] = mond_obj.a0
         preds["P2.3_WIMP_null_above_Wc"] = self.W_c
         preds["P2.4_Bullet_Cluster_nW_threshold"] = "offset ∝ n_W"
 
-        # ── Theory III: Decoherence ──
+        # ── Boundary-Induced Decoherence──
         dr = self.decoherence_rate_obj(T=300.0)
         preds["P3.1_Gamma_scales_DeltaZ_sq"] = dr.gamma_dec
         preds["P3.2_pointer_basis_from_geometry"] = "eigenstates of B(φ)"
         preds["P3.3_DFS_zero_reflection"] = "decoherence-free ↔ zero reflection"
         preds["P3.4_cryo_deviation_from_linear_T"] = "Γ(T) sub-linear below T_quantum"
 
-        # ── Theory IV: Phase Transitions ──
+        # ── Universal Phase Transition Taxonomy──
         preds["P4.1_QCD_deconf_nu"] = exps["nu"]
         preds["P4.1_QCD_deconf_beta"] = exps["beta"]
         preds["P4.1_QCD_deconf_gamma"] = exps["gamma"]
         preds["P4.2_KZ_consciousness"] = "EEG defect density ∝ clearance rate"
         preds["P4.3_EW_frustration"] = "correlates with boundary frustration"
 
-        # ── Theory V: Neutrinos ──
+        # ── Boundary-Mediated Neutrino Dynamics──
         preds["P5.1_hierarchy"] = ns.hierarchy
         preds["P5.2_sum_masses_eV"] = float(np.sum(ns.masses_eV))
         preds["P5.3_0nu_beta_beta"] = self.neutrino_nature()
         preds["P5.4_deltaCP"] = "boundary phase mismatch"
 
-        # ── Theory VI: Information Geometry ──
+        # ── Substrate Information Geometry──
         cr = self.cramer_rao(N_measurements=1000, W=2.0)
         preds["P6.1_QFI_scales_W_sq"] = cr.quantum_advantage_factor()
         preds["P6.2_thermo_length_bound"] = "tighter than standard 2nd law"
         preds["P6.3_Kr_curvature"] = "detectable in precision RG measurements"
 
-        # ── Theory VII: Gravitational Waves ──
+        # ── Gravitational Wave Phenomenology──
         preds["P7.1_vGW_equals_c"] = gw.dispersion
         preds["P7.2_GW_memory_fine_structure"] = f"prime harmonics at p={self.params.p}"
         preds["P7.3_stochastic_background"] = "prime-periodic spectral features"
 
-        # ── Theory VIII: Complexity ──
+        # ── Substrate Complexity──
         preds["P8.1_quantum_advantage_pW"] = cb.winding_sectors_to_search
         preds["P8.2_error_correction_topological"] = "overhead ∝ topological complexity"
         preds["P8.3_adiabatic_gap"] = th8.adiabatic_gap(n=20, p=self.params.p)
 
-        # ── Theory IX: Bioelectric ──
+        # ── Bioelectric Substrate Coupling──
         preds["P9.1_morphogenetic_consistency"] = "φ_morph dynamics, not random"
         preds["P9.2_gap_junction_regeneration"] = f"κ_bio = {self.kappa:.4f}"
         preds["P9.3_Wcell_cancer"] = "aberrant W predicts susceptibility"
         preds["P9.4_aging_biomarker_coherence"] = f"τ₀ = {self.tau_0:.4e} s"
 
-        # ── Theory X: Collective ──
+        # ── Resonant Collective Dynamics──
         tp = self.tipping_point(mean_degree=10)
         preds["P10.1_flocking_class_C_exponents"] = "Class C impedance transition"
         preds["P10.2_crash_impedance_resonance"] = "correlated, not random walk"
@@ -638,7 +636,7 @@ class SubstrateDerivedTheories:
 
         # ── Cross-theory (§13) ──
         preds["P13.1_memory_decoherence_coupling"] = "Γ(t) = Γ₀(1 - M(t,t))"
-        preds["P13.2_gw_memory_from_kernel"] = "GW memory = Theory I kernel in grav sector"
+        preds["P13.2_gw_memory_from_kernel"] = "GW memory = Boundary Memory Dynamics kernel in grav sector"
 
         # ==================================================================
         # EXTENDED PREDICTIONS (20 new)
@@ -807,7 +805,7 @@ class SubstrateDerivedTheories:
         # THEORIES XI–XVI:  ~60 NEW PREDICTIONS
         # ==================================================================
 
-        # ── Theory XI: Cosmology & Early Universe ──
+        # ── BPR Cosmology & Early Universe──
         infl = self.inflation()
         bary = self.baryogenesis()
         cmb = self.cmb_anomaly()
@@ -830,7 +828,7 @@ class SubstrateDerivedTheories:
                                          kappa_dim=self.kappa_dim)
         preds["P11.15_DM_relic_Omega_h2"] = dm_relic.relic_abundance
 
-        # ── Theory XII: QCD & Flavor Physics ──
+        # ── QCD & Flavor Physics──
         quarks = self.quark_masses()
         ckm = self.ckm()
         ckm_angles = ckm.mixing_angles()
@@ -851,7 +849,7 @@ class SubstrateDerivedTheories:
         preds["P12.13_proton_mass_GeV"] = th12.proton_mass_from_confinement()
         preds["P12.14_pion_mass_MeV"] = th12.pion_mass()
 
-        # ── Theory XIII: Emergent Spacetime ──
+        # ── Emergent Spacetime & Holography──
         ed = self.emergent_dimensions()
         preds["P13.3_spatial_dimensions"] = ed.spatial_dimensions
         preds["P13.4_time_dimensions"] = ed.time_dimensions
@@ -866,7 +864,7 @@ class SubstrateDerivedTheories:
         preds["P13.11_scrambling_time_1Msun_s"] = th13.scrambling_time(1.0)
         preds["P13.12_page_time_1Msun_s"] = th13.page_time(1.0)
 
-        # ── Theory XIV: Topological Condensed Matter ──
+        # ── Topological Condensed Matter──
         qhe = self.quantum_hall(nu=1)
         ti = self.topological_insulator(W=1)
         anyon = self.anyons(W=1)
@@ -886,7 +884,7 @@ class SubstrateDerivedTheories:
         preds["P14.12_conductance_quantum_S"] = (
             th14.QuantizedConductance(1).conductance)
 
-        # ── Theory XV: Clifford Algebra ──
+        # ── Clifford Algebra Embedding──
         cliff = self.cliffordon_spectrum()
         preds["P15.1_clifford_algebra_dim"] = th15.clifford_dimension(3)
         preds["P15.2_spinor_dim"] = th15.spinor_dimension(3)
@@ -895,7 +893,7 @@ class SubstrateDerivedTheories:
         preds["P15.5_cliffordon_n1_stable"] = cliff.stability_criterion(1)
         preds["P15.6_multivector_components"] = 8  # Cl(3,0)
 
-        # ── Theory XVI: Quantum Foundations ──
+        # ── Quantum Foundations──
         br = self.born_rule()
         at = self.arrow_of_time()
         bell = self.bell_inequality()
@@ -924,7 +922,7 @@ class SubstrateDerivedTheories:
         # THEORIES XVII–XXI:  ~35 NEW PREDICTIONS
         # ==================================================================
 
-        # ── Theory XVII: Gauge Unification ──
+        # ── Gauge Unification & Hierarchy──
         gc = self.gauge_running()
         hier = self.hierarchy()
         pdec = self.proton_decay()
@@ -946,7 +944,7 @@ class SubstrateDerivedTheories:
         preds["P17.12_higgs_lambda"] = hm.lambda_H
         preds["P17.13_v_EW_GeV"] = hm.v_EW_GeV  # derived from Λ_QCD × p^(1/3) × (ln(p) + z − 2)
 
-        # ── Theory XVIII: Charged Leptons ──
+        # ── Charged Lepton Masses──
         lep = self.charged_leptons()
         lep_m = lep.all_masses_MeV
         lu = self.lepton_universality()
@@ -960,7 +958,7 @@ class SubstrateDerivedTheories:
         preds["P18.7_R_K_prediction"] = lu.R_K_prediction
         preds["P18.8_universality_holds"] = lu.universality_holds
 
-        # ── Theory XIX: Nuclear Physics ──
+        # ── Nuclear Physics from Boundary Shell──
         preds["P19.5_magic_numbers"] = th19.magic_numbers_bpr()
         preds["P19.6_doubly_magic_208Pb"] = th19.is_magic(82, 126)["doubly_magic"]
         n_sat = self._nuclear_saturation_density()
@@ -973,7 +971,7 @@ class SubstrateDerivedTheories:
         preds["P19.11_NS_radius_km"] = ns.typical_radius_km
         preds["P19.12_quark_core_possible"] = ns.quark_core_possible
 
-        # ── Theory XX: Quantum Gravity Phenomenology ──
+        # ── Quantum Gravity Phenomenology──
         md = self.modified_dispersion()
         gup = self.gup()
         li = self.lorentz_invariance()
@@ -989,7 +987,7 @@ class SubstrateDerivedTheories:
         preds["P20.9_LI_orders_below_bound"] = li.orders_below_bound
         preds["P20.10_deformed_commutator"] = th20.deformed_commutator(self.params.p)
 
-        # ── Theory XXI: Quantum Chemistry ──
+        # ── Quantum Chemistry & Periodic Table──
         preds["P21.1_noble_gas_Z"] = th21.noble_gas_numbers()
         preds["P21.2_shell_1s_capacity"] = th21.shell_capacity(1, 0)
         preds["P21.3_shell_2p_capacity"] = th21.shell_capacity(2, 1)
@@ -1000,7 +998,7 @@ class SubstrateDerivedTheories:
         preds["P21.6_N2_bond_order"] = th21.ChemicalBond(
             overlap=0.5, n_shared_modes=3).bond_order
 
-        # ── Theory XXII: Fine Structure Constant ──
+        # ── Fine Structure Constant from Substrate ──
         alpha_result = th22.derive_alpha(p=self.params.p,
                                           z=self.params.coordination_number)
         alpha_bd = th22.alpha_breakdown(p=self.params.p,
@@ -1017,7 +1015,7 @@ class SubstrateDerivedTheories:
         preds["P22.9_bare_coupling_kappa"] = alpha_bd.bare
         preds["P22.10_formula"] = "1/α = [ln(p)]² + z/2 + γ − 1/(2π)"
 
-        # ── Theory XXIII: Meta-Boundary Dynamics with Decree ──
+        # ── Meta-Boundary Dynamics──
         mb_preds = th23.meta_boundary_predictions(
             kappa_rigidity=self.kappa,
             xi=self.xi,
@@ -1025,7 +1023,7 @@ class SubstrateDerivedTheories:
         for k, v in mb_preds.items():
             preds[k] = v
 
-        # ── Theory XXIV: Katz-Sarnak + GUE spectral statistics ──
+        # ── Emergent Physics from Prime Substrates──
         # Use small prime (p=97) for speed; full results via spectral_statistics()
         ss = self.spectral_statistics(p=97)
         preds["P24.1_frobenius_ks_distance_usp2"] = ss["ks_distance_usp2"]

@@ -1,5 +1,5 @@
 """
-Theory XIX: Nuclear Physics from Boundary Shell Structure
+Nuclear Physics from Boundary Shell
 ===========================================================
 
 Derives nuclear magic numbers, binding energies, and neutron star

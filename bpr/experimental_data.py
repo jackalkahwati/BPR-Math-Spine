@@ -88,7 +88,7 @@ class Measurement:
 # ═══════════════════════════════════════════════════════════════════════
 
 _REGISTRY: list[Measurement] = [
-    # ─── Theory V: Neutrino Physics ──────────────────────────────────
+    # ─── Boundary-Mediated Neutrino Dynamics──────────────────────────────────
     Measurement(
         prediction_id="P5.5_theta12_deg",
         name="Neutrino mixing angle θ₁₂",
@@ -141,7 +141,7 @@ _REGISTRY: list[Measurement] = [
         bpr_status="DERIVED",
     ),
 
-    # ─── Theory II: Impedance / Dark Sector ──────────────────────────
+    # ─── Vacuum Impedance Mismatch──────────────────────────
     Measurement(
         prediction_id="P2.2_MOND_a0",
         name="MOND acceleration scale a₀",
@@ -166,7 +166,7 @@ _REGISTRY: list[Measurement] = [
         bpr_status="DERIVED",
     ),
 
-    # ─── Theory XI: Cosmology ────────────────────────────────────────
+    # ─── BPR Cosmology & Early Universe────────────────────────────────────────
     Measurement(
         prediction_id="P11.2_spectral_index",
         name="Scalar spectral index n_s",
@@ -205,7 +205,7 @@ _REGISTRY: list[Measurement] = [
         bpr_status="DERIVED",
     ),
 
-    # ─── Theory IV: Phase Transitions ────────────────────────────────
+    # ─── Universal Phase Transition Taxonomy────────────────────────────────
     Measurement(
         prediction_id="P4.7_Tc_niobium_K",
         name="Superconducting Tc (Niobium)",
@@ -221,7 +221,7 @@ _REGISTRY: list[Measurement] = [
         bpr_status="DERIVED",  # N0V from E_F_eff = 2×(E_σ+E_π)
     ),
 
-    # ─── Theory XII: QCD & Flavor ────────────────────────────────────
+    # ─── QCD & Flavor Physics────────────────────────────────────
     Measurement(
         prediction_id="P12.2_m_u_MeV",
         name="Up quark mass m_u",
@@ -307,7 +307,7 @@ _REGISTRY: list[Measurement] = [
         bpr_status="DERIVED",  # Condensate √(2/3) + NLO δ_π=6.2%
     ),
 
-    # ─── Theory XVII: Gauge Unification ──────────────────────────────
+    # ─── Gauge Unification & Hierarchy──────────────────────────────
     Measurement(
         prediction_id="P17.8_proton_lifetime_GUT_years",
         name="Proton lifetime (GUT prediction)",
@@ -324,7 +324,7 @@ _REGISTRY: list[Measurement] = [
         bpr_status="DERIVED",  # v = Λ_QCD × p^(1/3) × (ln(p) + z − 2)
     ),
 
-    # ─── Theory XVIII: Charged Leptons ───────────────────────────────
+    # ─── Charged Lepton Masses───────────────────────────────
     Measurement(
         prediction_id="P18.1_m_electron_MeV",
         name="Electron mass",
@@ -355,7 +355,7 @@ _REGISTRY: list[Measurement] = [
         bpr_status="DERIVED",  # Emerges from l² spectrum (Q ≈ 0.672, 0.75% from exact 2/3)
     ),
 
-    # ─── Theory XIX: Nuclear Physics ─────────────────────────────────
+    # ─── Nuclear Physics from Boundary Shell─────────────────────────────────
     Measurement(
         prediction_id="P19.7_B_per_A_Fe56_MeV",
         name="Binding energy per nucleon ⁵⁶Fe",
@@ -392,7 +392,7 @@ _REGISTRY: list[Measurement] = [
         bpr_status="DERIVED",  # R ∝ n_sat^(-1/3) from boundary-derived n_sat
     ),
 
-    # ─── Theory XX: QG Phenomenology ─────────────────────────────────
+    # ─── Quantum Gravity Phenomenology─────────────────────────────────
     Measurement(
         prediction_id="P20.7_LI_delta_c_over_c",
         name="Lorentz invariance violation |δc/c|",
@@ -418,7 +418,7 @@ _REGISTRY: list[Measurement] = [
         bpr_status="DERIVED",
     ),
 
-    # ─── Theory XIII: Emergent Spacetime ─────────────────────────────
+    # ─── Emergent Spacetime & Holography─────────────────────────────
     Measurement(
         prediction_id="P13.3_spatial_dimensions",
         name="Number of spatial dimensions",
@@ -451,7 +451,7 @@ _REGISTRY: list[Measurement] = [
         bpr_status="OPEN",
     ),
 
-    # ─── Theory XIV: Topological Matter ──────────────────────────────
+    # ─── Topological Condensed Matter──────────────────────────────
     Measurement(
         prediction_id="P14.2_hall_resistance_nu1_Ohm",
         name="von Klitzing constant R_K",
@@ -469,7 +469,7 @@ _REGISTRY: list[Measurement] = [
         bpr_status="CONSISTENT",
     ),
 
-    # ─── Theory XVI: Quantum Foundations ──────────────────────────────
+    # ─── Quantum Foundations──────────────────────────────
     Measurement(
         prediction_id="P16.7_bell_bpr_bound",
         name="Tsirelson bound 2√2",
@@ -479,7 +479,7 @@ _REGISTRY: list[Measurement] = [
         bpr_status="DERIVED",
     ),
 
-    # ─── Theory VII: GW ──────────────────────────────────────────────
+    # ─── Gravitational Wave Phenomenology──────────────────────────────────────────────
     Measurement(
         prediction_id="P7.1_vGW_equals_c",
         name="GW speed deviation |v_GW/c - 1|",

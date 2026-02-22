@@ -1,5 +1,5 @@
 """
-Theory VI: Substrate Information Geometry
+Substrate Information Geometry
 ==========================================
 
 Constructs the Fisher information metric on the space of coarse-grained

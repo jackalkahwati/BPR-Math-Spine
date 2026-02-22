@@ -10,7 +10,7 @@ import pytest
 
 
 # =====================================================================
-# Theory XVII: Gauge Unification
+# Gauge Unification & Hierarchy
 # =====================================================================
 
 class TestGaugeCoupling:
@@ -79,7 +79,7 @@ class TestWeinbergAngle:
 
 
 # =====================================================================
-# Theory XVIII: Charged Leptons
+# Charged Lepton Masses
 # =====================================================================
 
 class TestChargedLeptons:
@@ -136,7 +136,7 @@ class TestLeptonUniversality:
 
 
 # =====================================================================
-# Theory XIX: Nuclear Physics
+# Nuclear Physics from Boundary Shell
 # =====================================================================
 
 class TestMagicNumbers:
@@ -202,7 +202,7 @@ class TestNuclearRadius:
 
 
 # =====================================================================
-# Theory XX: Quantum Gravity Phenomenology
+# Quantum Gravity Phenomenology
 # =====================================================================
 
 class TestModifiedDispersion:
@@ -268,7 +268,7 @@ class TestHydrogenShift:
 
 
 # =====================================================================
-# Theory XXI: Quantum Chemistry
+# Quantum Chemistry & Periodic Table
 # =====================================================================
 
 class TestPeriodicTable:

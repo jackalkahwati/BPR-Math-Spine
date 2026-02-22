@@ -1,5 +1,5 @@
 """
-Theory XVI: Quantum Foundations from BPR Substrate
+Quantum Foundations
 ===================================================
 
 Derives the Born rule, arrow of time, Bell inequality bounds, and

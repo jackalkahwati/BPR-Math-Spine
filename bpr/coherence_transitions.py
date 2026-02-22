@@ -1,5 +1,5 @@
 """
-Theory XXII: Invariant Structure, Boundary Dynamics, and Symbolic Meaning
+Invariant Structure, Boundary Dynamics, and Symbolic Meaning
 ==========================================================================
 
 Constructs a formal translation layer between BPR substrate dynamics and

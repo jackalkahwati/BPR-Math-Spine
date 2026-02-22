@@ -91,31 +91,31 @@ __all__.extend(["RPST_AVAILABLE", "RESONANCE_AVAILABLE", "HKLL_AVAILABLE"])
 # ──────────────────────────────────────────────────────────────────────────
 
 try:
-    from . import memory            # Theory I    # noqa: F401
-    from . import impedance         # Theory II   # noqa: F401
-    from . import decoherence       # Theory III  # noqa: F401
-    from . import phase_transitions # Theory IV   # noqa: F401
-    from . import neutrino          # Theory V    # noqa: F401
-    from . import info_geometry     # Theory VI   # noqa: F401
-    from . import gravitational_waves  # Theory VII  # noqa: F401
-    from . import complexity        # Theory VIII # noqa: F401
-    from . import bioelectric       # Theory IX   # noqa: F401
-    from . import collective        # Theory X    # noqa: F401
+    from . import memory            # Boundary Memory Dynamics    # noqa: F401
+    from . import impedance         # Vacuum Impedance Mismatch   # noqa: F401
+    from . import decoherence       # Boundary-Induced Decoherence  # noqa: F401
+    from . import phase_transitions # Universal Phase Transition Taxonomy   # noqa: F401
+    from . import neutrino          # Boundary-Mediated Neutrino Dynamics    # noqa: F401
+    from . import info_geometry     # Substrate Information Geometry   # noqa: F401
+    from . import gravitational_waves  # Gravitational Wave Phenomenology  # noqa: F401
+    from . import complexity        # Substrate Complexity # noqa: F401
+    from . import bioelectric       # Bioelectric Substrate Coupling   # noqa: F401
+    from . import collective        # Resonant Collective Dynamics    # noqa: F401
     from . import black_hole        # BH entropy  # noqa: F401
-    from . import cosmology         # Theory XI   # noqa: F401
-    from . import qcd_flavor        # Theory XII  # noqa: F401
-    from . import emergent_spacetime  # Theory XIII  # noqa: F401
-    from . import topological_matter  # Theory XIV  # noqa: F401
-    from . import clifford_bpr      # Theory XV   # noqa: F401
-    from . import quantum_foundations  # Theory XVI  # noqa: F401
-    from . import gauge_unification   # Theory XVII # noqa: F401
-    from . import charged_leptons     # Theory XVIII# noqa: F401
-    from . import nuclear_physics     # Theory XIX  # noqa: F401
-    from . import quantum_gravity_pheno  # Theory XX  # noqa: F401
-    from . import quantum_chemistry   # Theory XXI  # noqa: F401
-    from . import coherence_transitions  # Theory XXII  # noqa: F401
-    from . import meta_boundary          # Theory XXIII # noqa: F401
-    from . import rpst_extensions        # Theory XXIV  # noqa: F401
+    from . import cosmology         # BPR Cosmology & Early Universe   # noqa: F401
+    from . import qcd_flavor        # QCD & Flavor Physics  # noqa: F401
+    from . import emergent_spacetime  # Emergent Spacetime & Holography  # noqa: F401
+    from . import topological_matter  # Topological Condensed Matter  # noqa: F401
+    from . import clifford_bpr      # Clifford Algebra Embedding   # noqa: F401
+    from . import quantum_foundations  # Quantum Foundations  # noqa: F401
+    from . import gauge_unification   # Gauge Unification & Hierarchy # noqa: F401
+    from . import charged_leptons     # Charged Lepton Masses# noqa: F401
+    from . import nuclear_physics     # Nuclear Physics from Boundary Shell  # noqa: F401
+    from . import quantum_gravity_pheno  # Quantum Gravity Phenomenology  # noqa: F401
+    from . import quantum_chemistry   # Quantum Chemistry & Periodic Table  # noqa: F401
+    from . import coherence_transitions  # Invariant Structure, Boundary Dynamics, and Symbolic Meaning  # noqa: F401
+    from . import meta_boundary          # Meta-Boundary Dynamics # noqa: F401
+    from . import rpst_extensions        # Emergent Physics from Prime Substrates  # noqa: F401
 
     ADJACENT_THEORIES_AVAILABLE = True
 except Exception:

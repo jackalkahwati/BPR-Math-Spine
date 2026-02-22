@@ -1,5 +1,5 @@
 """
-Tests for Theory XXII: Invariant Structure, Boundary Dynamics, and Symbolic Meaning.
+Tests for Invariant Structure, Boundary Dynamics, and Symbolic Meaning
 
 Tests cover all core mathematical constructs from the coherence_transitions module:
     - Stain dynamics (Eq 6)
