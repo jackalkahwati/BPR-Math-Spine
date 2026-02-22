@@ -409,3 +409,104 @@ class TestFullPipeline:
         sdt = SubstrateDerivedTheories.from_substrate()
         preds = sdt.predictions()
         assert preds["P2.16_proton_stable"] == True
+
+
+# ═══════════════════════════════════════════════════════════════════
+# Dark Sector: Derived Parameters (DarkSectorParameters, DarkEnergyDensity,
+#              DarkMatterProfile corrected zeros)
+# ═══════════════════════════════════════════════════════════════════
+
+class TestDarkSectorParameters:
+    def test_W_c_derived(self):
+        """W_c = p^{1/5} matches substrate-derived scale."""
+        from bpr.impedance import DarkSectorParameters, derived_critical_winding
+        dsp = DarkSectorParameters()
+        assert dsp.W_c == derived_critical_winding(104729)
+        # For p=104729: W_c ≈ 10.37
+        assert 10.0 < dsp.W_c < 11.0
+
+    def test_m_defect_tev_scale(self):
+        """DM soliton mass m_defect = p^{2/5} × v_EW is in the TeV range."""
+        from bpr.impedance import DarkSectorParameters
+        dsp = DarkSectorParameters()
+        assert 1000.0 < dsp.m_defect_GeV < 1e6, "m_defect should be 1–1000 TeV"
+
+    def test_p_cosmo_order_of_magnitude(self):
+        """p_cosmo = R_H/l_Pl is ~10^{61}."""
+        from bpr.impedance import DarkSectorParameters
+        dsp = DarkSectorParameters()
+        import math
+        log10_p = math.log10(dsp.p_cosmo)
+        assert 60 < log10_p < 63, f"p_cosmo expected ~10^{{61}}, got 10^{{{log10_p:.1f}}}"
+
+    def test_p_hierarchy_large(self):
+        """p_cosmo/p_local is a large hierarchy (~10^{56})."""
+        from bpr.impedance import DarkSectorParameters
+        import math
+        dsp = DarkSectorParameters()
+        log10_ratio = math.log10(dsp.p_hierarchy_ratio)
+        assert 50 < log10_ratio < 60
+
+    def test_relic_abundance_positive(self):
+        """Derived relic abundance (with W_c = p^{1/5}) is positive and finite."""
+        import math
+        from bpr.impedance import DarkSectorParameters
+        dsp = DarkSectorParameters()
+        Omega = dsp.relic_abundance
+        assert Omega > 0
+        assert math.isfinite(Omega)
+
+
+class TestDarkEnergyDensityHierarchy:
+    def test_p_cosmo_derived_positive(self):
+        """p_cosmo_derived = R_H/l_Pl is positive."""
+        from bpr.impedance import DarkEnergyDensity
+        de = DarkEnergyDensity()
+        assert de.p_cosmo_derived > 0
+
+    def test_rho_DE_derived_consistent(self):
+        """rho_DE_derived uses p_cosmo, not the historical default 10^{60}."""
+        from bpr.impedance import DarkEnergyDensity
+        de = DarkEnergyDensity()
+        # p_cosmo ≈ 2.72e61, not 1e60 — ratio should be ~27
+        ratio = de.rho_DE / de.rho_DE_derived
+        assert 10 < ratio < 100, (
+            f"rho_DE(p=1e60) / rho_DE_derived(p_cosmo) expected ~27, got {ratio:.1f}"
+        )
+
+    def test_rho_DE_positive(self):
+        """Both rho_DE variants are positive."""
+        from bpr.impedance import DarkEnergyDensity
+        de = DarkEnergyDensity()
+        assert de.rho_DE > 0
+        assert de.rho_DE_derived > 0
+
+
+class TestDarkMatterProfileCorrectedZeros:
+    def test_rpst_zeros_are_half_riemann(self):
+        """DarkMatterProfile _ZETA_ZEROS ≈ γ_n/2 (corrected RPST set)."""
+        from bpr.impedance import DarkMatterProfile
+        from bpr.rpst_extensions import RIEMANN_ZEROS
+        dm = DarkMatterProfile()
+        for i, (rpst, riemann) in enumerate(zip(dm._ZETA_ZEROS, RIEMANN_ZEROS[:10])):
+            expected = riemann / 2.0
+            assert abs(rpst - expected) < 1e-8, (
+                f"Zero {i+1}: got {rpst}, expected {expected}"
+            )
+
+    def test_profile_positive(self):
+        """Corrected-zero DM profile returns positive density."""
+        from bpr.impedance import DarkMatterProfile
+        import numpy as np
+        dm = DarkMatterProfile()
+        r = np.linspace(0.01, 10.0, 100)
+        rho = dm(r)
+        assert (rho > 0).all()
+
+    def test_zeros_smaller_than_riemann(self):
+        """Corrected RPST zeros are smaller than original Riemann zeros."""
+        from bpr.impedance import DarkMatterProfile
+        from bpr.rpst_extensions import RIEMANN_ZEROS
+        dm = DarkMatterProfile()
+        for rpst, riemann in zip(dm._ZETA_ZEROS, RIEMANN_ZEROS[:10]):
+            assert rpst < riemann

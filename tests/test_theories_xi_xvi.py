@@ -552,3 +552,62 @@ class TestFullPipelineV05:
         preds = sdt.predictions()
         assert preds["P13.3_spatial_dimensions"] == 3
         assert preds["P13.4_time_dimensions"] == 1
+
+
+# =====================================================================
+# BPR Dark Energy EoS  (§11.5b)
+# =====================================================================
+
+class TestBPRDarkEnergyEOS:
+    def test_w_equals_minus_one_above_z_PT(self):
+        """w(z) = -1 for z ≥ z_PT (no relaxation before phase transition)."""
+        from bpr.cosmology import BPRDarkEnergyEOS
+        eos = BPRDarkEnergyEOS()
+        for z in [eos.z_PT, eos.z_PT + 1.0, 10.0, 100.0]:
+            assert eos.w(z) == -1.0, f"w({z}) should be -1.0 above z_PT"
+
+    def test_w_close_to_minus_one_today(self):
+        """w(z=0) ≈ -1 (relaxation exponent ~94 makes deviation negligible)."""
+        from bpr.cosmology import BPRDarkEnergyEOS
+        eos = BPRDarkEnergyEOS()
+        # Deviation from -1 should be tiny (< 10^{-5})
+        assert abs(eos.w0 - (-1.0)) < 1e-5, (
+            f"w(z=0) = {eos.w0} deviates too much from -1.0"
+        )
+
+    def test_epsilon_small(self):
+        """Relaxation amplitude ε = 1/p^{1/3} is small."""
+        from bpr.cosmology import BPRDarkEnergyEOS
+        eos = BPRDarkEnergyEOS()
+        assert eos.epsilon < 0.1, f"ε = {eos.epsilon} should be < 0.1"
+
+    def test_w_array_input(self):
+        """w(z) accepts numpy array input and returns matching array."""
+        import numpy as np
+        from bpr.cosmology import BPRDarkEnergyEOS
+        eos = BPRDarkEnergyEOS()
+        z_arr = np.array([0.0, 1.0, eos.z_PT, eos.z_PT + 2.0])
+        w_arr = eos.w(z_arr)
+        assert w_arr.shape == z_arr.shape
+        assert w_arr[-1] == -1.0   # above z_PT
+        assert w_arr[-2] == -1.0   # exactly at z_PT
+
+    def test_desi_tension_keys(self):
+        """desi_tension dict contains the expected keys."""
+        from bpr.cosmology import BPRDarkEnergyEOS
+        eos = BPRDarkEnergyEOS()
+        d = eos.desi_tension
+        assert "w0_bpr" in d
+        assert "w0_desi" in d
+        assert "w0_tension_sigma" in d
+        assert "wa_bpr" in d
+        assert "wa_desi" in d
+        assert "wa_tension_sigma" in d
+
+    def test_desi_tension_sigma_nonnegative(self):
+        """Tension values in sigma are non-negative."""
+        from bpr.cosmology import BPRDarkEnergyEOS
+        eos = BPRDarkEnergyEOS()
+        d = eos.desi_tension
+        assert d["w0_tension_sigma"] >= 0
+        assert d["wa_tension_sigma"] >= 0

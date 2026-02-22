@@ -571,6 +571,97 @@ class DarkMatterRelic:
 
 
 # ---------------------------------------------------------------------------
+# §11.5b  Dark energy equation of state from boundary phase relaxation
+# ---------------------------------------------------------------------------
+
+@dataclass
+class BPRDarkEnergyEOS:
+    """Dark energy equation of state w(z) from boundary phase relaxation.
+
+    After the Universal Phase Transition at z_PT (BPRCosmologyV2), the
+    boundary phase field φ relaxes toward equilibrium.  This kinetic
+    energy contributes a small deviation from the cosmological constant:
+
+        w(z) = -1                         for z ≥ z_PT  (before transition)
+
+        w(z) = -1 + δw(z)                 for z < z_PT
+        δw(z) = ε × [(1+z) / (1+z_PT)]^{2 p^{1/3}}
+
+    The relaxation exponent 2 p^{1/3} ≈ 94 comes from the substrate mode
+    count.  It makes the relaxation extremely steep — w recovers to ≈ -1
+    well before z = 0 for any z_PT > 0.
+
+    The amplitude ε = 1/p^{1/3} is the squared boundary coupling (each
+    relaxation step couples as g_DM ~ 1/p^{1/6}, so energy ∝ g_DM²).
+
+    CPL parametrization  w = w₀ + wₐ(1-a):
+        w₀ = w(z=0)
+        wₐ ≈ dw/dz|_{z=0}   [numerical derivative]
+
+    DESI 2024 (arXiv:2404.03002, BAO + CMB):
+        w₀ = -0.827 ± 0.060,  wₐ = -0.75 ± 0.29
+
+    Parameters
+    ----------
+    p : int    – substrate prime modulus
+    z_PT : float – phase-transition redshift (default from BPRCosmologyV2)
+    """
+    p: int = 104729
+    z_PT: float = 5.09   # Universal Phase Transition Taxonomy (BPRCosmologyV2)
+
+    @property
+    def epsilon(self) -> float:
+        """Relaxation amplitude ε = 1 / p^{1/3}."""
+        return 1.0 / float(self.p) ** (1.0 / 3.0)
+
+    def w(self, z: float | np.ndarray) -> float | np.ndarray:
+        """Dark energy equation of state at redshift z.
+
+        Returns -1 for z ≥ z_PT; -1 + δw(z) for z < z_PT.
+        """
+        z = np.asarray(z, dtype=float)
+        exponent = 2.0 * float(self.p) ** (1.0 / 3.0)
+        delta_w = self.epsilon * ((1.0 + z) / (1.0 + self.z_PT)) ** exponent
+        result = np.where(z >= self.z_PT, -1.0, -1.0 + delta_w)
+        return float(result) if result.ndim == 0 else result
+
+    @property
+    def w0(self) -> float:
+        """w(z=0): today's equation of state parameter."""
+        return float(self.w(0.0))
+
+    @property
+    def wa(self) -> float:
+        """CPL wₐ = dw/dz|_{z=0} (numerical).
+
+        Note: the standard CPL convention is w = w₀ + wₐ(1-a).
+        Since a = 1/(1+z), da/dz = -1/(1+z)², so dw/da = -dw/dz at z=0.
+        Here we return dw/dz directly; convert to dw/da by negation.
+        """
+        dz = 1e-5
+        return float((self.w(dz) - self.w(0.0)) / dz)
+
+    @property
+    def desi_tension(self) -> dict:
+        """Comparison to DESI 2024 Year-1 BAO + CMB best fit.
+
+        Returns pull in σ for w₀ and wₐ.
+        """
+        w0_desi, w0_err = -0.827, 0.060
+        wa_desi, wa_err = -0.75, 0.29
+        w0_bpr = self.w0
+        wa_bpr = -self.wa   # CPL convention: wₐ = -dw/dz at z=0
+        return {
+            "w0_bpr": w0_bpr,
+            "w0_desi": w0_desi,
+            "w0_tension_sigma": abs(w0_bpr - w0_desi) / w0_err,
+            "wa_bpr": wa_bpr,
+            "wa_desi": wa_desi,
+            "wa_tension_sigma": abs(wa_bpr - wa_desi) / wa_err,
+        }
+
+
+# ---------------------------------------------------------------------------
 # §11.6  Reheating and N_eff corrections
 # ---------------------------------------------------------------------------
 
