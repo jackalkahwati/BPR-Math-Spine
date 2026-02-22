@@ -322,7 +322,7 @@ class BPRCosmology:
         """
         return _H0_PLANCK * (1.0 + self.delta_Neff / (2.0 * _N_EFF_STD))
 
-    # ── UV luminosity function ─────────────────────────────────────────────
+    # ── UV luminosity function (standard BPR) ─────────────────────────────
 
     def uv_luminosity_function(self, M_UV: float, z: float) -> float:
         """log₁₀(φ_BPR) [Mpc⁻³ mag⁻¹] at given M_UV and z.
@@ -330,29 +330,89 @@ class BPRCosmology:
         BPR modifies the ΛCDM baseline through:
         1. Enhanced small-scale power from higher n_s
         2. Scale-dependent G_eff at galaxy-scale k
-        3. Boundary growth correction
+        3. Boundary growth suppression (from z_eq to z_form)
         """
-        # ΛCDM baseline
         log_phi_lcdm = self._lcdm.uv_luminosity_function(M_UV, z)
 
-        # BPR correction factor on relevant scale
         M_halo = 1e11 * 10.0 ** (-0.4 * (M_UV + 21.0))
         rho_m0 = 2.775e11 * _OMEGA_M * (_H0_PLANCK / 100.0) ** 2
         R = (3.0 * M_halo / (4.0 * math.pi * rho_m0)) ** (1.0 / 3.0)
         k_halo = 2.0 * math.pi / max(R, 0.01)
 
-        sigma_r  = self.sigma_ratio(k_halo)      # >1 (more power)
-        G_r      = self.G_eff_ratio(k_halo)      # >1 (slightly stronger gravity)
+        sigma_r  = self.sigma_ratio(k_halo)
+        G_r      = self.G_eff_ratio(k_halo)
         f_growth = self.boundary_growth_suppression(z_form=z)
 
-        # Net correction to σ(M): sigma_BPR = sigma_LCDM × sigma_r × √G_r × f_growth
         net_sigma_ratio = sigma_r * math.sqrt(G_r) * f_growth
-
-        # PS function: φ ∝ ν exp(-ν²/2), ν = δ_c/σ
-        # At the high-mass exponential tail: Δ(log φ) ≈ -2 ν² Δσ/σ
-        # Use n_PS exponent ~ 3 as effective slope at high-z tail
-        delta_log_phi = 3.0 * math.log10(net_sigma_ratio)
+        delta_log_phi   = 3.0 * math.log10(net_sigma_ratio)
         return log_phi_lcdm + delta_log_phi
+
+    # ── UV luminosity function (BPR + Theory II MOND) ─────────────────────
+
+    @property
+    def mond_a0(self) -> float:
+        """MOND acceleration scale from Theory II (Vacuum Impedance Mismatch).
+
+        a₀ = (c H₀ / 2π) × (1 + z_coord / (4 ln p))
+
+        z_coord = 6 is the lattice coordination number; p = 104729.
+        Result ≈ 1.18×10⁻¹⁰ m/s² (observed: 1.2×10⁻¹⁰ m/s², 1.5% off).
+        """
+        H0_si = _H0_PLANCK * 1000.0 / 3.086e22   # s⁻¹
+        z_coord = 6.0                              # lattice coordination number
+        return (3e8 * H0_si / (2.0 * math.pi)) * (1.0 + z_coord / (4.0 * math.log(self.p)))
+
+    def uv_luminosity_function_mond(self, M_UV: float, z: float) -> float:
+        """log₁₀(φ) from BPR + Theory II MOND collapse modification.
+
+        Theory II (Vacuum Impedance Mismatch) predicts MOND gravity with
+        a₀ ≈ 1.18×10⁻¹⁰ m/s² from the impedance formula.
+
+        At galaxy-formation scales:
+            a_char = G M / R² ≈ 10⁻¹⁴ m/s²  ≪  a₀ = 1.18×10⁻¹⁰ m/s²
+
+        So ALL galaxy-mass halos are in the deep MOND regime.  Nusser (2002)
+        shows that spherical collapse in deep MOND gives δ_c ≈ 1.33 instead
+        of the Newtonian 1.686 — a 21% reduction that exponentially boosts
+        halo abundance at the rare bright end.
+
+        The boost is:
+            log₁₀(φ_MOND / φ_Newton) = log₁₀(ν_M/ν_N) + (ν_N²-ν_M²)/(2 ln10)
+
+        where ν = δ_c / σ(M, z).
+
+        CRITICAL CAVEAT: because a₀ is larger than any cosmological
+        acceleration (even cluster scales), MOND applies universally.
+        This also boosts σ₈-scale clustering, worsening the S8 tension.
+        The MOND fix is therefore NOT consistent with CMB+LSS constraints
+        — it is shown here to quantify the gap and point toward the needed
+        new physics.
+        """
+        log_phi_lcdm = self._lcdm.uv_luminosity_function(M_UV, z)
+
+        M_halo  = 1e11 * 10.0 ** (-0.4 * (M_UV + 21.0))
+        sigma_z = self._lcdm.sigma_M_at_z(M_halo, z)
+        sigma_z = max(sigma_z, 1e-6)
+
+        delta_c_newton = 1.686
+        delta_c_mond   = 1.33   # Nusser (2002), deep MOND spherical collapse
+
+        nu_n = delta_c_newton / sigma_z
+        nu_m = delta_c_mond   / sigma_z
+
+        # PS ratio in log₁₀:  (ν_M/ν_N) × exp((ν_N²−ν_M²)/2)
+        log_ratio = (math.log10(nu_m / nu_n)
+                     + (nu_n ** 2 - nu_m ** 2) / (2.0 * math.log(10.0)))
+        # Cap at ±4 dex to prevent unphysical blowup at very high z
+        log_ratio = max(-4.0, min(4.0, log_ratio))
+
+        # Also include Δn_s power enhancement (same as standard BPR)
+        rho_m0 = 2.775e11 * _OMEGA_M * (_H0_PLANCK / 100.0) ** 2
+        R      = (3.0 * M_halo / (4.0 * math.pi * rho_m0)) ** (1.0 / 3.0)
+        k_halo = 2.0 * math.pi / max(R, 0.01)
+        delta_ns_correction = 3.0 * math.log10(self.sigma_ratio(k_halo))
+
+        return log_phi_lcdm + log_ratio + delta_ns_correction
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -442,11 +502,13 @@ def run_jwst_comparison(p: int = _P) -> dict:
     for pt in JWST_UV_LF:
         log_phi_lcdm = lcdm.uv_luminosity_function(pt.M_UV, pt.z)
         log_phi_bpr  = bpr.uv_luminosity_function(pt.M_UV, pt.z)
-        gap_lcdm     = pt.log_phi - log_phi_lcdm    # how much LCDM misses (dex)
-        gap_bpr      = pt.log_phi - log_phi_bpr     # how much BPR misses (dex)
-        bpr_closes   = (gap_lcdm - gap_bpr) / abs(gap_lcdm) if gap_lcdm != 0 else 0
+        log_phi_mond = bpr.uv_luminosity_function_mond(pt.M_UV, pt.z)
+        gap_lcdm     = pt.log_phi - log_phi_lcdm
+        gap_bpr      = pt.log_phi - log_phi_bpr
+        gap_mond     = pt.log_phi - log_phi_mond
+        bpr_closes   = (gap_lcdm - gap_bpr)  / abs(gap_lcdm) if gap_lcdm != 0 else 0
+        mond_closes  = (gap_lcdm - gap_mond) / abs(gap_lcdm) if gap_lcdm != 0 else 0
 
-        # What σ enhancement would be needed?
         sigma_needed = required_sigma_enhancement(pt.log_phi, log_phi_lcdm)
         n_s_needed   = required_n_s(sigma_needed, k_Mpc=5.0)
 
@@ -456,9 +518,12 @@ def run_jwst_comparison(p: int = _P) -> dict:
             "log_phi_obs": pt.log_phi,
             "log_phi_lcdm": log_phi_lcdm,
             "log_phi_bpr": log_phi_bpr,
+            "log_phi_mond": log_phi_mond,
             "gap_lcdm_dex": gap_lcdm,
             "gap_bpr_dex":  gap_bpr,
-            "bpr_fraction_closed": bpr_closes,
+            "gap_mond_dex": gap_mond,
+            "bpr_fraction_closed":  bpr_closes,
+            "mond_fraction_closed": mond_closes,
             "sigma_ratio_needed": sigma_needed,
             "n_s_needed_to_explain": n_s_needed,
             "source": pt.source,
@@ -466,11 +531,12 @@ def run_jwst_comparison(p: int = _P) -> dict:
 
     results["jwst_uv_lf"] = uv_comparisons
     results["bpr_params"] = {
-        "p":        p,
-        "n_s_bpr":  bpr.n_s,
-        "n_s_lcdm": 0.9649,
-        "delta_n_s": bpr.n_s - 0.9649,
+        "p":          p,
+        "n_s_bpr":    bpr.n_s,
+        "n_s_lcdm":   0.9649,
+        "delta_n_s":  bpr.n_s - 0.9649,
         "delta_Neff": bpr.delta_Neff,
+        "mond_a0_m_s2": bpr.mond_a0,
     }
 
     return results

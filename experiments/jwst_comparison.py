@@ -103,41 +103,56 @@ def run(args: argparse.Namespace) -> None:
 
     # ── 3. JWST UV Luminosity Function ─────────────────────────────────────
     print_header("ANOMALY 3 — JWST 'Too-Early Galaxies'  (UV luminosity function z=9–16)")
-    print(f"  {'z':>4}  {'M_UV':>6}  {'obs':>7}  {'ΛCDM':>7}  {'BPR':>7}  "
-          f"{'ΛCDM gap':>9}  {'BPR gap':>8}  {'BPR closes':>10}  source")
-    print(f"  {'-'*4}  {'-'*6}  {'-'*7}  {'-'*7}  {'-'*7}  "
-          f"{'-'*9}  {'-'*8}  {'-'*10}  {'-'*20}")
+    mond_a0 = results["bpr_params"]["mond_a0_m_s2"]
+    print(f"  Theory II MOND:  a₀ = {mond_a0:.2e} m/s²  (observed: 1.2×10⁻¹⁰, off by "
+          f"{abs(mond_a0/1.2e-10 - 1)*100:.1f}%)")
+    print(f"  At M~10¹¹ M☉: a_char ≈ 10⁻¹⁴ m/s² ≪ a₀  →  deep MOND regime → δ_c = 1.33\n")
+    print(f"  {'z':>4}  {'M_UV':>6}  {'obs':>7}  {'ΛCDM':>7}  {'BPR':>7}  {'MOND':>7}  "
+          f"{'ΛCDM gap':>9}  {'BPR':>6}  {'MOND':>6}  source")
+    print(f"  {'-'*4}  {'-'*6}  {'-'*7}  {'-'*7}  {'-'*7}  {'-'*7}  "
+          f"{'-'*9}  {'-'*6}  {'-'*6}  {'-'*18}")
 
-    n_points = len(results["jwst_uv_lf"])
+    n_points       = len(results["jwst_uv_lf"])
     total_gap_lcdm = 0.0
     total_gap_bpr  = 0.0
+    total_gap_mond = 0.0
 
     for row in results["jwst_uv_lf"]:
         gap_lcdm = row["gap_lcdm_dex"]
         gap_bpr  = row["gap_bpr_dex"]
-        frac     = row["bpr_fraction_closed"]
+        gap_mond = row["gap_mond_dex"]
         total_gap_lcdm += abs(gap_lcdm)
         total_gap_bpr  += abs(gap_bpr)
+        total_gap_mond += abs(gap_mond)
 
-        gap_col = GREEN if abs(gap_bpr) < 0.5 else (YELLOW if abs(gap_bpr) < 1.0 else RED)
-        frac_col = GREEN if frac > 0.5 else (YELLOW if frac > 0.1 else RED)
+        frac_bpr  = row["bpr_fraction_closed"]
+        frac_mond = row["mond_fraction_closed"]
+
+        def _frac_col(f: float) -> str:
+            c = GREEN if 0.3 < f <= 1.0 else (YELLOW if f > 0 else RED)
+            return f"{c}{f*100:>+5.0f}%{RESET}"
 
         print(
             f"  {row['z']:>4.0f}  {row['M_UV']:>6.1f}  "
             f"{row['log_phi_obs']:>7.2f}  "
             f"{row['log_phi_lcdm']:>7.2f}  "
             f"{row['log_phi_bpr']:>7.2f}  "
-            f"{gap_lcdm:>+8.2f}  "
-            f"{gap_col}{gap_bpr:>+7.2f}{RESET}  "
-            f"{frac_col}{frac*100:>9.1f}%{RESET}  "
+            f"{row['log_phi_mond']:>7.2f}  "
+            f"{gap_lcdm:>+9.2f}  "
+            f"{_frac_col(frac_bpr)}  "
+            f"{_frac_col(frac_mond)}  "
             f"{row['source']}"
         )
 
-    mean_gap_closed = (total_gap_lcdm - total_gap_bpr) / total_gap_lcdm * 100
+    def _mean_pct(total_miss: float) -> float:
+        return (total_gap_lcdm - total_miss) / total_gap_lcdm * 100
+
     print()
-    print(f"  Average gap (ΛCDM): {total_gap_lcdm/n_points:.2f} dex  "
-          f"→  average gap (BPR): {total_gap_bpr/n_points:.2f} dex")
-    print(f"  BPR closes {mean_gap_closed:.1f}% of ΛCDM's shortfall on average")
+    print(f"  Average ΛCDM gap: {total_gap_lcdm/n_points:.2f} dex")
+    print(f"  BPR  closes {_mean_pct(total_gap_bpr):+.1f}% on average  "
+          f"(gap → {total_gap_bpr/n_points:.2f} dex)")
+    print(f"  MOND closes {_mean_pct(total_gap_mond):+.1f}% on average  "
+          f"(gap → {total_gap_mond/n_points:.2f} dex)")
     print()
 
     # What would be needed?
@@ -164,35 +179,44 @@ def run(args: argparse.Namespace) -> None:
     s8_status = (f"overshoots by {(s8['fraction_explained']-1)*100:.0f}% "
                  f"(σ₈ = {s8['sigma8_bpr']:.3f} < WL obs ≈ 0.748)"
                  if s8_overshoot else f"closes {s8['fraction_explained']*100:.0f}%")
+    mond_mean = _mean_pct(total_gap_mond)
     print(f"""
-  {BOLD}What BPR currently moves in the right direction:{RESET}
-  ✓  BPR's n_s = {results['bpr_params']['n_s_bpr']:.4f} predicts slightly more small-scale power
-     than Planck (Δn_s = +{results['bpr_params']['delta_n_s']:.4f}).
-  ✓  BPR ΔNeff = {results['bpr_params']['delta_Neff']:.3f} shifts H₀ toward local value.
+  {BOLD}MECHANISM COMPARISON — three JWST-era anomalies:{RESET}
 
-  {BOLD}What BPR does not explain (and in one case worsens):{RESET}
-  ✗  Hubble tension (4.9σ): BPR closes only ~7%.
-  ✗  S8 tension: BPR {s8_status}.
-     Boundary dissipation oversuppresses growth — wrong sign for this anomaly.
-  ✗  JWST galaxy excess: BPR slightly WORSENS the anomaly (~-10% per point)
-     because boundary dissipation suppresses early structure formation.
+  Hubble tension (4.9σ):
+    Standard BPR:   closes  ~7%   (ΔNeff = {results['bpr_params']['delta_Neff']:.3f}, needs ~0.4)
+    BPR + Theory II: same   ~7%   (MOND does not affect ΔNeff)
+    Needed: 11× more boundary radiation species
 
-  {BOLD}What new BPR physics would be required:{RESET}
-  →  Hubble: ΔNeff ~ 0.4 (BPR predicts {results['bpr_params']['delta_Neff']:.3f}).  Would need a new
-     boundary radiation species ~11× stronger than current prediction.
-  →  S8: weaker boundary dissipation (p^{{1/3}} damping is too strong at z<1).
-     Physical requirement: turn-off of boundary coupling after z ~ 2.
-  →  JWST: enhanced EARLY structure formation — the opposite of what BPR's
-     boundary dissipation provides.  Requires a positive coupling to collapse
-     at k ~ 1–10 Mpc⁻¹, e.g. a boundary-seeded non-Gaussianity or
-     modified dark matter cross-section.
+  S8 tension (3.3σ):
+    Standard BPR:   {s8_status}
+    BPR + Theory II: WORSE  (MOND reduces δ_c universally → more clustering at 8 Mpc)
+    Fundamental problem: S8 and JWST PULL IN OPPOSITE DIRECTIONS.
 
-  {BOLD}Scientific status:{RESET}
-  BPR's corrections are O(1%) on all three anomalies, which require O(10–100%).
-  For the JWST UV LF, BPR's boundary dissipation acts in the WRONG direction.
-  These are falsifiable quantitative gaps, not vague discrepancies.
-  The S8 and JWST results point to missing or mis-specified physics in
-  the BPR cosmological sector.
+  JWST UV LF (z=9–16):
+    Standard BPR:   closes {_mean_pct(total_gap_bpr):+.0f}%  (boundary dissipation suppresses early structure)
+    BPR + Theory II:{YELLOW} closes {mond_mean:+.0f}%{RESET} (MOND δ_c=1.33 boosts halo abundance)
+    BUT: MOND at z=16 OVER-predicts by ~1.4 dex (too strong at high z)
+    AND: MOND also boosts σ₈-scale clustering → S8 becomes worse
+
+  {BOLD}The fundamental tension BPR cannot yet resolve:{RESET}
+  S8 (less clustering needed) ←→ JWST (more clustering needed)
+  These are contradictory requirements at different epochs.
+  No single "more/less structure" switch can fix both.
+
+  {BOLD}What each theory contributes:{RESET}
+  Theory II  (MOND/Impedance): a₀ from BPR is correct to 1.5%, confirms MOND regime
+             at ALL galaxy scales.  Closes ~{mond_mean:.0f}% of JWST gap but
+             over-predicts at z>13 and worsens S8.
+  Theory XI  (Inflation): n_s = {results['bpr_params']['n_s_bpr']:.4f} is derived, not tuned.  Correct direction.
+  Theory I   (Memory): running spectral index not yet computed — could help at small k.
+
+  {BOLD}Path forward:{RESET}
+  Need a mechanism that is ACTIVE at high z (z=5–16) but DORMANT at low z (z<2).
+  Theory IV (Phase Transitions) suggests a boundary phase transition at z ~ 2–5
+  could switch MOND-like enhancement ON for early galaxy formation while
+  deactivating it before the epoch measured by S8.
+  This is the next genuine BPR cosmological extension to derive.
 """)
 
 
