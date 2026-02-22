@@ -556,6 +556,153 @@ class BPRCosmologyV2(BPRCosmology):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+#  BPR V3 — SUBSTRATE ZONE-BOUNDARY ENHANCEMENT
+# ═══════════════════════════════════════════════════════════════════════════
+
+class BPRCosmologyV3(BPRCosmologyV2):
+    """BPR V3 — Universal Phase Transition Taxonomy + Substrate Zone-Boundary Enhancement.
+
+    Adds a scale-dependent gravitational coupling derived purely from the
+    prime substrate p, on top of the V2 epoch-dependent MOND gate.
+
+    DERIVATION OF k_★
+    ------------------
+    The prime substrate p=104729 has two characteristic mode numbers:
+        n₁ = p^{1/3} ≈ 47.1  →  N_efolds ≈ 62.9  (already used in V1/V2)
+        n₂ = p^{2/3} ≈ 2223  →  zone-boundary wavenumber  (this theory)
+
+    The Hubble sphere has comoving radius R_H = c/H₀.
+    Mode n₂ of the substrate on the Hubble sphere defines:
+        k_★ = 2π × n₂ / R_H = 2π × p^{2/3} × H₀ / c
+             ≈ 2π × 2223 × 2.247×10⁻⁴ Mpc⁻¹
+             ≈ 3.14 Mpc⁻¹
+
+    This is the "zone-boundary" of the substrate lattice on cosmological
+    scales — analogous to the Brillouin zone boundary in crystals, where
+    phonon dispersion changes character (Umklapp-type mode coupling).
+
+    PHYSICAL BEHAVIOUR
+    ------------------
+    k < k_★  (scales > 2 Mpc):
+        Bulk-dominated coupling — standard gravitational behaviour.
+
+    k > k_★  (scales < 2 Mpc, galaxy formation band):
+        Boundary modes couple with an additional 1/d = 1/3 fraction of
+        the gravitational coupling (d=3 spatial dims).  Boundary d.o.f.
+        contribute equally to bulk d.o.f. above the zone boundary.
+
+            σ_eff(k)/σ_ΛCDM(k) = σ_V1(k) × [1 + (1/3) × f_ZB(k)]
+
+    SCALE SEPARATION
+    ----------------
+    σ₈ (k=0.2 Mpc⁻¹) ≪ k_★=3.14 → f_ZB ≈ 0 → S8 tension UNCHANGED
+    Galaxy halos (k=4–6 Mpc⁻¹) > k_★    → f_ZB ≈ 1 → σ × 4/3
+    JWST log φ boost: 3×log₁₀(4/3) ≈ 0.375 dex per point
+
+    ZERO FREE PARAMETERS
+    --------------------
+    k_★ derived from p alone; enhancement amplitude 1/d = 1/3 (d=3 fixed);
+    logistic sharpness p^{1/3} (same mode number as N_efolds).
+    """
+
+    @property
+    def k_star(self) -> float:
+        """Zone-boundary wavenumber k_★ = 2π p^{2/3} H₀/c [Mpc⁻¹].
+
+        For p=104729: p^{2/3} ≈ 2223, k_H ≈ 2.247×10⁻⁴ Mpc⁻¹
+        → k_★ ≈ 3.14 Mpc⁻¹  (galaxy-formation band).
+        """
+        k_H = _H0_PLANCK / 3e5     # H₀/c in Mpc⁻¹
+        return 2.0 * math.pi * self.p ** (2.0 / 3.0) * k_H
+
+    def zone_boundary_factor(self, k_Mpc: float) -> float:
+        """Logistic step at k_★ with sharpness p^{1/3}.
+
+        f_ZB(k) = 1 / (1 + exp(−p^{1/3} (k/k_★ − 1)))
+
+        At k=0.2 Mpc⁻¹: f_ZB ≈ 0 (S8 scale unaffected).
+        At k=5.0 Mpc⁻¹: f_ZB ≈ 1 (galaxy formation enhanced).
+        """
+        k_s = self.k_star
+        x = self.p ** (1.0 / 3.0) * (k_Mpc / k_s - 1.0)
+        x = max(-500.0, min(500.0, x))   # guard against overflow
+        return 1.0 / (1.0 + math.exp(-x))
+
+    def sigma_ratio_v3(self, k_Mpc: float) -> float:
+        """σ_BPR/σ_ΛCDM with zone-boundary enhancement.
+
+        σ_V3(k) = σ_V1(k) × [1 + (1/3) × f_ZB(k)]
+
+        The 1/3 = 1/d amplitude is the boundary fraction of gravitational
+        degrees of freedom in d=3 spatial dimensions (no free parameters).
+        """
+        base = self.sigma_ratio(k_Mpc)
+        return base * (1.0 + (1.0 / 3.0) * self.zone_boundary_factor(k_Mpc))
+
+    @property
+    def sigma8_v3(self) -> float:
+        """σ₈ with zone-boundary enhancement.
+
+        k_sigma8 = 0.2 ≪ k_★ = 3.14  →  f_ZB(0.2) ≈ 0
+        → sigma_ratio_v3(0.2) ≈ sigma_ratio(0.2)  →  σ₈_V3 ≈ σ₈_V2.
+        """
+        k_sigma8 = 0.2
+        sigma_r  = self.sigma_ratio_v3(k_sigma8)
+        f_growth = self.boundary_growth_suppression_v2(z_form=0.0)
+        G_ratio  = self.G_eff_ratio(k_sigma8)
+        return _SIGMA8_PLANCK * sigma_r * f_growth * math.sqrt(G_ratio)
+
+    @property
+    def S8_v3(self) -> float:
+        """BPR V3 S₈ = σ₈_V3 √(Ωm / 0.3)."""
+        return self.sigma8_v3 * math.sqrt(_OMEGA_M / 0.3)
+
+    def uv_luminosity_function_v3(self, M_UV: float, z: float) -> float:
+        """log₁₀(φ) with V2 MOND gate and zone-boundary enhancement.
+
+        V2 (Universal Phase Transition Taxonomy):
+            z > z_PT → MOND δ_c=1.33, dissipation suspended
+            z ≤ z_PT → Newtonian δ_c=1.686, dissipation from z_PT
+
+        Substrate Zone-Boundary Enhancement (V3 addition):
+            spectral correction uses sigma_ratio_v3 instead of sigma_ratio
+            → 3×log₁₀(σ_V3/σ_V1) additional dex at k_halo > k_★
+        """
+        log_phi_lcdm = self._lcdm.uv_luminosity_function(M_UV, z)
+
+        M_halo  = 1e11 * 10.0 ** (-0.4 * (M_UV + 21.0))
+        sigma_z = self._lcdm.sigma_M_at_z(M_halo, z)
+        sigma_z = max(sigma_z, 1e-6)
+
+        z_pt = self.z_pt
+        delta_c_newton = 1.686
+        delta_c_eff    = 1.33 if z > z_pt else delta_c_newton
+
+        nu_n = delta_c_newton / sigma_z
+        nu_e = delta_c_eff   / sigma_z
+
+        # PS ratio from epoch-gated MOND (V2 logic)
+        if delta_c_eff < delta_c_newton:
+            log_ratio = (math.log10(nu_e / nu_n)
+                         + (nu_n ** 2 - nu_e ** 2) / (2.0 * math.log(10.0)))
+            log_ratio = max(-4.0, min(4.0, log_ratio))
+        else:
+            log_ratio = 0.0
+
+        # Zone-boundary enhanced spectral correction (V3 change vs V2)
+        rho_m0 = 2.775e11 * _OMEGA_M * (_H0_PLANCK / 100.0) ** 2
+        R      = (3.0 * M_halo / (4.0 * math.pi * rho_m0)) ** (1.0 / 3.0)
+        k_halo = 2.0 * math.pi / max(R, 0.01)
+        delta_ns_corr = 3.0 * math.log10(self.sigma_ratio_v3(k_halo))
+
+        # Boundary dissipation (only active at z < z_PT, same as V2)
+        f_growth    = self.boundary_growth_suppression_v2(z_form=z)
+        dissip_corr = 3.0 * math.log10(max(f_growth, 1e-10))
+
+        return log_phi_lcdm + log_ratio + delta_ns_corr + dissip_corr
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 #  COUPLING GAP ANALYSIS
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -606,6 +753,7 @@ def run_jwst_comparison(p: int = _P) -> dict:
     """Run all three JWST anomaly comparisons and return a results dict."""
     bpr    = BPRCosmology(p=p)
     bpr_v2 = BPRCosmologyV2(p=p)
+    bpr_v3 = BPRCosmologyV3(p=p)
     lcdm   = LambdaCDM()
 
     results = {}
@@ -625,9 +773,11 @@ def run_jwst_comparison(p: int = _P) -> dict:
     # ── 2. S8 tension ─────────────────────────────────────────────────────
     S8_bpr    = bpr.S8_bpr
     S8_bpr_v2 = bpr_v2.S8_v2
+    S8_bpr_v3 = bpr_v3.S8_v3
     S8_tension_sigma = (_S8_PLANCK - _S8_WL_OBS) / _S8_WL_ERR
     raw_fraction    = (_S8_PLANCK - S8_bpr)    / (_S8_PLANCK - _S8_WL_OBS)
     raw_fraction_v2 = (_S8_PLANCK - S8_bpr_v2) / (_S8_PLANCK - _S8_WL_OBS)
+    raw_fraction_v3 = (_S8_PLANCK - S8_bpr_v3) / (_S8_PLANCK - _S8_WL_OBS)
     results["s8_tension"] = {
         "S8_planck":            _S8_PLANCK,
         "S8_observed_WL":       _S8_WL_OBS,
@@ -635,13 +785,18 @@ def run_jwst_comparison(p: int = _P) -> dict:
         "sigma8_bpr":           bpr.sigma8_bpr,
         "S8_bpr_v2":            S8_bpr_v2,
         "sigma8_bpr_v2":        bpr_v2.sigma8_v2,
+        "S8_bpr_v3":            S8_bpr_v3,
+        "sigma8_bpr_v3":        bpr_v3.sigma8_v3,
         "tension_sigma_lcdm":   S8_tension_sigma,
         "tension_sigma_bpr":    abs(S8_bpr    - _S8_WL_OBS) / _S8_WL_ERR,
         "tension_sigma_bpr_v2": abs(S8_bpr_v2 - _S8_WL_OBS) / _S8_WL_ERR,
+        "tension_sigma_bpr_v3": abs(S8_bpr_v3 - _S8_WL_OBS) / _S8_WL_ERR,
         "fraction_explained":   raw_fraction,      # may exceed 1.0 (overshoot)
         "fraction_explained_v2": raw_fraction_v2,
+        "fraction_explained_v3": raw_fraction_v3,
         "overshoots":    S8_bpr    < _S8_WL_OBS,
         "overshoots_v2": S8_bpr_v2 < _S8_WL_OBS,
+        "overshoots_v3": S8_bpr_v3 < _S8_WL_OBS,
     }
 
     # ── 3. JWST UV LF ─────────────────────────────────────────────────────
@@ -651,13 +806,16 @@ def run_jwst_comparison(p: int = _P) -> dict:
         log_phi_bpr  = bpr.uv_luminosity_function(pt.M_UV, pt.z)
         log_phi_mond = bpr.uv_luminosity_function_mond(pt.M_UV, pt.z)
         log_phi_v2   = bpr_v2.uv_luminosity_function_v2(pt.M_UV, pt.z)
+        log_phi_v3   = bpr_v3.uv_luminosity_function_v3(pt.M_UV, pt.z)
         gap_lcdm     = pt.log_phi - log_phi_lcdm
         gap_bpr      = pt.log_phi - log_phi_bpr
         gap_mond     = pt.log_phi - log_phi_mond
         gap_v2       = pt.log_phi - log_phi_v2
+        gap_v3       = pt.log_phi - log_phi_v3
         bpr_closes   = (gap_lcdm - gap_bpr)  / abs(gap_lcdm) if gap_lcdm != 0 else 0
         mond_closes  = (gap_lcdm - gap_mond) / abs(gap_lcdm) if gap_lcdm != 0 else 0
         v2_closes    = (gap_lcdm - gap_v2)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
+        v3_closes    = (gap_lcdm - gap_v3)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
 
         sigma_needed = required_sigma_enhancement(pt.log_phi, log_phi_lcdm)
         n_s_needed   = required_n_s(sigma_needed, k_Mpc=5.0)
@@ -670,13 +828,16 @@ def run_jwst_comparison(p: int = _P) -> dict:
             "log_phi_bpr": log_phi_bpr,
             "log_phi_mond": log_phi_mond,
             "log_phi_v2":  log_phi_v2,
+            "log_phi_v3":  log_phi_v3,
             "gap_lcdm_dex": gap_lcdm,
             "gap_bpr_dex":  gap_bpr,
             "gap_mond_dex": gap_mond,
             "gap_v2_dex":   gap_v2,
+            "gap_v3_dex":   gap_v3,
             "bpr_fraction_closed":  bpr_closes,
             "mond_fraction_closed": mond_closes,
             "v2_fraction_closed":   v2_closes,
+            "v3_fraction_closed":   v3_closes,
             "sigma_ratio_needed": sigma_needed,
             "n_s_needed_to_explain": n_s_needed,
             "source": pt.source,
@@ -691,6 +852,7 @@ def run_jwst_comparison(p: int = _P) -> dict:
         "delta_Neff":   bpr.delta_Neff,
         "mond_a0_m_s2": bpr.mond_a0,
         "z_pt":         bpr_v2.z_pt,
+        "k_star_Mpc":   bpr_v3.k_star,
     }
 
     return results
