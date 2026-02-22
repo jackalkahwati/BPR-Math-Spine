@@ -347,11 +347,11 @@ class BPRCosmology:
         delta_log_phi   = 3.0 * math.log10(net_sigma_ratio)
         return log_phi_lcdm + delta_log_phi
 
-    # ── UV luminosity function (BPR + Theory II MOND) ─────────────────────
+    # ── UV luminosity function (BPR + Vacuum Impedance Mismatch MOND) ─────────────────────
 
     @property
     def mond_a0(self) -> float:
-        """MOND acceleration scale from Theory II (Vacuum Impedance Mismatch).
+        """MOND acceleration scale from Vacuum Impedance Mismatch.
 
         a₀ = (c H₀ / 2π) × (1 + z_coord / (4 ln p))
 
@@ -363,9 +363,9 @@ class BPRCosmology:
         return (3e8 * H0_si / (2.0 * math.pi)) * (1.0 + z_coord / (4.0 * math.log(self.p)))
 
     def uv_luminosity_function_mond(self, M_UV: float, z: float) -> float:
-        """log₁₀(φ) from BPR + Theory II MOND collapse modification.
+        """log₁₀(φ) from BPR + Vacuum Impedance Mismatch MOND collapse modification.
 
-        Theory II (Vacuum Impedance Mismatch) predicts MOND gravity with
+        Vacuum Impedance Mismatch predicts MOND gravity with
         a₀ ≈ 1.18×10⁻¹⁰ m/s² from the impedance formula.
 
         At galaxy-formation scales:
@@ -420,7 +420,7 @@ class BPRCosmology:
 # ═══════════════════════════════════════════════════════════════════════════
 
 class BPRCosmologyV2(BPRCosmology):
-    """BPR + Theory IV Phase Transition: epoch-dependent MOND / Newtonian switch.
+    """BPR + Universal Phase Transition Taxonomy: epoch-dependent MOND / Newtonian switch.
 
     Derives a critical phase-transition redshift z_PT where the boundary
     substrate undergoes a Class C (Impedance) transition, gating MOND collapse
@@ -428,8 +428,8 @@ class BPRCosmologyV2(BPRCosmology):
 
     DERIVATION OF z_PT
     ------------------
-    Theory II (Vacuum Impedance) gives MOND frequency ω_MOND = a₀/c.
-    Theory IV (Phase Transitions) Class C: the substrate switches state when
+    Vacuum Impedance Mismatch gives MOND frequency ω_MOND = a₀/c.
+    Universal Phase Transition Taxonomy Class C: the substrate switches state when
     the boundary dissipation rate Γ_b = H(z)/p^{1/3} equals ω_MOND.
 
         Γ_b(z_PT) = ω_MOND
@@ -496,7 +496,7 @@ class BPRCosmologyV2(BPRCosmology):
 
     @property
     def sigma8_v2(self) -> float:
-        """σ₈ from Theory IV V2.
+        """σ₈ from Universal Phase Transition Taxonomy (V2).
 
         At z=0 << z_PT: gravity is Newtonian (no MOND boost), dissipation
         integrated only from z_PT ≈ 5.1 to z=0 (shorter lever arm than
@@ -516,7 +516,7 @@ class BPRCosmologyV2(BPRCosmology):
         return self.sigma8_v2 * math.sqrt(_OMEGA_M / 0.3)
 
     def uv_luminosity_function_v2(self, M_UV: float, z: float) -> float:
-        """log₁₀(φ) with Theory IV phase-transition gated MOND.
+        """log₁₀(φ) with Universal Phase Transition Taxonomy gated MOND.
 
         z > z_PT : MOND δ_c=1.33, boundary dissipation suspended (f=1)
         z ≤ z_PT : Newtonian δ_c=1.686, dissipation from z_PT to z

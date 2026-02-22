@@ -113,7 +113,7 @@ def run(args: argparse.Namespace) -> None:
     print(f"  {f'BPR V2 (z_PT={z_pt:.1f})':<22}  {s8['sigma8_bpr_v2']:>6.4f}  "
           f"{s8['S8_bpr_v2']:>6.4f}  {s8['tension_sigma_bpr_v2']:>8.2f}σ  {v2_verdict}")
     print()
-    print(f"  {BOLD}Theory IV derivation of z_PT:{RESET}")
+    print(f"  {BOLD}Universal Phase Transition Taxonomy derivation of z_PT:{RESET}")
     print(f"    Γ_b(z_PT) = ω_MOND  →  H(z_PT)/p^{{1/3}} = a₀/c")
     print(f"    Solved in ΛCDM:  z_PT = {z_pt:.2f}  (zero free parameters)")
     print(f"    At z < z_PT: Newtonian gravity, dissipation from z_PT only")
@@ -122,9 +122,9 @@ def run(args: argparse.Namespace) -> None:
     # ── 3. JWST UV Luminosity Function ─────────────────────────────────────
     print_header("ANOMALY 3 — JWST 'Too-Early Galaxies'  (UV luminosity function z=9–16)")
     mond_a0 = results["bpr_params"]["mond_a0_m_s2"]
-    print(f"  Theory II MOND:  a₀ = {mond_a0:.2e} m/s²  (observed: 1.2×10⁻¹⁰, off by "
+    print(f"  Vacuum Impedance Mismatch MOND:  a₀ = {mond_a0:.2e} m/s²  (observed: 1.2×10⁻¹⁰, off by "
           f"{abs(mond_a0/1.2e-10 - 1)*100:.1f}%)")
-    print(f"  Theory IV z_PT = {z_pt:.2f}: MOND active at z > z_PT, Newtonian at z < z_PT")
+    print(f"  Universal Phase Transition Taxonomy z_PT = {z_pt:.2f}: MOND active at z > z_PT, Newtonian at z < z_PT")
     print(f"  At M~10¹¹ M☉: a_char ≈ 10⁻¹⁴ m/s² ≪ a₀  →  deep MOND  →  δ_c = 1.33\n")
     print(f"  {'z':>4}  {'M_UV':>6}  {'obs':>7}  {'ΛCDM':>7}  {'BPR':>7}  "
           f"{'MOND':>7}  {'V2':>7}  {'gap':>6}  {'BPR':>6}  {'MOND':>6}  {'V2':>6}  source")
@@ -192,36 +192,38 @@ def run(args: argparse.Namespace) -> None:
   {BOLD}MECHANISM COMPARISON — three JWST-era anomalies:{RESET}
 
   Hubble tension (4.9σ):
-    Standard BPR:    closes  ~7%   (ΔNeff = {results['bpr_params']['delta_Neff']:.3f}, needs ~0.4)
-    BPR + Theory II: same   ~7%   (MOND does not shift sound horizon)
-    BPR V2 (Th.IV): same   ~7%   (phase transition does not affect ΔNeff)
+    Standard BPR:                   closes  ~7%   (ΔNeff = {results['bpr_params']['delta_Neff']:.3f}, needs ~0.4)
+    Vacuum Impedance Mismatch MOND: same   ~7%   (MOND does not shift sound horizon)
+    BPR V2 (Phase Transition):      same   ~7%   (transition does not affect ΔNeff)
     Needed: 11× more boundary radiation species
 
   S8 tension (3.3σ):
-    Standard BPR:    {s8_std_str}
-    MOND (no z_PT):  WORSENS  (MOND at z=0 boosts clustering at 8 Mpc)
-    {BOLD}BPR V2 (Th.IV):{RESET}  {GREEN}{s8_v2_str}{RESET}
-    → Theory IV z_PT = {z_pt:.1f} derived from Γ_b = ω_MOND (zero free parameters)
+    Standard BPR:                   {s8_std_str}
+    Vacuum Impedance (no z_PT):     WORSENS  (MOND at z=0 boosts clustering at 8 Mpc)
+    {BOLD}BPR V2 (Phase Transition):{RESET}      {GREEN}{s8_v2_str}{RESET}
+    → z_PT = {z_pt:.1f} derived from Γ_b = ω_MOND (zero free parameters)
     → At z < z_PT: Newtonian + reduced dissipation → σ₈ raised to safe range
 
   JWST UV LF (z=9–16):
-    Standard BPR:    closes {bpr_mean:+.0f}%   (dissipation suppresses early structure)
-    MOND (no z_PT): {YELLOW}closes {mond_mean:+.0f}%{RESET}  (δ_c=1.33, but also worsens S8)
-    {BOLD}BPR V2 (Th.IV):{RESET} {YELLOW}closes {v2_mean:+.0f}%{RESET}  (MOND active at z>{z_pt:.1f}, S8 preserved)
+    Standard BPR:                   closes {bpr_mean:+.0f}%   (dissipation suppresses early structure)
+    Vacuum Impedance (no z_PT):    {YELLOW}closes {mond_mean:+.0f}%{RESET}  (δ_c=1.33, but also worsens S8)
+    {BOLD}BPR V2 (Phase Transition):{RESET}     {YELLOW}closes {v2_mean:+.0f}%{RESET}  (MOND active at z>{z_pt:.1f}, S8 preserved)
     CAVEAT: V2 still over-predicts bright end (M_UV<-21.5) at z=10 by ~1 dex.
     Cause: PS exponential tail is very sensitive to Δδ_c at high ν.
 
-  {BOLD}Theory IV phase transition — what it achieves:{RESET}
+  {BOLD}Universal Phase Transition Taxonomy — what it achieves:{RESET}
   z_PT = {z_pt:.2f} from Γ_b(z_PT) = ω_MOND, derived from p = {results['bpr_params']['p']} and a₀
   • S8 tension:   3.3σ → {s8['tension_sigma_bpr_v2']:.1f}σ  ({GREEN}closes {frac_v2*100:.0f}%{RESET})
   • JWST UV LF:  closes {v2_mean:+.0f}% on average (MOND active above z_PT)
   • Hubble:      unchanged (~7%)
 
   {BOLD}Remaining gap to a full solution:{RESET}
-  JWST requires ~scale-dependent MOND — stronger at high mass (M_UV < -22)
+  JWST requires scale-dependent enhancement — stronger at high mass (M_UV < -22)
   but suppressed enough at moderate mass to avoid bright-end overshoot.
-  Theory I (Memory/running spectral index) could provide the scale dependence.
-  Theory IV predicts the EPOCH cutoff; Theory I would provide the SCALE cutoff.
+  Boundary Memory Dynamics (prime-harmonic spectrum) could provide this scale
+  dependence via a running spectral index from multi-mode memory correlations.
+  Universal Phase Transition Taxonomy gives the EPOCH cutoff (z_PT);
+  Boundary Memory Dynamics could give the SCALE cutoff (k-dependent running).
   Combining both is the next derivation target.
 """)
 
