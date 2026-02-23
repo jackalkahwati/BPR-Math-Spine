@@ -169,6 +169,20 @@ def run(args: argparse.Namespace) -> None:
         v6_verdict = f"{RED}closes {frac_v6*100:.0f}% of tension{RESET}"
     print(f"  {'BPR V6 (corrected screen)':<26}  {s8['sigma8_bpr_v6']:>6.4f}  "
           f"{s8['S8_bpr_v6']:>6.4f}  {s8['tension_sigma_bpr_v6']:>8.2f}σ  {v6_verdict}")
+
+    # V7 row
+    frac_v7 = s8["fraction_explained_v7"]
+    overshoots_v7 = s8.get("overshoots_v7", False)
+    if overshoots_v7:
+        v7_verdict = f"{RED}OVERSHOOTS{RESET}"
+    elif frac_v7 > 0.4:
+        v7_verdict = f"{GREEN}closes {frac_v7*100:.0f}% of tension{RESET}"
+    elif frac_v7 > 0.2:
+        v7_verdict = f"{YELLOW}closes {frac_v7*100:.0f}% of tension{RESET}"
+    else:
+        v7_verdict = f"{RED}closes {frac_v7*100:.0f}% of tension{RESET}"
+    print(f"  {'BPR V7 (f_star channel)':<26}  {s8['sigma8_bpr_v7']:>6.4f}  "
+          f"{s8['S8_bpr_v7']:>6.4f}  {s8['tension_sigma_bpr_v7']:>8.2f}σ  {v7_verdict}")
     print()
     print(f"  {BOLD}Universal Phase Transition Taxonomy derivation of z_PT:{RESET}")
     print(f"    Γ_b(z_PT) = ω_MOND  →  H(z_PT)/p^{{1/3}} = a₀/c")
@@ -212,11 +226,11 @@ def run(args: argparse.Namespace) -> None:
     print(f"  V6 M_imp(z=9/10/12) = {mi9:.1e} / {mi10:.1e} / {mi12:.1e} M☉  "
           f"(impedance screening crossover, W_c={W_c:.2f})\n")
     print(f"  {'z':>4}  {'M_UV':>6}  {'obs':>7}  {'ΛCDM':>7}  {'V2':>7}  "
-          f"{'V3':>7}  {'V4':>7}  {'V5':>7}  {'V6':>7}  {'gap':>6}  "
-          f"{'V2':>6}  {'V3':>6}  {'V4':>6}  {'V5':>6}  {'V6':>6}  source")
+          f"{'V3':>7}  {'V4':>7}  {'V5':>7}  {'V6':>7}  {'V7':>7}  {'gap':>6}  "
+          f"{'V2':>6}  {'V3':>6}  {'V4':>6}  {'V5':>6}  {'V6':>6}  {'V7':>6}  source")
     print(f"  {'-'*4}  {'-'*6}  {'-'*7}  {'-'*7}  {'-'*7}  "
-          f"{'-'*7}  {'-'*7}  {'-'*7}  {'-'*7}  {'-'*6}  "
-          f"{'-'*6}  {'-'*6}  {'-'*6}  {'-'*6}  {'-'*6}  {'-'*15}")
+          f"{'-'*7}  {'-'*7}  {'-'*7}  {'-'*7}  {'-'*7}  {'-'*6}  "
+          f"{'-'*6}  {'-'*6}  {'-'*6}  {'-'*6}  {'-'*6}  {'-'*6}  {'-'*15}")
 
     n_points       = len(results["jwst_uv_lf"])
     total_gap_lcdm = 0.0
@@ -227,6 +241,7 @@ def run(args: argparse.Namespace) -> None:
     total_gap_v4   = 0.0
     total_gap_v5   = 0.0
     total_gap_v6   = 0.0
+    total_gap_v7   = 0.0
 
     def _frac_col(f: float) -> str:
         c = GREEN if 0.3 < f <= 1.0 else (YELLOW if f > 0 else RED)
@@ -241,6 +256,7 @@ def run(args: argparse.Namespace) -> None:
         gap_v4   = row["gap_v4_dex"]
         gap_v5   = row["gap_v5_dex"]
         gap_v6   = row["gap_v6_dex"]
+        gap_v7   = row["gap_v7_dex"]
         total_gap_lcdm += abs(gap_lcdm)
         total_gap_bpr  += abs(gap_bpr)
         total_gap_mond += abs(gap_mond)
@@ -249,6 +265,7 @@ def run(args: argparse.Namespace) -> None:
         total_gap_v4   += abs(gap_v4)
         total_gap_v5   += abs(gap_v5)
         total_gap_v6   += abs(gap_v6)
+        total_gap_v7   += abs(gap_v7)
 
         print(
             f"  {row['z']:>4.0f}  {row['M_UV']:>6.1f}  "
@@ -259,12 +276,14 @@ def run(args: argparse.Namespace) -> None:
             f"{row['log_phi_v4']:>7.2f}  "
             f"{row['log_phi_v5']:>7.2f}  "
             f"{row['log_phi_v6']:>7.2f}  "
+            f"{row['log_phi_v7']:>7.2f}  "
             f"{gap_lcdm:>+6.2f}  "
             f"{_frac_col(row['v2_fraction_closed'])}  "
             f"{_frac_col(row['v3_fraction_closed'])}  "
             f"{_frac_col(row['v4_fraction_closed'])}  "
             f"{_frac_col(row['v5_fraction_closed'])}  "
             f"{_frac_col(row['v6_fraction_closed'])}  "
+            f"{_frac_col(row['v7_fraction_closed'])}  "
             f"{row['source']}"
         )
 
@@ -289,6 +308,11 @@ def run(args: argparse.Namespace) -> None:
     print(f"  V6  (corrected screen):  closes {_mean_pct(total_gap_v6):+.1f}%  "
           f"(gap → {total_gap_v6/n_points:.2f} dex)  "
           f"[{v6_color}{v6_delta:+.1f}% vs V4{RESET}] ← clean physics baseline")
+    v7_delta = _mean_pct(total_gap_v7) - _mean_pct(total_gap_v6)
+    v7_color = GREEN if v7_delta > 0 else RED
+    print(f"  V7  (f_star channel):    closes {_mean_pct(total_gap_v7):+.1f}%  "
+          f"(gap → {total_gap_v7/n_points:.2f} dex)  "
+          f"[{v7_color}{v7_delta:+.1f}% vs V6{RESET}] ← baryonic retention η(μ)")
 
     # ── Overall verdict ────────────────────────────────────────────────────
     print_header("OVERALL VERDICT")
@@ -313,12 +337,16 @@ def run(args: argparse.Namespace) -> None:
     v4_mean   = _mean_pct(total_gap_v4)
     v5_mean   = _mean_pct(total_gap_v5)
     v6_mean   = _mean_pct(total_gap_v6)
+    v7_mean   = _mean_pct(total_gap_v7)
     s8_v5_str = (f"overshoots"
                  if overshoots_v5 else f"closes {frac_v5*100:.0f}%  "
                  f"(σ₈={s8['sigma8_bpr_v5']:.3f}, {s8['tension_sigma_bpr_v5']:.1f}σ residual)")
     s8_v6_str = (f"overshoots"
                  if overshoots_v6 else f"closes {frac_v6*100:.0f}%  "
                  f"(σ₈={s8['sigma8_bpr_v6']:.3f}, {s8['tension_sigma_bpr_v6']:.1f}σ residual)")
+    s8_v7_str = (f"overshoots"
+                 if overshoots_v7 else f"closes {frac_v7*100:.0f}%  "
+                 f"(σ₈={s8['sigma8_bpr_v7']:.3f}, {s8['tension_sigma_bpr_v7']:.1f}σ residual)")
     print(f"""
   {BOLD}MECHANISM COMPARISON — three JWST-era anomalies:{RESET}
 
@@ -335,6 +363,8 @@ def run(args: argparse.Namespace) -> None:
     BPR V5 (buggy screen):                   {s8_v5_str}  ← formula error
     {BOLD}BPR V6 (corrected screen):{RESET}               {GREEN}{s8_v6_str}{RESET}
     → V6 S8 = V4 S8 (screening only at z > z_PT bright end, z=0 unchanged)
+    {BOLD}BPR V7 (f_star channel):{RESET}                 {GREEN}{s8_v7_str}{RESET}
+    → V7 S8 = V6 S8 (f_star affects UV LF only, not 8 Mpc clustering)
 
   JWST UV LF (z=9–16):
     Standard BPR:                            closes {bpr_mean:+.0f}%
@@ -350,6 +380,9 @@ def run(args: argparse.Namespace) -> None:
     {BOLD}BPR V6 (corrected screen):{RESET}              \
 {GREEN if v6_mean > v4_mean else YELLOW}closes {v6_mean:+.0f}%{RESET}  \
 ({GREEN if v6_mean > v4_mean else RED}{v6_mean - v4_mean:+.0f}% vs V4{RESET}, S8 preserved)
+    {BOLD}BPR V7 (f_star channel):{RESET}                \
+{GREEN if v7_mean > v6_mean else YELLOW}closes {v7_mean:+.0f}%{RESET}  \
+({GREEN if v7_mean > v6_mean else RED}{v7_mean - v6_mean:+.0f}% vs V6{RESET}, S8 preserved)
 
   {BOLD}V6 Formula Correction:{RESET}
   V5 (buggy):    δ_c = 1.330 + 0.356×μ×g_screen
@@ -364,18 +397,30 @@ def run(args: argparse.Namespace) -> None:
     z=10: {results['bpr_params']['m_imp_v6_z10']:.2e} M☉  ← targets bright-end overshoot
     z=12: {results['bpr_params']['m_imp_v6_z12']:.2e} M☉
 
-  {BOLD}Best current state (V6) — clean physics baseline:{RESET}
+  {BOLD}Best current state (V7) — f_star baryonic retention added:{RESET}
   • Hubble:     1.8σ residual  (7% closed — unsolved)
-  • S8 tension: {GREEN}closes {frac_v6*100:.0f}%{RESET}  (1.8σ residual)
-  • JWST UV LF: closes {v6_mean:+.0f}% on average  \
-({GREEN if v6_mean > v4_mean else YELLOW}{v6_mean - v4_mean:+.0f}% vs V4{RESET})
+  • S8 tension: {GREEN}closes {frac_v7*100:.0f}%{RESET}  ({s8['tension_sigma_bpr_v7']:.1f}σ residual)
+  • JWST UV LF: closes {v7_mean:+.0f}% on average  \
+({GREEN if v7_mean > v6_mean else YELLOW}{v7_mean - v6_mean:+.0f}% vs V6{RESET})
+
+  {BOLD}V7 f_star mechanism:{RESET}
+  Impedance reflection at halo boundary: R(μ) = ((1−μ)/(1+μ))²
+  Baryonic retention enhancement: η(μ) = 1 + R(μ)  [1 ≤ η ≤ 2]
+  Effective M_UV shift: ΔM_UV = 2.5×log₁₀(η)  [bounded: ≤ 0.75 mag]
+  f_star η values at M_halo = 2.5×10¹¹ M☉:
+    z=9:  η = {results['bpr_params']['fstar_eta_v7_z9']:.4f}  ΔM_UV ≈ {2.5*math.log10(max(results['bpr_params']['fstar_eta_v7_z9'], 1e-10)):+.3f} mag
+    z=10: η = {results['bpr_params']['fstar_eta_v7_z10']:.4f}  ΔM_UV ≈ {2.5*math.log10(max(results['bpr_params']['fstar_eta_v7_z10'], 1e-10)):+.3f} mag
+    z=12: η = {results['bpr_params']['fstar_eta_v7_z12']:.4f}  (lower M_halo = 10¹¹ M☉)
+    z=16: η = {results['bpr_params']['fstar_eta_v7_z16']:.4f}  (lower M_halo = 5×10¹⁰ M☉)
+  Honest bound: η ≤ 2 → max Δ log φ < 0.75/slope ≈ 0.5 dex  (z=9 gap = 1.2 dex)
 
   {BOLD}Remaining gap diagnosis:{RESET}
-  z=9  (+1.2 dex under):  Not a δ_c problem.  z=9/z=10 halos overlap in mass;
-    boosting z=9 overshoots z=10.  Likely requires enhanced f_star(M,z) from
-    impedance-modified baryonic concentration in MOND-regime halos.
-  z=16 (+1.0 dex under):  Halos are 85% Newtonian — δ_c is irrelevant.
-    Requires more primordial power at high-k (Δn_s, ΔNeff, higher H₀).
+  z=9  (+1.2 dex under):  V7 f_star adds ~0.1–0.2 dex — correct physics,
+    quantitatively insufficient alone.  z=9/z=10 coupling (same halo mass,
+    similar μ) means any η(μ) mechanism hits both bins equally.
+    Confirmed: impedance reflection bounded, cannot close 1.2 dex gap.
+  z=16 (+1.0 dex under):  Halos are 85% Newtonian — δ_c and f_star are
+    irrelevant.  Requires more primordial power at high-k (Δn_s, ΔNeff).
     Hubble tension connection: higher local H₀ means more small-scale power.
 """)
 

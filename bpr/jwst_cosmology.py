@@ -1144,6 +1144,135 @@ class BPRCosmologyV6(BPRCosmologyV5):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+#  V7 — MOND-Enhanced Baryonic Retention (f_star channel)
+# ═══════════════════════════════════════════════════════════════════════════
+
+class BPRCosmologyV7(BPRCosmologyV6):
+    """BPR V7 — MOND-Enhanced Star Formation Efficiency (f_star channel).
+
+    Addresses the z=9 underprediction through a physically independent channel:
+    enhanced baryonic retention in MOND-regime halos from boundary impedance
+    mismatch, distinct from the collapse-threshold δ_c mechanism in V2–V6.
+
+    DERIVATION
+    ----------
+    In Vacuum Impedance Mismatch, the halo boundary has impedance:
+
+        Z_halo = Z₀ / μ(a_vir/a₀)
+
+    Feedback-driven gas outflows cross from the halo (Z_halo) to the IGM
+    (Z_IGM ≈ Z₀).  At an impedance step, the reflection coefficient for
+    electromagnetic / phonon energy is:
+
+        R(μ) = ((Z_halo − Z₀) / (Z_halo + Z₀))²
+              = ((1 − μ) / (1 + μ))²
+
+    Gas that is "reflected" at the boundary is retained and forms stars.
+    Gas that is transmitted escapes as a feedback-driven outflow.
+
+    The baryonic retention enhancement over Newtonian:
+
+        η(μ) = 1 + R(μ) = 1 + ((1 − μ)/(1 + μ))²
+
+    Boundary values:
+        μ = 1  (Newtonian):   R = 0,  η = 1  (no enhancement)  ✓
+        μ → 0  (deep MOND):   R → 1,  η → 2  (retention doubles)  ✓
+
+    COUPLING TO UV LUMINOSITY FUNCTION
+    -----------------------------------
+    Enhanced f_star means the same M_halo produces more stellar mass and thus
+    a brighter galaxy.  Equivalently, a galaxy observed at M_UV in BPR comes
+    from a LESS MASSIVE (more abundant) halo than in ΛCDM.
+
+    The effective M_UV shift (galaxy is brighter by this amount):
+
+        ΔM_UV = 2.5 × log₁₀(η(μ))   [positive → dimmer in ΛCDM sense]
+
+    For a fixed observed M_UV, the BPR galaxy corresponds to M_UV + ΔM_UV in
+    ΛCDM (dimmer → more common).  The f_star correction to log φ:
+
+        Δ log φ_fstar = log φ_ΛCDM(M_UV + ΔM_UV, z) − log φ_ΛCDM(M_UV, z)
+
+    This is always positive (dimmer M_UV → more abundant) and naturally
+    captures the local slope of the PS mass function without approximation.
+
+    ZERO FREE PARAMETERS
+    --------------------
+    μ from Vacuum Impedance Mismatch (existing V4 method); η from the
+    standard impedance reflection formula.  No tuning.
+
+    EXPECTED MAGNITUDE
+    ------------------
+    At z=9, M_UV=−22 (μ ≈ 0.61):  η ≈ 1.060,  ΔM_UV ≈ +0.063 mag
+    Δ log φ ≈ 0.1–0.2 dex  (ΛCDM slope × ΔM_UV / 2.5)
+
+    HONEST CAVEAT
+    -------------
+    The reflection formula limits η ≤ 2, so ΔM_UV ≤ 0.75 mag and Δ log φ
+    is bounded below the 1.2 dex needed to close the z=9 gap.  The mechanism
+    is correct physics but quantitatively insufficient alone — establishing
+    this precisely is the scientific result.  The z=9/z=10 coupling (same
+    halo mass, similar μ) means any larger enhancement also boosts z=10.
+
+    ONLY ACTIVE AT z > z_PT (MOND epoch, same gate as V2–V6).
+    """
+
+    def _fstar_retention(self, M_halo_Msun: float, z: float) -> float:
+        """Baryonic retention enhancement η(μ) from boundary impedance mismatch.
+
+        η(μ) = 1 + ((1−μ)/(1+μ))²
+
+        Returns 1.0 at z ≤ z_PT (Newtonian epoch, no enhancement).
+        """
+        if z <= self.z_pt:
+            return 1.0
+        a_vir = self._virial_acceleration(M_halo_Msun, z)
+        x = a_vir / self.mond_a0
+        mu = x / math.sqrt(1.0 + x * x)
+        r = (1.0 - mu) / (1.0 + mu)
+        return 1.0 + r * r
+
+    def uv_luminosity_function_v7(self, M_UV: float, z: float) -> float:
+        """log₁₀(φ) with V6 collapse threshold + MOND-enhanced f_star retention.
+
+        Adds the f_star correction on top of V6's δ_c mechanism:
+
+            Δ log φ_fstar = log φ_ΛCDM(M_UV + ΔM_UV, z) − log φ_ΛCDM(M_UV, z)
+            ΔM_UV = 2.5 × log₁₀(η(μ))  (brightening from enhanced retention)
+        """
+        log_phi_v6 = self.uv_luminosity_function_v6(M_UV, z)
+
+        if z <= self.z_pt:
+            return log_phi_v6
+
+        M_halo = 1e11 * 10.0 ** (-0.4 * (M_UV + 21.0))
+        eta    = self._fstar_retention(M_halo, z)
+        if abs(eta - 1.0) < 1e-10:
+            return log_phi_v6
+
+        delta_MUV = 2.5 * math.log10(eta)          # positive → dimmer M_UV
+        M_UV_shifted = M_UV + delta_MUV             # shifted ΛCDM effective M_UV
+
+        log_phi_lcdm_shifted = self._lcdm.uv_luminosity_function(M_UV_shifted, z)
+        log_phi_lcdm_base    = self._lcdm.uv_luminosity_function(M_UV, z)
+
+        fstar_corr = log_phi_lcdm_shifted - log_phi_lcdm_base   # > 0
+        fstar_corr = max(0.0, min(4.0, fstar_corr))              # physical cap
+
+        return log_phi_v6 + fstar_corr
+
+    @property
+    def S8_v7(self) -> float:
+        """S8 — identical to V6 (f_star affects only high-z UV LF, not 8 Mpc clustering)."""
+        return self.S8_v6
+
+    @property
+    def sigma8_v7(self) -> float:
+        """σ₈ — identical to V6."""
+        return self.sigma8_v6
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 #  COUPLING GAP ANALYSIS
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -1198,6 +1327,7 @@ def run_jwst_comparison(p: int = _P) -> dict:
     bpr_v4 = BPRCosmologyV4(p=p)
     bpr_v5 = BPRCosmologyV5(p=p)
     bpr_v6 = BPRCosmologyV6(p=p)
+    bpr_v7 = BPRCosmologyV7(p=p)
     lcdm   = LambdaCDM()
 
     results = {}
@@ -1221,6 +1351,7 @@ def run_jwst_comparison(p: int = _P) -> dict:
     S8_bpr_v4 = bpr_v4.S8_v4
     S8_bpr_v5 = bpr_v5.S8_v5
     S8_bpr_v6 = bpr_v6.S8_v6
+    S8_bpr_v7 = bpr_v7.S8_v7
     S8_tension_sigma = (_S8_PLANCK - _S8_WL_OBS) / _S8_WL_ERR
     raw_fraction    = (_S8_PLANCK - S8_bpr)    / (_S8_PLANCK - _S8_WL_OBS)
     raw_fraction_v2 = (_S8_PLANCK - S8_bpr_v2) / (_S8_PLANCK - _S8_WL_OBS)
@@ -1228,6 +1359,7 @@ def run_jwst_comparison(p: int = _P) -> dict:
     raw_fraction_v4 = (_S8_PLANCK - S8_bpr_v4) / (_S8_PLANCK - _S8_WL_OBS)
     raw_fraction_v5 = (_S8_PLANCK - S8_bpr_v5) / (_S8_PLANCK - _S8_WL_OBS)
     raw_fraction_v6 = (_S8_PLANCK - S8_bpr_v6) / (_S8_PLANCK - _S8_WL_OBS)
+    raw_fraction_v7 = (_S8_PLANCK - S8_bpr_v7) / (_S8_PLANCK - _S8_WL_OBS)
     results["s8_tension"] = {
         "S8_planck":            _S8_PLANCK,
         "S8_observed_WL":       _S8_WL_OBS,
@@ -1243,6 +1375,8 @@ def run_jwst_comparison(p: int = _P) -> dict:
         "sigma8_bpr_v5":        bpr_v5.sigma8_v5,
         "S8_bpr_v6":            S8_bpr_v6,
         "sigma8_bpr_v6":        bpr_v6.sigma8_v6,
+        "S8_bpr_v7":            S8_bpr_v7,
+        "sigma8_bpr_v7":        bpr_v7.sigma8_v7,
         "tension_sigma_lcdm":   S8_tension_sigma,
         "tension_sigma_bpr":    abs(S8_bpr    - _S8_WL_OBS) / _S8_WL_ERR,
         "tension_sigma_bpr_v2": abs(S8_bpr_v2 - _S8_WL_OBS) / _S8_WL_ERR,
@@ -1250,18 +1384,21 @@ def run_jwst_comparison(p: int = _P) -> dict:
         "tension_sigma_bpr_v4": abs(S8_bpr_v4 - _S8_WL_OBS) / _S8_WL_ERR,
         "tension_sigma_bpr_v5": abs(S8_bpr_v5 - _S8_WL_OBS) / _S8_WL_ERR,
         "tension_sigma_bpr_v6": abs(S8_bpr_v6 - _S8_WL_OBS) / _S8_WL_ERR,
+        "tension_sigma_bpr_v7": abs(S8_bpr_v7 - _S8_WL_OBS) / _S8_WL_ERR,
         "fraction_explained":   raw_fraction,
         "fraction_explained_v2": raw_fraction_v2,
         "fraction_explained_v3": raw_fraction_v3,
         "fraction_explained_v4": raw_fraction_v4,
         "fraction_explained_v5": raw_fraction_v5,
         "fraction_explained_v6": raw_fraction_v6,
+        "fraction_explained_v7": raw_fraction_v7,
         "overshoots":    S8_bpr    < _S8_WL_OBS,
         "overshoots_v2": S8_bpr_v2 < _S8_WL_OBS,
         "overshoots_v3": S8_bpr_v3 < _S8_WL_OBS,
         "overshoots_v4": S8_bpr_v4 < _S8_WL_OBS,
         "overshoots_v5": S8_bpr_v5 < _S8_WL_OBS,
         "overshoots_v6": S8_bpr_v6 < _S8_WL_OBS,
+        "overshoots_v7": S8_bpr_v7 < _S8_WL_OBS,
     }
 
     # ── 3. JWST UV LF ─────────────────────────────────────────────────────
@@ -1275,6 +1412,7 @@ def run_jwst_comparison(p: int = _P) -> dict:
         log_phi_v4   = bpr_v4.uv_luminosity_function_v4(pt.M_UV, pt.z)
         log_phi_v5   = bpr_v5.uv_luminosity_function_v5(pt.M_UV, pt.z)
         log_phi_v6   = bpr_v6.uv_luminosity_function_v6(pt.M_UV, pt.z)
+        log_phi_v7   = bpr_v7.uv_luminosity_function_v7(pt.M_UV, pt.z)
         gap_lcdm     = pt.log_phi - log_phi_lcdm
         gap_bpr      = pt.log_phi - log_phi_bpr
         gap_mond     = pt.log_phi - log_phi_mond
@@ -1283,6 +1421,7 @@ def run_jwst_comparison(p: int = _P) -> dict:
         gap_v4       = pt.log_phi - log_phi_v4
         gap_v5       = pt.log_phi - log_phi_v5
         gap_v6       = pt.log_phi - log_phi_v6
+        gap_v7       = pt.log_phi - log_phi_v7
         bpr_closes   = (gap_lcdm - gap_bpr)  / abs(gap_lcdm) if gap_lcdm != 0 else 0
         mond_closes  = (gap_lcdm - gap_mond) / abs(gap_lcdm) if gap_lcdm != 0 else 0
         v2_closes    = (gap_lcdm - gap_v2)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
@@ -1290,6 +1429,7 @@ def run_jwst_comparison(p: int = _P) -> dict:
         v4_closes    = (gap_lcdm - gap_v4)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
         v5_closes    = (gap_lcdm - gap_v5)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
         v6_closes    = (gap_lcdm - gap_v6)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
+        v7_closes    = (gap_lcdm - gap_v7)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
 
         sigma_needed = required_sigma_enhancement(pt.log_phi, log_phi_lcdm)
         n_s_needed   = required_n_s(sigma_needed, k_Mpc=5.0)
@@ -1306,6 +1446,7 @@ def run_jwst_comparison(p: int = _P) -> dict:
             "log_phi_v4":  log_phi_v4,
             "log_phi_v5":  log_phi_v5,
             "log_phi_v6":  log_phi_v6,
+            "log_phi_v7":  log_phi_v7,
             "gap_lcdm_dex": gap_lcdm,
             "gap_bpr_dex":  gap_bpr,
             "gap_mond_dex": gap_mond,
@@ -1314,6 +1455,7 @@ def run_jwst_comparison(p: int = _P) -> dict:
             "gap_v4_dex":   gap_v4,
             "gap_v5_dex":   gap_v5,
             "gap_v6_dex":   gap_v6,
+            "gap_v7_dex":   gap_v7,
             "bpr_fraction_closed":  bpr_closes,
             "mond_fraction_closed": mond_closes,
             "v2_fraction_closed":   v2_closes,
@@ -1321,6 +1463,7 @@ def run_jwst_comparison(p: int = _P) -> dict:
             "v4_fraction_closed":   v4_closes,
             "v5_fraction_closed":   v5_closes,
             "v6_fraction_closed":   v6_closes,
+            "v7_fraction_closed":   v7_closes,
             "sigma_ratio_needed": sigma_needed,
             "n_s_needed_to_explain": n_s_needed,
             "source": pt.source,
@@ -1346,6 +1489,11 @@ def run_jwst_comparison(p: int = _P) -> dict:
         "m_imp_v6_z9":   bpr_v6.m_imp(9.0),
         "m_imp_v6_z10":  bpr_v6.m_imp(10.0),
         "m_imp_v6_z12":  bpr_v6.m_imp(12.0),
+        # V7 f_star retention: η(μ) at representative halo masses
+        "fstar_eta_v7_z9":  bpr_v7._fstar_retention(2.5e11, 9.0),
+        "fstar_eta_v7_z10": bpr_v7._fstar_retention(2.5e11, 10.0),
+        "fstar_eta_v7_z12": bpr_v7._fstar_retention(1.0e11, 12.0),
+        "fstar_eta_v7_z16": bpr_v7._fstar_retention(5.0e10, 16.0),
     }
 
     return results

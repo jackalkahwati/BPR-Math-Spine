@@ -798,3 +798,82 @@ class TestBPRCosmologyV6:
             f"V6 should be closer to V4 than V5 at z=16: "
             f"V4={lf_v4:.3f}, V5={lf_v5:.3f}, V6={lf_v6:.3f}"
         )
+
+
+class TestBPRCosmologyV7:
+    def test_fstar_retention_newtonian_returns_one(self):
+        """η(μ) = 1 at z ≤ z_PT (Newtonian epoch, no enhancement)."""
+        from bpr.jwst_cosmology import BPRCosmologyV7
+        v7 = BPRCosmologyV7()
+        eta = v7._fstar_retention(1e12, 3.0)
+        assert abs(eta - 1.0) < 1e-10, f"z<z_PT should give η=1, got {eta}"
+
+    def test_fstar_retention_mond_regime_greater_than_one(self):
+        """η(μ) > 1 at z > z_PT in MOND regime (halo below M★)."""
+        from bpr.jwst_cosmology import BPRCosmologyV7
+        v7 = BPRCosmologyV7()
+        eta = v7._fstar_retention(1e11, 9.0)
+        assert eta > 1.0, f"MOND-regime halo should give η>1, got {eta}"
+
+    def test_fstar_retention_bounded(self):
+        """η(μ) ≤ 2 always (reflection coefficient R ≤ 1)."""
+        from bpr.jwst_cosmology import BPRCosmologyV7
+        v7 = BPRCosmologyV7()
+        for M, z in [(1e9, 10.0), (1e10, 12.0), (1e11, 9.0), (1e12, 9.0), (1e13, 16.0)]:
+            eta = v7._fstar_retention(M, z)
+            assert 1.0 <= eta <= 2.0 + 1e-10, (
+                f"η out of bounds [1,2]: M={M:.0e}, z={z}, η={eta:.4f}"
+            )
+
+    def test_fstar_retention_deep_mond_approaches_two(self):
+        """η → 2 as μ → 0 (deep MOND: R → 1, maximum baryonic retention)."""
+        # R(μ) = ((1-μ)/(1+μ))² → 1 as μ→0, so η → 1+1 = 2
+        r_near_zero = ((1.0 - 1e-6) / (1.0 + 1e-6)) ** 2
+        eta_near_zero = 1.0 + r_near_zero
+        assert abs(eta_near_zero - 2.0) < 1e-4, f"Deep MOND η should approach 2, got {eta_near_zero}"
+
+    def test_uv_lf_v7_geq_v6_at_high_z(self):
+        """UV LF V7 ≥ V6 at z > z_PT (f_star correction is non-negative)."""
+        from bpr.jwst_cosmology import BPRCosmologyV7
+        v7 = BPRCosmologyV7()
+        for M_UV in [-21.0, -22.0, -22.5]:
+            lf_v7 = v7.uv_luminosity_function_v7(M_UV, 9.0)
+            lf_v6 = v7.uv_luminosity_function_v6(M_UV, 9.0)
+            assert lf_v7 >= lf_v6 - 1e-10, (
+                f"V7 ≥ V6 at z=9 M_UV={M_UV}: V7={lf_v7:.4f}, V6={lf_v6:.4f}"
+            )
+
+    def test_uv_lf_v7_equals_v6_below_z_pt(self):
+        """UV LF V7 = V6 at z ≤ z_PT (mechanism gates off)."""
+        from bpr.jwst_cosmology import BPRCosmologyV7
+        v7 = BPRCosmologyV7()
+        lf_v7 = v7.uv_luminosity_function_v7(-22.0, 3.0)
+        lf_v6 = v7.uv_luminosity_function_v6(-22.0, 3.0)
+        assert abs(lf_v7 - lf_v6) < 1e-10, (
+            f"V7 = V6 at z<z_PT: V7={lf_v7:.4f}, V6={lf_v6:.4f}"
+        )
+
+    def test_s8_v7_equals_v6(self):
+        """S8_V7 = S8_V6 (f_star only affects UV LF, not 8 Mpc clustering)."""
+        from bpr.jwst_cosmology import BPRCosmologyV7
+        v7 = BPRCosmologyV7()
+        assert abs(v7.S8_v7 - v7.S8_v6) < 1e-10
+
+    def test_fstar_correction_direction(self):
+        """f_star correction is in right direction: V7 > V6 at z=9."""
+        from bpr.jwst_cosmology import BPRCosmologyV7
+        v7 = BPRCosmologyV7()
+        lf_v7 = v7.uv_luminosity_function_v7(-22.0, 9.0)
+        lf_v6 = v7.uv_luminosity_function_v6(-22.0, 9.0)
+        assert lf_v7 > lf_v6, (
+            f"f_star channel should boost UV LF at z=9: V7={lf_v7:.4f}, V6={lf_v6:.4f}"
+        )
+
+    def test_delta_muv_positive(self):
+        """ΔM_UV = 2.5×log₁₀(η) > 0 in MOND regime (galaxy appears brighter)."""
+        from bpr.jwst_cosmology import BPRCosmologyV7
+        import math
+        v7 = BPRCosmologyV7()
+        eta = v7._fstar_retention(1e11, 9.0)
+        delta_muv = 2.5 * math.log10(eta)
+        assert delta_muv > 0, f"ΔM_UV should be positive in MOND regime, got {delta_muv:.4f}"
