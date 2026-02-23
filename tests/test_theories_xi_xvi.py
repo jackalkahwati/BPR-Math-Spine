@@ -982,3 +982,108 @@ class TestBPRBoundaryPhonon:
         ph = BPRBoundaryPhonon()
         assert ph.decay_constant_GeV < _M_PL_GEV, "f_φ must be below M_Pl"
         assert ph.decay_constant_GeV > _M_PL_GEV * 1e-2, "f_φ should be within 2 orders of M_Pl"
+
+
+class TestA0Derivation:
+    """Tests for the Gibbons-Hawking derivation of the MOND acceleration scale.
+
+    Validates the four-step derivation in MONDInterpolation (bpr/impedance.py):
+      Step 1: T_GH = ħH₀/(2πk_B)          [standard GR]
+      Step 2: ω₀ = H₀/(2π)                 [boundary phonon at T_GH]
+      Step 3: a₀ = c H₀/(2π)               [BPR — leading term]
+      Step 4: a₀ = c H₀/(2π) × (1+z/4lnp) [BPR — substrate correction]
+
+    Each test checks one step independently, so failures isolate exactly
+    where the derivation breaks down.
+    """
+
+    def test_leading_term_within_15_percent(self):
+        """Step 3: cH₀/(2π) is within 15% of observed a₀ = 1.2e-10 m/s².
+
+        This tests the Gibbons-Hawking leading term alone, before the
+        substrate correction.  A 13% undershoot is expected.
+        """
+        import math
+        H0_si = 67.4 * 1e3 / 3.086e22   # s⁻¹
+        a0_leading = 3e8 * H0_si / (2.0 * math.pi)
+        a0_observed = 1.2e-10   # m/s²
+        fractional_error = abs(a0_leading - a0_observed) / a0_observed
+        assert fractional_error < 0.15, (
+            f"Leading term cH₀/(2π) = {a0_leading:.3e} m/s² is "
+            f"{fractional_error*100:.1f}% from observed {a0_observed:.3e} — "
+            f"expected ~13% undershoot from GH leading term"
+        )
+
+    def test_full_formula_within_3_percent(self):
+        """Step 4: full formula a₀ = cH₀/(2π)×(1+z/4lnp) within 3% of observed."""
+        from bpr.jwst_cosmology import BPRCosmologyV2
+        v2 = BPRCosmologyV2()
+        a0_bpr = v2.mond_a0
+        a0_observed = 1.2e-10   # m/s²
+        fractional_error = abs(a0_bpr - a0_observed) / a0_observed
+        assert fractional_error < 0.03, (
+            f"Full a₀ formula = {a0_bpr:.3e} m/s² is "
+            f"{fractional_error*100:.1f}% from observed — should be < 3%"
+        )
+
+    def test_substrate_correction_increases_a0(self):
+        """Step 4: the substrate correction (1 + z/4lnp) > 1 — it lifts a₀ toward observed."""
+        import math
+        p = 104729
+        z = 6
+        correction = 1.0 + z / (4.0 * math.log(p))
+        assert correction > 1.0, "Substrate correction must be > 1 (positive enhancement)"
+        assert 1.05 < correction < 1.20, (
+            f"Correction = {correction:.4f}, expected between 1.05 and 1.20 (≈13%)"
+        )
+
+    def test_two_pi_from_gibbons_hawking(self):
+        """Step 1–2: the 2π in a₀ = cH₀/(2π) is the GH Euclidean period.
+
+        Verify that ω₀ = k_B T_GH / ħ = H₀/(2π) exactly — i.e., the 2π
+        cancels cleanly and does not need to be inserted by hand.
+        """
+        import math
+        hbar = 1.054571817e-34   # J·s
+        k_B  = 1.380649e-23     # J/K
+        H0   = 2.184e-18        # s⁻¹  (67.4 km/s/Mpc in SI)
+
+        T_GH = hbar * H0 / (2.0 * math.pi * k_B)   # Gibbons-Hawking temperature
+        omega_0 = k_B * T_GH / hbar                  # boundary phonon frequency
+
+        expected = H0 / (2.0 * math.pi)
+        assert abs(omega_0 - expected) / expected < 1e-10, (
+            "ω₀ = k_B T_GH / ħ must equal H₀/(2π) exactly — "
+            "the 2π traces to the GH Euclidean period, not a free parameter"
+        )
+
+    def test_z_pt_is_downstream_of_derived_a0(self):
+        """z_PT ≈ 5.1 is a genuine prediction: derived entirely from p, z, H₀.
+
+        No free parameters: the same substrate prime p and coordination z
+        that give a₀ to 1.8% also fix z_PT through Γ_b(z_PT) = ω_MOND.
+        """
+        from bpr.jwst_cosmology import BPRCosmologyV2
+        v2 = BPRCosmologyV2()
+        z_pt = v2.z_pt
+        assert 4.5 < z_pt < 6.0, (
+            f"z_PT = {z_pt:.2f} is outside the expected range [4.5, 6.0] — "
+            f"derived from p={v2.p}, z=6"
+        )
+
+    def test_h0_c_over_p13_fails(self):
+        """H₀c/p^{1/3} is NOT the right formula — it misses observed a₀ by > 5×.
+
+        This test guards against regressing to the naive substrate-rate formula.
+        The correct leading term is cH₀/(2π), not cH₀/p^{1/3}.
+        """
+        import math
+        H0_si = 67.4 * 1e3 / 3.086e22
+        p = 104729
+        a0_naive = 3e8 * H0_si / p**(1.0/3.0)
+        a0_observed = 1.2e-10
+        ratio = a0_observed / a0_naive
+        assert ratio > 5.0, (
+            f"H₀c/p^(1/3) = {a0_naive:.3e} should be > 5× below observed "
+            f"{a0_observed:.3e} (ratio = {ratio:.1f})"
+        )

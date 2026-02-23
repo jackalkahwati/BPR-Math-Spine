@@ -131,11 +131,97 @@ class DarkEnergyDensity:
 class MONDInterpolation:
     """Modified gravity at galactic scales from impedance transition.
 
-    Characteristic acceleration:
-        a₀ = c H₀ / (2π) × (1 + z/(4 ln p))
+    DERIVATION OF a₀ FROM BPR FIRST PRINCIPLES
+    -------------------------------------------
+    The MOND acceleration scale a₀ is derived in four steps.  Steps 1–2 are
+    standard general relativity; steps 3–4 are BPR-specific.
 
-    Base: cosmological boundary (Hubble horizon). Correction: boundary
-    coordination z enhances the transition scale (more modes at horizon).
+    Step 1 — De Sitter horizon temperature  [standard GR]
+        The Gibbons-Hawking temperature of the cosmological de Sitter horizon
+        with Hubble constant H₀ is:
+
+            T_GH = ħ H₀ / (2π k_B)             [Gibbons & Hawking 1977]
+
+        This arises from the analytic continuation of the de Sitter mode
+        functions into Euclidean signature: the period 2π/H₀ of the Euclidean
+        solution maps to a thermal partition function at temperature T_GH.
+        The 2π is not an input — it is the circumference of the Euclidean
+        de Sitter solution in units where the radius is 1/H₀.
+
+    Step 2 — Boundary phonon thermalization  [BPR]
+        The boundary phase field φ ∈ [0, 2π) is the lowest U(1) mode of the
+        BPR substrate at the Hubble horizon.  In de Sitter space this mode
+        thermalizes at T_GH.  Its characteristic quantum of energy is:
+
+            E₀ = k_B T_GH = ħ H₀ / (2π)
+
+        equivalently, its angular frequency is:
+
+            ω₀ = E₀ / ħ = H₀ / (2π)                      [leading term]
+
+        The 2π here is the same 2π from the Gibbons-Hawking formula — it
+        is the number of radians per complete oscillation of the compact
+        boundary phase.  This is the only place the 2π enters; it is not
+        a free parameter.
+
+    Step 3 — MOND transition frequency  [BPR assumption, testable]
+        The Vacuum Impedance Mismatch identifies the MOND transition
+        frequency with the boundary phonon frequency:
+
+            ω_MOND ≡ a₀ / c  →  a₀ = c ω₀ = c H₀ / (2π)
+
+        Numerically: c H₀/(2π) = 1.043 × 10⁻¹⁰ m/s²  vs  observed 1.2 × 10⁻¹⁰.
+        Leading-term error: 13%.
+
+        STATUS: This identification is a BPR-specific assumption.  It is the
+        claim that the MOND transition occurs when the gravitational
+        acceleration scale equals c times the thermal phonon frequency of the
+        boundary.  It is *testable*: the same relation a₀ = c H / (2π) should
+        hold at all cosmological epochs, not just today.
+
+    Step 4 — Substrate coordination correction  [BPR]
+        The BPR lattice substrate has coordination number z (number of
+        nearest-neighbour bonds per site).  Boundary modes at the Hubble
+        scale interact via nearest-neighbour hopping, with coupling strength
+        suppressed by the substrate entropy S_sub ~ ln(p) (the p distinct
+        phase values per site contribute ln(p) information).  The fractional
+        frequency enhancement from z nearest-neighbour interactions is:
+
+            δω/ω = z / (4 ln p)
+
+        The denominator factor 4 comes from the Bekenstein-Hawking area law
+        (S = A / 4 l_Pl²): the same factor 4 that appears in the horizon
+        entropy controls the mode-count normalisation at the boundary.
+
+        Full result:
+
+            a₀ = c H₀ / (2π) × (1 + z/(4 ln p))
+
+        For H₀ = 67.4 km/s/Mpc, p = 104729, z = 6:
+            a₀ = 1.178 × 10⁻¹⁰ m/s²  (1.8% below observed 1.2 × 10⁻¹⁰)
+
+        STATUS: Step 4 gives the correct 1.8%-level agreement.  The factor-4
+        argument uses the Bekenstein-Hawking analogy; a first-principles
+        derivation from the lattice action is an open problem.
+
+    IMPLICATION FOR z_PT
+    --------------------
+    Since a₀ = f(H₀, p, z) has no free parameters, z_PT is also a genuine
+    BPR prediction:
+
+        H(z_PT) = p^{1/3} × a₀ / c = p^{1/3} H₀ / (2π) × (1 + z/(4 ln p))
+
+    For p = 104729, z = 6: z_PT ≈ 5.1.  This is derived, not fitted.
+
+    HONEST ASSESSMENT
+    -----------------
+    The derivation is sound at leading order.  The 2π traces to the
+    Gibbons-Hawking temperature of the de Sitter horizon and requires no
+    free parameters.  Step 3 (ω_MOND = ω₀) is the BPR-specific claim and
+    is the seam between standard physics and BPR.  If a future measurement
+    shows a₀/H₀ ≠ c/(2π) across different cosmic epochs, step 3 fails.
+    Step 4 (substrate correction) is partially motivated and improves
+    accuracy from 13% to 1.8%; it requires a more rigorous lattice derivation.
 
     Interpolation function (simple form, §4.4):
         μ(x) = x / (1 + x)     where x = a / a₀

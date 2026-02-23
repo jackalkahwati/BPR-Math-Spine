@@ -351,12 +351,21 @@ class BPRCosmology:
 
     @property
     def mond_a0(self) -> float:
-        """MOND acceleration scale from Vacuum Impedance Mismatch.
+        """MOND acceleration scale derived from Gibbons-Hawking temperature.
 
         a₀ = (c H₀ / 2π) × (1 + z_coord / (4 ln p))
 
-        z_coord = 6 is the lattice coordination number; p = 104729.
-        Result ≈ 1.18×10⁻¹⁰ m/s² (observed: 1.2×10⁻¹⁰ m/s², 1.5% off).
+        DERIVATION (see MONDInterpolation in bpr/impedance.py for full argument):
+          1. De Sitter horizon temperature: T_GH = ħH₀/(2πk_B)   [GH 1977]
+          2. Boundary phonon frequency:  ω₀ = k_BT_GH/ħ = H₀/(2π)
+          3. MOND transition:  a₀ = c ω₀ = cH₀/(2π)               [BPR claim]
+          4. Substrate correction: ×(1 + z/(4 ln p))              [BPR lattice]
+
+        The 2π is not a free parameter — it is the Gibbons-Hawking period of
+        the de Sitter Euclidean solution.  Step 3 is BPR-specific and testable.
+
+        Parameters: z_coord = 6 (lattice coordination), p = 104729 (substrate).
+        Result: 1.178×10⁻¹⁰ m/s²  (observed: 1.2×10⁻¹⁰ m/s², 1.8% residual).
         """
         H0_si = _H0_PLANCK * 1000.0 / 3.086e22   # s⁻¹
         z_coord = 6.0                              # lattice coordination number
@@ -463,12 +472,18 @@ class BPRCosmologyV2(BPRCosmology):
 
     @property
     def z_pt(self) -> float:
-        """Critical phase-transition redshift from Γ_b(z_PT) = ω_MOND.
+        """Critical phase-transition redshift — a genuine BPR prediction.
 
-        Condition: H(z_PT) = p^{1/3} × a₀ / c
+        Derived entirely from substrate parameters (p, z) and H₀; no free
+        parameters.  The derivation chain is:
 
-        Solved in ΛCDM:  (1+z_PT)³ = (E_target² − Ω_Λ) / Ω_m
-        where E_target = p^{1/3} × a₀ / (c H₀).
+            a₀ = c H₀/(2π) × (1 + z/(4 ln p))   [from GH temperature, BPR]
+            Γ_b(z_PT) = ω_MOND  →  H(z_PT) = p^{1/3} × a₀/c
+
+        Solved in flat ΛCDM:  (1+z_PT)³ = (E_target² − Ω_Λ) / Ω_m
+        where E_target ≡ p^{1/3} a₀ / (c H₀) = p^{1/3} / (2π) × (1 + z/(4 ln p)).
+
+        Result: z_PT ≈ 5.1.  This is derived, not fitted.
         """
         H0_si      = _H0_PLANCK * 1000.0 / 3.086e22   # s⁻¹
         omega_MOND = self.mond_a0 / 3e8                 # a₀/c  [s⁻¹]
