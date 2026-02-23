@@ -18,6 +18,7 @@ References: Al-Kahwati (2026), BPR-Math-Spine extended theories
 
 from __future__ import annotations
 
+import math
 import numpy as np
 from dataclasses import dataclass
 from typing import Dict, Any
@@ -30,8 +31,15 @@ _K_B = 1.380649e-23         # J/K
 _M_PL_GEV = 1.22093e19     # GeV  (Planck mass)
 _V_HIGGS = 246.0            # GeV  (Higgs VEV)
 _R_H = 4.4e26               # m    (Hubble radius)
-_T_CMB = 2.7255              # K    (CMB temperature)
+_T_CMB = 2.7255             # K    (CMB temperature)
 _L_PLANCK = 1.616255e-35    # m
+
+# Derived constants for boundary phonon / ΔNeff analysis
+_H0_GEV      = 1.437e-42   # GeV  (H₀ = 67.4 km/s/Mpc in natural units)
+_OMEGA_LAMBDA = 0.6888      # Planck 2018 dark energy fraction
+_G_STAR_SM    = 106.75      # SM relativistic dof at T >> EW scale
+_G_STAR_REC   = 3.36        # relativistic dof at recombination (γ + 3ν)
+_T_REC_EV     = 0.25        # eV   (recombination temperature, m << this → relativistic)
 
 
 # ---------------------------------------------------------------------------
@@ -674,11 +682,205 @@ def reheating_temperature(p: int = 104729) -> float:
 
 
 def delta_neff(p: int = 104729) -> float:
-    """Correction to effective number of relativistic species.
+    """Correction to effective number of relativistic species (heuristic).
 
     Standard: N_eff = 3.044.
-    BPR adds boundary-mode radiation: ΔN_eff ~ (4/11)^{4/3} / p^{1/6}.
+    BPR adds boundary-mode radiation: ΔN_eff ~ (4/11)^{4/3} / p^{1/6} ≈ 0.038.
 
-    This is very small (~10⁻³) and within Planck bounds.
+    NOTE: This is a heuristic formula.  It implicitly assumes φ decouples at
+    T ~ T_ν ~ 2 MeV with density suppressed by 1/p^{1/6}.  Neither assumption
+    is derived from the boundary coupling.
+
+    The rigorous derivation in BPRBoundaryPhonon gives T_dec ~ M_Pl/p^{2/3}
+    (GUT scale) from the coupling g_φ ~ 1/p^{1/3}, yielding:
+
+        ΔNeff_structural ≈ 0.006  (the true p^{1/3} structural ceiling)
+
+    This function is retained for continuity with existing BPRCosmology code.
+    See BPRBoundaryPhonon for the falsifiable prediction.
     """
     return (4.0 / 11.0) ** (4.0 / 3.0) / p ** (1.0 / 6.0)
+
+
+# ---------------------------------------------------------------------------
+# §11.7  Boundary phonon as light boson — mass spectrum and ΔNeff ceiling
+# ---------------------------------------------------------------------------
+
+@dataclass
+class BPRBoundaryPhonon:
+    """Boundary phase field φ as light pseudo-Goldstone boson.
+
+    STATUS: NEW DERIVATION — derives the φ mass from substrate frustration
+    and ΔNeff from the boundary coupling, establishing the p^{1/3}
+    structural ceiling as a falsifiable prediction.
+
+    MASS SPECTRUM
+    -------------
+    φ is a pseudo-Goldstone boson from the discrete substrate symmetry
+    Z/pZ explicitly breaking the continuous U(1)_boundary rotation.  The
+    frustration potential is:
+
+        V(φ) ≈ ρ_DE × (1 − cos(φ/f_φ))
+
+    where ρ_DE is the dark energy density and f_φ = M_Pl/p^{1/3} is the
+    substrate-suppressed decay constant.  The pseudo-Goldstone mass:
+
+        m_φ = sqrt(ρ_DE) / f_φ  ~  H₀ × p^{1/3}/sqrt(8π)  ~  10⁻³² eV
+
+    This is << T_rec ~ 0.25 eV: φ IS relativistic at recombination. ✓
+    This places φ in the ultra-light quintessence regime.
+
+    COUPLING AND DECOUPLING TEMPERATURE
+    ------------------------------------
+    Every interaction mediated through the substrate carries coupling
+    suppression g_φ ~ 1/p^{1/3} (from the UV coarse-graining scale
+    l_UV = l_Pl × p^{1/3}).  The φ–SM interaction rate in radiation
+    domination:
+
+        Γ_φ ~ g_φ² × T = T / p^{2/3}
+
+    Decoupling when Γ_φ = H = T²/M_Pl:
+
+        T_dec = M_Pl / p^{2/3}  ≈  5.5 × 10^{15} GeV   (GUT scale)
+
+    STRUCTURAL ΔNeff CEILING
+    -------------------------
+    After φ decouples at T_dec, SM entropy production dilutes T_φ/T_γ.
+    Using g_*(T_dec) = 106.75 (full SM at T ~ GUT scale):
+
+        T_φ/T_γ = (g_*(T_rec)/g_*(T_dec))^{1/3} = (3.36/106.75)^{1/3} ≈ 0.316
+
+        ΔNeff_structural = (4/7) × (T_φ/T_γ)^4 ≈ 0.006
+
+    THE p^{1/3} CEILING THEOREM
+    ---------------------------
+    This is not specific to φ — it applies to ANY species produced through
+    the substrate at coarse-graining scale l_UV = l_Pl × p^{1/3}:
+
+        g_φ ~ 1/p^{1/3}  →  T_dec ~ M_Pl/p^{2/3}  →  ΔNeff < 0.006
+
+    Three independent BPR derivations give the same p^{1/3} suppression:
+      1. Boundary phase rate:    Γ_b = H / p^{1/3}  → z_PT = 5.09
+      2. Boundary coupling:      g_φ ~ 1 / p^{1/3}  → T_dec ~ GUT scale
+      3. UV mode frequency:      ω_UV = c / (l_Pl × p^{1/3})
+
+    All three arise from the same substrate coarse-graining — not a
+    coincidence, but a structural property of the architecture.
+
+    FALSIFIABLE PREDICTION
+    ----------------------
+    BPR predicts ΔNeff_structural ≈ 0.006, well below:
+      - CMB-S4 1σ sensitivity:  ~0.060
+      - Current Planck bound:   ΔNeff < 0.3 (95% CL)
+
+    If CMB-S4 or CMB-HD measures ΔNeff > 0.1 at ≥2σ confidence, this
+    falsifies the substrate coarse-graining scale l_UV = l_Pl × p^{1/3}.
+    Such a result would require either a different substrate prime p, a
+    coupling channel bypassing the substrate, or a non-ΔNeff origin for
+    the Hubble tension (the most probable resolution).
+
+    DARK ENERGY CONNECTION
+    ----------------------
+    m_φ ~ 10^{-32} eV places φ in the ultra-light quintessence regime.
+    This provides a BPR-derived candidate for the dark energy field,
+    distinct from the cosmological constant frustration energy but
+    consistent with it: the same boundary field φ that drives dark energy
+    oscillations also contributes a negligible ΔNeff ~ 0.006.
+
+    Parameters
+    ----------
+    p : int – substrate prime (default 104729)
+    """
+    p: int = 104729
+
+    @property
+    def rho_de_GeV4(self) -> float:
+        """Dark energy density ρ_DE from Friedmann equation [GeV⁴].
+
+        ρ_DE = Ω_Λ × 3 H₀² M_Pl² / (8π)
+
+        Zero free parameters: uses H₀, Ω_Λ, M_Pl.
+        """
+        return _OMEGA_LAMBDA * 3.0 * _H0_GEV ** 2 * _M_PL_GEV ** 2 / (8.0 * math.pi)
+
+    @property
+    def decay_constant_GeV(self) -> float:
+        """Pseudo-Goldstone decay constant f_φ = M_Pl / p^{1/3} [GeV].
+
+        The substrate UV coarse-graining at l_UV = l_Pl × p^{1/3} suppresses
+        the boundary field's normalization by 1/p^{1/3} relative to M_Pl.
+        """
+        return _M_PL_GEV / self.p ** (1.0 / 3.0)
+
+    @property
+    def m_phi_eV(self) -> float:
+        """Pseudo-Goldstone mass m_φ = sqrt(ρ_DE) / f_φ [eV].
+
+        Result: m_φ ~ H₀ × p^{1/3}/sqrt(8π) ~ 10⁻³² eV.
+
+        This is << T_rec ~ 0.25 eV in all cases: φ is relativistic at
+        recombination and contributes to ΔNeff as a massless boson.
+        Connection to dark energy: m_φ is in the ultra-light quintessence range.
+        """
+        m_GeV = math.sqrt(self.rho_de_GeV4) / self.decay_constant_GeV
+        return m_GeV * 1.0e9  # GeV → eV
+
+    @property
+    def t_dec_GeV(self) -> float:
+        """Decoupling temperature T_dec = M_Pl / p^{2/3} [GeV].
+
+        From Γ_φ = g_φ² T = T/p^{2/3} crossing H = T²/M_Pl:
+            T_dec = M_Pl / p^{2/3}
+
+        For p = 104729: T_dec ≈ 5.5 × 10^{15} GeV  (GUT scale).
+        """
+        return _M_PL_GEV / self.p ** (2.0 / 3.0)
+
+    @property
+    def temperature_ratio(self) -> float:
+        """T_φ/T_γ at recombination = (g_*(T_rec)/g_*(T_dec))^{1/3}.
+
+        Quantifies entropy dilution of φ after GUT-scale decoupling.
+        """
+        return (_G_STAR_REC / _G_STAR_SM) ** (1.0 / 3.0)
+
+    @property
+    def delta_neff_structural(self) -> float:
+        """ΔNeff from boundary phonon thermal history — structural ceiling.
+
+        ΔNeff = (4/7) × (T_φ/T_γ)^4  [real scalar boson, g_φ = 1]
+
+        This is the maximum ΔNeff achievable from any BPR substrate-mediated
+        interaction.  The p^{1/3} coupling suppression forces T_dec to GUT
+        scale, giving T_φ/T_γ ≈ 0.316 and ΔNeff ≈ 0.006.
+        """
+        return (4.0 / 7.0) * self.temperature_ratio ** 4
+
+    @property
+    def delta_neff_heuristic(self) -> float:
+        """Heuristic ΔNeff = (4/11)^{4/3} / p^{1/6} (existing delta_neff formula).
+
+        Assumes T_dec ~ T_ν with 1/p^{1/6} density suppression — neither
+        derived from coupling.  Exceeds delta_neff_structural by ~6.7×.
+        """
+        return (4.0 / 11.0) ** (4.0 / 3.0) / self.p ** (1.0 / 6.0)
+
+    @property
+    def falsification_threshold(self) -> float:
+        """CMB-S4 falsification threshold for substrate coarse-graining.
+
+        If a CMB experiment measures ΔNeff > falsification_threshold at ≥2σ,
+        the substrate coarse-graining scale l_UV = l_Pl × p^{1/3} is falsified.
+        Chosen as 0.1: well above ΔNeff_structural (0.006) but below
+        CMB-S4's 2σ sensitivity (~0.12 at 95% CL).
+        """
+        return 0.1
+
+    def is_falsified_by(self, measured_delta_neff: float) -> bool:
+        """True if a measured ΔNeff exceeds the falsification threshold.
+
+        Parameters
+        ----------
+        measured_delta_neff : float – CMB-measured ΔNeff value
+        """
+        return measured_delta_neff > self.falsification_threshold

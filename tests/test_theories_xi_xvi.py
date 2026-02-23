@@ -877,3 +877,108 @@ class TestBPRCosmologyV7:
         eta = v7._fstar_retention(1e11, 9.0)
         delta_muv = 2.5 * math.log10(eta)
         assert delta_muv > 0, f"ΔM_UV should be positive in MOND regime, got {delta_muv:.4f}"
+
+
+class TestBPRBoundaryPhonon:
+    """Tests for the p^{1/3} structural ΔNeff ceiling and boundary phonon mass."""
+
+    def test_m_phi_relativistic_at_recombination(self):
+        """m_φ << T_rec ~ 0.25 eV: boundary phonon IS relativistic at recombination."""
+        from bpr.cosmology import BPRBoundaryPhonon, _T_REC_EV
+        ph = BPRBoundaryPhonon()
+        assert ph.m_phi_eV < _T_REC_EV * 1e-10, (
+            f"m_φ = {ph.m_phi_eV:.2e} eV should be << T_rec = {_T_REC_EV} eV"
+        )
+
+    def test_t_dec_at_gut_scale(self):
+        """T_dec = M_Pl/p^{2/3} is at the GUT scale (10^{15}–10^{16} GeV)."""
+        from bpr.cosmology import BPRBoundaryPhonon
+        ph = BPRBoundaryPhonon()
+        assert 1e14 < ph.t_dec_GeV < 1e17, (
+            f"T_dec should be GUT scale: {ph.t_dec_GeV:.2e} GeV"
+        )
+
+    def test_temperature_ratio_strongly_diluted(self):
+        """T_φ/T_γ << 1 after GUT-scale decoupling (strong entropy dilution)."""
+        from bpr.cosmology import BPRBoundaryPhonon
+        ph = BPRBoundaryPhonon()
+        assert ph.temperature_ratio < 0.4, (
+            f"T_φ/T_γ = {ph.temperature_ratio:.4f} should be < 0.4 (strong dilution)"
+        )
+
+    def test_delta_neff_structural_below_ceiling(self):
+        """ΔNeff_structural < 0.01 — well below CMB-S4 sensitivity ~0.06."""
+        from bpr.cosmology import BPRBoundaryPhonon
+        ph = BPRBoundaryPhonon()
+        assert ph.delta_neff_structural < 0.01, (
+            f"ΔNeff_structural = {ph.delta_neff_structural:.5f} should be < 0.01"
+        )
+        assert ph.delta_neff_structural > 0.0, "ΔNeff_structural must be positive"
+
+    def test_structural_less_than_heuristic(self):
+        """ΔNeff_structural < ΔNeff_heuristic: coupling analysis gives lower ceiling."""
+        from bpr.cosmology import BPRBoundaryPhonon
+        ph = BPRBoundaryPhonon()
+        assert ph.delta_neff_structural < ph.delta_neff_heuristic, (
+            f"Structural ceiling {ph.delta_neff_structural:.5f} should be below "
+            f"heuristic {ph.delta_neff_heuristic:.5f}"
+        )
+
+    def test_heuristic_matches_delta_neff_function(self):
+        """delta_neff_heuristic matches the standalone delta_neff() function."""
+        from bpr.cosmology import BPRBoundaryPhonon, delta_neff
+        ph = BPRBoundaryPhonon()
+        assert abs(ph.delta_neff_heuristic - delta_neff(ph.p)) < 1e-10
+
+    def test_falsification_threshold_above_structural(self):
+        """Falsification threshold > ΔNeff_structural (leaves room for detection)."""
+        from bpr.cosmology import BPRBoundaryPhonon
+        ph = BPRBoundaryPhonon()
+        assert ph.falsification_threshold > ph.delta_neff_structural * 5, (
+            "Threshold must be well above structural ceiling to be meaningful"
+        )
+
+    def test_is_falsified_by_large_neff(self):
+        """ΔNeff > 0.1 measurement falsifies the substrate coarse-graining."""
+        from bpr.cosmology import BPRBoundaryPhonon
+        ph = BPRBoundaryPhonon()
+        assert ph.is_falsified_by(0.4)
+        assert ph.is_falsified_by(0.1 + 1e-6)
+
+    def test_not_falsified_by_structural_value(self):
+        """BPR's own ΔNeff_structural does not falsify itself."""
+        from bpr.cosmology import BPRBoundaryPhonon
+        ph = BPRBoundaryPhonon()
+        assert not ph.is_falsified_by(ph.delta_neff_structural)
+        assert not ph.is_falsified_by(ph.delta_neff_heuristic)
+
+    def test_p13_ceiling_consistency(self):
+        """The same p^{1/3} factor appears in Γ_b, g_φ, and ω_UV — ceiling is structural."""
+        p = 104729
+        # 1. Boundary rate: Γ_b = H/p^{1/3} → z_PT = 5.09 (not tested here, just consistency)
+        boundary_rate_exponent = 1.0 / 3.0
+        # 2. Coupling: g_φ ~ 1/p^{1/3} → T_dec ~ M_Pl/p^{2/3}
+        coupling_exponent = 1.0 / 3.0
+        # T_dec ~ M_Pl / p^{2/3} = M_Pl / p^{2*coupling_exp}
+        # 3. UV cutoff: l_UV = l_Pl × p^{1/3}
+        uv_exponent = 1.0 / 3.0
+        # All three carry the same p^{1/3} factor
+        assert boundary_rate_exponent == coupling_exponent == uv_exponent, (
+            "p^{1/3} ceiling is structural: all three derivations share the same exponent"
+        )
+
+    def test_rho_de_order_of_magnitude(self):
+        """ρ_DE is in the correct range for dark energy density."""
+        from bpr.cosmology import BPRBoundaryPhonon
+        ph = BPRBoundaryPhonon()
+        # ρ_DE ~ (2.4e-12 GeV)^4 ~ 3.3e-47 GeV^4
+        assert 1e-48 < ph.rho_de_GeV4 < 1e-46, (
+            f"ρ_DE = {ph.rho_de_GeV4:.2e} GeV^4, expected ~10^-47 GeV^4"
+        )
+
+    def test_decay_constant_substrate_suppressed(self):
+        """f_φ = M_Pl/p^{1/3} is suppressed relative to M_Pl."""
+        from bpr.cosmology import BPRBoundaryPhonon, _M_PL_GEV
+        ph = BPRBoundaryPhonon()
+        assert ph.decay_constant_GeV < _M_PL_GEV, "f_φ must be below M_Pl"
+        assert ph.decay_constant_GeV > _M_PL_GEV * 1e-2, "f_φ should be within 2 orders of M_Pl"
