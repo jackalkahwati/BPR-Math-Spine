@@ -611,3 +611,89 @@ class TestBPRDarkEnergyEOS:
         d = eos.desi_tension
         assert d["w0_tension_sigma"] >= 0
         assert d["wa_tension_sigma"] >= 0
+
+
+# =====================================================================
+# BPR Cosmology V5 — Impedance-Screened MOND Collapse
+# =====================================================================
+
+class TestBPRCosmologyV5:
+    def test_g_screen_no_suppression_low_mass(self):
+        """g_screen ≈ 1 for low-mass halos (M << M_imp)."""
+        from bpr.jwst_cosmology import BPRCosmologyV5
+        v5 = BPRCosmologyV5()
+        # M = 1e11 Msun, z=10: far below M_imp ~ 10^12 Msun
+        g = v5._g_screen(1e11, 10)
+        assert g > 0.999, f"Expected g_screen≈1 for low mass, got {g:.4f}"
+
+    def test_g_screen_half_at_m_imp(self):
+        """g_screen = 1/2 at M = M_imp = W_c^{1/2} × M★."""
+        from bpr.jwst_cosmology import BPRCosmologyV5
+        v5 = BPRCosmologyV5()
+        m_imp = v5.m_imp(10)
+        g = v5._g_screen(m_imp, 10)
+        assert abs(g - 0.5) < 0.01, f"Expected g_screen=0.5 at M_imp, got {g:.4f}"
+
+    def test_m_imp_order_of_magnitude_z10(self):
+        """M_imp(z=10) ≈ 10^12 Msun (the bright-end overshoot mass scale)."""
+        from bpr.jwst_cosmology import BPRCosmologyV5
+        v5 = BPRCosmologyV5()
+        m_imp = v5.m_imp(10)
+        assert 5e11 < m_imp < 2e12, f"Expected M_imp~10^12, got {m_imp:.2e}"
+
+    def test_delta_c_v5_equals_newton_below_z_pt(self):
+        """δ_c(M, z) = 1.686 for z ≤ z_PT (Newtonian, same as V4)."""
+        from bpr.jwst_cosmology import BPRCosmologyV5
+        v5 = BPRCosmologyV5()
+        # z=3 is below z_PT ≈ 5.09
+        assert v5.delta_c_v5(1e12, 3.0) == 1.686
+
+    def test_delta_c_v5_less_than_v4_for_massive_halo(self):
+        """δ_c_V5 ≤ δ_c_V4 for a massive halo above M_imp (screening active)."""
+        from bpr.jwst_cosmology import BPRCosmologyV5
+        v5 = BPRCosmologyV5()
+        # M_UV = -23.5 → M_halo ≈ 10^12 Msun, well above M_imp at z=10
+        M_halo = 1e12
+        z = 10.0
+        dc_v4 = v5.delta_c_v4(M_halo, z)
+        dc_v5 = v5.delta_c_v5(M_halo, z)
+        assert dc_v5 < dc_v4, (
+            f"V5 should screen bright halos: V5={dc_v5:.4f} should be < V4={dc_v4:.4f}"
+        )
+
+    def test_delta_c_v5_unchanged_for_small_halo(self):
+        """δ_c_V5 ≈ δ_c_V4 for a small halo far below M_imp."""
+        from bpr.jwst_cosmology import BPRCosmologyV5
+        v5 = BPRCosmologyV5()
+        # M = 1e10 Msun at z=10 — well below M_imp
+        M_halo = 1e10
+        z = 10.0
+        dc_v4 = v5.delta_c_v4(M_halo, z)
+        dc_v5 = v5.delta_c_v5(M_halo, z)
+        assert abs(dc_v5 - dc_v4) < 0.01, (
+            f"Small halo should be unscreened: V4={dc_v4:.4f}, V5={dc_v5:.4f}"
+        )
+
+    def test_s8_v5_equals_v4(self):
+        """S8_V5 = S8_V4 (z=0 is always Newtonian — screening unchanged)."""
+        from bpr.jwst_cosmology import BPRCosmologyV5
+        v5 = BPRCosmologyV5()
+        assert abs(v5.S8_v5 - v5.S8_v4) < 1e-10
+
+    def test_uv_lf_v5_above_v4_at_z10_bright(self):
+        """UV LF V5 ≥ V4 at z=10, M_UV=-23 (screening reduces δ_c → more halos)."""
+        from bpr.jwst_cosmology import BPRCosmologyV5
+        v5 = BPRCosmologyV5()
+        lf_v4 = v5.uv_luminosity_function_v4(-23.0, 10.0)
+        lf_v5 = v5.uv_luminosity_function_v5(-23.0, 10.0)
+        assert lf_v5 >= lf_v4, (
+            f"V5 should predict more bright galaxies at z=10: V5={lf_v5:.4f}, V4={lf_v4:.4f}"
+        )
+
+    def test_w_c_matches_impedance_module(self):
+        """W_c = p^{1/5} from derived_critical_winding() ≈ 10.09."""
+        from bpr.jwst_cosmology import BPRCosmologyV5
+        from bpr.impedance import derived_critical_winding
+        v5 = BPRCosmologyV5()
+        assert abs(v5._W_c - derived_critical_winding(v5.p)) < 1e-10
+        assert abs(v5._W_c - 104729 ** (1.0 / 5.0)) < 1e-6

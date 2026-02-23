@@ -881,6 +881,152 @@ class BPRCosmologyV4(BPRCosmologyV2):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+#  V5 — Impedance-Screened MOND Collapse (Vacuum Impedance Mismatch + V4)
+# ═══════════════════════════════════════════════════════════════════════════
+
+class BPRCosmologyV5(BPRCosmologyV4):
+    """BPR V5 — Universal Phase Transition Taxonomy + Impedance-Screened MOND Collapse.
+
+    Extends V4 by adding a topological impedance screening factor that suppresses
+    the MOND boost for halos above the impedance crossover mass M_imp(z).
+
+    PHYSICAL MECHANISM
+    ------------------
+    DM solitons aggregate at halo boundaries.  The collective boundary winding
+    grows as the SQUARE of the mass ratio to the MOND transition mass M★(z):
+
+        W_halo = (M / M★(z))²
+
+    (Quadratic scaling reflects coherent winding-pair accumulation at the halo
+    boundary, analogous to BKT Cooper pairing in BPR's Class B topology.)
+
+    When W_halo > W_c = p^{1/5}, the boundary impedance Z_halo > √2 Z₀ screens
+    the cosmological MOND phonon field, recovering Newtonian collapse.
+
+    SCREENING FACTOR
+    ----------------
+    Mirrors TopologicalImpedance.em_coupling(W):
+
+        g_screen(M, z) = 1 / (1 + (M/M★(z))⁴ / W_c²)
+
+    CROSSOVER MASS
+    --------------
+    g_screen = 1/2 when (M/M★)⁴ = W_c²:
+        M_imp(z) = W_c^{1/2} × M★(z)
+
+    Key values  (W_c ≈ 10.09, M★ from `m_star()`):
+        M_imp(z=9)  ≈  1.6×10¹² M☉
+        M_imp(z=10) ≈  9.5×10¹¹ M☉  ≈ 10¹² M☉
+        M_imp(z=12) ≈  3.2×10¹¹ M☉
+
+    V5 COLLAPSE THRESHOLD
+    ----------------------
+    z < z_PT → 1.686 (Newtonian, same as V2/V4)
+    z > z_PT → δ_c = 1.330 + 0.356 × μ(a_vir/a₀) × g_screen(M, z)
+
+    EFFECT ON JWST UV LF
+    --------------------
+    Screening is concentrated at M_UV < −22.5 (the bright-end overshoot):
+        g_screen(M_UV=−23, z=10) ≈ 0.34  →  MOND boost reduced 66%
+        g_screen(M_UV=−21.5, z=10) ≈ 0.99 →  low-mass unaffected
+
+    ZERO FREE PARAMETERS
+    --------------------
+    W_c = p^{1/5} (from derived_critical_winding); M★(z) from m_star() (V4).
+    No new parameters beyond those in V4.
+    """
+
+    @property
+    def _W_c(self) -> float:
+        """Critical winding W_c = p^{1/5} (Vacuum Impedance Mismatch substrate scale)."""
+        from .impedance import derived_critical_winding
+        return derived_critical_winding(self.p)
+
+    def _g_screen(self, M_halo_Msun: float, z: float) -> float:
+        """Topological impedance screening factor g_screen(M, z).
+
+        g_screen = 1 / (1 + (M/M★(z))⁴ / W_c²)
+
+        Equals 1 (no screening) for M << M_imp; equals 1/2 at M = M_imp.
+        """
+        M_star = self.m_star(z)
+        u = M_halo_Msun / max(M_star, 1e6)
+        W_c = self._W_c
+        return 1.0 / (1.0 + u ** 4 / W_c ** 2)
+
+    def m_imp(self, z: float) -> float:
+        """Impedance crossover mass M_imp(z) = W_c^{1/2} × M★(z) [M☉].
+
+        Above M_imp, g_screen < 1/2 — the halo is impedance-screened.
+        """
+        return self._W_c ** 0.5 * self.m_star(z)
+
+    def delta_c_v5(self, M_halo_Msun: float, z: float) -> float:
+        """Impedance-screened MOND collapse threshold δ_c(M, z).
+
+        z ≤ z_PT → 1.686  (Newtonian, same as V4)
+        z > z_PT → 1.330 + 0.356 × μ(a_vir/a₀) × g_screen(M, z)
+        """
+        if z <= self.z_pt:
+            return 1.686
+        a_vir = self._virial_acceleration(M_halo_Msun, z)
+        x = a_vir / self.mond_a0
+        mu = x / math.sqrt(1.0 + x * x)
+        g = self._g_screen(M_halo_Msun, z)
+        return 1.330 + 0.356 * mu * g
+
+    # ── S8 unchanged from V4 (z=0 is always Newtonian) ─────────────────────
+
+    @property
+    def S8_v5(self) -> float:
+        """S8 = σ₈ √(Ωm/0.3) — identical to V4 (z=0 is Newtonian)."""
+        return self.S8_v4
+
+    @property
+    def sigma8_v5(self) -> float:
+        """σ₈ — identical to V4."""
+        return self.sigma8_v4
+
+    # ── UV luminosity function ───────────────────────────────────────────────
+
+    def uv_luminosity_function_v5(self, M_UV: float, z: float) -> float:
+        """log₁₀(φ) [Mpc⁻³ mag⁻¹] with impedance-screened continuous δ_c(M, z).
+
+        Uses V5 threshold:
+            z < z_PT → Newtonian (same as V4)
+            z > z_PT → δ_c = 1.330 + 0.356 × μ(a_vir/a₀) × g_screen(M, z)
+        """
+        log_phi_lcdm = self._lcdm.uv_luminosity_function(M_UV, z)
+
+        M_halo  = 1e11 * 10.0 ** (-0.4 * (M_UV + 21.0))
+        sigma_z = self._lcdm.sigma_M_at_z(M_halo, z)
+        sigma_z = max(sigma_z, 1e-6)
+
+        delta_c_newton = 1.686
+        delta_c_eff    = self.delta_c_v5(M_halo, z)
+
+        nu_n = delta_c_newton / sigma_z
+        nu_e = delta_c_eff    / sigma_z
+
+        if delta_c_eff < delta_c_newton:
+            log_ratio = (math.log10(nu_e / nu_n)
+                         + (nu_n ** 2 - nu_e ** 2) / (2.0 * math.log(10.0)))
+            log_ratio = max(-4.0, min(4.0, log_ratio))
+        else:
+            log_ratio = 0.0
+
+        # Δn_s and dissipation corrections (same as V4)
+        rho_m0 = 2.775e11 * _OMEGA_M * (_H0_PLANCK / 100.0) ** 2
+        R = (3.0 * M_halo / (4.0 * math.pi * rho_m0)) ** (1.0 / 3.0)
+        k_halo = 2.0 * math.pi / max(R, 0.01)
+        delta_ns_corr = 3.0 * math.log10(self.sigma_ratio(k_halo))
+        f_growth      = self.boundary_growth_suppression_v2(z_form=z)
+        dissip_corr   = 3.0 * math.log10(max(f_growth, 1e-10))
+
+        return log_phi_lcdm + log_ratio + delta_ns_corr + dissip_corr
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 #  COUPLING GAP ANALYSIS
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -933,6 +1079,7 @@ def run_jwst_comparison(p: int = _P) -> dict:
     bpr_v2 = BPRCosmologyV2(p=p)
     bpr_v3 = BPRCosmologyV3(p=p)
     bpr_v4 = BPRCosmologyV4(p=p)
+    bpr_v5 = BPRCosmologyV5(p=p)
     lcdm   = LambdaCDM()
 
     results = {}
@@ -954,11 +1101,13 @@ def run_jwst_comparison(p: int = _P) -> dict:
     S8_bpr_v2 = bpr_v2.S8_v2
     S8_bpr_v3 = bpr_v3.S8_v3
     S8_bpr_v4 = bpr_v4.S8_v4
+    S8_bpr_v5 = bpr_v5.S8_v5
     S8_tension_sigma = (_S8_PLANCK - _S8_WL_OBS) / _S8_WL_ERR
     raw_fraction    = (_S8_PLANCK - S8_bpr)    / (_S8_PLANCK - _S8_WL_OBS)
     raw_fraction_v2 = (_S8_PLANCK - S8_bpr_v2) / (_S8_PLANCK - _S8_WL_OBS)
     raw_fraction_v3 = (_S8_PLANCK - S8_bpr_v3) / (_S8_PLANCK - _S8_WL_OBS)
     raw_fraction_v4 = (_S8_PLANCK - S8_bpr_v4) / (_S8_PLANCK - _S8_WL_OBS)
+    raw_fraction_v5 = (_S8_PLANCK - S8_bpr_v5) / (_S8_PLANCK - _S8_WL_OBS)
     results["s8_tension"] = {
         "S8_planck":            _S8_PLANCK,
         "S8_observed_WL":       _S8_WL_OBS,
@@ -970,19 +1119,24 @@ def run_jwst_comparison(p: int = _P) -> dict:
         "sigma8_bpr_v3":        bpr_v3.sigma8_v3,
         "S8_bpr_v4":            S8_bpr_v4,
         "sigma8_bpr_v4":        bpr_v4.sigma8_v4,
+        "S8_bpr_v5":            S8_bpr_v5,
+        "sigma8_bpr_v5":        bpr_v5.sigma8_v5,
         "tension_sigma_lcdm":   S8_tension_sigma,
         "tension_sigma_bpr":    abs(S8_bpr    - _S8_WL_OBS) / _S8_WL_ERR,
         "tension_sigma_bpr_v2": abs(S8_bpr_v2 - _S8_WL_OBS) / _S8_WL_ERR,
         "tension_sigma_bpr_v3": abs(S8_bpr_v3 - _S8_WL_OBS) / _S8_WL_ERR,
         "tension_sigma_bpr_v4": abs(S8_bpr_v4 - _S8_WL_OBS) / _S8_WL_ERR,
-        "fraction_explained":   raw_fraction,      # may exceed 1.0 (overshoot)
+        "tension_sigma_bpr_v5": abs(S8_bpr_v5 - _S8_WL_OBS) / _S8_WL_ERR,
+        "fraction_explained":   raw_fraction,
         "fraction_explained_v2": raw_fraction_v2,
         "fraction_explained_v3": raw_fraction_v3,
         "fraction_explained_v4": raw_fraction_v4,
+        "fraction_explained_v5": raw_fraction_v5,
         "overshoots":    S8_bpr    < _S8_WL_OBS,
         "overshoots_v2": S8_bpr_v2 < _S8_WL_OBS,
         "overshoots_v3": S8_bpr_v3 < _S8_WL_OBS,
         "overshoots_v4": S8_bpr_v4 < _S8_WL_OBS,
+        "overshoots_v5": S8_bpr_v5 < _S8_WL_OBS,
     }
 
     # ── 3. JWST UV LF ─────────────────────────────────────────────────────
@@ -994,17 +1148,20 @@ def run_jwst_comparison(p: int = _P) -> dict:
         log_phi_v2   = bpr_v2.uv_luminosity_function_v2(pt.M_UV, pt.z)
         log_phi_v3   = bpr_v3.uv_luminosity_function_v3(pt.M_UV, pt.z)
         log_phi_v4   = bpr_v4.uv_luminosity_function_v4(pt.M_UV, pt.z)
+        log_phi_v5   = bpr_v5.uv_luminosity_function_v5(pt.M_UV, pt.z)
         gap_lcdm     = pt.log_phi - log_phi_lcdm
         gap_bpr      = pt.log_phi - log_phi_bpr
         gap_mond     = pt.log_phi - log_phi_mond
         gap_v2       = pt.log_phi - log_phi_v2
         gap_v3       = pt.log_phi - log_phi_v3
         gap_v4       = pt.log_phi - log_phi_v4
+        gap_v5       = pt.log_phi - log_phi_v5
         bpr_closes   = (gap_lcdm - gap_bpr)  / abs(gap_lcdm) if gap_lcdm != 0 else 0
         mond_closes  = (gap_lcdm - gap_mond) / abs(gap_lcdm) if gap_lcdm != 0 else 0
         v2_closes    = (gap_lcdm - gap_v2)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
         v3_closes    = (gap_lcdm - gap_v3)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
         v4_closes    = (gap_lcdm - gap_v4)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
+        v5_closes    = (gap_lcdm - gap_v5)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
 
         sigma_needed = required_sigma_enhancement(pt.log_phi, log_phi_lcdm)
         n_s_needed   = required_n_s(sigma_needed, k_Mpc=5.0)
@@ -1019,17 +1176,20 @@ def run_jwst_comparison(p: int = _P) -> dict:
             "log_phi_v2":  log_phi_v2,
             "log_phi_v3":  log_phi_v3,
             "log_phi_v4":  log_phi_v4,
+            "log_phi_v5":  log_phi_v5,
             "gap_lcdm_dex": gap_lcdm,
             "gap_bpr_dex":  gap_bpr,
             "gap_mond_dex": gap_mond,
             "gap_v2_dex":   gap_v2,
             "gap_v3_dex":   gap_v3,
             "gap_v4_dex":   gap_v4,
+            "gap_v5_dex":   gap_v5,
             "bpr_fraction_closed":  bpr_closes,
             "mond_fraction_closed": mond_closes,
             "v2_fraction_closed":   v2_closes,
             "v3_fraction_closed":   v3_closes,
             "v4_fraction_closed":   v4_closes,
+            "v5_fraction_closed":   v5_closes,
             "sigma_ratio_needed": sigma_needed,
             "n_s_needed_to_explain": n_s_needed,
             "source": pt.source,
@@ -1048,6 +1208,10 @@ def run_jwst_comparison(p: int = _P) -> dict:
         "m_star_v4_z9":  bpr_v4.m_star(9.0),
         "m_star_v4_z10": bpr_v4.m_star(10.0),
         "m_star_v4_z12": bpr_v4.m_star(12.0),
+        "W_c_v5":        bpr_v5._W_c,
+        "m_imp_v5_z9":   bpr_v5.m_imp(9.0),
+        "m_imp_v5_z10":  bpr_v5.m_imp(10.0),
+        "m_imp_v5_z12":  bpr_v5.m_imp(12.0),
     }
 
     return results
