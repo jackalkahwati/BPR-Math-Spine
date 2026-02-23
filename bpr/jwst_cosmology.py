@@ -1027,6 +1027,123 @@ class BPRCosmologyV5(BPRCosmologyV4):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+#  V6 — Corrected Impedance-Screened MOND Collapse
+# ═══════════════════════════════════════════════════════════════════════════
+
+class BPRCosmologyV6(BPRCosmologyV5):
+    """BPR V6 — Corrected Impedance-Screened MOND Collapse.
+
+    Fixes the formula error in V5.
+
+    V5 BUG
+    ------
+    V5 used:
+        δ_c = 1.330 + 0.356 × μ × g_screen
+
+    When g_screen → 0 with μ ≈ 1 (a Newtonian halo above M_imp), this drives
+    δ_c → 1.330 — the deep-MOND floor — for a halo that is physically
+    Newtonian.  At z=16, where M★(z) is tiny and all halos satisfy M >> M★,
+    g_screen ≈ 0.2 and μ ≈ 0.85, giving δ_c_V5 ≈ 1.39 vs V4's 1.63 — a
+    sub-Newtonian collapse threshold for a nearly-Newtonian halo.
+
+    THE FIX
+    -------
+    Screen the MOND *boost* (deviation from Newtonian), not the full
+    interpolation:
+
+        δ_c_V6 = 1.686 − 0.356 × (1 − μ) × g_screen
+
+    Derivation:
+        V4 formula:  δ_c = 1.686 − 0.356 × (1 − μ)   [rewrite of 1.330 + 0.356μ]
+        MOND boost:  Δ = 0.356 × (1 − μ)              [reduction from Newtonian]
+        Screening:   Δ_screened = Δ × g_screen
+        → δ_c = 1.686 − 0.356 × (1 − μ) × g_screen
+
+    Behaviour at extremes:
+        μ → 1  (Newtonian):  δ_c = 1.686   for any g_screen  ✓
+        μ → 0, g=1 (MOND, no screen):  δ_c = 1.330  ✓
+        μ → 0, g=0 (MOND, screened):   δ_c = 1.686  (Newtonian restored)  ✓
+
+    EQUIVALENCE
+    -----------
+    V6 ≡ V5 only when g_screen = 1 (no screening).
+    They differ by  0.356 × (1 − g_screen) > 0 when g_screen < 1:
+        V6 always gives δ_c ≥ V5's δ_c (same or higher threshold).
+
+    EFFECT ON JWST BINS
+    -------------------
+    z=9:   g_screen ≈ 1 → V6 ≡ V5 ≡ V4  (screening doesn't engage)
+    z=10:  g_screen ≈ 0.996 → V6 ≈ V5 ≈ V4  (tiny effect)
+    z=12:  g_screen ≈ 0.81, μ ≈ 0.79 → V6 slightly above V4 (screens small boost)
+    z=16:  g_screen ≈ 0.21, μ ≈ 0.85 → V6 ≈ V4  (halo near-Newtonian, tiny boost)
+
+    The z=16 overshoot from V5 is fully corrected.
+    """
+
+    def delta_c_v6(self, M_halo_Msun: float, z: float) -> float:
+        """Corrected impedance-screened MOND collapse threshold δ_c(M, z).
+
+        z ≤ z_PT → 1.686  (Newtonian, same as V4/V5)
+        z > z_PT → 1.686 − 0.356 × (1 − μ(a_vir/a₀)) × g_screen(M, z)
+
+        Screens the MOND boost (deviation from Newtonian), not the full
+        interpolation.  δ_c is always ≥ 1.330 and ≤ 1.686.
+        """
+        if z <= self.z_pt:
+            return 1.686
+        a_vir = self._virial_acceleration(M_halo_Msun, z)
+        x = a_vir / self.mond_a0
+        mu = x / math.sqrt(1.0 + x * x)
+        g = self._g_screen(M_halo_Msun, z)
+        return 1.686 - 0.356 * (1.0 - mu) * g
+
+    @property
+    def S8_v6(self) -> float:
+        """S8 — identical to V4/V5 (z=0 is always Newtonian)."""
+        return self.S8_v4
+
+    @property
+    def sigma8_v6(self) -> float:
+        """σ₈ — identical to V4/V5."""
+        return self.sigma8_v4
+
+    def uv_luminosity_function_v6(self, M_UV: float, z: float) -> float:
+        """log₁₀(φ) [Mpc⁻³ mag⁻¹] with corrected impedance-screened δ_c(M, z).
+
+        Uses V6 threshold:
+            z < z_PT → Newtonian (same as V4/V5)
+            z > z_PT → δ_c = 1.686 − 0.356 × (1 − μ) × g_screen
+        """
+        log_phi_lcdm = self._lcdm.uv_luminosity_function(M_UV, z)
+
+        M_halo  = 1e11 * 10.0 ** (-0.4 * (M_UV + 21.0))
+        sigma_z = self._lcdm.sigma_M_at_z(M_halo, z)
+        sigma_z = max(sigma_z, 1e-6)
+
+        delta_c_newton = 1.686
+        delta_c_eff    = self.delta_c_v6(M_halo, z)
+
+        nu_n = delta_c_newton / sigma_z
+        nu_e = delta_c_eff    / sigma_z
+
+        if delta_c_eff < delta_c_newton:
+            log_ratio = (math.log10(nu_e / nu_n)
+                         + (nu_n ** 2 - nu_e ** 2) / (2.0 * math.log(10.0)))
+            log_ratio = max(-4.0, min(4.0, log_ratio))
+        else:
+            log_ratio = 0.0
+
+        rho_m0 = 2.775e11 * _OMEGA_M * (_H0_PLANCK / 100.0) ** 2
+        R = (3.0 * M_halo / (4.0 * math.pi * rho_m0)) ** (1.0 / 3.0)
+        k_halo = 2.0 * math.pi / max(R, 0.01)
+        delta_ns_corr = 3.0 * math.log10(self.sigma_ratio(k_halo))
+        f_growth      = self.boundary_growth_suppression_v2(z_form=z)
+        dissip_corr   = 3.0 * math.log10(max(f_growth, 1e-10))
+
+        return log_phi_lcdm + log_ratio + delta_ns_corr + dissip_corr
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 #  COUPLING GAP ANALYSIS
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -1080,6 +1197,7 @@ def run_jwst_comparison(p: int = _P) -> dict:
     bpr_v3 = BPRCosmologyV3(p=p)
     bpr_v4 = BPRCosmologyV4(p=p)
     bpr_v5 = BPRCosmologyV5(p=p)
+    bpr_v6 = BPRCosmologyV6(p=p)
     lcdm   = LambdaCDM()
 
     results = {}
@@ -1102,12 +1220,14 @@ def run_jwst_comparison(p: int = _P) -> dict:
     S8_bpr_v3 = bpr_v3.S8_v3
     S8_bpr_v4 = bpr_v4.S8_v4
     S8_bpr_v5 = bpr_v5.S8_v5
+    S8_bpr_v6 = bpr_v6.S8_v6
     S8_tension_sigma = (_S8_PLANCK - _S8_WL_OBS) / _S8_WL_ERR
     raw_fraction    = (_S8_PLANCK - S8_bpr)    / (_S8_PLANCK - _S8_WL_OBS)
     raw_fraction_v2 = (_S8_PLANCK - S8_bpr_v2) / (_S8_PLANCK - _S8_WL_OBS)
     raw_fraction_v3 = (_S8_PLANCK - S8_bpr_v3) / (_S8_PLANCK - _S8_WL_OBS)
     raw_fraction_v4 = (_S8_PLANCK - S8_bpr_v4) / (_S8_PLANCK - _S8_WL_OBS)
     raw_fraction_v5 = (_S8_PLANCK - S8_bpr_v5) / (_S8_PLANCK - _S8_WL_OBS)
+    raw_fraction_v6 = (_S8_PLANCK - S8_bpr_v6) / (_S8_PLANCK - _S8_WL_OBS)
     results["s8_tension"] = {
         "S8_planck":            _S8_PLANCK,
         "S8_observed_WL":       _S8_WL_OBS,
@@ -1121,22 +1241,27 @@ def run_jwst_comparison(p: int = _P) -> dict:
         "sigma8_bpr_v4":        bpr_v4.sigma8_v4,
         "S8_bpr_v5":            S8_bpr_v5,
         "sigma8_bpr_v5":        bpr_v5.sigma8_v5,
+        "S8_bpr_v6":            S8_bpr_v6,
+        "sigma8_bpr_v6":        bpr_v6.sigma8_v6,
         "tension_sigma_lcdm":   S8_tension_sigma,
         "tension_sigma_bpr":    abs(S8_bpr    - _S8_WL_OBS) / _S8_WL_ERR,
         "tension_sigma_bpr_v2": abs(S8_bpr_v2 - _S8_WL_OBS) / _S8_WL_ERR,
         "tension_sigma_bpr_v3": abs(S8_bpr_v3 - _S8_WL_OBS) / _S8_WL_ERR,
         "tension_sigma_bpr_v4": abs(S8_bpr_v4 - _S8_WL_OBS) / _S8_WL_ERR,
         "tension_sigma_bpr_v5": abs(S8_bpr_v5 - _S8_WL_OBS) / _S8_WL_ERR,
+        "tension_sigma_bpr_v6": abs(S8_bpr_v6 - _S8_WL_OBS) / _S8_WL_ERR,
         "fraction_explained":   raw_fraction,
         "fraction_explained_v2": raw_fraction_v2,
         "fraction_explained_v3": raw_fraction_v3,
         "fraction_explained_v4": raw_fraction_v4,
         "fraction_explained_v5": raw_fraction_v5,
+        "fraction_explained_v6": raw_fraction_v6,
         "overshoots":    S8_bpr    < _S8_WL_OBS,
         "overshoots_v2": S8_bpr_v2 < _S8_WL_OBS,
         "overshoots_v3": S8_bpr_v3 < _S8_WL_OBS,
         "overshoots_v4": S8_bpr_v4 < _S8_WL_OBS,
         "overshoots_v5": S8_bpr_v5 < _S8_WL_OBS,
+        "overshoots_v6": S8_bpr_v6 < _S8_WL_OBS,
     }
 
     # ── 3. JWST UV LF ─────────────────────────────────────────────────────
@@ -1149,6 +1274,7 @@ def run_jwst_comparison(p: int = _P) -> dict:
         log_phi_v3   = bpr_v3.uv_luminosity_function_v3(pt.M_UV, pt.z)
         log_phi_v4   = bpr_v4.uv_luminosity_function_v4(pt.M_UV, pt.z)
         log_phi_v5   = bpr_v5.uv_luminosity_function_v5(pt.M_UV, pt.z)
+        log_phi_v6   = bpr_v6.uv_luminosity_function_v6(pt.M_UV, pt.z)
         gap_lcdm     = pt.log_phi - log_phi_lcdm
         gap_bpr      = pt.log_phi - log_phi_bpr
         gap_mond     = pt.log_phi - log_phi_mond
@@ -1156,12 +1282,14 @@ def run_jwst_comparison(p: int = _P) -> dict:
         gap_v3       = pt.log_phi - log_phi_v3
         gap_v4       = pt.log_phi - log_phi_v4
         gap_v5       = pt.log_phi - log_phi_v5
+        gap_v6       = pt.log_phi - log_phi_v6
         bpr_closes   = (gap_lcdm - gap_bpr)  / abs(gap_lcdm) if gap_lcdm != 0 else 0
         mond_closes  = (gap_lcdm - gap_mond) / abs(gap_lcdm) if gap_lcdm != 0 else 0
         v2_closes    = (gap_lcdm - gap_v2)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
         v3_closes    = (gap_lcdm - gap_v3)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
         v4_closes    = (gap_lcdm - gap_v4)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
         v5_closes    = (gap_lcdm - gap_v5)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
+        v6_closes    = (gap_lcdm - gap_v6)   / abs(gap_lcdm) if gap_lcdm != 0 else 0
 
         sigma_needed = required_sigma_enhancement(pt.log_phi, log_phi_lcdm)
         n_s_needed   = required_n_s(sigma_needed, k_Mpc=5.0)
@@ -1177,6 +1305,7 @@ def run_jwst_comparison(p: int = _P) -> dict:
             "log_phi_v3":  log_phi_v3,
             "log_phi_v4":  log_phi_v4,
             "log_phi_v5":  log_phi_v5,
+            "log_phi_v6":  log_phi_v6,
             "gap_lcdm_dex": gap_lcdm,
             "gap_bpr_dex":  gap_bpr,
             "gap_mond_dex": gap_mond,
@@ -1184,12 +1313,14 @@ def run_jwst_comparison(p: int = _P) -> dict:
             "gap_v3_dex":   gap_v3,
             "gap_v4_dex":   gap_v4,
             "gap_v5_dex":   gap_v5,
+            "gap_v6_dex":   gap_v6,
             "bpr_fraction_closed":  bpr_closes,
             "mond_fraction_closed": mond_closes,
             "v2_fraction_closed":   v2_closes,
             "v3_fraction_closed":   v3_closes,
             "v4_fraction_closed":   v4_closes,
             "v5_fraction_closed":   v5_closes,
+            "v6_fraction_closed":   v6_closes,
             "sigma_ratio_needed": sigma_needed,
             "n_s_needed_to_explain": n_s_needed,
             "source": pt.source,
@@ -1212,6 +1343,9 @@ def run_jwst_comparison(p: int = _P) -> dict:
         "m_imp_v5_z9":   bpr_v5.m_imp(9.0),
         "m_imp_v5_z10":  bpr_v5.m_imp(10.0),
         "m_imp_v5_z12":  bpr_v5.m_imp(12.0),
+        "m_imp_v6_z9":   bpr_v6.m_imp(9.0),
+        "m_imp_v6_z10":  bpr_v6.m_imp(10.0),
+        "m_imp_v6_z12":  bpr_v6.m_imp(12.0),
     }
 
     return results

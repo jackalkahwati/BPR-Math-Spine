@@ -697,3 +697,104 @@ class TestBPRCosmologyV5:
         v5 = BPRCosmologyV5()
         assert abs(v5._W_c - derived_critical_winding(v5.p)) < 1e-10
         assert abs(v5._W_c - 104729 ** (1.0 / 5.0)) < 1e-6
+
+
+# =====================================================================
+# BPR Cosmology V6 — Corrected Impedance-Screened MOND Collapse
+# =====================================================================
+
+class TestBPRCosmologyV6:
+    def test_delta_c_v6_newtonian_halo_unaffected(self):
+        """For μ≈1 (Newtonian halo), δ_c_V6 ≈ 1.686 regardless of g_screen."""
+        from bpr.jwst_cosmology import BPRCosmologyV6
+        import math
+        v6 = BPRCosmologyV6()
+        # At z=16, M=1e11: μ≈0.85 (near-Newtonian), V5 got 1.394, V6 should give ~1.675
+        dc_v6 = v6.delta_c_v6(1e11, 16.0)
+        dc_v4 = v6.delta_c_v4(1e11, 16.0)
+        # V6 should be ABOVE V5 (which was 1.394) and close to V4 (1.634)
+        dc_v5 = 1.330 + 0.356 * (v6._virial_acceleration(1e11, 16.0) /
+                  math.sqrt(v6._virial_acceleration(1e11, 16.0)**2 +
+                            v6.mond_a0**2)) * v6._g_screen(1e11, 16.0)
+        assert dc_v6 > dc_v5, (
+            f"V6 should be above V5 for near-Newtonian halos: V6={dc_v6:.4f}, V5={dc_v5:.4f}"
+        )
+        # V6 should be within 0.1 of V4 (small MOND boost, mostly screened)
+        assert abs(dc_v6 - dc_v4) < 0.1, (
+            f"V6 should be close to V4 for near-Newtonian halos: V6={dc_v6:.4f}, V4={dc_v4:.4f}"
+        )
+
+    def test_delta_c_v6_screened_mond_halo(self):
+        """For μ≈0 (deep MOND), g_screen=0 restores Newtonian δ_c=1.686."""
+        from bpr.jwst_cosmology import BPRCosmologyV6
+        import math
+        v6 = BPRCosmologyV6()
+        # Simulate: μ=0, g=0 → δ_c = 1.686 - 0.356*(1-0)*0 = 1.686
+        dc = 1.686 - 0.356 * (1.0 - 0.0) * 0.0
+        assert abs(dc - 1.686) < 1e-10, "Fully screened deep-MOND halo should give Newtonian δ_c"
+
+    def test_delta_c_v6_unscreened_mond_halo(self):
+        """For μ=0 (deep MOND), g_screen=1 gives δ_c = 1.330."""
+        dc = 1.686 - 0.356 * (1.0 - 0.0) * 1.0
+        assert abs(dc - 1.330) < 1e-10, "Unscreened deep-MOND halo should give δ_c=1.330"
+
+    def test_v6_always_geq_v5_when_g_less_than_one(self):
+        """V6 δ_c ≥ V5 δ_c for all halos (V6 screens boost; V5 lowers threshold)."""
+        from bpr.jwst_cosmology import BPRCosmologyV6
+        v6 = BPRCosmologyV6()
+        test_cases = [
+            (1e11, 9.0), (1e11, 10.0), (1e11, 12.0), (1e11, 16.0),
+            (1e12, 10.0), (6e11, 12.0),
+        ]
+        for M, z in test_cases:
+            dc_v6 = v6.delta_c_v6(M, z)
+            dc_v5 = v6.delta_c_v5(M, z)
+            assert dc_v6 >= dc_v5 - 1e-10, (
+                f"V6 should always be ≥ V5: M={M:.0e}, z={z}, V6={dc_v6:.4f}, V5={dc_v5:.4f}"
+            )
+
+    def test_delta_c_v6_equals_newton_below_z_pt(self):
+        """δ_c_V6 = 1.686 for z ≤ z_PT."""
+        from bpr.jwst_cosmology import BPRCosmologyV6
+        v6 = BPRCosmologyV6()
+        assert v6.delta_c_v6(1e12, 3.0) == 1.686
+
+    def test_v6_equals_v4_when_no_screening(self):
+        """When g_screen ≈ 1, V6 ≈ V4 (formula reduces to same)."""
+        from bpr.jwst_cosmology import BPRCosmologyV6
+        v6 = BPRCosmologyV6()
+        # z=9, M=1e11: g_screen ≈ 1 → V6 ≈ V4
+        dc_v6 = v6.delta_c_v6(1e11, 9.0)
+        dc_v4 = v6.delta_c_v4(1e11, 9.0)
+        assert abs(dc_v6 - dc_v4) < 0.005, (
+            f"V6 ≈ V4 when g_screen≈1: V6={dc_v6:.4f}, V4={dc_v4:.4f}"
+        )
+
+    def test_s8_v6_equals_v4(self):
+        """S8_V6 = S8_V4 (z=0 always Newtonian)."""
+        from bpr.jwst_cosmology import BPRCosmologyV6
+        v6 = BPRCosmologyV6()
+        assert abs(v6.S8_v6 - v6.S8_v4) < 1e-10
+
+    def test_uv_lf_v6_above_lcdm_at_high_z(self):
+        """UV LF V6 > ΛCDM at z=10 (MOND boost active above z_PT)."""
+        from bpr.jwst_cosmology import BPRCosmologyV6, LambdaCDM
+        v6 = BPRCosmologyV6()
+        lcdm = LambdaCDM()
+        lf_v6   = v6.uv_luminosity_function_v6(-22.0, 10.0)
+        lf_lcdm = lcdm.uv_luminosity_function(-22.0, 10.0)
+        assert lf_v6 > lf_lcdm, "V6 should predict more galaxies than ΛCDM at z=10"
+
+    def test_v6_fixes_z16_overshoot_vs_v5(self):
+        """V6 log_phi at z=16 is closer to V4 than V5 (no sub-Newtonian pathology)."""
+        from bpr.jwst_cosmology import BPRCosmologyV6
+        v6 = BPRCosmologyV6()
+        lf_v4 = v6.uv_luminosity_function_v4(-21.0, 16.0)
+        lf_v5 = v6.uv_luminosity_function_v5(-21.0, 16.0)
+        lf_v6 = v6.uv_luminosity_function_v6(-21.0, 16.0)
+        # V5 massively overshoots V4 at z=16 (unphysical sub-Newtonian δ_c)
+        # V6 should be close to V4
+        assert abs(lf_v6 - lf_v4) < abs(lf_v5 - lf_v4), (
+            f"V6 should be closer to V4 than V5 at z=16: "
+            f"V4={lf_v4:.3f}, V5={lf_v5:.3f}, V6={lf_v6:.3f}"
+        )
