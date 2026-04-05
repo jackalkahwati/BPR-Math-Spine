@@ -337,6 +337,99 @@ const edgeData = [
   { source: "pipelines", target: "tdgl_bpr", pipeline: -1 },
   { source: "pipelines", target: "collective", pipeline: -1 },
   { source: "pipelines", target: "conscious_agents", pipeline: -1 },
+
+  // ── Fill connectivity gaps: ensure every node has 3+ connections ──
+
+  // Constants feeds everything
+  { source: "constants", target: "impedance", pipeline: -1 },
+  { source: "constants", target: "cosmology", pipeline: -1 },
+  { source: "constants", target: "nuclear_physics", pipeline: -1 },
+  { source: "constants", target: "gauge_unification", pipeline: -1 },
+
+  // Hilbert BPR connects to more substrate + quantum
+  { source: "hilbert_bpr", target: "tdgl_bpr", pipeline: -1 },
+  { source: "hilbert_bpr", target: "resonance_algebra", pipeline: -1 },
+  { source: "hilbert_bpr", target: "decoherence", pipeline: -1 },
+
+  // Quantum gravity connects to more
+  { source: "quantum_gravity_pheno", target: "emergent_spacetime", pipeline: -1 },
+  { source: "quantum_gravity_pheno", target: "cosmology", pipeline: -1 },
+
+  // Resonance connects substrate chain
+  { source: "resonance", target: "resonance_families", pipeline: -1 },
+  { source: "resonance", target: "resonance_algebra", pipeline: -1 },
+  { source: "resonance", target: "geometry", pipeline: -1 },
+
+  // Complexity connects to info + collective
+  { source: "complexity", target: "meta_boundary", pipeline: -1 },
+  { source: "complexity", target: "collective", pipeline: -1 },
+  { source: "complexity", target: "coherence_transitions", pipeline: -1 },
+
+  // Neutrino connects particle sector
+  { source: "neutrino", target: "gauge_unification", pipeline: -1 },
+  { source: "neutrino", target: "charged_leptons", pipeline: -1 },
+
+  // QCD connects to more
+  { source: "qcd_flavor", target: "gauge_unification", pipeline: -1 },
+  { source: "qcd_flavor", target: "cosmology", pipeline: -1 },
+
+  // Experimental data gets predictions fed in
+  { source: "experimental_data", target: "g_anti", pipeline: -1 },
+  { source: "experimental_data", target: "Casimir_delta", pipeline: -1 },
+
+  // Optimization connects to fractional boundary + collective
+  { source: "optimization", target: "collective", pipeline: -1 },
+  { source: "optimization", target: "fractional_boundary", pipeline: -1 },
+
+  // Electromechanical connects to nuclear + plasmoid
+  { source: "electromechanical", target: "nuclear_physics", pipeline: -1 },
+  { source: "electromechanical", target: "bioelectric", pipeline: -1 },
+
+  // Topological matter connects to quantum + substrate
+  { source: "topological_matter", target: "quantum_foundations", pipeline: -1 },
+  { source: "topological_matter", target: "resonance", pipeline: -1 },
+
+  // Memory connects to substrate
+  { source: "memory", target: "rpst_extensions", pipeline: -1 },
+  { source: "memory", target: "hilbert_bpr", pipeline: -1 },
+
+  // Info geometry connects to quantum foundations
+  { source: "info_geometry", target: "quantum_foundations", pipeline: -1 },
+  { source: "info_geometry", target: "decoherence", pipeline: -1 },
+
+  // Stability connects to TDGL + hilbert
+  { source: "stability_manifolds", target: "tdgl_bpr", pipeline: -1 },
+  { source: "stability_manifolds", target: "resonance_algebra", pipeline: -1 },
+
+  // Fluid dynamics connects to plasmoid
+  { source: "fluid_dynamics", target: "plasmoid", pipeline: -1 },
+  { source: "fluid_dynamics", target: "collective", pipeline: -1 },
+
+  // Resonance families connects to nuclear (magic numbers from primes)
+  { source: "resonance_families", target: "nuclear_physics", pipeline: -1 },
+
+  // Fractional boundary connects to metric (fractal spacetime)
+  { source: "fractional_boundary", target: "metric", pipeline: -1 },
+
+  // Alpha derivation connects to charged leptons
+  { source: "alpha_derivation", target: "charged_leptons", pipeline: -1 },
+
+  // Black hole connects to gravitational waves
+  { source: "black_hole", target: "gravitational_waves", pipeline: -1 },
+  { source: "black_hole", target: "cosmology", pipeline: -1 },
+
+  // Functional architecture connects to memory
+  { source: "functional_architecture", target: "memory", pipeline: -1 },
+  { source: "functional_architecture", target: "coherence_transitions", pipeline: -1 },
+
+  // Boundary action connects to multiscale
+  { source: "boundary_action", target: "multiscale", pipeline: -1 },
+  { source: "boundary_action", target: "metric", pipeline: -1 },
+  { source: "boundary_action", target: "decoherence", pipeline: -1 },
+
+  // Multiscale connects to emergent spacetime (cross-scale gravity)
+  { source: "multiscale", target: "emergent_spacetime", pipeline: -1 },
+  { source: "multiscale", target: "electromechanical", pipeline: -1 },
 ];
 
 // ---------------------------------------------------------------------------
