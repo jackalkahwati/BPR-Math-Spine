@@ -114,7 +114,7 @@
 
 <header>
   <h1>BPR Prediction Flow: Two Integers &rarr; All Physics</h1>
-  <div class="subtitle"><span>p = 104729</span>, <span>z = 6</span> &nbsp;|&nbsp; Zero free parameters</div>
+  <div class="subtitle"><span>p = 104729</span>, <span>z = 6</span> &nbsp;|&nbsp; Zero free parameters &nbsp;|&nbsp; 41 &rarr; 60+ predictions</div>
 </header>
 
 <div class="legend">
@@ -185,6 +185,12 @@ const rawNodes = [
   { id: 'chem',          label: 'quantum_chemistry',        col: 2, color: C.chem },
   { id: 'collective',    label: 'collective',               col: 2, color: C.collect },
   { id: 'clifford',      label: 'clifford_bpr',             col: 2, color: C.clifford },
+  { id: 'atomic_prec',   label: 'atomic_precision',          col: 2, color: '#ef4444' },
+  { id: 'optics',         label: 'optics',                    col: 2, color: '#ef4444' },
+  { id: 'condensed',      label: 'condensed_matter',          col: 2, color: '#ef4444' },
+  { id: 'emergence',      label: 'emergence',                 col: 2, color: '#ec4899' },
+  { id: 'conscious',      label: 'conscious_agents',          col: 2, color: '#ec4899' },
+  { id: 'bioelectric',    label: 'bioelectric',               col: 2, color: '#ec4899' },
 
   // Col 3 - Predictions
   { id: 'pred_alpha',    label: '1/\u03b1 = 137.032',      col: 3, color: predColor(0.003) },
@@ -229,6 +235,40 @@ const rawNodes = [
   { id: 'pred_mz',       label: 'M_Z = 91.19 GeV',          col: 3, color: predColor(0.01) },
   { id: 'pred_mh',       label: 'M_H = 125.1 GeV',          col: 3, color: predColor(0.2) },
   { id: 'pred_be4',      label: '\u2074He binding: 28.3 MeV', col: 3, color: predColor(0.07) },
+
+  // New predictions - Neutrino masses
+  { id: 'pred_mnu1',    label: 'm_\u03bd\u2081 = 0.001 eV',     col: 3, color: '#4ade80' },
+  { id: 'pred_mnu2',    label: 'm_\u03bd\u2082 = 0.009 eV',     col: 3, color: '#4ade80' },
+  { id: 'pred_mnu3',    label: 'm_\u03bd\u2083 = 0.050 eV',     col: 3, color: '#4ade80' },
+  { id: 'pred_sumnu',   label: '\u03a3m_\u03bd = 0.060 eV',     col: 3, color: '#4ade80' },
+
+  // Dark energy
+  { id: 'pred_w0',      label: 'w\u2080 = -0.934',              col: 3, color: '#4ade80' },
+  { id: 'pred_bigfreeze',label: 'Big Freeze 14.5 Gyr',          col: 3, color: '#60a5fa' },
+
+  // Baryon asymmetry (refined)
+  { id: 'pred_etaB',    label: '\u03b7_B = 6.83\u00d710\u207b\u00b9\u2070', col: 3, color: '#fbbf24' },
+
+  // Atomic precision
+  { id: 'pred_h1s2s',   label: 'H 1S-2S: +66.8 Hz',            col: 3, color: '#f87171' },
+  { id: 'pred_muong2v2',label: 'Muon g-2 explained',            col: 3, color: '#4ade80' },
+  { id: 'pred_rp',      label: 'r_p = 0.8412 fm',              col: 3, color: '#4ade80' },
+  { id: 'pred_lamb',    label: 'Lamb shift: +538 Hz',           col: 3, color: '#60a5fa' },
+
+  // Condensed matter
+  { id: 'pred_mgb2',    label: 'T_c MgB\u2082 = 41 K',         col: 3, color: '#4ade80' },
+  { id: 'pred_fqhe',    label: 'FQHE = Farey fracs',            col: 3, color: '#4ade80' },
+  { id: 'pred_joseph',  label: 'Josephson \u03b4f = 2.3 MHz',   col: 3, color: '#60a5fa' },
+
+  // Biology
+  { id: 'pred_eeg',     label: 'EEG \u03b1 = 9.55 Hz',         col: 3, color: '#4ade80' },
+  { id: 'pred_seizure', label: 'Seizure: +1% coupling',         col: 3, color: '#4ade80' },
+  { id: 'pred_column',  label: 'Column \u2248 0.39 mm',         col: 3, color: '#fbbf24' },
+  { id: 'pred_aging',   label: 'Aging \u03c4 \u2248 25 yr',     col: 3, color: '#fbbf24' },
+
+  // Emergence
+  { id: 'pred_soc',     label: 'SOC \u03c4 = 1.63',             col: 3, color: '#60a5fa' },
+  { id: 'pred_1f',      label: '1/f from primes',               col: 3, color: '#60a5fa' },
 ];
 
 // Build index
@@ -336,6 +376,47 @@ const rawLinks = [
   ['gauge', 'pred_mz',        12, 'M_Z = M_W / cos\u03b8_W from BPR', 'Predicted: 91.19 GeV | Expt: 91.19 GeV | Error: 0.01%'],
   ['gauge', 'pred_mh',        10, 'M_H from BPR Higgs potential', 'Predicted: 125.1 GeV | Expt: 125.25 GeV | Error: 0.2%'],
   ['nuclear', 'pred_be4',     10, '\u2074He binding from BPR nuclear impedance', 'Predicted: 28.3 MeV | Expt: 28.30 MeV | Error: 0.07%'],
+
+  // New links - Neutrino chain
+  ['leptons', 'pred_mnu1',    8, 'm_\u03bd\u2081 from BPR lepton see-saw', 'Predicted: 0.001 eV'],
+  ['leptons', 'pred_mnu2',    8, 'm_\u03bd\u2082 from BPR lepton see-saw', 'Predicted: 0.009 eV'],
+  ['leptons', 'pred_mnu3',    8, 'm_\u03bd\u2083 from BPR lepton see-saw', 'Predicted: 0.050 eV'],
+  ['leptons', 'pred_sumnu',   8, '\u03a3m_\u03bd from BPR neutrino sector', 'Predicted: 0.060 eV | Expt: < 0.12 eV'],
+
+  // Dark energy chain
+  ['impedance', 'pred_w0',   12, 'w\u2080 from impedance EOS', 'Predicted: -0.934 | DESI hint: -0.93'],
+  ['cosmology', 'pred_bigfreeze', 8, 'Big Freeze from BPR cosmological fate', 'Predicted: 14.5 Gyr remaining'],
+
+  // Baryon asymmetry (refined)
+  ['gauge', 'pred_etaB',     10, '\u03b7_B from BPR CP phase + sphaleron', 'Predicted: 6.83\u00d710\u207b\u00b9\u2070 | Expt: 6.1\u00d710\u207b\u00b9\u2070 | Error: ~11%'],
+
+  // Atomic precision links
+  ['alpha', 'atomic_prec',   12, '\u03b1_EM seeds atomic precision module', ''],
+  ['atomic_prec', 'pred_h1s2s',   12, 'H 1S-2S shift from BPR vacuum polarization', 'Predicted: +66.8 Hz | Falsifiable NOW'],
+  ['atomic_prec', 'pred_muong2v2',10, 'Muon g-2 from BPR impedance loops', 'Predicted: full anomaly explained'],
+  ['atomic_prec', 'pred_rp',      8, 'Proton charge radius from BPR form factor', 'Predicted: 0.8412 fm | Expt: 0.8414 fm'],
+  ['atomic_prec', 'pred_lamb',    8, 'Lamb shift correction from BPR', 'Predicted: +538 Hz'],
+
+  // Condensed matter links
+  ['impedance', 'condensed',  10, 'Z(W) condensed matter impedance', ''],
+  ['impedance', 'optics',     10, 'Z(W) optical impedance', ''],
+  ['optics', 'condensed',      8, 'Optical properties feed condensed matter', ''],
+  ['condensed', 'pred_mgb2',   8, 'MgB\u2082 T_c from BPR phonon impedance', 'Predicted: 41 K | Expt: 39 K'],
+  ['condensed', 'pred_fqhe',   8, 'FQHE fractions from Farey sequence', 'Predicted: Farey fractions | Expt: observed fractions'],
+  ['condensed', 'pred_joseph',  6, 'Josephson frequency shift from BPR', 'Predicted: \u03b4f = 2.3 MHz'],
+
+  // Biology links
+  ['coherence', 'collective',  8, 'Coherence transitions drive collective sync', ''],
+  ['collective', 'pred_eeg',  10, 'EEG alpha from BPR neural synchronization', 'Predicted: 9.55 Hz | Expt: ~10 Hz'],
+  ['collective', 'pred_seizure', 8, 'Seizure threshold from BPR coupling', 'Predicted: +1% coupling triggers seizure'],
+  ['decoherence', 'bioelectric', 8, 'Decoherence drives bioelectric signaling', ''],
+  ['bioelectric', 'pred_column', 8, 'Cortical column width from BPR bioelectric', 'Predicted: 0.39 mm | Expt: ~0.4-0.5 mm'],
+  ['bioelectric', 'pred_aging',  8, 'Aging timescale from BPR decoherence', 'Predicted: \u03c4 \u2248 25 yr'],
+
+  // Emergence links
+  ['coherence', 'emergence',   8, 'Coherence transitions seed emergence', ''],
+  ['emergence', 'pred_soc',    6, 'SOC exponent from BPR criticality', 'Predicted: \u03c4 = 1.63'],
+  ['emergence', 'pred_1f',     6, '1/f noise from prime distribution', 'Predicted: 1/f from BPR primes'],
 ];
 
 // ============================================================
@@ -356,14 +437,14 @@ const links = rawLinks.map(l => ({
 // ============================================================
 
 const container = document.getElementById('chart');
-const margin = { top: 40, right: 220, bottom: 30, left: 20 };
+const margin = { top: 40, right: 240, bottom: 30, left: 20 };
 
 function render() {
   // Clear
   container.innerHTML = '';
 
   const fullW = container.clientWidth;
-  const fullH = Math.max(window.innerHeight - 120, 1100);
+  const fullH = Math.max(window.innerHeight - 120, 1600);
   const width = fullW - margin.left - margin.right;
   const height = fullH - margin.top - margin.bottom;
 
@@ -582,6 +663,28 @@ function getPredTooltip(id) {
     pred_mz:        { name: 'Z boson mass', pred: '91.19 GeV', expt: '91.19 GeV', err: '0.01%' },
     pred_mh:        { name: 'Higgs mass', pred: '125.1 GeV', expt: '125.25 GeV', err: '0.2%' },
     pred_be4:       { name: '\u2074He binding energy', pred: '28.3 MeV', expt: '28.30 MeV', err: '0.07%' },
+
+    // New predictions
+    pred_mnu1:      { name: 'm_\u03bd\u2081', pred: '0.001 eV', expt: 'Not yet measured', err: 'prediction' },
+    pred_mnu2:      { name: 'm_\u03bd\u2082', pred: '0.009 eV', expt: 'Not yet measured', err: 'prediction' },
+    pred_mnu3:      { name: 'm_\u03bd\u2083', pred: '0.050 eV', expt: 'Not yet measured', err: 'prediction' },
+    pred_sumnu:     { name: '\u03a3m_\u03bd', pred: '0.060 eV', expt: '< 0.12 eV (cosmological)', err: 'consistent' },
+    pred_w0:        { name: 'Dark energy EOS w\u2080', pred: '-0.934', expt: 'DESI hint: -0.93', err: '~0.4%' },
+    pred_bigfreeze: { name: 'Cosmological fate', pred: 'Big Freeze in 14.5 Gyr', expt: 'Theoretical', err: 'structural' },
+    pred_etaB:      { name: 'Baryon asymmetry \u03b7_B (refined)', pred: '6.83\u00d710\u207b\u00b9\u2070', expt: '6.1\u00d710\u207b\u00b9\u2070', err: '~11%' },
+    pred_h1s2s:     { name: 'H 1S\u21922S shift', pred: '+66.8 Hz', expt: 'Falsifiable NOW', err: 'prediction' },
+    pred_muong2v2:  { name: 'Muon g\u22122 (full)', pred: 'Full anomaly explained', expt: 'FNAL: 4.2\u03c3 anomaly', err: 'consistent' },
+    pred_rp:        { name: 'Proton charge radius', pred: '0.8412 fm', expt: '0.8414 \u00b1 0.0019 fm', err: '0.02%' },
+    pred_lamb:      { name: 'Lamb shift correction', pred: '+538 Hz', expt: 'Precision spectroscopy', err: 'prediction' },
+    pred_mgb2:      { name: 'MgB\u2082 critical temp', pred: '41 K', expt: '39 K', err: '~5%' },
+    pred_fqhe:      { name: 'FQHE fractions', pred: 'Farey sequence fractions', expt: 'Observed plateaus', err: 'exact' },
+    pred_joseph:    { name: 'Josephson freq shift', pred: '\u03b4f = 2.3 MHz', expt: 'Not yet measured', err: 'prediction' },
+    pred_eeg:       { name: 'EEG alpha frequency', pred: '9.55 Hz', expt: '~8\u201312 Hz (mean ~10)', err: '~4.5%' },
+    pred_seizure:   { name: 'Seizure threshold', pred: '+1% coupling increase', expt: 'Clinical observation', err: 'consistent' },
+    pred_column:    { name: 'Cortical column width', pred: '0.39 mm', expt: '0.4\u20130.5 mm', err: '~15%' },
+    pred_aging:     { name: 'Aging timescale', pred: '\u03c4 \u2248 25 yr', expt: '~25\u201330 yr biological', err: '~10%' },
+    pred_soc:       { name: 'SOC exponent', pred: '\u03c4 = 1.63', expt: 'Simulations: ~1.5\u20131.7', err: 'structural' },
+    pred_1f:        { name: '1/f noise origin', pred: '1/f from prime distribution', expt: 'Ubiquitous 1/f noise', err: 'structural' },
   };
 
   const d = data[id];
@@ -618,6 +721,12 @@ function getNodeDesc(id) {
     chem: 'Molecular coherence lengths, Fibonacci energy spectra',
     collective: 'Kuramoto synchronization, N-body scaling',
     clifford: 'Clifford algebra Cl(8) \u2192 E8, 240 roots, dim = 248',
+    atomic_prec: 'Atomic precision: H 1S-2S shift, proton radius, Lamb shift from BPR',
+    optics: 'Optical impedance: photonic bandgaps and condensed matter coupling',
+    condensed: 'Condensed matter: superconductivity, FQHE, Josephson effects from Z(W)',
+    emergence: 'Emergence: SOC criticality, 1/f noise from prime substrate',
+    conscious: 'Conscious agents: integrated information from BPR coherence',
+    bioelectric: 'Bioelectric signaling: cortical columns, aging from decoherence',
   };
   return descs[id] || '';
 }
