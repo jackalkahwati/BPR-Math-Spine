@@ -219,19 +219,30 @@ function render() {
     .attr("x", "-10%").attr("y", "-10%").attr("width", "120%").attr("height", "120%");
   tFilter.append("feGaussianBlur").attr("in", "SourceGraphic").attr("stdDeviation", "1.5");
 
-  // Color scale: coherence maps to brightness
-  // High chi = bright cyan/white, low chi = dim blue
+  // Color scale: coherence maps to vivid color gradient
+  // High chi = bright cyan/white, low chi = warm amber/orange (always visible)
   function bandColor(chiVal) {
-    const t = chiVal;
-    const r = Math.round(30 + 200 * t * t);
-    const g = Math.round(60 + 195 * t);
-    const b = Math.round(120 + 135 * t);
+    const t = Math.max(chiVal, 0.05);
+    // Low chi: warm amber (#c06020) → High chi: bright cyan (#40e0ff)
+    const r = Math.round(192 - 152 * t);
+    const g = Math.round(96 + 128 * t);
+    const b = Math.round(32 + 223 * t);
+    return `rgb(${r},${g},${b})`;
+  }
+
+  // Coherence bar uses a brighter, more saturated palette
+  function barColor(chiVal) {
+    const t = Math.max(chiVal, 0.05);
+    // Low chi: bright orange (#ff6622) → High chi: electric cyan (#00ffee)
+    const r = Math.round(255 - 255 * t);
+    const g = Math.round(102 + 153 * t);
+    const b = Math.round(34 + 204 * t);
     return `rgb(${r},${g},${b})`;
   }
 
   function bandGlowColor(chiVal) {
-    const t = chiVal;
-    return `rgba(${Math.round(80 + 175 * t)},${Math.round(180 + 75 * t)},255,${0.1 + 0.35 * t})`;
+    const t = Math.max(chiVal, 0.05);
+    return `rgba(${Math.round(200 - 120 * t)},${Math.round(140 + 115 * t)},255,${0.15 + 0.45 * t})`;
   }
 
   const g = svg.append("g");
@@ -240,12 +251,12 @@ function render() {
   g.append("line")
     .attr("x1", marginLeft).attr("y1", marginTop)
     .attr("x2", marginLeft).attr("y2", totalH - marginBottom)
-    .attr("stroke", "rgba(255,255,255,0.08)").attr("stroke-width", 1);
+    .attr("stroke", "rgba(255,255,255,0.15)").attr("stroke-width", 1);
 
   g.append("line")
     .attr("x1", marginLeft + bandWidth).attr("y1", marginTop)
     .attr("x2", marginLeft + bandWidth).attr("y2", totalH - marginBottom)
-    .attr("stroke", "rgba(255,255,255,0.08)").attr("stroke-width", 1);
+    .attr("stroke", "rgba(255,255,255,0.15)").attr("stroke-width", 1);
 
   // Draw bands bottom to top (cosmic at top, sub_planck at bottom)
   scales.forEach((scale, i) => {
@@ -275,10 +286,10 @@ function render() {
       .attr("height", bandH - 8)
       .attr("rx", 3)
       .attr("fill", bandColor(chiVal))
-      .attr("opacity", 0.15 + 0.6 * chiVal)
-      .attr("stroke", isBottleneck ? "#ff4444" : bandColor(chiVal))
-      .attr("stroke-width", isBottleneck ? 1.5 : 0.5)
-      .attr("stroke-opacity", isBottleneck ? 0.8 : 0.3)
+      .attr("opacity", 0.45 + 0.5 * chiVal)
+      .attr("stroke", isBottleneck ? "#ff4444" : "#ffffff")
+      .attr("stroke-width", isBottleneck ? 2 : 0.5)
+      .attr("stroke-opacity", isBottleneck ? 0.9 : 0.15)
       .style("cursor", "pointer");
 
     // Coherence bar inside band
@@ -290,17 +301,18 @@ function render() {
       .attr("width", barWidth * chiVal)
       .attr("height", bandH * 0.35)
       .attr("rx", 2)
-      .attr("fill", bandColor(chiVal))
-      .attr("opacity", 0.5 + 0.4 * chiVal);
+      .attr("fill", barColor(chiVal))
+      .attr("opacity", 0.85);
 
     // Chi value label on bar
     bandGroup.append("text")
       .attr("x", barX + barWidth * chiVal + 6)
       .attr("y", y + bandH * 0.55)
-      .attr("fill", bandColor(chiVal))
-      .attr("font-size", "10px")
+      .attr("fill", "#ffffff")
+      .attr("font-size", "11px")
+      .attr("font-weight", "600")
       .attr("font-family", "'Courier New', monospace")
-      .attr("opacity", 0.8)
+      .attr("opacity", 1.0)
       .text(`\u03c7 = ${chiVal.toFixed(4)}`);
 
     // Scale name (left of band)
@@ -317,9 +329,9 @@ function render() {
     bandGroup.append("text")
       .attr("x", marginLeft + 12)
       .attr("y", y + bandH * 0.7)
-      .attr("fill", bandColor(chiVal))
-      .attr("font-size", "9px")
-      .attr("opacity", 0.6)
+      .attr("fill", barColor(chiVal))
+      .attr("font-size", "10px")
+      .attr("opacity", 0.85)
       .text(scaleModules[i]);
 
     // Bottleneck label
@@ -369,7 +381,7 @@ function render() {
     const xMid = marginLeft + bandWidth * 0.48;
 
     const isBottleneckLink = (c.from === bottleneckIdx);
-    const lineColor = isBottleneckLink ? "#ff4444" : `rgba(100,200,255,${0.1 + 0.3 * chi[c.to]})`;
+    const lineColor = isBottleneckLink ? "#ff4444" : `rgba(120,220,255,${0.3 + 0.5 * chi[c.to]})`;
 
     g.append("line")
       .attr("x1", xMid - 20).attr("y1", y1 - 2)
@@ -394,7 +406,7 @@ function render() {
   // Left axis: Length scale
   g.append("text")
     .attr("x", 14).attr("y", marginTop - 10)
-    .attr("fill", "#666").attr("font-size", "10px").attr("font-weight", "600")
+    .attr("fill", "#aaa").attr("font-size", "10px").attr("font-weight", "600")
     .text("LENGTH");
 
   scales.forEach((scale, i) => {
@@ -402,7 +414,7 @@ function render() {
     const y = marginTop + reversed * bandH + bandH * 0.5;
     g.append("text")
       .attr("x", 14).attr("y", y)
-      .attr("fill", "#888")
+      .attr("fill", "#bbb")
       .attr("font-size", "9px")
       .attr("font-family", "'Courier New', monospace")
       .text(formatSI(scale.length_m, "m"));
@@ -411,7 +423,7 @@ function render() {
   // Right axis: Energy scale
   g.append("text")
     .attr("x", W - 14).attr("y", marginTop - 10)
-    .attr("fill", "#666").attr("font-size", "10px").attr("font-weight", "600")
+    .attr("fill", "#aaa").attr("font-size", "10px").attr("font-weight", "600")
     .attr("text-anchor", "end")
     .text("ENERGY");
 
@@ -435,7 +447,7 @@ function render() {
 
   g.append("text")
     .attr("x", marginLeft + bandWidth * 0.62).attr("y", marginTop - 10)
-    .attr("fill", "#666").attr("font-size", "10px").attr("font-weight", "600")
+    .attr("fill", "#aaa").attr("font-size", "10px").attr("font-weight", "600")
     .text("COHERENCE \u03c7");
 }
 

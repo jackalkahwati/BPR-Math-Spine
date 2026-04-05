@@ -136,6 +136,12 @@ const nodeData = [
   { id: "rpst_extensions", layer: 1, label: "RPST Ext.", eq: "R(p,s,t) generalized" },
   { id: "stability_manifolds", layer: 1, label: "Stability Man.", eq: "Lyapunov: V(x) > 0, dV/dt < 0" },
   { id: "functional_architecture", layer: 1, label: "Func. Arch.", eq: "F = composition of Z-maps" },
+  { id: "alpha_derivation", layer: 1, label: "Alpha Deriv.", eq: "1/alpha = 137.032 from (p,z)" },
+  { id: "black_hole", layer: 1, label: "Black Hole", eq: "S = A/(4 l_P^2)" },
+  { id: "geometry", layer: 0, label: "Geometry", eq: "make_boundary(R, mesh)" },
+  { id: "metric", layer: 0, label: "Metric", eq: "Delta g_{mu nu} = lambda phi" },
+  { id: "resonance", layer: 0, label: "Resonance", eq: "gamma_n (Riemann zeros)" },
+  { id: "experimental_data", layer: 1, label: "Exp. Data", eq: "g_anti, nuclear yields" },
 
   // Paper extensions (layer 2)
   { id: "tdgl_bpr", layer: 2, label: "TDGL", eq: "d psi/dt = -Gamma * delta F/delta psi" },
@@ -167,6 +173,7 @@ const nodeData = [
   { id: "Casimir_delta", layer: 4, label: "Casimir delta", eq: "delta_Casimir from Z-resonance" },
   { id: "GW_strain", layer: 4, label: "GW strain", eq: "h_BPR(f) deviation" },
   { id: "Born_correction", layer: 4, label: "Born correction", eq: "P(x) = |psi|^2 + O(Z^{-1})" },
+  { id: "E8_dim", layer: 4, label: "E8 dim = 248", eq: "248 = 240 roots + 8 rank" },
 ];
 
 const edgeData = [
@@ -227,6 +234,86 @@ const edgeData = [
   { source: "plasmoid", target: "electromechanical", pipeline: -1 },
   { source: "impedance", target: "decoherence", pipeline: -1 },
   { source: "impedance", target: "cosmology", pipeline: -1 },
+
+  // ── Cross-theory connections from gap analysis ──
+
+  // Impedance drives metric coupling (lambda_eff = lambda/Z(W))
+  { source: "impedance", target: "metric", pipeline: -1 },
+  // Decoherence uses impedance spectrum (ΔZ from winding)
+  { source: "impedance", target: "gauge_unification", pipeline: -1 },
+  // Metric → gravitational waves (quadrupole from stress-energy)
+  { source: "metric", target: "gravitational_waves", pipeline: -1 },
+  // Emergent spacetime → black_hole (entropy, Clausius)
+  { source: "emergent_spacetime", target: "black_hole", pipeline: -1 },
+  // Black hole → quantum_gravity_pheno (GUP corrections)
+  { source: "black_hole", target: "quantum_gravity_pheno", pipeline: -1 },
+  // Alpha derivation → alpha_EM prediction
+  { source: "alpha_derivation", target: "alpha_EM", pipeline: -1 },
+  // Alpha derivation feeds gauge_unification
+  { source: "alpha_derivation", target: "gauge_unification", pipeline: -1 },
+  // Gauge unification → cosmology (inflation, baryogenesis)
+  { source: "gauge_unification", target: "cosmology", pipeline: -1 },
+  // Nuclear physics → nuclear reactions data
+  { source: "nuclear_physics", target: "experimental_data", pipeline: -1 },
+  // Collective → bioelectric (neural synchronization)
+  { source: "collective", target: "bioelectric", pipeline: -1 },
+  // Phase transitions → topological_matter (Class A/B/C/D)
+  { source: "phase_transitions", target: "topological_matter", pipeline: -1 },
+  // Decoherence → quantum foundations (measurement, Born rule)
+  { source: "decoherence", target: "quantum_foundations", pipeline: -1 },
+  // TDGL → phase_transitions (Kibble-Zurek defects)
+  { source: "tdgl_bpr", target: "phase_transitions", pipeline: -1 },
+  // Resonance → rpst_extensions (Riemann zeros)
+  { source: "resonance", target: "rpst_extensions", pipeline: -1 },
+  // Memory → decoherence (boundary memory kernel)
+  { source: "memory", target: "decoherence", pipeline: -1 },
+  // Memory → coherence_transitions (stain dynamics)
+  { source: "memory", target: "coherence_transitions", pipeline: -1 },
+  // Info geometry → complexity (Fisher metric)
+  { source: "info_geometry", target: "complexity", pipeline: -1 },
+  // Neutrino → cosmology (mass from boundary)
+  { source: "neutrino", target: "cosmology", pipeline: -1 },
+  // QCD flavor → nuclear_physics (hadron spectrum)
+  { source: "qcd_flavor", target: "nuclear_physics", pipeline: -1 },
+  // Charged leptons → Koide_Q prediction
+  { source: "charged_leptons", target: "Koide_Q", pipeline: -1 },
+  // Optimization → resonance_algebra (spectral solver)
+  { source: "optimization", target: "resonance_algebra", pipeline: -1 },
+  // Fluid dynamics → metric (curved space NS)
+  { source: "fluid_dynamics", target: "metric", pipeline: -1 },
+  // Functional architecture → conscious_agents (alignment)
+  { source: "functional_architecture", target: "conscious_agents", pipeline: -1 },
+  // Functional architecture → bioelectric (coherence energy)
+  { source: "functional_architecture", target: "bioelectric", pipeline: -1 },
+  // Stability manifolds → meta_boundary (constraint field)
+  { source: "stability_manifolds", target: "meta_boundary", pipeline: -1 },
+  // Fractional boundary → geometry (spectral degeneracy on fractals)
+  { source: "fractional_boundary", target: "geometry", pipeline: -1 },
+  // Geometry → emergent_spacetime (boundary → metric)
+  { source: "geometry", target: "emergent_spacetime", pipeline: -1 },
+  // Geometry → boundary_field → metric (core chain)
+  { source: "geometry", target: "metric", pipeline: -1 },
+  // Cosmology → gravitational_waves (stochastic background)
+  { source: "cosmology", target: "gravitational_waves", pipeline: -1 },
+  // Quantum chemistry → bioelectric (molecular coherence in biology)
+  { source: "quantum_chemistry", target: "bioelectric", pipeline: -1 },
+  // Electromechanical → cosmology (seismic EM precursors scale to pulsars)
+  { source: "electromechanical", target: "gravitational_waves", pipeline: -1 },
+  // Impedance → g_anti prediction
+  { source: "impedance", target: "g_anti", pipeline: -1 },
+  // Clifford E8 → E8_dim prediction
+  { source: "clifford_bpr", target: "E8_dim", pipeline: -1 },
+  // Plasmoid → GW_strain (metric perturbation from confined plasma)
+  { source: "plasmoid", target: "GW_strain", pipeline: -1 },
+  // Emergent spacetime → cosmology (Newton's G derivation)
+  { source: "emergent_spacetime", target: "cosmology", pipeline: -1 },
+  // Pipelines connects to multiple
+  { source: "pipelines", target: "gauge_unification", pipeline: -1 },
+  { source: "pipelines", target: "impedance", pipeline: -1 },
+  { source: "pipelines", target: "quantum_chemistry", pipeline: -1 },
+  { source: "pipelines", target: "tdgl_bpr", pipeline: -1 },
+  { source: "pipelines", target: "collective", pipeline: -1 },
+  { source: "pipelines", target: "conscious_agents", pipeline: -1 },
 ];
 
 // ---------------------------------------------------------------------------
