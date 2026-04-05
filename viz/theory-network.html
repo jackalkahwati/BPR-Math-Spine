@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPR Theory Network</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0a0a; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #e0e0e0; }
+  #graph { width: 100%; height: 100%; }
+  svg { display: block; }
+
+  #title-bar {
+    position: absolute; top: 0; left: 0; right: 0;
+    padding: 20px 28px 12px;
+    background: linear-gradient(180deg, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0) 100%);
+    pointer-events: none; z-index: 10;
+  }
+  #title-bar h1 {
+    font-size: 20px; font-weight: 600; letter-spacing: -0.3px;
+    color: #ffffff;
+  }
+  #title-bar p {
+    font-size: 13px; color: #888; margin-top: 3px; font-style: italic;
+  }
+
+  #legend {
+    position: absolute; bottom: 20px; left: 20px;
+    background: rgba(20,20,20,0.92); border: 1px solid #2a2a2a;
+    border-radius: 8px; padding: 14px 18px; z-index: 10;
+    font-size: 12px; line-height: 1.8; backdrop-filter: blur(8px);
+  }
+  #legend .title { font-weight: 600; font-size: 13px; margin-bottom: 6px; color: #ccc; }
+  .legend-item { display: flex; align-items: center; gap: 8px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  #tooltip {
+    position: absolute; pointer-events: none; z-index: 20;
+    background: rgba(16,16,16,0.96); border: 1px solid #3a3a3a;
+    border-radius: 6px; padding: 10px 14px; font-size: 12px;
+    line-height: 1.6; max-width: 280px; display: none;
+    backdrop-filter: blur(12px); box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  #tooltip .tt-name { font-weight: 600; font-size: 13px; color: #fff; }
+  #tooltip .tt-layer { color: #888; }
+  #tooltip .tt-eq { color: #aaa; font-family: 'Courier New', monospace; font-size: 11px; margin-top: 4px; }
+
+  #controls {
+    position: absolute; bottom: 20px; right: 20px; z-index: 10;
+    display: flex; gap: 6px;
+  }
+  #controls button {
+    background: rgba(30,30,30,0.9); border: 1px solid #333; color: #bbb;
+    border-radius: 6px; padding: 6px 12px; font-size: 12px; cursor: pointer;
+    transition: background 0.15s;
+  }
+  #controls button:hover { background: rgba(60,60,60,0.9); color: #fff; }
+</style>
+</head>
+<body>
+
+<div id="title-bar">
+  <h1>BPR Theory Network: 36 Theories &rarr; 40+ Predictions</h1>
+  <p>From two integers (p=104729, z=6) with zero free parameters</p>
+</div>
+
+<div id="legend">
+  <div class="title">Theory Layers</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#1f77b4"></span> Core theories (layer 0)</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#2ca02c"></span> Extended theories (layer 1)</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#ff7f0e"></span> Paper extensions (layer 2)</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#d62728"></span> Interpolation (layer 3)</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#9467bd"></span> Predictions (layer 4)</div>
+</div>
+
+<div id="tooltip"></div>
+
+<div id="controls">
+  <button onclick="resetZoom()">Reset View</button>
+  <button onclick="toggleLabels()">Toggle Labels</button>
+</div>
+
+<div id="graph"></div>
+
+<script>
+// ---------------------------------------------------------------------------
+// DATA
+// ---------------------------------------------------------------------------
+const layerColors = {
+  0: "#1f77b4", 1: "#2ca02c", 2: "#ff7f0e", 3: "#d62728", 4: "#9467bd"
+};
+
+const layerNames = {
+  0: "Core theory", 1: "Extended theory", 2: "Paper extension",
+  3: "Interpolation", 4: "Prediction"
+};
+
+const pipelineColors = [
+  "#e377c2", // P1 lepton masses
+  "#17becf", // P2 decoherence
+  "#bcbd22", // P3 Casimir
+  "#8c564b", // P4 TDGL
+  "#7f7f7f", // P5 Kuramoto
+  "#aec7e8", // P6 consciousness
+  "#98df8a", // P7 fractal
+];
+
+const nodeData = [
+  // Core (layer 0)
+  { id: "memory", layer: 0, label: "Memory", eq: "M(t) = Z^{-1} Tr[rho ln rho]" },
+  { id: "impedance", layer: 0, label: "Impedance", eq: "Z(p,z) = p^{1/z} (z-1)/z" },
+  { id: "decoherence", layer: 0, label: "Decoherence", eq: "Gamma = Z * Delta_E / hbar" },
+  { id: "phase_transitions", layer: 0, label: "Phase Trans.", eq: "F[phi] = integral{ Z|nabla phi|^2 + V(phi) }" },
+  { id: "neutrino", layer: 0, label: "Neutrino", eq: "m_nu ~ v^2/p (see-saw from Z)" },
+  { id: "info_geometry", layer: 0, label: "Info Geometry", eq: "g_{ij} = E[d_i ln p * d_j ln p]" },
+  { id: "gravitational_waves", layer: 0, label: "Grav. Waves", eq: "h ~ (Z/r) * (d^2 Q/dt^2)" },
+  { id: "complexity", layer: 0, label: "Complexity", eq: "C(t) = d/dt S_boundary" },
+  { id: "bioelectric", layer: 0, label: "Bioelectric", eq: "V_m = Z_bio * I_ion" },
+  { id: "collective", layer: 0, label: "Collective", eq: "K_c = Z/N * sum sin(theta)" },
+
+  // Extended (layer 1)
+  { id: "cosmology", layer: 1, label: "Cosmology", eq: "H(z)^2 = 8piG/3 [rho + Z_cosmo]" },
+  { id: "qcd_flavor", layer: 1, label: "QCD Flavor", eq: "m_q = Z_q * Lambda_QCD" },
+  { id: "emergent_spacetime", layer: 1, label: "Emerg. Space", eq: "g_{mu nu} = <Z_bulk | Z_boundary>" },
+  { id: "topological_matter", layer: 1, label: "Topo. Matter", eq: "nu = (1/2pi) integral F" },
+  { id: "clifford_bpr", layer: 1, label: "Clifford", eq: "Cl(p,z) algebra" },
+  { id: "quantum_foundations", layer: 1, label: "Q. Foundations", eq: "P(x) = |<x|psi>|^2 from Z" },
+  { id: "gauge_unification", layer: 1, label: "Gauge Unif.", eq: "alpha_i(mu) = Z_i(p,z,mu)" },
+  { id: "charged_leptons", layer: 1, label: "Charged Lept.", eq: "m_l = f(p,z) * v_EW" },
+  { id: "nuclear_physics", layer: 1, label: "Nuclear Phys.", eq: "E_B/A = a_V - a_S/A^{1/3} ..." },
+  { id: "quantum_gravity_pheno", layer: 1, label: "QG Pheno.", eq: "l_P = sqrt(hbar G / c^3)" },
+  { id: "quantum_chemistry", layer: 1, label: "Q. Chemistry", eq: "E_mol = <psi|H_Z|psi>" },
+  { id: "coherence_transitions", layer: 1, label: "Coherence Tr.", eq: "tau_c = hbar / (Z * k_B T)" },
+  { id: "meta_boundary", layer: 1, label: "Meta Boundary", eq: "partial Omega = Z-surface" },
+  { id: "rpst_extensions", layer: 1, label: "RPST Ext.", eq: "R(p,s,t) generalized" },
+  { id: "stability_manifolds", layer: 1, label: "Stability Man.", eq: "Lyapunov: V(x) > 0, dV/dt < 0" },
+  { id: "functional_architecture", layer: 1, label: "Func. Arch.", eq: "F = composition of Z-maps" },
+
+  // Paper extensions (layer 2)
+  { id: "tdgl_bpr", layer: 2, label: "TDGL", eq: "d psi/dt = -Gamma * delta F/delta psi" },
+  { id: "hilbert_bpr", layer: 2, label: "Hilbert BPR", eq: "H = L^2(Omega, Z-measure)" },
+  { id: "fractional_boundary", layer: 2, label: "Frac. Boundary", eq: "D^alpha phi = Z * phi" },
+  { id: "plasmoid", layer: 2, label: "Plasmoid", eq: "B * v_A = Z * eta * j" },
+  { id: "resonance_families", layer: 2, label: "Res. Families", eq: "omega_n = omega_0 * (p/z)^n" },
+  { id: "optimization", layer: 2, label: "Optimization", eq: "min_x f(x) s.t. Z-constraint" },
+  { id: "fluid_dynamics", layer: 2, label: "Fluid Dyn.", eq: "Navier-Stokes + Z-viscosity" },
+  { id: "resonance_algebra", layer: 2, label: "Res. Algebra", eq: "[a, a^dag] = Z" },
+  { id: "electromechanical", layer: 2, label: "Electromech.", eq: "L di/dt + Ri = Z * V(t)" },
+  { id: "conscious_agents", layer: 2, label: "Conscious Ag.", eq: "C = (W, X, P, G, A)" },
+
+  // Interpolation (layer 3)
+  { id: "boundary_action", layer: 3, label: "Boundary Act.", eq: "S_bdy = integral Z * K * sqrt(h)" },
+  { id: "multiscale", layer: 3, label: "Multiscale", eq: "Z(mu) flows across scales" },
+  { id: "pipelines", layer: 3, label: "Pipelines", eq: "theory_i -> theory_j -> prediction" },
+  { id: "constants", layer: 3, label: "Constants", eq: "alpha, sin^2 theta_W, m_l from (p,z)" },
+
+  // Predictions (layer 4)
+  { id: "alpha_EM", layer: 4, label: "alpha = 1/137.032", eq: "alpha_EM = 1/137.032" },
+  { id: "sin2_theta_W", layer: 4, label: "sin^2 theta_W = 0.2310", eq: "sin^2 theta_W = 0.2310" },
+  { id: "m_e", layer: 4, label: "m_e = 0.5104 MeV", eq: "m_e = 0.5104 MeV" },
+  { id: "m_mu", layer: 4, label: "m_mu = 107.2 MeV", eq: "m_mu = 107.2 MeV" },
+  { id: "m_tau", layer: 4, label: "m_tau = 1776.9 MeV", eq: "m_tau = 1776.9 MeV" },
+  { id: "v_EW", layer: 4, label: "v_EW = 243.5 GeV", eq: "v_EW = 243.5 GeV" },
+  { id: "Koide_Q", layer: 4, label: "Koide Q = 0.665", eq: "Q = 0.665" },
+  { id: "g_anti", layer: 4, label: "g_anti = 9.777 m/s^2", eq: "g_anti = 9.777 m/s^2" },
+  { id: "Casimir_delta", layer: 4, label: "Casimir delta", eq: "delta_Casimir from Z-resonance" },
+  { id: "GW_strain", layer: 4, label: "GW strain", eq: "h_BPR(f) deviation" },
+  { id: "Born_correction", layer: 4, label: "Born correction", eq: "P(x) = |psi|^2 + O(Z^{-1})" },
+];
+
+const edgeData = [
+  // Pipeline 1 — lepton masses (color index 0)
+  { source: "gauge_unification", target: "impedance", pipeline: 0 },
+  { source: "impedance", target: "charged_leptons", pipeline: 0 },
+  { source: "charged_leptons", target: "m_e", pipeline: 0 },
+  { source: "charged_leptons", target: "m_mu", pipeline: 0 },
+  { source: "charged_leptons", target: "m_tau", pipeline: 0 },
+  { source: "charged_leptons", target: "sin2_theta_W", pipeline: 0 },
+
+  // Pipeline 2 — decoherence (color index 1)
+  { source: "impedance", target: "decoherence", pipeline: 1 },
+  { source: "decoherence", target: "coherence_transitions", pipeline: 1 },
+  { source: "coherence_transitions", target: "quantum_foundations", pipeline: 1 },
+  { source: "quantum_foundations", target: "Born_correction", pipeline: 1 },
+
+  // Pipeline 3 — Casimir (color index 2)
+  { source: "rpst_extensions", target: "resonance_algebra", pipeline: 2 },
+  { source: "resonance_algebra", target: "Casimir_delta", pipeline: 2 },
+
+  // Pipeline 4 — TDGL (color index 3)
+  { source: "tdgl_bpr", target: "coherence_transitions", pipeline: 3 },
+  { source: "coherence_transitions", target: "phase_transitions", pipeline: 3 },
+
+  // Pipeline 5 — Kuramoto (color index 4)
+  { source: "collective", target: "phase_transitions", pipeline: 4 },
+  { source: "phase_transitions", target: "coherence_transitions", pipeline: 4 },
+
+  // Pipeline 6 — consciousness (color index 5)
+  { source: "conscious_agents", target: "collective", pipeline: 5 },
+  { source: "collective", target: "coherence_transitions", pipeline: 5 },
+
+  // Pipeline 7 — fractal (color index 6)
+  { source: "quantum_chemistry", target: "resonance_families", pipeline: 6 },
+  { source: "resonance_families", target: "fractional_boundary", pipeline: 6 },
+
+  // Cross-theory links (pipeline: -1 => gray)
+  { source: "boundary_action", target: "gauge_unification", pipeline: -1 },
+  { source: "boundary_action", target: "emergent_spacetime", pipeline: -1 },
+  { source: "boundary_action", target: "quantum_foundations", pipeline: -1 },
+  { source: "boundary_action", target: "fluid_dynamics", pipeline: -1 },
+  { source: "multiscale", target: "nuclear_physics", pipeline: -1 },
+  { source: "multiscale", target: "quantum_chemistry", pipeline: -1 },
+  { source: "multiscale", target: "bioelectric", pipeline: -1 },
+  { source: "multiscale", target: "collective", pipeline: -1 },
+  { source: "multiscale", target: "cosmology", pipeline: -1 },
+  { source: "constants", target: "alpha_EM", pipeline: -1 },
+  { source: "gauge_unification", target: "sin2_theta_W", pipeline: -1 },
+  { source: "gauge_unification", target: "v_EW", pipeline: -1 },
+  { source: "cosmology", target: "emergent_spacetime", pipeline: -1 },
+  { source: "clifford_bpr", target: "gauge_unification", pipeline: -1 },
+  { source: "clifford_bpr", target: "topological_matter", pipeline: -1 },
+  { source: "meta_boundary", target: "collective", pipeline: -1 },
+  { source: "meta_boundary", target: "info_geometry", pipeline: -1 },
+  { source: "hilbert_bpr", target: "stability_manifolds", pipeline: -1 },
+  { source: "plasmoid", target: "nuclear_physics", pipeline: -1 },
+  { source: "plasmoid", target: "electromechanical", pipeline: -1 },
+  { source: "impedance", target: "decoherence", pipeline: -1 },
+  { source: "impedance", target: "cosmology", pipeline: -1 },
+];
+
+// ---------------------------------------------------------------------------
+// GRAPH SETUP
+// ---------------------------------------------------------------------------
+const width = window.innerWidth;
+const height = window.innerHeight;
+let labelsVisible = true;
+
+const svg = d3.select("#graph")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height);
+
+// Gradient background
+const defs = svg.append("defs");
+const bgGrad = defs.append("radialGradient")
+  .attr("id", "bg-gradient")
+  .attr("cx", "50%").attr("cy", "50%").attr("r", "60%");
+bgGrad.append("stop").attr("offset", "0%").attr("stop-color", "#111118");
+bgGrad.append("stop").attr("offset", "100%").attr("stop-color", "#0a0a0a");
+svg.append("rect").attr("width", width).attr("height", height).attr("fill", "url(#bg-gradient)");
+
+// Glow filter for nodes
+const glowFilter = defs.append("filter").attr("id", "glow").attr("x", "-50%").attr("y", "-50%").attr("width", "200%").attr("height", "200%");
+glowFilter.append("feGaussianBlur").attr("stdDeviation", "3").attr("result", "blur");
+const glowMerge = glowFilter.append("feMerge");
+glowMerge.append("feMergeNode").attr("in", "blur");
+glowMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+// Arrow marker
+defs.append("marker")
+  .attr("id", "arrowhead")
+  .attr("viewBox", "0 -3 6 6")
+  .attr("refX", 18).attr("refY", 0)
+  .attr("markerWidth", 5).attr("markerHeight", 5)
+  .attr("orient", "auto")
+  .append("path")
+  .attr("d", "M0,-3L6,0L0,3")
+  .attr("fill", "#555");
+
+const g = svg.append("g");
+
+// Zoom
+const zoom = d3.zoom()
+  .scaleExtent([0.2, 5])
+  .on("zoom", (event) => g.attr("transform", event.transform));
+svg.call(zoom);
+
+function resetZoom() {
+  svg.transition().duration(600).call(zoom.transform, d3.zoomIdentity);
+}
+
+function toggleLabels() {
+  labelsVisible = !labelsVisible;
+  g.selectAll(".node-label").attr("opacity", labelsVisible ? 1 : 0);
+}
+
+// ---------------------------------------------------------------------------
+// NODE SIZE
+// ---------------------------------------------------------------------------
+function nodeRadius(d) {
+  if (d.layer === 4) return 6;
+  if (d.layer === 0) return 14;
+  if (d.layer === 3) return 10;
+  return 11;
+}
+
+// ---------------------------------------------------------------------------
+// FORCE SIMULATION
+// ---------------------------------------------------------------------------
+// Deduplicate edges (some cross-links duplicate pipeline edges)
+const edgeSet = new Set();
+const edges = [];
+edgeData.forEach(e => {
+  const key = e.source + "|" + e.target;
+  if (!edgeSet.has(key)) {
+    edgeSet.add(key);
+    edges.push({ ...e });
+  }
+});
+
+const simulation = d3.forceSimulation(nodeData)
+  .force("link", d3.forceLink(edges).id(d => d.id).distance(d => {
+    if (d.pipeline >= 0) return 80;
+    return 120;
+  }).strength(d => d.pipeline >= 0 ? 0.7 : 0.3))
+  .force("charge", d3.forceManyBody().strength(d => d.layer === 4 ? -120 : -300))
+  .force("center", d3.forceCenter(width / 2, height / 2))
+  .force("collision", d3.forceCollide().radius(d => nodeRadius(d) + 8))
+  .force("x", d3.forceX(width / 2).strength(0.03))
+  .force("y", d3.forceY(height / 2).strength(0.03))
+  .alphaDecay(0.015);
+
+// ---------------------------------------------------------------------------
+// DRAW EDGES
+// ---------------------------------------------------------------------------
+const link = g.append("g")
+  .selectAll("line")
+  .data(edges)
+  .join("line")
+  .attr("stroke", d => d.pipeline >= 0 ? pipelineColors[d.pipeline] : "#333")
+  .attr("stroke-opacity", d => d.pipeline >= 0 ? 0.5 : 0.2)
+  .attr("stroke-width", d => d.pipeline >= 0 ? 1.5 : 0.8)
+  .attr("marker-end", "url(#arrowhead)");
+
+// ---------------------------------------------------------------------------
+// DRAW NODES
+// ---------------------------------------------------------------------------
+const node = g.append("g")
+  .selectAll("g")
+  .data(nodeData)
+  .join("g")
+  .attr("class", "node-group")
+  .call(d3.drag()
+    .on("start", dragStarted)
+    .on("drag", dragged)
+    .on("end", dragEnded));
+
+node.append("circle")
+  .attr("r", d => nodeRadius(d))
+  .attr("fill", d => layerColors[d.layer])
+  .attr("fill-opacity", 0.85)
+  .attr("stroke", d => d3.color(layerColors[d.layer]).brighter(0.8))
+  .attr("stroke-width", d => d.layer === 0 ? 2 : 1)
+  .attr("filter", d => d.layer <= 1 ? "url(#glow)" : null)
+  .style("cursor", "pointer");
+
+node.append("text")
+  .attr("class", "node-label")
+  .attr("dy", d => nodeRadius(d) + 13)
+  .attr("text-anchor", "middle")
+  .attr("fill", "#ccc")
+  .attr("font-size", d => d.layer === 4 ? "9px" : "10px")
+  .attr("font-weight", d => d.layer === 0 ? "600" : "400")
+  .attr("pointer-events", "none")
+  .text(d => d.label);
+
+// ---------------------------------------------------------------------------
+// TOOLTIP
+// ---------------------------------------------------------------------------
+const tooltip = d3.select("#tooltip");
+
+node.on("mouseenter", (event, d) => {
+  tooltip.style("display", "block")
+    .html(`
+      <div class="tt-name">${d.label}</div>
+      <div class="tt-layer">${layerNames[d.layer]} (layer ${d.layer})</div>
+      <div class="tt-eq">${d.eq}</div>
+    `);
+})
+.on("mousemove", (event) => {
+  tooltip
+    .style("left", (event.pageX + 14) + "px")
+    .style("top", (event.pageY - 14) + "px");
+})
+.on("mouseleave", () => {
+  tooltip.style("display", "none");
+});
+
+// ---------------------------------------------------------------------------
+// CLICK — highlight connected
+// ---------------------------------------------------------------------------
+let selectedNode = null;
+
+node.on("click", (event, d) => {
+  event.stopPropagation();
+  if (selectedNode === d.id) {
+    selectedNode = null;
+    resetHighlight();
+    return;
+  }
+  selectedNode = d.id;
+
+  const connected = new Set([d.id]);
+  edges.forEach(e => {
+    const sid = typeof e.source === "object" ? e.source.id : e.source;
+    const tid = typeof e.target === "object" ? e.target.id : e.target;
+    if (sid === d.id) connected.add(tid);
+    if (tid === d.id) connected.add(sid);
+  });
+
+  node.select("circle")
+    .attr("fill-opacity", n => connected.has(n.id) ? 1 : 0.15)
+    .attr("stroke-opacity", n => connected.has(n.id) ? 1 : 0.15);
+  node.select("text")
+    .attr("opacity", n => connected.has(n.id) ? 1 : 0.15);
+
+  link
+    .attr("stroke-opacity", e => {
+      const sid = typeof e.source === "object" ? e.source.id : e.source;
+      const tid = typeof e.target === "object" ? e.target.id : e.target;
+      return (sid === d.id || tid === d.id) ? 0.8 : 0.04;
+    })
+    .attr("stroke-width", e => {
+      const sid = typeof e.source === "object" ? e.source.id : e.source;
+      const tid = typeof e.target === "object" ? e.target.id : e.target;
+      return (sid === d.id || tid === d.id) ? 2.5 : 0.5;
+    });
+});
+
+svg.on("click", () => {
+  selectedNode = null;
+  resetHighlight();
+});
+
+function resetHighlight() {
+  node.select("circle")
+    .attr("fill-opacity", 0.85)
+    .attr("stroke-opacity", 1);
+  node.select("text")
+    .attr("opacity", labelsVisible ? 1 : 0);
+  link
+    .attr("stroke-opacity", d => d.pipeline >= 0 ? 0.5 : 0.2)
+    .attr("stroke-width", d => d.pipeline >= 0 ? 1.5 : 0.8);
+}
+
+// ---------------------------------------------------------------------------
+// DRAG
+// ---------------------------------------------------------------------------
+function dragStarted(event, d) {
+  if (!event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x; d.fy = d.y;
+}
+function dragged(event, d) {
+  d.fx = event.x; d.fy = event.y;
+}
+function dragEnded(event, d) {
+  if (!event.active) simulation.alphaTarget(0);
+  d.fx = null; d.fy = null;
+}
+
+// ---------------------------------------------------------------------------
+// TICK
+// ---------------------------------------------------------------------------
+simulation.on("tick", () => {
+  link
+    .attr("x1", d => d.source.x).attr("y1", d => d.source.y)
+    .attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+  node.attr("transform", d => `translate(${d.x},${d.y})`);
+});
+
+// ---------------------------------------------------------------------------
+// RESIZE
+// ---------------------------------------------------------------------------
+window.addEventListener("resize", () => {
+  const w = window.innerWidth, h = window.innerHeight;
+  svg.attr("width", w).attr("height", h);
+  svg.select("rect").attr("width", w).attr("height", h);
+  simulation.force("center", d3.forceCenter(w / 2, h / 2));
+  simulation.alpha(0.3).restart();
+});
+</script>
+</body>
+</html>

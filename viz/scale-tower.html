@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPR Scale Tower: Coherence Across All Physical Realms</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0a;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 100vh;
+  }
+  #viz {
+    width: 100%;
+    display: block;
+  }
+  .header {
+    text-align: center;
+    padding: 28px 20px 10px;
+    position: relative;
+    z-index: 10;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 3px;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(100,200,255,0.3);
+  }
+  .header h2 {
+    font-size: 14px;
+    font-weight: 300;
+    color: #888;
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+  .header .params {
+    font-size: 11px;
+    color: #555;
+    margin-top: 4px;
+    font-family: 'Courier New', monospace;
+  }
+  .tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: rgba(10,10,10,0.95);
+    border: 1px solid rgba(100,200,255,0.3);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 12px;
+    line-height: 1.6;
+    max-width: 380px;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.15s;
+    backdrop-filter: blur(8px);
+  }
+  .tooltip .tt-name { font-weight: 600; color: #fff; font-size: 14px; }
+  .tooltip .tt-row { color: #aaa; margin-top: 2px; }
+  .tooltip .tt-eq {
+    color: #7ecfff;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    margin-top: 4px;
+    padding: 4px 6px;
+    background: rgba(100,200,255,0.05);
+    border-radius: 3px;
+  }
+  .tooltip .tt-pred { color: #ffd700; margin-top: 3px; }
+  .footer {
+    text-align: center;
+    padding: 16px;
+    color: #444;
+    font-size: 11px;
+    font-family: 'Courier New', monospace;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Coherence Across All Physical Realms</h1>
+  <h2>13 scales from 10<sup>&minus;35</sup> m to 10<sup>26</sup> m &mdash; one boundary action unifies them all</h2>
+  <div class="params">&chi;<sub>0</sub> = 0.99 &nbsp;|&nbsp; &zeta; = 1.0 &nbsp;|&nbsp; &Phi; = 1.0 &nbsp;|&nbsp; &Phi;<sub>crit</sub> = 1.0 &nbsp;|&nbsp; p = 104729, z = 6</div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<svg id="viz"></svg>
+
+<div class="footer">
+  BPR Multiscale Lagrangian: L<sub>total</sub> = &sum;<sub>n</sub> w<sub>n</sub> [ &chi;<sub>n</sub><sup>2</sup> &Phi;<sub>n</sub> &minus; &zeta;<sub>n</sub> (&chi;<sub>n</sub> &minus; &chi;<sub>n-1</sub>)<sup>2</sup> ]
+</div>
+
+<script>
+// ========================================================
+// SCALE DATA from bpr/multiscale.py SCALE_HIERARCHY
+// ========================================================
+const scales = [
+  { name: "sub_planck",  length_m: 1e-35,    energy_eV: 1.22e28,  label: "Sub-Planck" },
+  { name: "planck",      length_m: 1.616e-35, energy_eV: 1.22e28,  label: "Planck" },
+  { name: "nuclear",     length_m: 1e-15,     energy_eV: 1e6,      label: "Nuclear" },
+  { name: "atomic",      length_m: 1e-10,     energy_eV: 13.6,     label: "Atomic" },
+  { name: "molecular",   length_m: 1e-9,      energy_eV: 0.1,      label: "Molecular" },
+  { name: "cellular",    length_m: 1e-5,      energy_eV: 0.025,    label: "Cellular" },
+  { name: "mesoscale",   length_m: 1e-3,      energy_eV: 0.025,    label: "Mesoscale" },
+  { name: "organismal",  length_m: 1.0,       energy_eV: 0.025,    label: "Organismal" },
+  { name: "collective",  length_m: 1e3,       energy_eV: 0.025,    label: "Collective" },
+  { name: "planetary",   length_m: 6.4e6,     energy_eV: 0.025,    label: "Planetary" },
+  { name: "stellar",     length_m: 7e8,       energy_eV: 1e3,      label: "Stellar" },
+  { name: "galactic",    length_m: 1e21,      energy_eV: 1e-4,     label: "Galactic" },
+  { name: "cosmic",      length_m: 8.8e26,    energy_eV: 2.35e-4,  label: "Cosmic" },
+];
+
+// BPR governing module per scale
+const scaleModules = [
+  "rpst, resonance",
+  "rpst, quantum_gravity_pheno",
+  "nuclear_physics, qcd_flavor",
+  "quantum_chemistry, alpha_derivation",
+  "quantum_chemistry, coherence_transitions",
+  "bioelectric, decoherence",
+  "phase_transitions, fluid_dynamics",
+  "functional_architecture, memory",
+  "collective, conscious_agents",
+  "metric, cosmology",
+  "cosmology, gravitational_waves",
+  "cosmology, emergent_spacetime",
+  "cosmology, impedance"
+];
+
+// Key prediction at each scale
+const scalePredictions = [
+  "GUE level spacing <r> = 0.5307",
+  "GUP beta < 4e4; |delta c/c| < 6e-21",
+  "B/A(Fe56) = 8.79 MeV; NS M_max = 2.08",
+  "1/alpha = 137.036; noble Z exact",
+  "Tc(MgB2) = 39 K; ionization energies",
+  "E_wound = 140 mV/mm; cancer dV = 45 mV",
+  "Mesoscale decoherence syndrome testable",
+  "theta/gamma = 7; FMO coh. 660 fs",
+  "Social tipping 25%; firefly sync ~60",
+  "a0 = 1.2e-10 m/s^2 (MOND)",
+  "NS R = 12.35 km; |v_GW/c-1| < 7e-16",
+  "Omega_DM h^2 = 0.120; n_s = 0.965",
+  "Omega_Lambda = 0.689; eta = 6.12e-10"
+];
+
+// Propagate coherence: chi_{n+1} = tanh(zeta * chi_n * Phi / Phi_crit)
+const chi0 = 0.99;
+const zeta_arr = new Array(13).fill(1.0);
+const Phi_arr = new Array(13).fill(1.0);
+const Phi_crit = 1.0;
+
+const chi = [chi0];
+for (let n = 0; n < 12; n++) {
+  const arg = zeta_arr[n] * chi[n] * Phi_arr[n] / Phi_crit;
+  chi.push(Math.tanh(arg));
+}
+
+// Find bottleneck (largest drop)
+let bottleneckIdx = 0;
+let maxDrop = 0;
+for (let n = 0; n < 12; n++) {
+  const drop = chi[n] - chi[n + 1];
+  if (drop > maxDrop) {
+    maxDrop = drop;
+    bottleneckIdx = n;
+  }
+}
+
+// Coupling zeta between adjacent scales (for display)
+const couplings = [];
+for (let n = 0; n < 12; n++) {
+  couplings.push({
+    from: n,
+    to: n + 1,
+    zeta: zeta_arr[n],
+    chiDrop: chi[n] - chi[n + 1]
+  });
+}
+
+// ========================================================
+// RENDER
+// ========================================================
+const tooltip = d3.select("#tooltip");
+
+function render() {
+  const W = window.innerWidth;
+  const totalH = Math.max(window.innerHeight - 130, 700);
+  const svg = d3.select("#viz").attr("width", W).attr("height", totalH);
+  svg.selectAll("*").remove();
+
+  const marginLeft = 140;
+  const marginRight = 140;
+  const marginTop = 30;
+  const marginBottom = 30;
+  const bandWidth = W - marginLeft - marginRight;
+  const bandAreaH = totalH - marginTop - marginBottom;
+  const bandH = bandAreaH / scales.length;
+
+  const defs = svg.append("defs");
+
+  // Glow filter
+  const filter = defs.append("filter").attr("id", "bandGlow")
+    .attr("x", "-20%").attr("y", "-50%").attr("width", "140%").attr("height", "200%");
+  filter.append("feGaussianBlur").attr("in", "SourceGraphic").attr("stdDeviation", "4").attr("result", "blur");
+  const merge = filter.append("feMerge");
+  merge.append("feMergeNode").attr("in", "blur");
+  merge.append("feMergeNode").attr("in", "SourceGraphic");
+
+  // Text glow
+  const tFilter = defs.append("filter").attr("id", "textGlow")
+    .attr("x", "-10%").attr("y", "-10%").attr("width", "120%").attr("height", "120%");
+  tFilter.append("feGaussianBlur").attr("in", "SourceGraphic").attr("stdDeviation", "1.5");
+
+  // Color scale: coherence maps to brightness
+  // High chi = bright cyan/white, low chi = dim blue
+  function bandColor(chiVal) {
+    const t = chiVal;
+    const r = Math.round(30 + 200 * t * t);
+    const g = Math.round(60 + 195 * t);
+    const b = Math.round(120 + 135 * t);
+    return `rgb(${r},${g},${b})`;
+  }
+
+  function bandGlowColor(chiVal) {
+    const t = chiVal;
+    return `rgba(${Math.round(80 + 175 * t)},${Math.round(180 + 75 * t)},255,${0.1 + 0.35 * t})`;
+  }
+
+  const g = svg.append("g");
+
+  // Vertical axis lines (decorative)
+  g.append("line")
+    .attr("x1", marginLeft).attr("y1", marginTop)
+    .attr("x2", marginLeft).attr("y2", totalH - marginBottom)
+    .attr("stroke", "rgba(255,255,255,0.08)").attr("stroke-width", 1);
+
+  g.append("line")
+    .attr("x1", marginLeft + bandWidth).attr("y1", marginTop)
+    .attr("x2", marginLeft + bandWidth).attr("y2", totalH - marginBottom)
+    .attr("stroke", "rgba(255,255,255,0.08)").attr("stroke-width", 1);
+
+  // Draw bands bottom to top (cosmic at top, sub_planck at bottom)
+  scales.forEach((scale, i) => {
+    // i=0 is sub_planck at bottom, i=12 is cosmic at top
+    const reversed = scales.length - 1 - i;
+    const y = marginTop + reversed * bandH;
+    const chiVal = chi[i];
+    const isBottleneck = (i === bottleneckIdx || i === bottleneckIdx + 1);
+
+    const bandGroup = g.append("g");
+
+    // Background glow
+    bandGroup.append("rect")
+      .attr("x", marginLeft - 10)
+      .attr("y", y + 2)
+      .attr("width", bandWidth + 20)
+      .attr("height", bandH - 4)
+      .attr("rx", 4)
+      .attr("fill", bandGlowColor(chiVal))
+      .attr("filter", "url(#bandGlow)");
+
+    // Main band
+    const bandRect = bandGroup.append("rect")
+      .attr("x", marginLeft)
+      .attr("y", y + 4)
+      .attr("width", bandWidth)
+      .attr("height", bandH - 8)
+      .attr("rx", 3)
+      .attr("fill", bandColor(chiVal))
+      .attr("opacity", 0.15 + 0.6 * chiVal)
+      .attr("stroke", isBottleneck ? "#ff4444" : bandColor(chiVal))
+      .attr("stroke-width", isBottleneck ? 1.5 : 0.5)
+      .attr("stroke-opacity", isBottleneck ? 0.8 : 0.3)
+      .style("cursor", "pointer");
+
+    // Coherence bar inside band
+    const barWidth = bandWidth * 0.3;
+    const barX = marginLeft + bandWidth * 0.62;
+    bandGroup.append("rect")
+      .attr("x", barX)
+      .attr("y", y + bandH * 0.3)
+      .attr("width", barWidth * chiVal)
+      .attr("height", bandH * 0.35)
+      .attr("rx", 2)
+      .attr("fill", bandColor(chiVal))
+      .attr("opacity", 0.5 + 0.4 * chiVal);
+
+    // Chi value label on bar
+    bandGroup.append("text")
+      .attr("x", barX + barWidth * chiVal + 6)
+      .attr("y", y + bandH * 0.55)
+      .attr("fill", bandColor(chiVal))
+      .attr("font-size", "10px")
+      .attr("font-family", "'Courier New', monospace")
+      .attr("opacity", 0.8)
+      .text(`\u03c7 = ${chiVal.toFixed(4)}`);
+
+    // Scale name (left of band)
+    bandGroup.append("text")
+      .attr("x", marginLeft + 12)
+      .attr("y", y + bandH * 0.42)
+      .attr("fill", "#fff")
+      .attr("font-size", "13px")
+      .attr("font-weight", "600")
+      .attr("opacity", 0.9)
+      .text(scale.label);
+
+    // Module name
+    bandGroup.append("text")
+      .attr("x", marginLeft + 12)
+      .attr("y", y + bandH * 0.7)
+      .attr("fill", bandColor(chiVal))
+      .attr("font-size", "9px")
+      .attr("opacity", 0.6)
+      .text(scaleModules[i]);
+
+    // Bottleneck label
+    if (i === bottleneckIdx) {
+      bandGroup.append("text")
+        .attr("x", marginLeft + bandWidth + 5)
+        .attr("y", y + bandH + 2)
+        .attr("fill", "#ff4444")
+        .attr("font-size", "9px")
+        .attr("font-weight", "600")
+        .text("\u25bc BOTTLENECK");
+    }
+
+    // Hover interaction
+    bandRect
+      .on("mouseenter", (event) => {
+        const html = `
+          <div class="tt-name">${scale.label} Scale</div>
+          <div class="tt-row">Length: ${scale.length_m.toExponential(2)} m</div>
+          <div class="tt-row">Energy: ${scale.energy_eV.toExponential(2)} eV</div>
+          <div class="tt-row">Coherence \u03c7: <b>${chiVal.toFixed(6)}</b></div>
+          <div class="tt-row">Modules: ${scaleModules[i]}</div>
+          <div class="tt-eq">${scalePredictions[i]}</div>
+          ${isBottleneck ? '<div class="tt-pred" style="color:#ff4444">Coherence bottleneck transition</div>' : ''}
+        `;
+        tooltip.html(html)
+          .style("opacity", 1)
+          .style("left", (event.clientX + 14) + "px")
+          .style("top", (event.clientY - 10) + "px");
+      })
+      .on("mousemove", (event) => {
+        tooltip
+          .style("left", (event.clientX + 14) + "px")
+          .style("top", (event.clientY - 10) + "px");
+      })
+      .on("mouseleave", () => {
+        tooltip.style("opacity", 0);
+      });
+  });
+
+  // Draw coupling lines between adjacent bands
+  couplings.forEach((c, ci) => {
+    const fromReversed = scales.length - 1 - c.from;
+    const toReversed = scales.length - 1 - c.to;
+    const y1 = marginTop + fromReversed * bandH + bandH;
+    const y2 = marginTop + toReversed * bandH;
+    const xMid = marginLeft + bandWidth * 0.48;
+
+    const isBottleneckLink = (c.from === bottleneckIdx);
+    const lineColor = isBottleneckLink ? "#ff4444" : `rgba(100,200,255,${0.1 + 0.3 * chi[c.to]})`;
+
+    g.append("line")
+      .attr("x1", xMid - 20).attr("y1", y1 - 2)
+      .attr("x2", xMid - 20).attr("y2", y2 + 2)
+      .attr("stroke", lineColor)
+      .attr("stroke-width", isBottleneckLink ? 2 : 1)
+      .attr("stroke-dasharray", isBottleneckLink ? "4,3" : "none")
+      .attr("opacity", 0.5);
+
+    // Zeta label
+    g.append("text")
+      .attr("x", xMid - 32)
+      .attr("y", (y1 + y2) / 2 + 3)
+      .attr("fill", lineColor)
+      .attr("font-size", "8px")
+      .attr("font-family", "'Courier New', monospace")
+      .attr("text-anchor", "end")
+      .attr("opacity", 0.6)
+      .text(`\u03b6=${c.zeta.toFixed(1)}`);
+  });
+
+  // Left axis: Length scale
+  g.append("text")
+    .attr("x", 14).attr("y", marginTop - 10)
+    .attr("fill", "#666").attr("font-size", "10px").attr("font-weight", "600")
+    .text("LENGTH");
+
+  scales.forEach((scale, i) => {
+    const reversed = scales.length - 1 - i;
+    const y = marginTop + reversed * bandH + bandH * 0.5;
+    g.append("text")
+      .attr("x", 14).attr("y", y)
+      .attr("fill", "#888")
+      .attr("font-size", "9px")
+      .attr("font-family", "'Courier New', monospace")
+      .text(formatSI(scale.length_m, "m"));
+  });
+
+  // Right axis: Energy scale
+  g.append("text")
+    .attr("x", W - 14).attr("y", marginTop - 10)
+    .attr("fill", "#666").attr("font-size", "10px").attr("font-weight", "600")
+    .attr("text-anchor", "end")
+    .text("ENERGY");
+
+  scales.forEach((scale, i) => {
+    const reversed = scales.length - 1 - i;
+    const y = marginTop + reversed * bandH + bandH * 0.5;
+    g.append("text")
+      .attr("x", W - 14).attr("y", y)
+      .attr("fill", "#888")
+      .attr("font-size", "9px")
+      .attr("font-family", "'Courier New', monospace")
+      .attr("text-anchor", "end")
+      .text(formatSI(scale.energy_eV, "eV"));
+  });
+
+  // Prediction column header
+  g.append("text")
+    .attr("x", marginLeft + 12).attr("y", marginTop - 10)
+    .attr("fill", "#666").attr("font-size", "10px").attr("font-weight", "600")
+    .text("SCALE / MODULE");
+
+  g.append("text")
+    .attr("x", marginLeft + bandWidth * 0.62).attr("y", marginTop - 10)
+    .attr("fill", "#666").attr("font-size", "10px").attr("font-weight", "600")
+    .text("COHERENCE \u03c7");
+}
+
+function formatSI(val, unit) {
+  if (val === 0) return `0 ${unit}`;
+  const exp = Math.floor(Math.log10(Math.abs(val)));
+  const mantissa = val / Math.pow(10, exp);
+  if (exp === 0) return `${mantissa.toFixed(1)} ${unit}`;
+  if (Math.abs(mantissa - 1) < 0.01) return `10^${exp} ${unit}`;
+  return `${mantissa.toFixed(1)}e${exp} ${unit}`;
+}
+
+render();
+window.addEventListener("resize", render);
+</script>
+</body>
+</html>

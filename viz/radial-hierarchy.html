@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPR Radial Hierarchy: One Equation -> All Physics</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0a;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
+  #viz { width: 100%; height: 100%; }
+  .title {
+    position: absolute;
+    top: 18px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .title h1 {
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 3px;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(100,200,255,0.3);
+  }
+  .title h2 {
+    font-size: 14px;
+    font-weight: 300;
+    color: #888;
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+  .tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: rgba(10,10,10,0.95);
+    border: 1px solid rgba(100,200,255,0.3);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 12px;
+    line-height: 1.6;
+    max-width: 340px;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.15s;
+    backdrop-filter: blur(8px);
+  }
+  .tooltip .tt-name {
+    font-weight: 600;
+    color: #fff;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .tooltip .tt-desc { color: #aaa; }
+  .tooltip .tt-eq {
+    color: #7ecfff;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    margin-top: 4px;
+    padding: 4px 6px;
+    background: rgba(100,200,255,0.05);
+    border-radius: 3px;
+  }
+  .tooltip .tt-val {
+    color: #ffd700;
+    font-size: 11px;
+    margin-top: 3px;
+  }
+  .legend {
+    position: absolute;
+    bottom: 18px;
+    left: 18px;
+    z-index: 10;
+    font-size: 11px;
+    line-height: 2;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+</style>
+</head>
+<body>
+
+<div class="title">
+  <h1>One Equation &rarr; All Physics</h1>
+  <h2>BPR Boundary Action Hierarchy &mdash; 7 Sectors, 40+ Modules, 60+ Predictions</h2>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<svg id="viz"></svg>
+
+<div class="legend" id="legend"></div>
+
+<script>
+// ========================================================
+// DATA: Full BPR hierarchy
+// ========================================================
+const COLORS = {
+  EM:        "#ffd700",
+  QM:        "#00e5ff",
+  GR:        "#b388ff",
+  Fluid:     "#69f0ae",
+  Substrate: "#ff9100",
+  Bio:       "#ff80ab",
+  Math:      "#e0e0e0"
+};
+
+const data = {
+  name: "S_boundary",
+  fullName: "Master Boundary Action S_\u2202",
+  desc: "S_\u2202 = \u222b_\u2202M d\u00b3x \u221a\u03b3 [ K + \u03ba \u03c7\u00b2 \u03a6 \u2212 \u03b6 (\u0394Z/Z\u2080)\u00b2 ]",
+  eq: "S_\u2202 = \u222b K + \u03ba\u03c7\u00b2\u03a6 \u2212 \u03b6(\u0394Z/Z\u2080)\u00b2",
+  children: [
+    {
+      name: "EM", color: COLORS.EM, desc: "Electromagnetism from boundary impedance",
+      eq: "Z_eff(W) = Z\u2080 \u00b7 \u221a(1 + W\u00b2/p)",
+      children: [
+        { name: "impedance", desc: "Vacuum & topological impedance", eq: "Z_W = Z\u2080\u221a(1+W\u00b2/p)", children: [
+          { name: "\u03b1\u207b\u00b9 = 137.036", val: "137.031 (0.004%)", pred: "P22.1", desc: "Fine structure constant from substrate" },
+          { name: "Z\u2080 = 376.73 \u03a9", val: "exact", pred: "P14", desc: "Vacuum impedance as boundary invariant" }
+        ]},
+        { name: "gauge_unification", desc: "Electroweak unification from impedance ratios", eq: "sin\u00b2\u03b8_W = Z_B/(Z_B+Z_W)", children: [
+          { name: "sin\u00b2\u03b8_W = 0.2312", val: "0.2312 (0.04%)", pred: "P17", desc: "Weinberg angle from 3 routes" },
+          { name: "v_EW = 246 GeV", val: "246 GeV (0.1%)", pred: "P17.13", desc: "Electroweak VEV from p,z" },
+          { name: "\u03c4_p > 10\u00b3\u2074 yr", val: "bound satisfied", pred: "P17.8", desc: "Proton lifetime from GUT" }
+        ]},
+        { name: "alpha_derivation", desc: "1/\u03b1 from (ln p)\u00b2 + z/2 + \u03b3_EM", eq: "1/\u03b1 = (ln p)\u00b2 + z/2 + \u03b3 \u2212 1/(2\u03c0)", children: [
+          { name: "\u03b1\u207b\u00b9(M_Z) = 128.9", val: "127.9 (0.8%)", pred: "P22.2", desc: "Running coupling at M_Z" }
+        ]},
+        { name: "charged_leptons", desc: "Lepton masses from S\u00b2 boundary modes", eq: "m_l = v_EW \u00b7 y_l(p,z)", children: [
+          { name: "m_e = 0.511 MeV", val: "0.511 (0.11%)", pred: "P18.1", desc: "Electron mass" },
+          { name: "m_\u03bc = 105.66 MeV", val: "105.7 (5.3%)", pred: "P18.2", desc: "Muon mass" },
+          { name: "m_\u03c4 = 1776.9 MeV", val: "1776.9 (exact anchor)", pred: "P18.3", desc: "Tau mass" },
+          { name: "Koide Q = 2/3", val: "0.672 (0.75%)", pred: "P18.4", desc: "Koide parameter" }
+        ]},
+        { name: "electromechanical", desc: "Piezoelectric response from boundary polarization", eq: "P = \u03c7 \u2207\u03c6", children: [
+          { name: "d\u2083\u2083 piezo", val: "lab-testable", pred: "EM.1", desc: "Piezo coefficient from BPR" }
+        ]}
+      ]
+    },
+    {
+      name: "QM", color: COLORS.QM, desc: "Quantum mechanics from boundary coherence",
+      eq: "\u0393_dec = (\u0394Z/Z\u2080)\u00b2 \u00b7 k_B T / \u210f",
+      children: [
+        { name: "quantum_foundations", desc: "Born rule & Tsirelson bound from boundary", eq: "P(x) = |\u27e8x|\u03c8\u27e9|\u00b2 from Z-matching", children: [
+          { name: "Tsirelson 2\u221a2", val: "exact", pred: "P16.7", desc: "Bell bound from boundary" },
+          { name: "Dirac 4-spinor", val: "exact", pred: "P15.2", desc: "Spinor components from Cl(3,0)" }
+        ]},
+        { name: "decoherence", desc: "Environmental decoherence from impedance mismatch", eq: "\u0393 = (\u0394Z/Z\u2080)\u00b2 k_BT/\u210f", children: [
+          { name: "\u0393/\u03ba = n\u0304 (cat)", val: "1.0 \u00b1 0.1", pred: "P3.1", desc: "Cat-state decoherence" },
+          { name: "W_crit transmon", val: "\u2264 0.020", pred: "P3.10", desc: "Critical winding for qubit" },
+          { name: "C70 T* = 1000 K", val: "1000 \u00b1 150 K", pred: "P3.7", desc: "Molecular decoherence onset" }
+        ]},
+        { name: "coherence_transitions", desc: "Phase transitions in coherence landscape", eq: "\u03c7(T) = tanh(\u0394F/k_BT)", children: [
+          { name: "T_c Nb = 9.25 K", val: "9.25 \u00b1 0.02", pred: "P4.7", desc: "Niobium superconducting Tc" },
+          { name: "T_c MgB\u2082 = 39 K", val: "39.0 \u00b1 0.5", pred: "P4.9", desc: "MgB2 superconducting Tc" }
+        ]},
+        { name: "quantum_chemistry", desc: "Periodic table from boundary shell closure", eq: "Z_noble = 2\u2211(2l+1)", children: [
+          { name: "Noble Z: 2,10,18,36,54,86", val: "all exact", pred: "P21", desc: "Noble gas atomic numbers" },
+          { name: "IE He = 24.6 eV", val: "~23.1 (6%)", pred: "P21.7", desc: "Helium ionization energy" }
+        ]},
+        { name: "hilbert_bpr", desc: "Hilbert space as emergent from boundary", eq: "H = \u2297_W C\u00b2", children: [
+          { name: "dim(H) = 2^W", val: "framework", pred: "H.1", desc: "Hilbert dimension from winding" }
+        ]}
+      ]
+    },
+    {
+      name: "GR", color: COLORS.GR, desc: "Gravity as emergent boundary geometry",
+      eq: "G_\u03bc\u03bd = 8\u03c0G T_\u03bc\u03bd from \u03b4S_\u2202/\u03b4g = 0",
+      children: [
+        { name: "emergent_spacetime", desc: "Spacetime dimensions from boundary optimization", eq: "d=3+1 minimizes \u03b4S_\u2202", children: [
+          { name: "d_space = 3", val: "exact", pred: "P13.3", desc: "Spatial dimensions" },
+          { name: "d_time = 1", val: "exact", pred: "P13.4", desc: "Time dimensions" },
+          { name: "d_total = 4", val: "exact", pred: "P13.5", desc: "Total dimensions" }
+        ]},
+        { name: "cosmology", desc: "Inflation & dark energy from boundary", eq: "\u03a9_\u039b = \u03c1_DE/\u03c1_crit", children: [
+          { name: "\u03a9_\u039b = 0.689", val: "0.689", pred: "P11", desc: "Dark energy fraction" },
+          { name: "n_s = 0.965", val: "0.9649 \u00b1 0.004", pred: "P11.2", desc: "Spectral index" },
+          { name: "r < 0.044", val: "bound satisfied", pred: "P11.3", desc: "Tensor-to-scalar ratio" },
+          { name: "\u03b7 = 6.12e-10", val: "6.12 \u00b1 0.04", pred: "P11.7", desc: "Baryon asymmetry" },
+          { name: "\u03a9_DM h\u00b2 = 0.120", val: "0.120 \u00b1 0.001", pred: "P11.15", desc: "Dark matter relic density" }
+        ]},
+        { name: "gravitational_waves", desc: "GW propagation with boundary corrections", eq: "v_GW = c (1 - \u03b5_BPR)", children: [
+          { name: "|v_GW/c \u2212 1| < 7e-16", val: "bound satisfied", pred: "P7.1", desc: "GW speed" }
+        ]},
+        { name: "black_hole", desc: "BH entropy with GUP corrections", eq: "S = A/(4l_P\u00b2)(1 - \u03b2/A_P)", children: [
+          { name: "M_remnant", val: "M_Pl(1+1/2p)", pred: "BH.1", desc: "BH remnant mass" }
+        ]},
+        { name: "metric", desc: "BPR-corrected Schwarzschild & Kerr metrics", eq: "ds\u00b2 = -(1-2M/r+\u03b5)\u2026", children: [
+          { name: "a\u2080 = 1.2e-10 m/s\u00b2", val: "1.2 \u00b1 0.2", pred: "P2.2", desc: "MOND acceleration from BPR" }
+        ]},
+        { name: "quantum_gravity_pheno", desc: "GUP & Lorentz violation bounds", eq: "\u0394x\u0394p \u2265 \u210f/2(1+\u03b2p\u00b2)", children: [
+          { name: "|\u03b4c/c| < 6e-21", val: "bound satisfied", pred: "P20.7", desc: "Lorentz invariance" },
+          { name: "\u03b2_GUP < 4e4", val: "1/p \u2248 10\u207b\u2075", pred: "P20.4", desc: "GUP parameter" },
+          { name: "\u03be\u2081 = 0 (linear LIV)", val: "exact", pred: "P20.1", desc: "No linear LIV" }
+        ]}
+      ]
+    },
+    {
+      name: "Fluid", color: COLORS.Fluid, desc: "Collective & condensed matter from boundary",
+      eq: "K_c = 2\u03c3_\u03c9/\u03c0",
+      children: [
+        { name: "collective", desc: "Synchronization & social dynamics", eq: "K_c = 2\u03c3_\u03c9/\u03c0", children: [
+          { name: "JJ K_c = 200 kHz", val: "200 \u00b1 50 kHz", pred: "P10.1", desc: "Josephson sync threshold" },
+          { name: "Social tipping 25%", val: "25 \u00b1 5%", pred: "P10.2", desc: "Social tipping fraction" },
+          { name: "Firefly sync ~60", val: "60 \u00b1 15 cycles", pred: "P10.3", desc: "Firefly sync onset" }
+        ]},
+        { name: "phase_transitions", desc: "Universal phase transition taxonomy", eq: "\u03c7 \u223c |T-T_c|^{-\u03b3}", children: [] },
+        { name: "topological_matter", desc: "Quantum Hall & topological insulators", eq: "R_K = Z\u2080/(2\u03b1)", children: [
+          { name: "R_K = 25812.8 \u03a9", val: "exact (2019 SI)", pred: "P14.2", desc: "von Klitzing constant" },
+          { name: "G\u2080 = 7.75e-5 S", val: "exact", pred: "P14.12", desc: "Conductance quantum" }
+        ]},
+        { name: "plasmoid", desc: "Microwave plasmoid stability", eq: "R_stable = f(P,\u03c9)", children: [
+          { name: "R_stable ~ 8 cm", val: "testable", pred: "PL.1", desc: "Plasmoid equilibrium radius" }
+        ]},
+        { name: "fluid_dynamics", desc: "Navier-Stokes from boundary dissipation", eq: "\u2207\u00b7v = 0, \u2202v/\u2202t + \u2026", children: [] }
+      ]
+    },
+    {
+      name: "Substrate", color: COLORS.Substrate, desc: "Resonant Prime Substrate Theory (RPST)",
+      eq: "H_p = \u2211_{n<m} J(p_n,p_m) \u03c3_n\u00b7\u03c3_m",
+      children: [
+        { name: "rpst", desc: "Prime substrate Hamiltonian & spectra", eq: "H = \u2211 J_nm \u03c3\u00b7\u03c3", children: [
+          { name: "GUE <r> = 0.5307", val: "0.5307 \u00b1 0.005", pred: "P24.1", desc: "Level spacing ratio" },
+          { name: "Level repulsion", val: "exact (R\u2082(0)=0)", pred: "P24.2", desc: "GUE pair correlation" },
+          { name: "Wigner s* = \u221a(6/\u03c0)", val: "exact", pred: "P24.3", desc: "Wigner surmise peak" }
+        ]},
+        { name: "resonance", desc: "Boundary resonance modes", eq: "\u03c9_n = 2\u03c0n/p", children: [] },
+        { name: "stability_manifolds", desc: "Spectral stability & CFL bounds", eq: "\u2016L\u2016\u2082 \u2264 4", children: [
+          { name: "J\u03bb_max/4 < 1", val: "\u2264 0.05", pred: "P25.1", desc: "Qubit spectral stability" },
+          { name: "T2_min ~ 10 \u03bcs", val: "\u2265 10 \u03bcs", pred: "P25.2", desc: "Transmon T2 bound" }
+        ]},
+        { name: "fractional_boundary", desc: "Fractional-order boundary operators", eq: "D^\u03b1 \u03c7 = ...", children: [] },
+        { name: "resonance_families", desc: "Prime family classification of resonances", eq: "p \u2208 {2,3,5,7,...}", children: [] },
+        { name: "resonance_algebra", desc: "Algebraic structure of resonance space", eq: "[R_p, R_q] = \u03b4_{pq}", children: [] }
+      ]
+    },
+    {
+      name: "Bio", color: COLORS.Bio, desc: "Biological & consciousness from boundary",
+      eq: "\u03a6 = \u03c7\u00b2 \u00b7 H(X) \u00b7 C(X)",
+      children: [
+        { name: "bioelectric", desc: "Wound healing & cancer bioelectrics", eq: "E = V_mem/\u03bb_heal", children: [
+          { name: "E_wound = 140 mV/mm", val: "140 \u00b1 40", pred: "P9.1", desc: "Wound healing E-field" },
+          { name: "\u0394V_cancer = 45 mV", val: "45 \u00b1 10 mV", pred: "P9.2", desc: "Cancer depolarization" },
+          { name: "Planaria 95%", val: "95 \u00b1 5%", pred: "P9.3", desc: "Regeneration polarity" }
+        ]},
+        { name: "functional_architecture", desc: "Neural architecture from boundary winding", eq: "W_cortex \u223c log(p)", children: [] },
+        { name: "conscious_agents", desc: "IIT-compatible consciousness measure", eq: "\u03a6 = \u03c7\u00b2 H C", children: [] },
+        { name: "memory", desc: "Memory kernel & hippocampal dynamics", eq: "M(t,t') = e^{-|\u0394t|/\u03c4}cos(\u03c9_r\u0394t)", children: [
+          { name: "\u03b8/\u03b3 ratio = 7", val: "7 \u00b1 1", pred: "P1.1", desc: "Theta-gamma nesting" },
+          { name: "FMO coh. 660 fs", val: "660 \u00b1 100 fs", pred: "P1.2", desc: "Photosynthesis coherence" },
+          { name: "NM T2/T2* = 1.7", val: "1.7 \u00b1 0.4", pred: "P1.3", desc: "Non-Markovian ratio" }
+        ]},
+        { name: "info_geometry", desc: "Fisher information on boundary manifold", eq: "F_Q = N\u00b2 (Heisenberg)", children: [
+          { name: "QFI exponent = 2", val: "exact", pred: "P6.1", desc: "GHZ Heisenberg scaling" },
+          { name: "Squeezing 15 dB", val: "15 \u00b1 1.5 dB", pred: "P6.2", desc: "Spin squeezing" }
+        ]}
+      ]
+    },
+    {
+      name: "Math", color: COLORS.Math, desc: "Mathematical framework & meta-theory",
+      eq: "Cl(8) \u2283 Cl(3,0) \u2297 C \u2283 SM",
+      children: [
+        { name: "clifford_bpr", desc: "E8 Clifford algebra embedding", eq: "Cl(8) \u2192 SM gauge group", children: [
+          { name: "(g-2)/2 = \u03b1/(2\u03c0)", val: "1.16e-3 (Schwinger)", pred: "P15.1", desc: "Electron anomalous moment" }
+        ]},
+        { name: "complexity", desc: "Computational complexity from substrate", eq: "N_parallel = p^W", children: [
+          { name: "Sycamore ~20 qubits", val: "20 \u00b1 5", pred: "P8.4", desc: "Effective logical qubits" },
+          { name: "D-Wave 25x speedup", val: "\u2265 25x", pred: "P8.5", desc: "Quantum annealing speedup" }
+        ]},
+        { name: "meta_boundary", desc: "Turing patterns & boundary rewriting", eq: "\u03bb = 2\u03c0\u221a(D_\u03ba/|f'|)", children: [
+          { name: "Turing \u03bb = 0.25 mm", val: "0.25 \u00b1 0.08", pred: "P23.1", desc: "CIMA pattern wavelength" },
+          { name: "LTP energy ~1 pJ", val: "1 \u00b1 0.9 pJ", pred: "P23.2", desc: "Synapse rewrite cost" }
+        ]},
+        { name: "optimization", desc: "Variational boundary optimization", eq: "\u03b4S_\u2202/\u03b4\u03c7 = 0", children: [] },
+        { name: "multiscale", desc: "13-scale coherence tower", eq: "L = \u2211 w_n L_n[\u03c7,\u03a6,\u03b6]", children: [] }
+      ]
+    }
+  ]
+};
+
+// Also include neutrino and nuclear data
+const neutrinoModule = {
+  name: "neutrino", desc: "Neutrino masses & mixing from boundary", eq: "sin\u00b2\u03b8\u2081\u2082 = 1/3 - 1/(3.5 ln p)",
+  children: [
+    { name: "\u03b8\u2081\u2082 = 33.4\u00b0", val: "33.4 \u00b1 0.8", pred: "P5.5", desc: "Solar mixing angle" },
+    { name: "\u03b8\u2082\u2083 = 49.0\u00b0", val: "49.0 \u00b1 1.3", pred: "P5.6", desc: "Atmospheric mixing angle" },
+    { name: "\u03b8\u2081\u2083 = 8.54\u00b0", val: "8.54 \u00b1 0.15", pred: "P5.7", desc: "Reactor mixing angle" },
+    { name: "\u2211m\u03bd < 0.12 eV", val: "bound satisfied", pred: "P5.2", desc: "Neutrino mass sum" },
+    { name: "N_gen = 3", val: "exact", pred: "P5.10", desc: "Number of generations" }
+  ]
+};
+data.children[0].children.splice(2, 0, neutrinoModule);
+
+const qcdModule = {
+  name: "qcd_flavor", desc: "QCD flavor physics from boundary modes", eq: "m_q = v_EW y_q(p,z)",
+  children: [
+    { name: "m_u = 2.16 MeV", val: "2.16 \u00b1 0.49", pred: "P12.2", desc: "Up quark mass" },
+    { name: "m_d = 4.67 MeV", val: "4.67 \u00b1 0.48", pred: "P12.3", desc: "Down quark mass" },
+    { name: "m_t = 172.7 GeV", val: "172.7 \u00b1 0.3", pred: "P12.7", desc: "Top quark mass" },
+    { name: "Jarlskog = 3.1e-5", val: "3.08 \u00b1 0.15", pred: "P12.11", desc: "CP violation invariant" },
+    { name: "m_\u03c0 = 135.0 MeV", val: "135.0 \u00b1 0.005", pred: "P12.14", desc: "Pion mass" }
+  ]
+};
+data.children[0].children.splice(3, 0, qcdModule);
+
+const nuclearModule = {
+  name: "nuclear_physics", desc: "Nuclear binding from boundary shell", eq: "B/A = a_V - a_S A^{-1/3} + BPR",
+  children: [
+    { name: "B/A Fe56 = 8.79", val: "8.790 \u00b1 0.001", pred: "P19.7", desc: "Iron binding energy" },
+    { name: "B/A He4 = 7.07", val: "7.074 \u00b1 0.001", pred: "P19.8", desc: "Helium binding energy" },
+    { name: "n_sat = 0.16 fm\u207b\u00b3", val: "0.16 \u00b1 0.01", pred: "P19.9", desc: "Nuclear saturation density" },
+    { name: "NS M_max = 2.08 M\u2609", val: "2.08 \u00b1 0.07", pred: "P19.10", desc: "Neutron star max mass" },
+    { name: "NS R = 12.35 km", val: "12.35 \u00b1 0.75", pred: "P19.11", desc: "Neutron star radius" }
+  ]
+};
+data.children[3].children.splice(1, 0, nuclearModule);
+
+// ========================================================
+// BUILD VISUALIZATION
+// ========================================================
+const svg = d3.select("#viz");
+const tooltip = d3.select("#tooltip");
+
+function render() {
+  const W = window.innerWidth;
+  const H = window.innerHeight;
+  const cx = W / 2;
+  const cy = H / 2;
+  const radius = Math.min(W, H) * 0.44;
+
+  svg.attr("width", W).attr("height", H);
+  svg.selectAll("*").remove();
+
+  const defs = svg.append("defs");
+
+  // Radial gradient for center glow
+  const rg = defs.append("radialGradient").attr("id", "centerGlow");
+  rg.append("stop").attr("offset", "0%").attr("stop-color", "#fff").attr("stop-opacity", 0.9);
+  rg.append("stop").attr("offset", "40%").attr("stop-color", "#7ecfff").attr("stop-opacity", 0.4);
+  rg.append("stop").attr("offset", "100%").attr("stop-color", "#0a0a0a").attr("stop-opacity", 0);
+
+  // Glow filter
+  const filter = defs.append("filter").attr("id", "glow").attr("x", "-50%").attr("y", "-50%").attr("width", "200%").attr("height", "200%");
+  filter.append("feGaussianBlur").attr("in", "SourceGraphic").attr("stdDeviation", "3").attr("result", "blur");
+  const merge = filter.append("feMerge");
+  merge.append("feMergeNode").attr("in", "blur");
+  merge.append("feMergeNode").attr("in", "SourceGraphic");
+
+  const g = svg.append("g").attr("transform", `translate(${cx},${cy})`);
+
+  // Background glow
+  g.append("circle").attr("r", radius * 0.15).attr("fill", "url(#centerGlow)").attr("opacity", 0.6);
+
+  // Create hierarchy
+  const root = d3.hierarchy(data);
+
+  // Custom radial layout
+  const sectorCount = root.children.length;
+  const sectorAngle = (2 * Math.PI) / sectorCount;
+
+  // Assign angles and radii
+  root.x = 0; root.y = 0; root.angle = 0; root.radius = 0;
+
+  root.children.forEach((sector, si) => {
+    const baseAngle = si * sectorAngle - Math.PI / 2;
+    sector.angle = baseAngle;
+    sector.radius = radius * 0.22;
+    sector.x = Math.cos(baseAngle) * sector.radius;
+    sector.y = Math.sin(baseAngle) * sector.radius;
+
+    if (sector.children) {
+      const modCount = sector.children.length;
+      const spread = sectorAngle * 0.85;
+      sector.children.forEach((mod, mi) => {
+        const modAngle = baseAngle - spread / 2 + (spread / Math.max(modCount - 1, 1)) * mi;
+        mod.angle = modAngle;
+        mod.radius = radius * 0.50;
+        mod.x = Math.cos(modAngle) * mod.radius;
+        mod.y = Math.sin(modAngle) * mod.radius;
+
+        if (mod.children) {
+          const predCount = mod.children.length;
+          const predSpread = (spread / modCount) * 0.9;
+          mod.children.forEach((pred, pi) => {
+            const predAngle = modAngle - predSpread / 2 + (predSpread / Math.max(predCount - 1, 1)) * pi;
+            pred.angle = predAngle;
+            pred.radius = radius * 0.88;
+            pred.x = Math.cos(predAngle) * pred.radius;
+            pred.y = Math.sin(predAngle) * pred.radius;
+          });
+        }
+      });
+    }
+  });
+
+  // Collect all nodes flat
+  const allNodes = [];
+  const allLinks = [];
+
+  function traverse(node, parent) {
+    allNodes.push(node);
+    if (parent) {
+      allLinks.push({ source: parent, target: node });
+    }
+    if (node.children) {
+      node.children.forEach(c => traverse(c, node));
+    }
+  }
+  traverse(root, null);
+
+  // Get sector color for any node
+  function getSectorColor(node) {
+    if (node === root) return "#fff";
+    let n = node;
+    while (n.parent && n.parent !== root) n = n.parent;
+    return (n.data && COLORS[n.data.name]) || "#888";
+  }
+
+  // Draw ring guides
+  [0.22, 0.50, 0.88].forEach(r => {
+    g.append("circle")
+      .attr("r", radius * r)
+      .attr("fill", "none")
+      .attr("stroke", "rgba(255,255,255,0.04)")
+      .attr("stroke-width", 0.5);
+  });
+
+  // Draw links
+  g.selectAll(".link")
+    .data(allLinks)
+    .join("path")
+    .attr("class", "link")
+    .attr("d", d => {
+      const sx = d.source.x, sy = d.source.y;
+      const tx = d.target.x, ty = d.target.y;
+      const mx = (sx + tx) / 2, my = (sy + ty) / 2;
+      // Slight curve toward center
+      const cx2 = mx * 0.9, cy2 = my * 0.9;
+      return `M${sx},${sy} Q${cx2},${cy2} ${tx},${ty}`;
+    })
+    .attr("fill", "none")
+    .attr("stroke", d => {
+      const c = getSectorColor(d.target);
+      return c;
+    })
+    .attr("stroke-opacity", d => d.target.depth <= 2 ? 0.2 : 0.08)
+    .attr("stroke-width", d => d.target.depth <= 1 ? 1.5 : d.target.depth <= 2 ? 0.8 : 0.4);
+
+  // Draw prediction nodes (depth 3)
+  const predictions = allNodes.filter(n => n.depth === 3);
+  g.selectAll(".pred")
+    .data(predictions)
+    .join("circle")
+    .attr("class", "pred")
+    .attr("cx", d => d.x)
+    .attr("cy", d => d.y)
+    .attr("r", 3)
+    .attr("fill", d => getSectorColor(d))
+    .attr("opacity", 0.7)
+    .attr("filter", "url(#glow)")
+    .on("mouseenter", (event, d) => showTooltip(event, d))
+    .on("mouseleave", hideTooltip);
+
+  // Prediction labels
+  g.selectAll(".pred-label")
+    .data(predictions)
+    .join("text")
+    .attr("class", "pred-label")
+    .attr("x", d => {
+      const offset = d.angle > -Math.PI / 2 && d.angle < Math.PI / 2 ? 6 : -6;
+      return d.x + offset;
+    })
+    .attr("y", d => d.y + 3)
+    .attr("text-anchor", d => d.angle > -Math.PI / 2 && d.angle < Math.PI / 2 ? "start" : "end")
+    .attr("fill", d => getSectorColor(d))
+    .attr("opacity", 0.55)
+    .attr("font-size", "7px")
+    .attr("font-family", "'Courier New', monospace")
+    .text(d => d.data.name.length > 20 ? d.data.name.slice(0, 20) + "\u2026" : d.data.name)
+    .on("mouseenter", (event, d) => showTooltip(event, d))
+    .on("mouseleave", hideTooltip);
+
+  // Draw module nodes (depth 2)
+  const modules = allNodes.filter(n => n.depth === 2);
+  g.selectAll(".mod")
+    .data(modules)
+    .join("circle")
+    .attr("class", "mod")
+    .attr("cx", d => d.x)
+    .attr("cy", d => d.y)
+    .attr("r", 5)
+    .attr("fill", d => getSectorColor(d))
+    .attr("opacity", 0.85)
+    .attr("filter", "url(#glow)")
+    .on("mouseenter", (event, d) => showTooltip(event, d))
+    .on("mouseleave", hideTooltip);
+
+  // Module labels
+  g.selectAll(".mod-label")
+    .data(modules)
+    .join("text")
+    .attr("class", "mod-label")
+    .attr("x", d => {
+      const offset = d.angle > -Math.PI / 2 && d.angle < Math.PI / 2 ? 9 : -9;
+      return d.x + offset;
+    })
+    .attr("y", d => d.y + 3)
+    .attr("text-anchor", d => d.angle > -Math.PI / 2 && d.angle < Math.PI / 2 ? "start" : "end")
+    .attr("fill", d => getSectorColor(d))
+    .attr("opacity", 0.8)
+    .attr("font-size", "9px")
+    .attr("font-weight", "500")
+    .text(d => d.data.name)
+    .on("mouseenter", (event, d) => showTooltip(event, d))
+    .on("mouseleave", hideTooltip);
+
+  // Draw sector nodes (depth 1)
+  const sectors = allNodes.filter(n => n.depth === 1);
+  g.selectAll(".sector")
+    .data(sectors)
+    .join("circle")
+    .attr("class", "sector")
+    .attr("cx", d => d.x)
+    .attr("cy", d => d.y)
+    .attr("r", 10)
+    .attr("fill", d => COLORS[d.data.name])
+    .attr("opacity", 0.9)
+    .attr("filter", "url(#glow)")
+    .on("mouseenter", (event, d) => showTooltip(event, d))
+    .on("mouseleave", hideTooltip);
+
+  // Sector labels
+  g.selectAll(".sector-label")
+    .data(sectors)
+    .join("text")
+    .attr("class", "sector-label")
+    .attr("x", d => d.x)
+    .attr("y", d => d.y - 16)
+    .attr("text-anchor", "middle")
+    .attr("fill", d => COLORS[d.data.name])
+    .attr("font-size", "13px")
+    .attr("font-weight", "700")
+    .attr("letter-spacing", "1px")
+    .text(d => d.data.name)
+    .on("mouseenter", (event, d) => showTooltip(event, d))
+    .on("mouseleave", hideTooltip);
+
+  // Center node
+  g.append("circle")
+    .attr("cx", 0).attr("cy", 0).attr("r", 18)
+    .attr("fill", "rgba(126,207,255,0.15)")
+    .attr("stroke", "#7ecfff")
+    .attr("stroke-width", 1.5)
+    .attr("filter", "url(#glow)");
+
+  g.append("text")
+    .attr("x", 0).attr("y", -2)
+    .attr("text-anchor", "middle")
+    .attr("fill", "#fff")
+    .attr("font-size", "11px")
+    .attr("font-weight", "600")
+    .text("S_\u2202");
+
+  g.append("text")
+    .attr("x", 0).attr("y", 10)
+    .attr("text-anchor", "middle")
+    .attr("fill", "#7ecfff")
+    .attr("font-size", "7px")
+    .text("Boundary");
+
+  // Legend
+  const legend = d3.select("#legend");
+  legend.selectAll("*").remove();
+  Object.entries(COLORS).forEach(([name, color]) => {
+    const item = legend.append("div").attr("class", "legend-item");
+    item.append("span").attr("class", "legend-dot").style("background", color);
+    item.append("span").text(name).style("color", color);
+  });
+}
+
+function showTooltip(event, d) {
+  const data = d.data;
+  let html = `<div class="tt-name">${data.fullName || data.name}</div>`;
+  if (data.desc) html += `<div class="tt-desc">${data.desc}</div>`;
+  if (data.eq)   html += `<div class="tt-eq">${data.eq}</div>`;
+  if (data.val)  html += `<div class="tt-val">Value: ${data.val}</div>`;
+  if (data.pred) html += `<div class="tt-val" style="color:#aaa">ID: ${data.pred}</div>`;
+
+  tooltip.html(html)
+    .style("opacity", 1)
+    .style("left", (event.pageX + 14) + "px")
+    .style("top", (event.pageY - 10) + "px");
+}
+
+function hideTooltip() {
+  tooltip.style("opacity", 0);
+}
+
+render();
+window.addEventListener("resize", render);
+</script>
+</body>
+</html>
