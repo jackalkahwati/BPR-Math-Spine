@@ -474,6 +474,48 @@ const edgeData = [
   { source: "boundary_action", target: "impedance", pipeline: -2 }, // ∫σ_eff → ρ_Λ
   { source: "emergent_spacetime", target: "gravitational_waves", pipeline: -2 }, // GW dispersion
   { source: "multiscale", target: "cosmology", pipeline: -2 },      // χ_cosmic = 0.107
+
+  // ── New bridge equations (round 2) ──
+
+  // Substrate ↔ Particles
+  { source: "resonance", target: "charged_leptons", pipeline: -2 },  // zero spacings → mass ratios
+  { source: "resonance", target: "neutrino", pipeline: -2 },        // zero spacings → ν mass
+  { source: "rpst_extensions", target: "gauge_unification", pipeline: -2 }, // Frobenius → couplings
+  { source: "hilbert_bpr", target: "quantum_foundations", pipeline: -2 }, // spectrum → Born rule
+  { source: "resonance_algebra", target: "quantum_chemistry", pipeline: -2 }, // spectral orbitals
+  { source: "optimization", target: "nuclear_physics", pipeline: -2 }, // Max-Cut → shell
+
+  // Substrate ↔ Gravity
+  { source: "resonance", target: "cosmology", pipeline: -2 },       // prime → CMB modulation
+  { source: "rpst_extensions", target: "emergent_spacetime", pipeline: -2 }, // lattice → continuum
+  { source: "tdgl_bpr", target: "cosmology", pipeline: -2 },        // TDGL → cosmic phase trans
+  { source: "metric", target: "black_hole", pipeline: -2 },         // metric → horizon
+  { source: "stability_manifolds", target: "cosmology", pipeline: -2 }, // stability → attractor
+
+  // Quantum ↔ Life
+  { source: "quantum_foundations", target: "conscious_agents", pipeline: -2 }, // measurement → observer
+  { source: "phase_transitions", target: "bioelectric", pipeline: -2 }, // morphogenesis
+  { source: "coherence_transitions", target: "bioelectric", pipeline: -2 }, // aging
+  { source: "impedance", target: "bioelectric", pipeline: -2 },     // gap junction impedance
+
+  // Particles ↔ Gravity
+  { source: "gauge_unification", target: "emergent_spacetime", pipeline: -2 }, // gauge-gravity duality
+  { source: "gauge_unification", target: "gravitational_waves", pipeline: -2 }, // coupling → GW
+  { source: "alpha_derivation", target: "cosmology", pipeline: -2 }, // α running → CMB
+  { source: "clifford_bpr", target: "emergent_spacetime", pipeline: -2 }, // E8 → dimension
+  { source: "charged_leptons", target: "cosmology", pipeline: -2 }, // masses → BBN
+
+  // Matter ↔ Life
+  { source: "quantum_chemistry", target: "functional_architecture", pipeline: -2 }, // molecular cognition
+  { source: "nuclear_physics", target: "bioelectric", pipeline: -2 }, // radiation effects
+  { source: "fluid_dynamics", target: "bioelectric", pipeline: -2 }, // blood flow coherence
+
+  // Unification ↔ Everything
+  { source: "boundary_action", target: "cosmology", pipeline: -2 }, // master action → inflation
+  { source: "boundary_action", target: "nuclear_physics", pipeline: -2 }, // → nuclear force
+  { source: "multiscale", target: "phase_transitions", pipeline: -2 }, // cross-scale universality
+  { source: "multiscale", target: "decoherence", pipeline: -2 },    // scale → decoherence
+  { source: "multiscale", target: "memory", pipeline: -2 },         // temporal scales
 ];
 
 // ---------------------------------------------------------------------------

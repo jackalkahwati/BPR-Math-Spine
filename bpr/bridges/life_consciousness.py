@@ -747,3 +747,413 @@ def memory_coherence_chain(
         "K_trajectory": K_trajectory,
         "M_kernel_sample": M_values,
     }
+
+
+# ===================================================================
+# Bridge 8: Phase Transition Morphogenesis
+# ===================================================================
+
+def phase_transition_morphogenesis(
+    N_cells: int = 100,
+    K: float = 1.0,
+) -> Dict[str, Any]:
+    r"""Biological morphogenesis as Class A (winding) phase transition.
+
+    Bridge equation
+    ---------------
+        Cell differentiation = topological winding transition on tissue boundary.
+        Critical cell count:  N_c = K_c(tissue) / K_coupling(gap_junctions)
+        Below N_c: cells are equivalent (undifferentiated).
+        Above N_c: symmetry breaks -> distinct cell fates emerge.
+        Defect density: n_defects ~ (tau_Q / tau_0)^{-d/(1+nu*z)} (Kibble-Zurek)
+
+    Parameters
+    ----------
+    N_cells : int
+        Number of cells in the tissue.
+    K : float
+        Inter-cell coupling strength (gap junction conductance, normalised).
+
+    Returns
+    -------
+    dict with critical cell count, differentiation prediction,
+    and Kibble-Zurek defect estimate.
+    """
+    try:
+        from bpr.phase_transitions import TransitionClass, TRANSITION_CATALOG
+    except ImportError as exc:
+        return {"error": f"Import failed: {exc}"}
+
+    # Critical coupling for Class A (winding) transition
+    # In BPR, consciousness onset is Class A; morphogenesis uses the same
+    # topological structure at the cellular scale.
+    K_c_tissue = 0.5   # critical coupling strength for differentiation
+    K_coupling_gj = K  # gap junction coupling
+
+    # Critical cell count
+    N_c = K_c_tissue / K_coupling_gj if K_coupling_gj > 1e-12 else np.inf
+
+    # Is the tissue above critical size?
+    differentiated = N_cells > N_c
+
+    # Number of distinct cell types (from winding sectors)
+    # Each topological winding sector W = 0, 1, ..., W_max
+    # corresponds to a distinct cell fate.
+    # W_max ~ sqrt(N_cells / N_c) for N_cells > N_c
+    if differentiated:
+        W_max = int(np.floor(np.sqrt(N_cells / N_c)))
+        n_cell_types = W_max + 1  # including W=0
+    else:
+        W_max = 0
+        n_cell_types = 1
+
+    # Kibble-Zurek defect density
+    # Morphogenesis quench: rapid cell division = rapid cooling through T_c
+    # tau_Q = doubling time / (T_c traversal)
+    tau_Q = 1.0 / max(K, 1e-12)   # quench timescale ~ 1/coupling
+    tau_0 = 1.0                     # microscopic timescale
+    # Mean-field exponents: nu = 0.5, z = 2
+    nu_exp = 0.5
+    z_exp = 2.0
+    d_tissue = 2.0  # 2D tissue sheet
+
+    # n_defects ~ (tau_Q / tau_0)^{-d/(1 + nu*z)}
+    defect_exponent = -d_tissue / (1.0 + nu_exp * z_exp)
+    n_defects = (tau_Q / tau_0) ** defect_exponent
+    # Scale to tissue size
+    n_defects_total = n_defects * N_cells
+
+    # Look up Class A transitions in the catalog
+    class_a_transitions = [
+        t["name"] for t in TRANSITION_CATALOG
+        if t["class"] == TransitionClass.A
+    ]
+
+    return {
+        "N_cells": N_cells,
+        "K_coupling": float(K),
+        "K_c_tissue": float(K_c_tissue),
+        "N_c_critical": float(N_c),
+        "differentiated": differentiated,
+        "n_cell_types": n_cell_types,
+        "W_max": W_max,
+        "n_defects_per_cell": float(n_defects),
+        "n_defects_total": float(n_defects_total),
+        "kibble_zurek_exponent": float(defect_exponent),
+        "class_a_transitions": class_a_transitions,
+        "prediction": (
+            f"N_cells={N_cells} {'>' if differentiated else '<='} "
+            f"N_c={N_c:.1f}: {'differentiated' if differentiated else 'undifferentiated'}, "
+            f"{n_cell_types} cell type(s), "
+            f"~{n_defects_total:.1f} topological defects"
+        ),
+    }
+
+
+# ===================================================================
+# Bridge 9: Impedance Matching in Gap Junctions
+# ===================================================================
+
+def impedance_gap_junctions(
+    n_junctions: int = 1000,
+    Z_intra: float = 100.0,
+    Z_extra: float = 377.0,
+) -> Dict[str, Any]:
+    r"""Impedance matching in biological gap junctions.
+
+    Bridge equation
+    ---------------
+        Coherent bioelectric signal requires Z_intra ~ Z_extra (matched).
+        Mismatch -> reflection -> decoherence -> loss of tissue coordination.
+
+        Reflection coefficient: Gamma = (Z_extra - Z_intra) / (Z_extra + Z_intra)
+        Transmission: T = 1 - |Gamma|^2
+        For N junctions in series: T_total = T^N
+
+        Prediction: gap junction resistance R_gj ~ Z_0 / N_junctions for
+        optimal tissue-level coherence.
+
+    Parameters
+    ----------
+    n_junctions : int
+        Number of gap junctions in the signalling chain.
+    Z_intra : float
+        Intracellular impedance (Ohm).
+    Z_extra : float
+        Extracellular / boundary impedance (Ohm).
+
+    Returns
+    -------
+    dict with reflection, transmission, optimal resistance, and coherence.
+    """
+    try:
+        from bpr.impedance import TopologicalImpedance
+    except ImportError as exc:
+        return {"error": f"Import failed: {exc}"}
+
+    # Reflection coefficient
+    Gamma = (Z_extra - Z_intra) / (Z_extra + Z_intra)
+    T_single = 1.0 - Gamma ** 2  # power transmission per junction
+
+    # Total transmission through chain of N junctions
+    T_total = T_single ** n_junctions
+
+    # Coherence measure: C = T_total (fully transmitted = fully coherent)
+    coherence = T_total
+
+    # Optimal gap junction resistance for perfect matching
+    # Z_intra + N * R_gj = Z_extra => R_gj = (Z_extra - Z_intra) / N
+    R_gj_optimal = (Z_extra - Z_intra) / n_junctions if n_junctions > 0 else np.inf
+
+    # Alternative: impedance matching via Z_0
+    R_gj_from_Z0 = Z_extra / n_junctions
+
+    # Decoherence rate from mismatch
+    # Gamma_dec ~ |Gamma|^2 * omega_bio / n_junctions
+    omega_bio = 2.0 * np.pi * 10.0  # ~10 Hz bioelectric oscillation
+    gamma_dec = Gamma ** 2 * omega_bio / max(n_junctions, 1)
+    tau_dec = 1.0 / gamma_dec if gamma_dec > 0 else np.inf
+
+    # Sweep Z_intra to show matching curve
+    Z_intra_range = np.linspace(10, 1000, 100)
+    Gamma_range = (Z_extra - Z_intra_range) / (Z_extra + Z_intra_range)
+    T_range = (1.0 - Gamma_range ** 2) ** n_junctions
+
+    # Find optimal Z_intra (maximum T_total)
+    best_idx = np.argmax(T_range)
+    Z_intra_optimal = float(Z_intra_range[best_idx])
+
+    return {
+        "n_junctions": n_junctions,
+        "Z_intra_Ohm": float(Z_intra),
+        "Z_extra_Ohm": float(Z_extra),
+        "reflection_coefficient": float(Gamma),
+        "T_single": float(T_single),
+        "T_total": float(T_total),
+        "coherence": float(coherence),
+        "R_gj_optimal_Ohm": float(R_gj_optimal),
+        "R_gj_from_Z0_Ohm": float(R_gj_from_Z0),
+        "decoherence_rate_Hz": float(gamma_dec),
+        "decoherence_time_s": float(tau_dec),
+        "Z_intra_optimal_Ohm": Z_intra_optimal,
+        "prediction": (
+            f"Gap junction chain ({n_junctions} junctions): "
+            f"T_total={T_total:.4f}, coherence={coherence:.4f}; "
+            f"optimal R_gj={R_gj_optimal:.2f} Ohm; "
+            f"decoherence time={tau_dec:.2f} s"
+        ),
+    }
+
+
+# ===================================================================
+# Bridge 10: Quantum Measurement as Conscious Agent Interaction
+# ===================================================================
+
+def quantum_measurement_observer(
+    n_agents: int = 10,
+    state_dim: int = 4,
+) -> Dict[str, Any]:
+    r"""Quantum measurement as conscious agent boundary interaction.
+
+    Bridge equation
+    ---------------
+        Observer = agent with boundary coupling kappa to measured system.
+        Collapse = Markov transition: T_ij = |kappa_ij|^2 / Sum_k |kappa_ik|^2
+        Born rule emerges from boundary coupling statistics:
+            P(outcome i) = Sum_j |kappa_ij|^2 / Sum_{j,k} |kappa_jk|^2
+
+    In the large-agent limit, the Markov kernel converges to the Born
+    rule distribution.  Finite-agent corrections are O(1/n_agents).
+
+    Parameters
+    ----------
+    n_agents : int
+        Number of conscious agents (observers).
+    state_dim : int
+        Dimension of the measured quantum system.
+
+    Returns
+    -------
+    dict with Markov kernel, Born probabilities, and convergence.
+    """
+    try:
+        from bpr.conscious_agents import agent_network, markov_transition_kernel
+    except ImportError as exc:
+        return {"error": f"Import failed: {exc}"}
+
+    rng = np.random.default_rng(42)
+
+    # Build agent network and extract boundary couplings
+    agents, kappa = agent_network(n_agents, state_dim=state_dim, seed=42)
+
+    # Markov transition kernel from boundary couplings
+    T_markov = markov_transition_kernel(kappa)
+
+    # Stationary distribution (left eigenvector with eigenvalue 1)
+    eigvals, eigvecs_left = np.linalg.eig(T_markov.T)
+    # Find eigenvalue closest to 1
+    idx_stationary = np.argmin(np.abs(eigvals - 1.0))
+    pi_stationary = np.real(eigvecs_left[:, idx_stationary])
+    pi_stationary = np.abs(pi_stationary)
+    pi_stationary = pi_stationary / np.sum(pi_stationary)
+
+    # Born rule probabilities from |kappa|^2
+    kappa_sq = np.abs(kappa) ** 2
+    # Marginal over agents: P(outcome i) = Sum_j kappa_ij^2 / total
+    P_born = np.sum(kappa_sq, axis=1)
+    P_born = P_born / np.sum(P_born)
+
+    # Truncate to comparable sizes
+    min_dim = min(len(pi_stationary), len(P_born))
+    pi_compare = pi_stationary[:min_dim]
+    pi_compare = pi_compare / np.sum(pi_compare)
+    P_compare = P_born[:min_dim]
+    P_compare = P_compare / np.sum(P_compare)
+
+    # Convergence: total variation distance between stationary and Born
+    tv_distance = 0.5 * float(np.sum(np.abs(pi_compare - P_compare)))
+
+    # Finite-agent correction: should be O(1/n_agents)
+    expected_correction = 1.0 / n_agents
+
+    # Measurement timescale: mixing time of the Markov chain
+    # tau_mix ~ 1 / (1 - lambda_2) where lambda_2 is second-largest eigenvalue
+    eigvals_sorted = np.sort(np.abs(eigvals))[::-1]
+    if len(eigvals_sorted) > 1 and eigvals_sorted[1] < 1.0:
+        mixing_time = 1.0 / (1.0 - eigvals_sorted[1])
+    else:
+        mixing_time = np.inf
+
+    return {
+        "n_agents": n_agents,
+        "state_dim": state_dim,
+        "T_markov_shape": T_markov.shape,
+        "stationary_distribution": pi_compare.tolist(),
+        "born_probabilities": P_compare.tolist(),
+        "tv_distance": tv_distance,
+        "expected_correction_1_over_N": float(expected_correction),
+        "born_rule_emerges": tv_distance < 0.2,
+        "mixing_time_steps": float(mixing_time),
+        "spectral_gap": float(1.0 - eigvals_sorted[1]) if len(eigvals_sorted) > 1 else 0.0,
+        "prediction": (
+            f"Born rule convergence: TV distance = {tv_distance:.4f} "
+            f"(expected O(1/{n_agents}) = {expected_correction:.4f}); "
+            f"mixing time = {mixing_time:.1f} steps"
+        ),
+    }
+
+
+# ===================================================================
+# Bridge 11: Molecular Coherence to Cognitive Function
+# ===================================================================
+
+def molecular_cognition(
+    n_bonds: int = 10,
+    overlaps: Optional[np.ndarray] = None,
+) -> Dict[str, Any]:
+    r"""Molecular coherence -> cognitive function.
+
+    Bridge equation
+    ---------------
+        Bond coherence: chi_bond = A exp(-alpha |Delta_phi| zeta_s R_e)
+            from quantum_chemistry.bond_coherence
+
+        Multiscale chain:
+            molecular chi -> cellular chi (via gap junctions)
+            -> neural chi (via Kuramoto synchronisation)
+            -> cognitive chi (via collective coherence)
+
+        chi_{n+1} = tanh(zeta_n * chi_n)
+
+        Prediction: drugs that modulate bond coherence (anaesthetics alter
+        hydrophobic pocket geometry -> Delta_phi changes -> chi_bond changes)
+        directly affect cognitive coherence.
+
+    Parameters
+    ----------
+    n_bonds : int
+        Number of bonds in the molecular system.
+    overlaps : ndarray, optional
+        Bond overlap integrals.  If None, generated randomly.
+
+    Returns
+    -------
+    dict with molecular, cellular, neural, and cognitive coherences.
+    """
+    try:
+        from bpr.quantum_chemistry import bond_coherence, ChemicalBond
+    except ImportError as exc:
+        return {"error": f"Import failed: {exc}"}
+
+    rng = np.random.default_rng(42)
+
+    # Generate bond parameters
+    if overlaps is None:
+        overlaps = rng.uniform(0.1, 0.9, n_bonds)
+
+    # Typical bond parameters
+    R_e = 1.5   # Angstrom (bond length)
+    zeta_s = 1.0 / R_e  # screening parameter
+    alpha_bond = 1.0
+
+    # Compute bond coherences
+    chi_bonds = np.zeros(n_bonds)
+    for i in range(n_bonds):
+        delta_phi_i = np.arccos(np.clip(overlaps[i], -1, 1))
+        chi_bonds[i] = bond_coherence(delta_phi_i, zeta_s, R_e, A=1.0, alpha=alpha_bond)
+
+    # Molecular coherence: geometric mean of bond coherences
+    chi_molecular = float(np.exp(np.mean(np.log(np.clip(chi_bonds, 1e-30, None)))))
+
+    # Multiscale propagation: molecular -> cellular -> neural -> cognitive
+    # Each scale has a coupling strength zeta
+    scales = ["molecular", "cellular", "neural", "cognitive"]
+    zeta_scales = [1.5, 0.8, 1.2, 0.6]  # coupling strengths
+
+    chi_chain = [chi_molecular]
+    for zeta in zeta_scales[1:]:
+        chi_next = float(np.tanh(zeta * chi_chain[-1]))
+        chi_chain.append(chi_next)
+
+    chi_cognitive = chi_chain[-1]
+
+    # Anaesthetic modulation: reduce bond overlaps by 30%
+    overlaps_anaes = overlaps * 0.7
+    chi_bonds_anaes = np.zeros(n_bonds)
+    for i in range(n_bonds):
+        delta_phi_i = np.arccos(np.clip(overlaps_anaes[i], -1, 1))
+        chi_bonds_anaes[i] = bond_coherence(delta_phi_i, zeta_s, R_e, A=1.0, alpha=alpha_bond)
+
+    chi_mol_anaes = float(np.exp(np.mean(np.log(np.clip(chi_bonds_anaes, 1e-30, None)))))
+    chi_chain_anaes = [chi_mol_anaes]
+    for zeta in zeta_scales[1:]:
+        chi_next = float(np.tanh(zeta * chi_chain_anaes[-1]))
+        chi_chain_anaes.append(chi_next)
+
+    chi_cognitive_anaes = chi_chain_anaes[-1]
+
+    # Consciousness threshold
+    chi_conscious_threshold = 0.3
+    conscious_normal = chi_cognitive > chi_conscious_threshold
+    conscious_anaes = chi_cognitive_anaes > chi_conscious_threshold
+
+    return {
+        "n_bonds": n_bonds,
+        "chi_bonds": chi_bonds.tolist(),
+        "chi_molecular": chi_molecular,
+        "scales": scales,
+        "chi_chain_normal": chi_chain,
+        "chi_cognitive_normal": chi_cognitive,
+        "chi_chain_anaesthetic": chi_chain_anaes,
+        "chi_cognitive_anaesthetic": chi_cognitive_anaes,
+        "conscious_normal": conscious_normal,
+        "conscious_anaesthetic": conscious_anaes,
+        "chi_conscious_threshold": chi_conscious_threshold,
+        "coherence_reduction_factor": float(chi_cognitive_anaes / chi_cognitive) if chi_cognitive > 0 else 0.0,
+        "prediction": (
+            f"Molecular chi={chi_molecular:.4f} -> cognitive chi={chi_cognitive:.4f} "
+            f"({'conscious' if conscious_normal else 'unconscious'}); "
+            f"anaesthetic: chi={chi_cognitive_anaes:.4f} "
+            f"({'conscious' if conscious_anaes else 'unconscious'})"
+        ),
+    }
