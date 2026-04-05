@@ -66,12 +66,15 @@
 </div>
 
 <div id="legend">
-  <div class="title">Theory Layers</div>
-  <div class="legend-item"><span class="legend-dot" style="background:#1f77b4"></span> Core theories (layer 0)</div>
-  <div class="legend-item"><span class="legend-dot" style="background:#2ca02c"></span> Extended theories (layer 1)</div>
-  <div class="legend-item"><span class="legend-dot" style="background:#ff7f0e"></span> Paper extensions (layer 2)</div>
-  <div class="legend-item"><span class="legend-dot" style="background:#d62728"></span> Interpolation (layer 3)</div>
-  <div class="legend-item"><span class="legend-dot" style="background:#9467bd"></span> Predictions (layer 4)</div>
+  <div class="title">Physics Domains</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#f0a030"></span> Substrate</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#a855f7"></span> Spacetime & Gravity</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#3b82f6"></span> Quantum & Information</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#22c55e"></span> Particles & Forces</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#ef4444"></span> Matter & Chemistry</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#ec4899"></span> Life & Consciousness</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#ffffff"></span> Unification</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#67e8f9"></span> Predictions</div>
 </div>
 
 <div id="tooltip"></div>
@@ -88,12 +91,25 @@
 // DATA
 // ---------------------------------------------------------------------------
 const layerColors = {
-  0: "#1f77b4", 1: "#2ca02c", 2: "#ff7f0e", 3: "#d62728", 4: "#9467bd"
+  0: "#f0a030",  // Substrate — warm gold
+  1: "#a855f7",  // Spacetime & Gravity — purple
+  2: "#3b82f6",  // Quantum & Information — blue
+  3: "#22c55e",  // Particles & Forces — green
+  4: "#ef4444",  // Matter & Chemistry — red
+  5: "#ec4899",  // Life & Consciousness — pink
+  6: "#ffffff",  // Unification — white
+  7: "#67e8f9",  // Predictions — cyan
 };
 
 const layerNames = {
-  0: "Core theory", 1: "Extended theory", 2: "Paper extension",
-  3: "Interpolation", 4: "Prediction"
+  0: "Substrate",
+  1: "Spacetime & Gravity",
+  2: "Quantum & Information",
+  3: "Particles & Forces",
+  4: "Matter & Chemistry",
+  5: "Life & Consciousness",
+  6: "Unification",
+  7: "Predictions",
 };
 
 const pipelineColors = [
@@ -107,73 +123,80 @@ const pipelineColors = [
 ];
 
 const nodeData = [
-  // Core (layer 0)
-  { id: "memory", layer: 0, label: "Memory", eq: "M(t) = Z^{-1} Tr[rho ln rho]" },
-  { id: "impedance", layer: 0, label: "Impedance", eq: "Z(p,z) = p^{1/z} (z-1)/z" },
-  { id: "decoherence", layer: 0, label: "Decoherence", eq: "Gamma = Z * Delta_E / hbar" },
-  { id: "phase_transitions", layer: 0, label: "Phase Trans.", eq: "F[phi] = integral{ Z|nabla phi|^2 + V(phi) }" },
-  { id: "neutrino", layer: 0, label: "Neutrino", eq: "m_nu ~ v^2/p (see-saw from Z)" },
-  { id: "info_geometry", layer: 0, label: "Info Geometry", eq: "g_{ij} = E[d_i ln p * d_j ln p]" },
-  { id: "gravitational_waves", layer: 0, label: "Grav. Waves", eq: "h ~ (Z/r) * (d^2 Q/dt^2)" },
-  { id: "complexity", layer: 0, label: "Complexity", eq: "C(t) = d/dt S_boundary" },
-  { id: "bioelectric", layer: 0, label: "Bioelectric", eq: "V_m = Z_bio * I_ion" },
-  { id: "collective", layer: 0, label: "Collective", eq: "K_c = Z/N * sum sin(theta)" },
-
-  // Extended (layer 1)
-  { id: "cosmology", layer: 1, label: "Cosmology", eq: "H(z)^2 = 8piG/3 [rho + Z_cosmo]" },
-  { id: "qcd_flavor", layer: 1, label: "QCD Flavor", eq: "m_q = Z_q * Lambda_QCD" },
-  { id: "emergent_spacetime", layer: 1, label: "Emerg. Space", eq: "g_{mu nu} = <Z_bulk | Z_boundary>" },
-  { id: "topological_matter", layer: 1, label: "Topo. Matter", eq: "nu = (1/2pi) integral F" },
-  { id: "clifford_bpr", layer: 1, label: "Clifford", eq: "Cl(p,z) algebra" },
-  { id: "quantum_foundations", layer: 1, label: "Q. Foundations", eq: "P(x) = |<x|psi>|^2 from Z" },
-  { id: "gauge_unification", layer: 1, label: "Gauge Unif.", eq: "alpha_i(mu) = Z_i(p,z,mu)" },
-  { id: "charged_leptons", layer: 1, label: "Charged Lept.", eq: "m_l = f(p,z) * v_EW" },
-  { id: "nuclear_physics", layer: 1, label: "Nuclear Phys.", eq: "E_B/A = a_V - a_S/A^{1/3} ..." },
-  { id: "quantum_gravity_pheno", layer: 1, label: "QG Pheno.", eq: "l_P = sqrt(hbar G / c^3)" },
-  { id: "quantum_chemistry", layer: 1, label: "Q. Chemistry", eq: "E_mol = <psi|H_Z|psi>" },
-  { id: "coherence_transitions", layer: 1, label: "Coherence Tr.", eq: "tau_c = hbar / (Z * k_B T)" },
-  { id: "meta_boundary", layer: 1, label: "Meta Boundary", eq: "partial Omega = Z-surface" },
-  { id: "rpst_extensions", layer: 1, label: "RPST Ext.", eq: "R(p,s,t) generalized" },
-  { id: "stability_manifolds", layer: 1, label: "Stability Man.", eq: "Lyapunov: V(x) > 0, dV/dt < 0" },
-  { id: "functional_architecture", layer: 1, label: "Func. Arch.", eq: "F = composition of Z-maps" },
-  { id: "alpha_derivation", layer: 1, label: "Alpha Deriv.", eq: "1/alpha = 137.032 from (p,z)" },
-  { id: "black_hole", layer: 1, label: "Black Hole", eq: "S = A/(4 l_P^2)" },
-  { id: "geometry", layer: 0, label: "Geometry", eq: "make_boundary(R, mesh)" },
+  // ── Substrate (layer 0, gold) ──
+  // The mathematical foundation: prime lattice, resonance, geometry
+  { id: "geometry", layer: 0, label: "Geometry", eq: "Boundary mesh on S^2" },
   { id: "metric", layer: 0, label: "Metric", eq: "Delta g_{mu nu} = lambda phi" },
   { id: "resonance", layer: 0, label: "Resonance", eq: "gamma_n (Riemann zeros)" },
-  { id: "experimental_data", layer: 1, label: "Exp. Data", eq: "g_anti, nuclear yields" },
+  { id: "memory", layer: 0, label: "Memory", eq: "M(t,t') = exp(-|t-t'|/tau) cos(omega)" },
+  { id: "rpst_extensions", layer: 0, label: "RPST", eq: "Z_p symplectic lattice" },
+  { id: "stability_manifolds", layer: 0, label: "Stability", eq: "Lyapunov: dV/dt <= -alpha|grad V|^2" },
+  { id: "resonance_families", layer: 0, label: "Res. Families", eq: "Farey tree, quasi-integers" },
+  { id: "resonance_algebra", layer: 0, label: "Res. Algebra", eq: "Fused PDE step: band->NL->project" },
+  { id: "fractional_boundary", layer: 0, label: "Fractal Boundary", eq: "G ~ L^{D_S - 1}, D_S = ln3/ln2" },
+  { id: "hilbert_bpr", layer: 0, label: "Hilbert BPR", eq: "T = [[A,B],[C,D]], rho(T) < 1" },
+  { id: "tdgl_bpr", layer: 0, label: "TDGL", eq: "d_t psi = -(alpha psi + beta|psi|^2 psi - kappa nabla^2 psi)" },
+  { id: "optimization", layer: 0, label: "Optimization", eq: "Max-Cut via phase oscillators" },
 
-  // Paper extensions (layer 2)
-  { id: "tdgl_bpr", layer: 2, label: "TDGL", eq: "d psi/dt = -Gamma * delta F/delta psi" },
-  { id: "hilbert_bpr", layer: 2, label: "Hilbert BPR", eq: "H = L^2(Omega, Z-measure)" },
-  { id: "fractional_boundary", layer: 2, label: "Frac. Boundary", eq: "D^alpha phi = Z * phi" },
-  { id: "plasmoid", layer: 2, label: "Plasmoid", eq: "B * v_A = Z * eta * j" },
-  { id: "resonance_families", layer: 2, label: "Res. Families", eq: "omega_n = omega_0 * (p/z)^n" },
-  { id: "optimization", layer: 2, label: "Optimization", eq: "min_x f(x) s.t. Z-constraint" },
-  { id: "fluid_dynamics", layer: 2, label: "Fluid Dyn.", eq: "Navier-Stokes + Z-viscosity" },
-  { id: "resonance_algebra", layer: 2, label: "Res. Algebra", eq: "[a, a^dag] = Z" },
-  { id: "electromechanical", layer: 2, label: "Electromech.", eq: "L di/dt + Ri = Z * V(t)" },
-  { id: "conscious_agents", layer: 2, label: "Conscious Ag.", eq: "C = (W, X, P, G, A)" },
+  // ── Spacetime & Gravity (layer 1, purple) ──
+  { id: "emergent_spacetime", layer: 1, label: "Emerg. Spacetime", eq: "g_{mu nu} from boundary entropy" },
+  { id: "cosmology", layer: 1, label: "Cosmology", eq: "H^2 = 8piG/3 rho, Omega_Lambda" },
+  { id: "gravitational_waves", layer: 1, label: "Grav. Waves", eq: "h ~ (G/c^5) d^3 Q/dt^3" },
+  { id: "black_hole", layer: 1, label: "Black Hole", eq: "S_BH = A/(4 l_P^2)" },
+  { id: "quantum_gravity_pheno", layer: 1, label: "Quantum Gravity", eq: "Delta x >= l_P/sqrt(p)" },
 
-  // Interpolation (layer 3)
-  { id: "boundary_action", layer: 3, label: "Boundary Act.", eq: "S_bdy = integral Z * K * sqrt(h)" },
-  { id: "multiscale", layer: 3, label: "Multiscale", eq: "Z(mu) flows across scales" },
-  { id: "pipelines", layer: 3, label: "Pipelines", eq: "theory_i -> theory_j -> prediction" },
-  { id: "constants", layer: 3, label: "Constants", eq: "alpha, sin^2 theta_W, m_l from (p,z)" },
+  // ── Quantum & Information (layer 2, blue) ──
+  { id: "impedance", layer: 2, label: "Impedance", eq: "Z(W) = Z_0 sqrt(1 + W^2/W_c^2)" },
+  { id: "decoherence", layer: 2, label: "Decoherence", eq: "Gamma ~ (Delta Z/Z_0)^2 k_B T/hbar" },
+  { id: "quantum_foundations", layer: 2, label: "Quantum Found.", eq: "Born rule + 1/p correction" },
+  { id: "coherence_transitions", layer: 2, label: "Coherence Trans.", eq: "Landau F = a|Psi|^2 + b|Psi|^4" },
+  { id: "phase_transitions", layer: 2, label: "Phase Trans.", eq: "Class A/B/C/D taxonomy" },
+  { id: "info_geometry", layer: 2, label: "Info Geometry", eq: "Fisher metric g_{ij}" },
+  { id: "complexity", layer: 2, label: "Complexity", eq: "C(t) = d/dt S_boundary" },
 
-  // Predictions (layer 4)
-  { id: "alpha_EM", layer: 4, label: "alpha = 1/137.032", eq: "alpha_EM = 1/137.032" },
-  { id: "sin2_theta_W", layer: 4, label: "sin^2 theta_W = 0.2310", eq: "sin^2 theta_W = 0.2310" },
-  { id: "m_e", layer: 4, label: "m_e = 0.5104 MeV", eq: "m_e = 0.5104 MeV" },
-  { id: "m_mu", layer: 4, label: "m_mu = 107.2 MeV", eq: "m_mu = 107.2 MeV" },
-  { id: "m_tau", layer: 4, label: "m_tau = 1776.9 MeV", eq: "m_tau = 1776.9 MeV" },
-  { id: "v_EW", layer: 4, label: "v_EW = 243.5 GeV", eq: "v_EW = 243.5 GeV" },
-  { id: "Koide_Q", layer: 4, label: "Koide Q = 0.665", eq: "Q = 0.665" },
-  { id: "g_anti", layer: 4, label: "g_anti = 9.777 m/s^2", eq: "g_anti = 9.777 m/s^2" },
-  { id: "Casimir_delta", layer: 4, label: "Casimir delta", eq: "delta_Casimir from Z-resonance" },
-  { id: "GW_strain", layer: 4, label: "GW strain", eq: "h_BPR(f) deviation" },
-  { id: "Born_correction", layer: 4, label: "Born correction", eq: "P(x) = |psi|^2 + O(Z^{-1})" },
-  { id: "E8_dim", layer: 4, label: "E8 dim = 248", eq: "248 = 240 roots + 8 rank" },
+  // ── Particles & Forces (layer 3, green) ──
+  { id: "gauge_unification", layer: 3, label: "Gauge Unif.", eq: "SM from boundary automorphisms" },
+  { id: "alpha_derivation", layer: 3, label: "Alpha Deriv.", eq: "1/alpha = 137.032 from (p,z)" },
+  { id: "charged_leptons", layer: 3, label: "Charged Leptons", eq: "m_l from Koide + v_EW" },
+  { id: "neutrino", layer: 3, label: "Neutrino", eq: "m_nu ~ v^2/p (boundary seesaw)" },
+  { id: "qcd_flavor", layer: 3, label: "QCD & Flavor", eq: "m_q = Z_q Lambda_QCD" },
+  { id: "clifford_bpr", layer: 3, label: "E8 / Clifford", eq: "240 roots, dim 248, SM decomp" },
+  { id: "topological_matter", layer: 3, label: "Topo. Matter", eq: "Chern number nu = integral F/2pi" },
+
+  // ── Matter & Chemistry (layer 4, red) ──
+  { id: "nuclear_physics", layer: 4, label: "Nuclear Phys.", eq: "Magic numbers 2,8,20,28,50,82,126" },
+  { id: "quantum_chemistry", layer: 4, label: "Quantum Chem.", eq: "chi_bond = A cos(Delta phi) zeta(s)" },
+  { id: "plasmoid", layer: 4, label: "Plasmoid", eq: "Stable R ~ 5-15 cm at 2.45 GHz" },
+  { id: "electromechanical", layer: 4, label: "Electromech.", eq: "P = chi nabla phi" },
+  { id: "fluid_dynamics", layer: 4, label: "Fluid Dyn.", eq: "T_BPR = beta cos(Delta phi) grad u" },
+  { id: "experimental_data", layer: 4, label: "Exp. Data", eq: "g_anti, nuclear yields" },
+
+  // ── Life & Consciousness (layer 5, pink) ──
+  { id: "bioelectric", layer: 5, label: "Bioelectric", eq: "V_m from gap junction impedance" },
+  { id: "collective", layer: 5, label: "Collective", eq: "Kuramoto: K_c = 2/(pi g_0)" },
+  { id: "conscious_agents", layer: 5, label: "Conscious Agents", eq: "kappa_ij = <phi_i|B|phi_j>" },
+  { id: "functional_architecture", layer: 5, label: "Func. Arch.", eq: "Alignment dA/dt = eta Phi - eta D" },
+  { id: "meta_boundary", layer: 5, label: "Meta Boundary", eq: "BPR^2: C_meta > (1/R) sum C^(r)" },
+
+  // ── Unification (layer 6, white) ──
+  { id: "boundary_action", layer: 6, label: "Boundary Action", eq: "S_partial = integral sqrt|gamma| L d^3x" },
+  { id: "multiscale", layer: 6, label: "Multiscale", eq: "L_total = sum w_n L_n[chi_n, Phi_n]" },
+  { id: "pipelines", layer: 6, label: "Pipelines", eq: "7 end-to-end prediction chains" },
+  { id: "constants", layer: 6, label: "Constants", eq: "Canonical physical constants" },
+
+  // ── Predictions (layer 7, cyan) ──
+  { id: "alpha_EM", layer: 7, label: "1/alpha = 137.032", eq: "0.003% error" },
+  { id: "sin2_theta_W", layer: 7, label: "sin^2 theta_W = 0.231", eq: "0.1% error" },
+  { id: "m_e", layer: 7, label: "m_e = 0.510 MeV", eq: "0.11% error" },
+  { id: "m_mu", layer: 7, label: "m_mu = 107.2 MeV", eq: "1.5% error" },
+  { id: "m_tau", layer: 7, label: "m_tau = 1776.9 MeV", eq: "anchor" },
+  { id: "v_EW", layer: 7, label: "v_EW = 243.5 GeV", eq: "1.0% error" },
+  { id: "Koide_Q", layer: 7, label: "Koide Q = 0.665", eq: "0.2% error" },
+  { id: "g_anti", layer: 7, label: "g_anti = 9.777 m/s^2", eq: "ALPHA-g consistent" },
+  { id: "Casimir_delta", layer: 7, label: "Casimir delta", eq: "Testable at 1 um" },
+  { id: "GW_strain", layer: 7, label: "GW strain", eq: "h_BPR deviation" },
+  { id: "Born_correction", layer: 7, label: "Born correction ~10^-5", eq: "= 1/p" },
+  { id: "E8_dim", layer: 7, label: "E8 dim = 248", eq: "240 roots + 8 rank" },
 ];
 
 const edgeData = [
@@ -376,10 +399,10 @@ function toggleLabels() {
 // NODE SIZE
 // ---------------------------------------------------------------------------
 function nodeRadius(d) {
-  if (d.layer === 4) return 6;
-  if (d.layer === 0) return 14;
-  if (d.layer === 3) return 10;
-  return 11;
+  if (d.layer === 7) return 6;   // Predictions — small
+  if (d.layer === 6) return 13;  // Unification — large
+  if (d.layer === 0) return 12;  // Substrate — large
+  return 10;                     // Everything else
 }
 
 // ---------------------------------------------------------------------------
@@ -401,7 +424,7 @@ const simulation = d3.forceSimulation(nodeData)
     if (d.pipeline >= 0) return 80;
     return 120;
   }).strength(d => d.pipeline >= 0 ? 0.7 : 0.3))
-  .force("charge", d3.forceManyBody().strength(d => d.layer === 4 ? -120 : -300))
+  .force("charge", d3.forceManyBody().strength(d => d.layer === 7 ? -120 : -300))
   .force("center", d3.forceCenter(width / 2, height / 2))
   .force("collision", d3.forceCollide().radius(d => nodeRadius(d) + 8))
   .force("x", d3.forceX(width / 2).strength(0.03))
@@ -438,8 +461,8 @@ node.append("circle")
   .attr("fill", d => layerColors[d.layer])
   .attr("fill-opacity", 0.85)
   .attr("stroke", d => d3.color(layerColors[d.layer]).brighter(0.8))
-  .attr("stroke-width", d => d.layer === 0 ? 2 : 1)
-  .attr("filter", d => d.layer <= 1 ? "url(#glow)" : null)
+  .attr("stroke-width", d => (d.layer === 0 || d.layer === 6) ? 2 : 1)
+  .attr("filter", d => d.layer <= 6 ? "url(#glow)" : null)
   .style("cursor", "pointer");
 
 node.append("text")
@@ -447,8 +470,8 @@ node.append("text")
   .attr("dy", d => nodeRadius(d) + 13)
   .attr("text-anchor", "middle")
   .attr("fill", "#ccc")
-  .attr("font-size", d => d.layer === 4 ? "9px" : "10px")
-  .attr("font-weight", d => d.layer === 0 ? "600" : "400")
+  .attr("font-size", d => d.layer === 7 ? "9px" : "10px")
+  .attr("font-weight", d => (d.layer === 0 || d.layer === 6) ? "600" : "400")
   .attr("pointer-events", "none")
   .text(d => d.label);
 
