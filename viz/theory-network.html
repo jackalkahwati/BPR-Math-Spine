@@ -61,7 +61,7 @@
 <body>
 
 <div id="title-bar">
-  <h1>BPR Theory Network: 36 Theories &rarr; 40+ Predictions</h1>
+  <h1>BPR Theory Network: 41 Theories &rarr; 50+ Predictions</h1>
   <p>From two integers (p=104729, z=6) with zero free parameters</p>
 </div>
 
@@ -203,6 +203,25 @@ const nodeData = [
   { id: "GW_strain", layer: 7, label: "GW strain", eq: "h_BPR deviation" },
   { id: "Born_correction", layer: 7, label: "Born correction ~10^-5", eq: "= 1/p" },
   { id: "E8_dim", layer: 7, label: "E8 dim = 248", eq: "240 roots + 8 rank" },
+
+  // ── New theory modules ──
+  { id: "optics", layer: 4, label: "Optics", eq: "n = Z₀/Z_material" },
+  { id: "condensed_predictions", layer: 4, label: "Cond. Matter", eq: "T_c, FQHE, Josephson" },
+  { id: "emergence", layer: 5, label: "Emergence", eq: "SOC τ=1+1/D_S, entropic F" },
+  { id: "atomic_precision", layer: 2, label: "Atomic Prec.", eq: "H 1S-2S, g-2, Lamb shift" },
+  { id: "consistency", layer: 6, label: "Consistency", eq: "9/10 PASS, 1 TENSION" },
+
+  // ── New predictions ──
+  { id: "m_nu1", layer: 7, label: "m_ν₁ = 0.001 eV", eq: "seesaw from p" },
+  { id: "eta_B", layer: 7, label: "η_B = 6.83e-10", eq: "11.6% error" },
+  { id: "w_0", layer: 7, label: "w₀ = -0.934", eq: "DESI testable" },
+  { id: "H_1S2S", layer: 7, label: "H 1S-2S +66.8 Hz", eq: "FALSIFIABLE NOW" },
+  { id: "muon_g2", layer: 7, label: "Muon g-2 explained", eq: "F=0.55 form factor" },
+  { id: "proton_r", layer: 7, label: "r_p = 0.8412 fm", eq: "muonic confirmed" },
+  { id: "T_c_MgB2", layer: 7, label: "T_c MgB₂ = 41K", eq: "McMillan + BPR" },
+  { id: "FQHE", layer: 7, label: "FQHE = Farey", eq: "1/3, 2/5, 3/7..." },
+  { id: "alpha_EEG", layer: 7, label: "EEG α = 9.55 Hz", eq: "Kuramoto harmonic" },
+  { id: "seizure", layer: 7, label: "Seizure +1%", eq: "ΔK/K_c = 1/√N" },
 ];
 
 const edgeData = [
@@ -516,6 +535,41 @@ const edgeData = [
   { source: "multiscale", target: "phase_transitions", pipeline: -2 }, // cross-scale universality
   { source: "multiscale", target: "decoherence", pipeline: -2 },    // scale → decoherence
   { source: "multiscale", target: "memory", pipeline: -2 },         // temporal scales
+
+  // ── New module edges ──
+
+  // Optics
+  { source: "optics", target: "impedance", pipeline: -2 },
+  { source: "optics", target: "electromechanical", pipeline: -2 },
+  { source: "optics", target: "quantum_foundations", pipeline: -2 },
+
+  // Condensed matter
+  { source: "condensed_predictions", target: "phase_transitions", pipeline: -2 },
+  { source: "condensed_predictions", target: "resonance_families", pipeline: -2 },
+  { source: "condensed_predictions", target: "T_c_MgB2", pipeline: -2 },
+  { source: "condensed_predictions", target: "FQHE", pipeline: -2 },
+
+  // Emergence
+  { source: "emergence", target: "collective", pipeline: -2 },
+  { source: "emergence", target: "complexity", pipeline: -2 },
+  { source: "emergence", target: "phase_transitions", pipeline: -2 },
+
+  // Atomic precision
+  { source: "atomic_precision", target: "alpha_derivation", pipeline: -2 },
+  { source: "atomic_precision", target: "charged_leptons", pipeline: -2 },
+  { source: "atomic_precision", target: "H_1S2S", pipeline: -2 },
+  { source: "atomic_precision", target: "muon_g2", pipeline: -2 },
+  { source: "atomic_precision", target: "proton_r", pipeline: -2 },
+
+  // Consistency
+  { source: "consistency", target: "pipelines", pipeline: -2 },
+
+  // New prediction edges
+  { source: "neutrino", target: "m_nu1", pipeline: -2 },
+  { source: "gauge_unification", target: "eta_B", pipeline: -2 },
+  { source: "impedance", target: "w_0", pipeline: -2 },
+  { source: "collective", target: "alpha_EEG", pipeline: -2 },
+  { source: "collective", target: "seizure", pipeline: -2 },
 ];
 
 // ---------------------------------------------------------------------------

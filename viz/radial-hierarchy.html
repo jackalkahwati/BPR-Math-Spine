@@ -100,7 +100,7 @@
 
 <div class="title">
   <h1>One Equation &rarr; All Physics</h1>
-  <h2>BPR Boundary Action Hierarchy &mdash; 7 Sectors, 40+ Modules, 60+ Predictions</h2>
+  <h2>BPR Boundary Action Hierarchy &mdash; 7 Sectors, 45+ Modules, 75+ Predictions</h2>
 </div>
 
 <div class="tooltip" id="tooltip"></div>
@@ -153,6 +153,10 @@ const data = {
         ]},
         { name: "electromechanical", desc: "Piezoelectric response from boundary polarization", eq: "P = \u03c7 \u2207\u03c6", children: [
           { name: "d\u2083\u2083 piezo", val: "lab-testable", pred: "EM.1", desc: "Piezo coefficient from BPR" }
+        ]},
+        { name: "optics", desc: "Refractive index from material impedance", eq: "n = Z\u2080/Z_material", children: [
+          { name: "Muon g-2 explained", val: "F=0.55 form factor", pred: "P26.1", desc: "Muon anomalous magnetic moment from BPR" },
+          { name: "r_p = 0.8412 fm", val: "0.8412 (muonic confirmed)", pred: "P26.2", desc: "Proton charge radius" }
         ]}
       ]
     },
@@ -179,6 +183,9 @@ const data = {
         ]},
         { name: "hilbert_bpr", desc: "Hilbert space as emergent from boundary", eq: "H = \u2297_W C\u00b2", children: [
           { name: "dim(H) = 2^W", val: "framework", pred: "H.1", desc: "Hilbert dimension from winding" }
+        ]},
+        { name: "atomic_precision", desc: "High-precision atomic tests of BPR", eq: "H 1S-2S, g-2, Lamb shift", children: [
+          { name: "H 1S-2S: +66.8 Hz", val: "+66.8 Hz (FALSIFIABLE NOW)", pred: "P27.1", desc: "Hydrogen 1S-2S frequency shift from BPR" }
         ]}
       ]
     },
@@ -231,7 +238,11 @@ const data = {
         { name: "plasmoid", desc: "Microwave plasmoid stability", eq: "R_stable = f(P,\u03c9)", children: [
           { name: "R_stable ~ 8 cm", val: "testable", pred: "PL.1", desc: "Plasmoid equilibrium radius" }
         ]},
-        { name: "fluid_dynamics", desc: "Navier-Stokes from boundary dissipation", eq: "\u2207\u00b7v = 0, \u2202v/\u2202t + \u2026", children: [] }
+        { name: "fluid_dynamics", desc: "Navier-Stokes from boundary dissipation", eq: "\u2207\u00b7v = 0, \u2202v/\u2202t + \u2026", children: [] },
+        { name: "condensed_matter_predictions", desc: "Condensed matter predictions from BPR", eq: "T_c, FQHE, Josephson", children: [
+          { name: "T_c MgB\u2082 = 41 K", val: "41 K (McMillan + BPR)", pred: "P28.1", desc: "MgB2 superconducting Tc from BPR" },
+          { name: "FQHE = Farey fractions", val: "1/3, 2/5, 3/7...", pred: "P28.2", desc: "Fractional QHE plateaux from Farey tree" }
+        ]}
       ]
     },
     {
@@ -272,6 +283,11 @@ const data = {
         { name: "info_geometry", desc: "Fisher information on boundary manifold", eq: "F_Q = N\u00b2 (Heisenberg)", children: [
           { name: "QFI exponent = 2", val: "exact", pred: "P6.1", desc: "GHZ Heisenberg scaling" },
           { name: "Squeezing 15 dB", val: "15 \u00b1 1.5 dB", pred: "P6.2", desc: "Spin squeezing" }
+        ]},
+        { name: "emergence", desc: "Self-organized criticality & entropic forces from boundary", eq: "SOC \u03c4=1+1/D_S, entropic F", children: [
+          { name: "EEG \u03b1 = 9.55 Hz", val: "9.55 Hz (Kuramoto harmonic)", pred: "P29.1", desc: "EEG alpha frequency from Kuramoto" },
+          { name: "Seizure: +1% coupling", val: "\u0394K/K_c = 1/\u221aN", pred: "P29.2", desc: "Seizure onset from coupling perturbation" },
+          { name: "SOC \u03c4 = 1.63", val: "1.63", pred: "P29.3", desc: "Self-organized criticality exponent" }
         ]}
       ]
     },
@@ -291,7 +307,13 @@ const data = {
           { name: "LTP energy ~1 pJ", val: "1 \u00b1 0.9 pJ", pred: "P23.2", desc: "Synapse rewrite cost" }
         ]},
         { name: "optimization", desc: "Variational boundary optimization", eq: "\u03b4S_\u2202/\u03b4\u03c7 = 0", children: [] },
-        { name: "multiscale", desc: "13-scale coherence tower", eq: "L = \u2211 w_n L_n[\u03c7,\u03a6,\u03b6]", children: [] }
+        { name: "multiscale", desc: "13-scale coherence tower", eq: "L = \u2211 w_n L_n[\u03c7,\u03a6,\u03b6]", children: [] },
+        { name: "consistency", desc: "Internal consistency audit of BPR framework", eq: "9/10 PASS, 1 TENSION", children: [
+          { name: "m_\u03bd\u2081 = 0.001 eV", val: "seesaw from p", pred: "P30.1", desc: "Lightest neutrino mass" },
+          { name: "\u03a3m_\u03bd = 0.060 eV", val: "0.060 eV", pred: "P30.2", desc: "Neutrino mass sum" },
+          { name: "\u03b7_B = 6.83\u00d710\u207b\u00b9\u2070 (11.6%)", val: "11.6% tension", pred: "P30.3", desc: "Baryon asymmetry parameter" },
+          { name: "w\u2080 = -0.934", val: "DESI testable", pred: "P30.4", desc: "Dark energy equation of state" }
+        ]}
       ]
     }
   ]
