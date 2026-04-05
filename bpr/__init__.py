@@ -3,7 +3,7 @@ BPR-Math-Spine: Minimal, Reproducible Maths for Boundary Phase Resonance
 
 A laser-focused codebase that reproduces every numbered equation in the
 one-page synopsis, generates the falsifiable Casimir-deviation curve, and
-now implements **36 theories** (Al-Kahwati, 2026):
+now implements **36 theories + cross-theory pipelines** (Al-Kahwati, 2026):
 
     I     Boundary Memory Dynamics           (bpr.memory)
     II    Vacuum Impedance Mismatch          (bpr.impedance)
@@ -200,3 +200,19 @@ except Exception:
     PAPER_EXTENSIONS_AVAILABLE = False
 
 __all__.append("PAPER_EXTENSIONS_AVAILABLE")
+
+# ──────────────────────────────────────────────────────────────────────────
+# Cross-Theory Interpolation Layer (April 2026)
+# ──────────────────────────────────────────────────────────────────────────
+
+try:
+    from . import constants             # Canonical physical constants          # noqa: F401
+    from . import boundary_action       # Master Boundary Action (Rosetta Stone)  # noqa: F401
+    from . import multiscale            # Cross-Scale Coherence Propagation     # noqa: F401
+    from . import pipelines             # End-to-End Prediction Pipelines       # noqa: F401
+
+    INTERPOLATION_AVAILABLE = True
+except Exception:
+    INTERPOLATION_AVAILABLE = False
+
+__all__.append("INTERPOLATION_AVAILABLE")

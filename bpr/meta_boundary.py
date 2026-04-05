@@ -1964,3 +1964,100 @@ def shared_eigenmodes(boundaries, n_modes=5):
         mask = np.array([np.min(np.abs(s - ev)) < 0.1 for s in shared])
         shared = shared[mask]
     return shared[:n_modes]
+
+
+# ---------------------------------------------------------------------------
+# BPR-Squared: Cross-System Resonance Framework
+# ---------------------------------------------------------------------------
+
+class BPRSquared:
+    """Full BPR² framework: multiple BPR systems coupled via meta-coherence.
+
+    Optimization: min_{κ_rs} E[1 - C_meta] + μ·Σ‖κ_rs‖₁
+
+    Cross-system resonance produces superlinear scaling:
+    C_meta > (1/R)·Σ C^(r)
+    """
+
+    def __init__(self, systems, coupler_matrix=None):
+        """
+        systems: list of boundary operator matrices (one per subsystem)
+        coupler_matrix: R×R coupling strengths between systems
+        """
+        self.systems = systems
+        self.R = len(systems)
+        if coupler_matrix is None:
+            self.couplers = 0.1 * np.ones((self.R, self.R))
+            np.fill_diagonal(self.couplers, 0)
+        else:
+            self.couplers = coupler_matrix
+
+    def subsystem_coherence(self, r):
+        """C^(r) for subsystem r from eigenvalue structure."""
+        vals = np.linalg.eigvals(self.systems[r])
+        return float(np.mean(np.abs(vals)))
+
+    def all_coherences(self):
+        """Compute C^(r) for all subsystems."""
+        return [self.subsystem_coherence(r) for r in range(self.R)]
+
+    def meta_coherence_bpr2(self):
+        """C_meta = (1/R)Σ C^(r) + λ·Σ_{r<s} ρ(z^(r), z^(s))
+        Cross-system contribution from coupler overlaps."""
+        C_individual = self.all_coherences()
+        C_mean = np.mean(C_individual)
+        cross = 0.0
+        for r in range(self.R):
+            for s in range(r+1, self.R):
+                # Cross-system overlap via shared eigenvalue proximity
+                vals_r = np.sort(np.abs(np.linalg.eigvals(self.systems[r])))
+                vals_s = np.sort(np.abs(np.linalg.eigvals(self.systems[s])))
+                min_len = min(len(vals_r), len(vals_s))
+                overlap = np.exp(-np.sum((vals_r[:min_len] - vals_s[:min_len])**2))
+                cross += self.couplers[r, s] * overlap
+        return C_mean + cross
+
+    def is_superlinear(self):
+        """Check C_meta > (1/R)·Σ C^(r)."""
+        C_individual = self.all_coherences()
+        C_meta = self.meta_coherence_bpr2()
+        C_mean = np.mean(C_individual)
+        return {"superlinear": C_meta > C_mean, "C_meta": C_meta,
+                "C_mean": C_mean, "gain": C_meta - C_mean}
+
+    def optimize_couplers(self, target_coherence=0.9, learning_rate=0.01, max_iter=500):
+        """Optimize coupling strengths to maximize meta-coherence.
+        min_{κ} E[1 - C_meta] + μ·Σ‖κ‖₁"""
+        mu_sparsity = 0.01
+        for iteration in range(max_iter):
+            C_meta = self.meta_coherence_bpr2()
+            if C_meta >= target_coherence:
+                break
+            # Gradient step: perturb each coupler and measure effect
+            for r in range(self.R):
+                for s in range(r+1, self.R):
+                    self.couplers[r, s] += learning_rate
+                    C_plus = self.meta_coherence_bpr2()
+                    self.couplers[r, s] -= 2 * learning_rate
+                    C_minus = self.meta_coherence_bpr2()
+                    self.couplers[r, s] += learning_rate  # restore
+                    grad = (C_plus - C_minus) / (2 * learning_rate)
+                    # Update with L1 penalty
+                    self.couplers[r, s] += learning_rate * (grad - mu_sparsity * np.sign(self.couplers[r, s]))
+                    self.couplers[s, r] = self.couplers[r, s]
+            self.couplers = np.maximum(self.couplers, 0)  # non-negative
+        return {"final_C_meta": self.meta_coherence_bpr2(),
+                "iterations": iteration + 1,
+                "couplers": self.couplers.copy()}
+
+    def distributed_compilation(self, programs):
+        """Compile programs across subsystems using meta-coherence routing.
+        programs: list of (source_system, target_system, data) tuples.
+        Returns execution order optimized for coherence."""
+        # Sort by coupling strength (strongest first)
+        scored = []
+        for src, tgt, data in programs:
+            score = self.couplers[src, tgt] * self.subsystem_coherence(src)
+            scored.append((score, src, tgt, data))
+        scored.sort(reverse=True)
+        return [(src, tgt, data) for _, src, tgt, data in scored]

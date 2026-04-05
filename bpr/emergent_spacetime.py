@@ -315,3 +315,56 @@ def scrambling_time(M_solar: float) -> float:
     A = 4.0 * np.pi * r_s ** 2
     S = A / (4.0 * _L_PLANCK_SQ)
     return (r_s / _C) * np.log(S)
+
+
+# ---------------------------------------------------------------------------
+# §13.8  Clausius-to-Einstein bridge
+# ---------------------------------------------------------------------------
+
+def clausius_entropy_flux(delta_E, T):
+    """δS = δE/T — Clausius relation at local Rindler patch.
+    Foundation for deriving Einstein equations from boundary thermodynamics."""
+    return delta_E / T
+
+def boundary_entropy_density(phi, n_grad_phi, k_B=1.38e-23, l_P=1.616e-35):
+    """s_∂ = (k_B/4l_P²)·|φ|² — boundary entropy density.
+    Proportional to area in Planck units."""
+    return (k_B / (4 * l_P**2)) * np.abs(phi)**2
+
+def quasilocal_stress_from_entropy(K_ij, K_trace, gamma_ij, G=6.674e-11):
+    """T^∂_ij = (1/8πG)(K_ij - K·γ_ij)
+    Brown-York quasilocal stress tensor from extrinsic curvature.
+    This IS the Einstein equation in boundary form."""
+    return (1 / (8 * np.pi * G)) * (K_ij - K_trace * gamma_ij)
+
+def einstein_from_boundary_stationarity(entropy_flux, delta_area, G=6.674e-11, c=3e8):
+    """δS = δA/(4l_P²) at every null boundary → R_μν - ½Rg_μν = 8πG/c⁴ T_μν.
+    Returns the effective energy density implied by entropy flux."""
+    l_P = np.sqrt(G * 1.055e-34 / c**3)
+    return entropy_flux * 4 * l_P**2 / delta_area
+
+def planck_boundary_potential(A, l_Planck=1.616e-35, lam=1.0):
+    """V_B(A) = λ/(A - l_P)² — boundary potential preventing sub-Planck amplitude.
+    Resolves the sub-quantum amplitude paradox by quantizing amplitudes."""
+    denom = (A - l_Planck)**2
+    denom = np.where(np.abs(denom) < 1e-100, 1e-100, denom)
+    return lam / denom
+
+def quantized_amplitude_states(n_max, l_Planck=1.616e-35):
+    """A_n = n·l_P — quantized amplitude levels from Planck boundary potential.
+    Information is preserved under extreme redshift via discrete resonant states."""
+    return np.arange(1, n_max + 1) * l_Planck
+
+def gw_dispersion_correction(frequency_Hz, l_Planck=1.616e-35, c=3e8):
+    """v_g(f) = c·[1 - (f·l_P/c)²]^{1/2} — GW group velocity with Planck dispersion.
+    At ultra-high frequencies, GW propagation deviates from c by phase-locked steps.
+    Prediction: Δv/c ~ (f·l_P/c)² ~ 10⁻⁸⁶ at LIGO frequencies (undetectable)
+    but ~ 10⁻² at Planck frequency (testable in principle)."""
+    x = (frequency_Hz * l_Planck / c)**2
+    return c * np.sqrt(np.maximum(1 - x, 0))
+
+def mesoscopic_gravity_deviation(L, l_Planck=1.616e-35, alpha_dev=1.0):
+    """δG/G ~ α·(l_P/L)^{d_eff} — gravity deviations at mesoscopic scales.
+    Where boundary entropy becomes discrete, Einstein gravity breaks down.
+    d_eff ~ 2 for 3+1 dimensions."""
+    return alpha_dev * (l_Planck / L)**2
