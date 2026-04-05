@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPR: The Golden Structure of Physics</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #050510; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #e0e0e0; }
+  #graph { width: 100%; height: 100%; }
+  svg { display: block; }
+
+  #title-bar {
+    position: absolute; top: 0; left: 0; right: 0;
+    padding: 24px 32px 16px;
+    background: linear-gradient(180deg, rgba(5,5,16,0.97) 0%, rgba(5,5,16,0.6) 60%, rgba(5,5,16,0) 100%);
+    pointer-events: none; z-index: 10;
+  }
+  #title-bar h1 {
+    font-size: 22px; font-weight: 600; letter-spacing: -0.3px;
+    color: #ffffff;
+    text-shadow: 0 0 30px rgba(240,160,48,0.3);
+  }
+  #title-bar p {
+    font-size: 13px; color: #777; margin-top: 4px; font-style: italic;
+  }
+  #title-bar .phi-badge {
+    display: inline-block; margin-top: 6px;
+    font-size: 11px; color: #f0a030; opacity: 0.7;
+    font-family: 'Courier New', monospace; letter-spacing: 0.5px;
+  }
+
+  #legend {
+    position: absolute; bottom: 20px; left: 20px;
+    background: rgba(10,10,20,0.92); border: 1px solid rgba(240,160,48,0.15);
+    border-radius: 10px; padding: 14px 18px; z-index: 10;
+    font-size: 12px; line-height: 1.8; backdrop-filter: blur(12px);
+    box-shadow: 0 0 40px rgba(240,160,48,0.05);
+  }
+  #legend .title { font-weight: 600; font-size: 13px; margin-bottom: 6px; color: #ccc; }
+  .legend-item { display: flex; align-items: center; gap: 8px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  #tooltip {
+    position: absolute; pointer-events: none; z-index: 20;
+    background: rgba(10,10,20,0.96); border: 1px solid rgba(240,160,48,0.25);
+    border-radius: 8px; padding: 12px 16px; font-size: 12px;
+    line-height: 1.6; max-width: 300px; display: none;
+    backdrop-filter: blur(16px); box-shadow: 0 4px 30px rgba(0,0,0,0.6), 0 0 20px rgba(240,160,48,0.08);
+  }
+  #tooltip .tt-name { font-weight: 600; font-size: 14px; color: #fff; }
+  #tooltip .tt-domain { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  #tooltip .tt-eq { color: #f0a030; font-family: 'Courier New', monospace; font-size: 11px; margin-top: 6px; }
+  #tooltip .tt-zone { color: #555; font-size: 10px; margin-top: 4px; }
+
+  #controls {
+    position: absolute; bottom: 20px; right: 20px; z-index: 10;
+    display: flex; gap: 8px;
+  }
+  #controls button {
+    background: rgba(20,20,30,0.9); border: 1px solid rgba(240,160,48,0.2); color: #aaa;
+    border-radius: 8px; padding: 8px 14px; font-size: 12px; cursor: pointer;
+    transition: all 0.2s; backdrop-filter: blur(8px);
+  }
+  #controls button:hover { background: rgba(240,160,48,0.15); color: #f0a030; border-color: rgba(240,160,48,0.4); }
+  #controls button.active { background: rgba(240,160,48,0.2); color: #f0a030; border-color: #f0a030; }
+
+  @keyframes pulse-ring {
+    0% { r: 10; opacity: 0.6; }
+    100% { r: 60; opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div id="title-bar">
+  <h1>BPR: The Golden Structure of Physics</h1>
+  <p>58 theories in Fibonacci arrangement &mdash; every angle is 137.508&deg;</p>
+  <span class="phi-badge">&phi; = 1.6180339... &nbsp;&bull;&nbsp; Golden angle = 2&pi;/&phi;&sup2; &asymp; 137.508&deg;</span>
+</div>
+
+<div id="legend">
+  <div class="title">Physics Domains</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#f0a030"></span> Substrate</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#a855f7"></span> Spacetime & Gravity</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#3b82f6"></span> Quantum & Information</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#22c55e"></span> Particles & Forces</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#ef4444"></span> Matter & Chemistry</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#ec4899"></span> Life & Consciousness</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#ffffff"></span> Unification</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#67e8f9"></span> Predictions</div>
+  <div style="margin-top:8px; border-top:1px solid rgba(240,160,48,0.15); padding-top:6px">
+    <div class="title" style="font-size:11px">Connections</div>
+    <div class="legend-item"><span style="width:20px;height:2px;background:#e377c2;display:inline-block;margin-right:6px"></span> Pipeline</div>
+    <div class="legend-item"><span style="width:20px;height:2px;background:#f0a030;display:inline-block;margin-right:6px;border-top:2px dashed #f0a030"></span> Bridge equation</div>
+    <div class="legend-item"><span style="width:20px;height:1px;background:#444;display:inline-block;margin-right:6px"></span> Conceptual link</div>
+  </div>
+</div>
+
+<div id="tooltip"></div>
+
+<div id="controls">
+  <button onclick="resetZoom()">Reset View</button>
+  <button onclick="toggleLabels()">Toggle Labels</button>
+  <button onclick="toggleRotation()" id="btn-rotate" class="active">Rotation</button>
+  <button onclick="toggleEdges()" id="btn-edges">Hide Edges</button>
+</div>
+
+<div id="graph"></div>
+
+<script>
+// ---------------------------------------------------------------------------
+// GOLDEN RATIO CONSTANTS
+// ---------------------------------------------------------------------------
+const PHI = (1 + Math.sqrt(5)) / 2;          // 1.6180339...
+const GOLDEN_ANGLE = 2 * Math.PI / (PHI * PHI); // ~2.39996... rad = ~137.508 deg
+
+// ---------------------------------------------------------------------------
+// COLOR MAPS
+// ---------------------------------------------------------------------------
+const layerColors = {
+  0: "#f0a030", 1: "#a855f7", 2: "#3b82f6", 3: "#22c55e",
+  4: "#ef4444", 5: "#ec4899", 6: "#ffffff", 7: "#67e8f9",
+};
+const layerNames = {
+  0: "Substrate", 1: "Spacetime & Gravity", 2: "Quantum & Information",
+  3: "Particles & Forces", 4: "Matter & Chemistry", 5: "Life & Consciousness",
+  6: "Unification", 7: "Predictions",
+};
+const zoneNames = {
+  0: "Center", 1: "Inner Ring", 2: "Substrate", 3: "Core Physics",
+  4: "Particles & Matter", 5: "Life & Unification", 6: "Predictions (Outer)",
+};
+const pipelineColors = [
+  "#e377c2", "#17becf", "#bcbd22", "#8c564b", "#7f7f7f", "#aec7e8", "#98df8a",
+];
+
+// ---------------------------------------------------------------------------
+// NODE DATA — 58 nodes with zone assignments for Fibonacci placement
+// ---------------------------------------------------------------------------
+const nodeData = [
+  // Zone 0 — Center (index 0)
+  { id: "boundary_action", layer: 6, label: "S_\u2202", eq: "S_\u2202 = \u222B \u221A|\u03B3| L d\u00B3x", zone: 0 },
+
+  // Zone 1 — Inner ring (indices 1-4)
+  { id: "constants", layer: 6, label: "Constants", eq: "p=104729, z=6", zone: 1 },
+  { id: "geometry", layer: 0, label: "Geometry", eq: "Boundary mesh on S\u00B2", zone: 1 },
+  { id: "metric", layer: 0, label: "Metric", eq: "\u0394g_{\u03BC\u03BD} = \u03BB\u03C6", zone: 1 },
+  { id: "resonance", layer: 0, label: "Resonance", eq: "\u03B3_n (Riemann zeros)", zone: 1 },
+
+  // Zone 2 — Substrate (indices 5-12)
+  { id: "memory", layer: 0, label: "Memory", eq: "M(t,t') = exp(-|t-t'|/\u03C4) cos(\u03C9)", zone: 2 },
+  { id: "rpst_extensions", layer: 0, label: "RPST", eq: "Z_p symplectic lattice", zone: 2 },
+  { id: "stability_manifolds", layer: 0, label: "Stability", eq: "Lyapunov: dV/dt \u2264 -\u03B1|\u2207V|\u00B2", zone: 2 },
+  { id: "resonance_families", layer: 0, label: "Res. Families", eq: "Farey tree, quasi-integers", zone: 2 },
+  { id: "resonance_algebra", layer: 0, label: "Res. Algebra", eq: "Fused PDE: band\u2192NL\u2192project", zone: 2 },
+  { id: "fractional_boundary", layer: 0, label: "Fractal Boundary", eq: "G ~ L^{D_S - 1}, D_S = ln3/ln2", zone: 2 },
+  { id: "hilbert_bpr", layer: 0, label: "Hilbert BPR", eq: "T = [[A,B],[C,D]], \u03C1(T) < 1", zone: 2 },
+  { id: "tdgl_bpr", layer: 0, label: "TDGL", eq: "d_t \u03C8 = -(\u03B1\u03C8 + \u03B2|\u03C8|\u00B2\u03C8 - \u03BA\u2207\u00B2\u03C8)", zone: 2 },
+
+  // Zone 3 — Core physics (indices 13-24)
+  { id: "impedance", layer: 2, label: "Impedance", eq: "Z(W) = Z_0 \u221A(1 + W\u00B2/W_c\u00B2)", zone: 3 },
+  { id: "decoherence", layer: 2, label: "Decoherence", eq: "\u0393 ~ (\u0394Z/Z_0)\u00B2 k_BT/\u0127", zone: 3 },
+  { id: "quantum_foundations", layer: 2, label: "Quantum Found.", eq: "Born rule + 1/p correction", zone: 3 },
+  { id: "coherence_transitions", layer: 2, label: "Coherence Trans.", eq: "Landau F = a|\u03A8|\u00B2 + b|\u03A8|\u2074", zone: 3 },
+  { id: "phase_transitions", layer: 2, label: "Phase Trans.", eq: "Class A/B/C/D taxonomy", zone: 3 },
+  { id: "emergent_spacetime", layer: 1, label: "Emerg. Spacetime", eq: "g_{\u03BC\u03BD} from boundary entropy", zone: 3 },
+  { id: "cosmology", layer: 1, label: "Cosmology", eq: "H\u00B2 = 8\u03C0G/3 \u03C1", zone: 3 },
+  { id: "gravitational_waves", layer: 1, label: "Grav. Waves", eq: "h ~ (G/c\u2075) d\u00B3Q/dt\u00B3", zone: 3 },
+  { id: "black_hole", layer: 1, label: "Black Hole", eq: "S_BH = A/(4 l_P\u00B2)", zone: 3 },
+  { id: "quantum_gravity_pheno", layer: 1, label: "Quantum Gravity", eq: "\u0394x \u2265 l_P/\u221Ap", zone: 3 },
+  { id: "info_geometry", layer: 2, label: "Info Geometry", eq: "Fisher metric g_{ij}", zone: 3 },
+  { id: "complexity", layer: 2, label: "Complexity", eq: "C(t) = d/dt S_boundary", zone: 3 },
+
+  // Zone 4 — Particles & Matter (indices 25-38)
+  { id: "gauge_unification", layer: 3, label: "Gauge Unif.", eq: "SM from boundary automorphisms", zone: 4 },
+  { id: "alpha_derivation", layer: 3, label: "Alpha Deriv.", eq: "1/\u03B1 = 137.032 from (p,z)", zone: 4 },
+  { id: "charged_leptons", layer: 3, label: "Charged Leptons", eq: "m_l from Koide + v_EW", zone: 4 },
+  { id: "neutrino", layer: 3, label: "Neutrino", eq: "m_\u03BD ~ v\u00B2/p (boundary seesaw)", zone: 4 },
+  { id: "qcd_flavor", layer: 3, label: "QCD & Flavor", eq: "m_q = Z_q \u039B_QCD", zone: 4 },
+  { id: "clifford_bpr", layer: 3, label: "E8 / Clifford", eq: "240 roots, dim 248, SM decomp", zone: 4 },
+  { id: "topological_matter", layer: 3, label: "Topo. Matter", eq: "Chern number \u03BD = \u222BF/2\u03C0", zone: 4 },
+  { id: "nuclear_physics", layer: 4, label: "Nuclear Phys.", eq: "Magic numbers 2,8,20,28,50,82,126", zone: 4 },
+  { id: "quantum_chemistry", layer: 4, label: "Quantum Chem.", eq: "\u03C7_bond = A cos(\u0394\u03C6) \u03B6(s)", zone: 4 },
+  { id: "plasmoid", layer: 4, label: "Plasmoid", eq: "Stable R ~ 5-15 cm at 2.45 GHz", zone: 4 },
+  { id: "electromechanical", layer: 4, label: "Electromech.", eq: "P = \u03C7\u2207\u03C6", zone: 4 },
+  { id: "fluid_dynamics", layer: 4, label: "Fluid Dyn.", eq: "T_BPR = \u03B2 cos(\u0394\u03C6) \u2207u", zone: 4 },
+  { id: "experimental_data", layer: 4, label: "Exp. Data", eq: "g_anti, nuclear yields", zone: 4 },
+  { id: "optimization", layer: 0, label: "Optimization", eq: "Max-Cut via phase oscillators", zone: 4 },
+
+  // Zone 5 — Life & Unification (indices 39-45)
+  { id: "bioelectric", layer: 5, label: "Bioelectric", eq: "V_m from gap junction impedance", zone: 5 },
+  { id: "collective", layer: 5, label: "Collective", eq: "Kuramoto: K_c = 2/(\u03C0 g_0)", zone: 5 },
+  { id: "conscious_agents", layer: 5, label: "Conscious Agents", eq: "\u03BA_ij = <\u03C6_i|B|\u03C6_j>", zone: 5 },
+  { id: "functional_architecture", layer: 5, label: "Func. Arch.", eq: "dA/dt = \u03B7\u03A6 - \u03B7D", zone: 5 },
+  { id: "meta_boundary", layer: 5, label: "Meta Boundary", eq: "BPR\u00B2: C_meta > (1/R)\u03A3C^(r)", zone: 5 },
+  { id: "multiscale", layer: 6, label: "Multiscale", eq: "L_total = \u03A3 w_n L_n[\u03C7_n, \u03A6_n]", zone: 5 },
+  { id: "pipelines", layer: 6, label: "Pipelines", eq: "7 end-to-end prediction chains", zone: 5 },
+
+  // Zone 6 — Predictions (indices 46-57)
+  { id: "alpha_EM", layer: 7, label: "1/\u03B1 = 137.032", eq: "0.003% error", zone: 6 },
+  { id: "sin2_theta_W", layer: 7, label: "sin\u00B2\u03B8_W = 0.231", eq: "0.1% error", zone: 6 },
+  { id: "m_e", layer: 7, label: "m_e = 0.510 MeV", eq: "0.11% error", zone: 6 },
+  { id: "m_mu", layer: 7, label: "m_\u03BC = 107.2 MeV", eq: "1.5% error", zone: 6 },
+  { id: "m_tau", layer: 7, label: "m_\u03C4 = 1776.9 MeV", eq: "anchor", zone: 6 },
+  { id: "v_EW", layer: 7, label: "v_EW = 243.5 GeV", eq: "1.0% error", zone: 6 },
+  { id: "Koide_Q", layer: 7, label: "Koide Q = 0.665", eq: "0.2% error", zone: 6 },
+  { id: "g_anti", layer: 7, label: "g_anti = 9.777 m/s\u00B2", eq: "ALPHA-g consistent", zone: 6 },
+  { id: "Casimir_delta", layer: 7, label: "Casimir \u03B4", eq: "Testable at 1 \u03BCm", zone: 6 },
+  { id: "GW_strain", layer: 7, label: "GW strain", eq: "h_BPR deviation", zone: 6 },
+  { id: "Born_correction", layer: 7, label: "Born ~10\u207B\u2075", eq: "= 1/p", zone: 6 },
+  { id: "E8_dim", layer: 7, label: "E8 dim = 248", eq: "240 roots + 8 rank", zone: 6 },
+];
+
+// ---------------------------------------------------------------------------
+// EDGE DATA — all edges from theory-network.html
+// ---------------------------------------------------------------------------
+const edgeData = [
+  // Pipeline 1 — lepton masses (pipeline 0)
+  { source: "gauge_unification", target: "impedance", pipeline: 0 },
+  { source: "impedance", target: "charged_leptons", pipeline: 0 },
+  { source: "charged_leptons", target: "m_e", pipeline: 0 },
+  { source: "charged_leptons", target: "m_mu", pipeline: 0 },
+  { source: "charged_leptons", target: "m_tau", pipeline: 0 },
+  { source: "charged_leptons", target: "sin2_theta_W", pipeline: 0 },
+
+  // Pipeline 2 — decoherence (pipeline 1)
+  { source: "impedance", target: "decoherence", pipeline: 1 },
+  { source: "decoherence", target: "coherence_transitions", pipeline: 1 },
+  { source: "coherence_transitions", target: "quantum_foundations", pipeline: 1 },
+  { source: "quantum_foundations", target: "Born_correction", pipeline: 1 },
+
+  // Pipeline 3 — Casimir (pipeline 2)
+  { source: "rpst_extensions", target: "resonance_algebra", pipeline: 2 },
+  { source: "resonance_algebra", target: "Casimir_delta", pipeline: 2 },
+
+  // Pipeline 4 — TDGL (pipeline 3)
+  { source: "tdgl_bpr", target: "coherence_transitions", pipeline: 3 },
+  { source: "coherence_transitions", target: "phase_transitions", pipeline: 3 },
+
+  // Pipeline 5 — Kuramoto (pipeline 4)
+  { source: "collective", target: "phase_transitions", pipeline: 4 },
+  { source: "phase_transitions", target: "coherence_transitions", pipeline: 4 },
+
+  // Pipeline 6 — consciousness (pipeline 5)
+  { source: "conscious_agents", target: "collective", pipeline: 5 },
+  { source: "collective", target: "coherence_transitions", pipeline: 5 },
+
+  // Pipeline 7 — fractal (pipeline 6)
+  { source: "quantum_chemistry", target: "resonance_families", pipeline: 6 },
+  { source: "resonance_families", target: "fractional_boundary", pipeline: 6 },
+
+  // Bridge equations (pipeline -2)
+  { source: "impedance", target: "metric", pipeline: -2 },
+  { source: "memory", target: "hilbert_bpr", pipeline: -2 },
+  { source: "tdgl_bpr", target: "coherence_transitions", pipeline: -2 },
+  { source: "rpst_extensions", target: "resonance", pipeline: -2 },
+  { source: "geometry", target: "gravitational_waves", pipeline: -2 },
+  { source: "hilbert_bpr", target: "stability_manifolds", pipeline: -2 },
+  { source: "fractional_boundary", target: "geometry", pipeline: -2 },
+  { source: "impedance", target: "gauge_unification", pipeline: -2 },
+  { source: "clifford_bpr", target: "gauge_unification", pipeline: -2 },
+  { source: "nuclear_physics", target: "plasmoid", pipeline: -2 },
+  { source: "electromechanical", target: "nuclear_physics", pipeline: -2 },
+  { source: "qcd_flavor", target: "nuclear_physics", pipeline: -2 },
+  { source: "gauge_unification", target: "topological_matter", pipeline: -2 },
+  { source: "fluid_dynamics", target: "metric", pipeline: -2 },
+  { source: "conscious_agents", target: "collective", pipeline: -2 },
+  { source: "collective", target: "coherence_transitions", pipeline: -2 },
+  { source: "bioelectric", target: "decoherence", pipeline: -2 },
+  { source: "functional_architecture", target: "coherence_transitions", pipeline: -2 },
+  { source: "collective", target: "meta_boundary", pipeline: -2 },
+  { source: "complexity", target: "info_geometry", pipeline: -2 },
+  { source: "memory", target: "coherence_transitions", pipeline: -2 },
+  { source: "emergent_spacetime", target: "boundary_action", pipeline: -2 },
+  { source: "black_hole", target: "quantum_gravity_pheno", pipeline: -2 },
+  { source: "cosmology", target: "gauge_unification", pipeline: -2 },
+  { source: "neutrino", target: "cosmology", pipeline: -2 },
+  { source: "boundary_action", target: "impedance", pipeline: -2 },
+  { source: "emergent_spacetime", target: "gravitational_waves", pipeline: -2 },
+  { source: "multiscale", target: "cosmology", pipeline: -2 },
+  { source: "resonance", target: "charged_leptons", pipeline: -2 },
+  { source: "resonance", target: "neutrino", pipeline: -2 },
+  { source: "rpst_extensions", target: "gauge_unification", pipeline: -2 },
+  { source: "hilbert_bpr", target: "quantum_foundations", pipeline: -2 },
+  { source: "resonance_algebra", target: "quantum_chemistry", pipeline: -2 },
+  { source: "optimization", target: "nuclear_physics", pipeline: -2 },
+  { source: "resonance", target: "cosmology", pipeline: -2 },
+  { source: "rpst_extensions", target: "emergent_spacetime", pipeline: -2 },
+  { source: "tdgl_bpr", target: "cosmology", pipeline: -2 },
+  { source: "metric", target: "black_hole", pipeline: -2 },
+  { source: "stability_manifolds", target: "cosmology", pipeline: -2 },
+  { source: "quantum_foundations", target: "conscious_agents", pipeline: -2 },
+  { source: "phase_transitions", target: "bioelectric", pipeline: -2 },
+  { source: "coherence_transitions", target: "bioelectric", pipeline: -2 },
+  { source: "impedance", target: "bioelectric", pipeline: -2 },
+  { source: "gauge_unification", target: "emergent_spacetime", pipeline: -2 },
+  { source: "gauge_unification", target: "gravitational_waves", pipeline: -2 },
+  { source: "alpha_derivation", target: "cosmology", pipeline: -2 },
+  { source: "clifford_bpr", target: "emergent_spacetime", pipeline: -2 },
+  { source: "charged_leptons", target: "cosmology", pipeline: -2 },
+  { source: "quantum_chemistry", target: "functional_architecture", pipeline: -2 },
+  { source: "nuclear_physics", target: "bioelectric", pipeline: -2 },
+  { source: "fluid_dynamics", target: "bioelectric", pipeline: -2 },
+  { source: "boundary_action", target: "cosmology", pipeline: -2 },
+  { source: "boundary_action", target: "nuclear_physics", pipeline: -2 },
+  { source: "multiscale", target: "phase_transitions", pipeline: -2 },
+  { source: "multiscale", target: "decoherence", pipeline: -2 },
+  { source: "multiscale", target: "memory", pipeline: -2 },
+
+  // Conceptual links (pipeline -1)
+  { source: "boundary_action", target: "gauge_unification", pipeline: -1 },
+  { source: "boundary_action", target: "emergent_spacetime", pipeline: -1 },
+  { source: "boundary_action", target: "quantum_foundations", pipeline: -1 },
+  { source: "boundary_action", target: "fluid_dynamics", pipeline: -1 },
+  { source: "multiscale", target: "nuclear_physics", pipeline: -1 },
+  { source: "multiscale", target: "quantum_chemistry", pipeline: -1 },
+  { source: "multiscale", target: "bioelectric", pipeline: -1 },
+  { source: "multiscale", target: "collective", pipeline: -1 },
+  { source: "multiscale", target: "cosmology", pipeline: -1 },
+  { source: "constants", target: "alpha_EM", pipeline: -1 },
+  { source: "gauge_unification", target: "sin2_theta_W", pipeline: -1 },
+  { source: "gauge_unification", target: "v_EW", pipeline: -1 },
+  { source: "cosmology", target: "emergent_spacetime", pipeline: -1 },
+  { source: "clifford_bpr", target: "gauge_unification", pipeline: -1 },
+  { source: "clifford_bpr", target: "topological_matter", pipeline: -1 },
+  { source: "meta_boundary", target: "collective", pipeline: -1 },
+  { source: "meta_boundary", target: "info_geometry", pipeline: -1 },
+  { source: "hilbert_bpr", target: "stability_manifolds", pipeline: -1 },
+  { source: "plasmoid", target: "nuclear_physics", pipeline: -1 },
+  { source: "plasmoid", target: "electromechanical", pipeline: -1 },
+  { source: "impedance", target: "decoherence", pipeline: -1 },
+  { source: "impedance", target: "cosmology", pipeline: -1 },
+  { source: "impedance", target: "metric", pipeline: -1 },
+  { source: "impedance", target: "gauge_unification", pipeline: -1 },
+  { source: "metric", target: "gravitational_waves", pipeline: -1 },
+  { source: "emergent_spacetime", target: "black_hole", pipeline: -1 },
+  { source: "black_hole", target: "quantum_gravity_pheno", pipeline: -1 },
+  { source: "alpha_derivation", target: "alpha_EM", pipeline: -1 },
+  { source: "alpha_derivation", target: "gauge_unification", pipeline: -1 },
+  { source: "gauge_unification", target: "cosmology", pipeline: -1 },
+  { source: "nuclear_physics", target: "experimental_data", pipeline: -1 },
+  { source: "collective", target: "bioelectric", pipeline: -1 },
+  { source: "phase_transitions", target: "topological_matter", pipeline: -1 },
+  { source: "decoherence", target: "quantum_foundations", pipeline: -1 },
+  { source: "tdgl_bpr", target: "phase_transitions", pipeline: -1 },
+  { source: "resonance", target: "rpst_extensions", pipeline: -1 },
+  { source: "memory", target: "decoherence", pipeline: -1 },
+  { source: "memory", target: "coherence_transitions", pipeline: -1 },
+  { source: "info_geometry", target: "complexity", pipeline: -1 },
+  { source: "neutrino", target: "cosmology", pipeline: -1 },
+  { source: "qcd_flavor", target: "nuclear_physics", pipeline: -1 },
+  { source: "charged_leptons", target: "Koide_Q", pipeline: -1 },
+  { source: "optimization", target: "resonance_algebra", pipeline: -1 },
+  { source: "fluid_dynamics", target: "metric", pipeline: -1 },
+  { source: "functional_architecture", target: "conscious_agents", pipeline: -1 },
+  { source: "functional_architecture", target: "bioelectric", pipeline: -1 },
+  { source: "stability_manifolds", target: "meta_boundary", pipeline: -1 },
+  { source: "fractional_boundary", target: "geometry", pipeline: -1 },
+  { source: "geometry", target: "emergent_spacetime", pipeline: -1 },
+  { source: "geometry", target: "metric", pipeline: -1 },
+  { source: "cosmology", target: "gravitational_waves", pipeline: -1 },
+  { source: "quantum_chemistry", target: "bioelectric", pipeline: -1 },
+  { source: "electromechanical", target: "gravitational_waves", pipeline: -1 },
+  { source: "impedance", target: "g_anti", pipeline: -1 },
+  { source: "clifford_bpr", target: "E8_dim", pipeline: -1 },
+  { source: "plasmoid", target: "GW_strain", pipeline: -1 },
+  { source: "emergent_spacetime", target: "cosmology", pipeline: -1 },
+  { source: "pipelines", target: "gauge_unification", pipeline: -1 },
+  { source: "pipelines", target: "impedance", pipeline: -1 },
+  { source: "pipelines", target: "quantum_chemistry", pipeline: -1 },
+  { source: "pipelines", target: "tdgl_bpr", pipeline: -1 },
+  { source: "pipelines", target: "collective", pipeline: -1 },
+  { source: "pipelines", target: "conscious_agents", pipeline: -1 },
+  { source: "constants", target: "impedance", pipeline: -1 },
+  { source: "constants", target: "cosmology", pipeline: -1 },
+  { source: "constants", target: "nuclear_physics", pipeline: -1 },
+  { source: "constants", target: "gauge_unification", pipeline: -1 },
+  { source: "hilbert_bpr", target: "tdgl_bpr", pipeline: -1 },
+  { source: "hilbert_bpr", target: "resonance_algebra", pipeline: -1 },
+  { source: "hilbert_bpr", target: "decoherence", pipeline: -1 },
+  { source: "quantum_gravity_pheno", target: "emergent_spacetime", pipeline: -1 },
+  { source: "quantum_gravity_pheno", target: "cosmology", pipeline: -1 },
+  { source: "resonance", target: "resonance_families", pipeline: -1 },
+  { source: "resonance", target: "resonance_algebra", pipeline: -1 },
+  { source: "resonance", target: "geometry", pipeline: -1 },
+  { source: "complexity", target: "meta_boundary", pipeline: -1 },
+  { source: "complexity", target: "collective", pipeline: -1 },
+  { source: "complexity", target: "coherence_transitions", pipeline: -1 },
+  { source: "neutrino", target: "gauge_unification", pipeline: -1 },
+  { source: "neutrino", target: "charged_leptons", pipeline: -1 },
+  { source: "qcd_flavor", target: "gauge_unification", pipeline: -1 },
+  { source: "qcd_flavor", target: "cosmology", pipeline: -1 },
+  { source: "experimental_data", target: "g_anti", pipeline: -1 },
+  { source: "experimental_data", target: "Casimir_delta", pipeline: -1 },
+  { source: "optimization", target: "collective", pipeline: -1 },
+  { source: "optimization", target: "fractional_boundary", pipeline: -1 },
+  { source: "electromechanical", target: "nuclear_physics", pipeline: -1 },
+  { source: "electromechanical", target: "bioelectric", pipeline: -1 },
+  { source: "topological_matter", target: "quantum_foundations", pipeline: -1 },
+  { source: "topological_matter", target: "resonance", pipeline: -1 },
+  { source: "memory", target: "rpst_extensions", pipeline: -1 },
+  { source: "memory", target: "hilbert_bpr", pipeline: -1 },
+  { source: "info_geometry", target: "quantum_foundations", pipeline: -1 },
+  { source: "info_geometry", target: "decoherence", pipeline: -1 },
+  { source: "stability_manifolds", target: "tdgl_bpr", pipeline: -1 },
+  { source: "stability_manifolds", target: "resonance_algebra", pipeline: -1 },
+  { source: "fluid_dynamics", target: "plasmoid", pipeline: -1 },
+  { source: "fluid_dynamics", target: "collective", pipeline: -1 },
+  { source: "resonance_families", target: "nuclear_physics", pipeline: -1 },
+  { source: "fractional_boundary", target: "metric", pipeline: -1 },
+  { source: "alpha_derivation", target: "charged_leptons", pipeline: -1 },
+  { source: "black_hole", target: "gravitational_waves", pipeline: -1 },
+  { source: "black_hole", target: "cosmology", pipeline: -1 },
+  { source: "functional_architecture", target: "memory", pipeline: -1 },
+  { source: "functional_architecture", target: "coherence_transitions", pipeline: -1 },
+  { source: "boundary_action", target: "multiscale", pipeline: -1 },
+  { source: "boundary_action", target: "metric", pipeline: -1 },
+  { source: "boundary_action", target: "decoherence", pipeline: -1 },
+  { source: "multiscale", target: "emergent_spacetime", pipeline: -1 },
+  { source: "multiscale", target: "electromechanical", pipeline: -1 },
+];
+
+// ---------------------------------------------------------------------------
+// DEDUPLICATE EDGES
+// ---------------------------------------------------------------------------
+const edgeSet = new Set();
+const edges = [];
+edgeData.forEach(e => {
+  const key = e.source + "|" + e.target;
+  const revKey = e.target + "|" + e.source;
+  if (!edgeSet.has(key) && !edgeSet.has(revKey)) {
+    edgeSet.add(key);
+    edges.push({ ...e });
+  } else {
+    // If duplicate exists but this one is higher priority (pipeline > conceptual), upgrade
+    const existing = edges.find(ex => (ex.source === e.source && ex.target === e.target) || (ex.source === e.target && ex.target === e.source));
+    if (existing && e.pipeline >= 0 && existing.pipeline < 0) {
+      existing.pipeline = e.pipeline;
+    } else if (existing && e.pipeline === -2 && existing.pipeline === -1) {
+      existing.pipeline = -2;
+    }
+  }
+});
+
+// ---------------------------------------------------------------------------
+// BUILD ID LOOKUP
+// ---------------------------------------------------------------------------
+const nodeMap = new Map();
+nodeData.forEach(n => nodeMap.set(n.id, n));
+
+// ---------------------------------------------------------------------------
+// FIBONACCI SPIRAL PLACEMENT — Vogel's model
+// ---------------------------------------------------------------------------
+const width = window.innerWidth;
+const height = window.innerHeight;
+const cx = width / 2;
+const cy = height / 2;
+const minDim = Math.min(width, height);
+const spiralScale = minDim * 0.058; // Spread factor
+
+nodeData.forEach((node, i) => {
+  if (i === 0) {
+    // Center node
+    node.fx = cx;
+    node.fy = cy;
+    node.angle = 0;
+    node.radius = 0;
+  } else {
+    const theta = i * GOLDEN_ANGLE;
+    const r = spiralScale * Math.sqrt(i);
+    node.fx = cx + r * Math.cos(theta);
+    node.fy = cy + r * Math.sin(theta);
+    node.angle = theta;
+    node.radius = r;
+  }
+  node.x = node.fx;
+  node.y = node.fy;
+});
+
+// ---------------------------------------------------------------------------
+// SVG SETUP
+// ---------------------------------------------------------------------------
+let labelsVisible = true;
+let rotationActive = true;
+let edgesVisible = true;
+let rotationAngle = 0;
+
+const svg = d3.select("#graph")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height);
+
+const defs = svg.append("defs");
+
+// Background gradient — deep space
+const bgGrad = defs.append("radialGradient")
+  .attr("id", "bg-gradient")
+  .attr("cx", "50%").attr("cy", "50%").attr("r", "65%");
+bgGrad.append("stop").attr("offset", "0%").attr("stop-color", "#0a0a1a");
+bgGrad.append("stop").attr("offset", "50%").attr("stop-color", "#060612");
+bgGrad.append("stop").attr("offset", "100%").attr("stop-color", "#050510");
+
+svg.append("rect").attr("width", width).attr("height", height).attr("fill", "url(#bg-gradient)");
+
+// Glow filters
+function makeGlow(id, stdDev, color) {
+  const f = defs.append("filter").attr("id", id)
+    .attr("x", "-100%").attr("y", "-100%").attr("width", "300%").attr("height", "300%");
+  f.append("feGaussianBlur").attr("stdDeviation", stdDev).attr("result", "blur");
+  if (color) {
+    f.append("feFlood").attr("flood-color", color).attr("flood-opacity", "0.6").attr("result", "color");
+    f.append("feComposite").attr("in", "color").attr("in2", "blur").attr("operator", "in").attr("result", "colored-blur");
+    const merge = f.append("feMerge");
+    merge.append("feMergeNode").attr("in", "colored-blur");
+    merge.append("feMergeNode").attr("in", "SourceGraphic");
+  } else {
+    const merge = f.append("feMerge");
+    merge.append("feMergeNode").attr("in", "blur");
+    merge.append("feMergeNode").attr("in", "SourceGraphic");
+  }
+}
+makeGlow("glow-gold", 6, "#f0a030");
+makeGlow("glow-purple", 5, "#a855f7");
+makeGlow("glow-blue", 5, "#3b82f6");
+makeGlow("glow-green", 5, "#22c55e");
+makeGlow("glow-red", 5, "#ef4444");
+makeGlow("glow-pink", 5, "#ec4899");
+makeGlow("glow-white", 8, "#ffffff");
+makeGlow("glow-cyan", 5, "#67e8f9");
+makeGlow("glow-highlight", 12, "#ffffff");
+
+const glowMap = {
+  0: "url(#glow-gold)", 1: "url(#glow-purple)", 2: "url(#glow-blue)",
+  3: "url(#glow-green)", 4: "url(#glow-red)", 5: "url(#glow-pink)",
+  6: "url(#glow-white)", 7: "url(#glow-cyan)",
+};
+
+// Master group that rotates
+const masterG = svg.append("g");
+const g = masterG.append("g");
+
+// Zoom
+const zoom = d3.zoom()
+  .scaleExtent([0.2, 6])
+  .on("zoom", (event) => g.attr("transform", event.transform));
+svg.call(zoom);
+
+// ---------------------------------------------------------------------------
+// BACKGROUND DECORATIONS
+// ---------------------------------------------------------------------------
+
+// Star field
+const starGroup = g.append("g").attr("class", "stars");
+for (let i = 0; i < 300; i++) {
+  const sx = Math.random() * width * 2.5 - width * 0.75;
+  const sy = Math.random() * height * 2.5 - height * 0.75;
+  const sr = Math.random() * 1.2 + 0.2;
+  const so = Math.random() * 0.4 + 0.1;
+  starGroup.append("circle")
+    .attr("cx", sx).attr("cy", sy).attr("r", sr)
+    .attr("fill", "#ffffff").attr("opacity", so);
+}
+
+// Zone boundary circles (faint concentric rings)
+const zoneMaxR = [0, 0, 0, 0, 0, 0, 0];
+nodeData.forEach(n => {
+  if (n.zone !== undefined && n.radius !== undefined) {
+    zoneMaxR[n.zone] = Math.max(zoneMaxR[n.zone], n.radius);
+  }
+});
+const zoneGroup = g.append("g").attr("class", "zone-rings");
+for (let z = 1; z <= 6; z++) {
+  if (zoneMaxR[z] > 0) {
+    zoneGroup.append("circle")
+      .attr("cx", cx).attr("cy", cy).attr("r", zoneMaxR[z] + 15)
+      .attr("fill", "none").attr("stroke", "rgba(240,160,48,0.06)")
+      .attr("stroke-width", 0.5)
+      .attr("stroke-dasharray", "4,8");
+  }
+}
+
+// Fibonacci spiral decoration (logarithmic golden spiral)
+const spiralPath = g.append("path").attr("class", "fib-spiral");
+{
+  let pathD = "";
+  const spiralPoints = 2000;
+  const b = Math.log(PHI) / (Math.PI / 2);
+  for (let i = 0; i <= spiralPoints; i++) {
+    const t = i * 0.05;
+    const r = 2.5 * Math.exp(b * t);
+    if (r > minDim * 0.55) break;
+    const x = cx + r * Math.cos(t);
+    const y = cy + r * Math.sin(t);
+    pathD += (i === 0 ? "M" : "L") + x.toFixed(1) + "," + y.toFixed(1);
+  }
+  spiralPath.attr("d", pathD)
+    .attr("fill", "none")
+    .attr("stroke", "rgba(240,160,48,0.07)")
+    .attr("stroke-width", 1);
+}
+
+// Second spiral arm (offset by pi)
+{
+  let pathD = "";
+  const spiralPoints = 2000;
+  const b = Math.log(PHI) / (Math.PI / 2);
+  for (let i = 0; i <= spiralPoints; i++) {
+    const t = i * 0.05 + Math.PI;
+    const r = 2.5 * Math.exp(b * (i * 0.05));
+    if (r > minDim * 0.55) break;
+    const x = cx + r * Math.cos(t);
+    const y = cy + r * Math.sin(t);
+    pathD += (i === 0 ? "M" : "L") + x.toFixed(1) + "," + y.toFixed(1);
+  }
+  g.append("path")
+    .attr("d", pathD)
+    .attr("fill", "none")
+    .attr("stroke", "rgba(240,160,48,0.04)")
+    .attr("stroke-width", 0.8);
+}
+
+// ---------------------------------------------------------------------------
+// EDGES — Quadratic Bezier arcs curving toward center
+// ---------------------------------------------------------------------------
+const edgeGroup = g.append("g").attr("class", "edges");
+
+function edgeColor(e) {
+  if (e.pipeline >= 0) return pipelineColors[e.pipeline];
+  if (e.pipeline === -2) return "#f0a030";
+  return "#333";
+}
+
+function edgeWidth(e) {
+  if (e.pipeline >= 0) return 1.8;
+  if (e.pipeline === -2) return 1.2;
+  return 0.4;
+}
+
+function edgeOpacity(e) {
+  if (e.pipeline >= 0) return 0.7;
+  if (e.pipeline === -2) return 0.45;
+  return 0.12;
+}
+
+function edgeDash(e) {
+  if (e.pipeline === -2) return "6,3";
+  return "none";
+}
+
+// Compute Bezier control point that curves the edge toward the center
+function bezierControlPoint(sx, sy, tx, ty) {
+  const mx = (sx + tx) / 2;
+  const my = (sy + ty) / 2;
+  // Vector from midpoint to center
+  const toCx = cx - mx;
+  const toCy = cy - my;
+  const dist = Math.sqrt((tx - sx) ** 2 + (ty - sy) ** 2);
+  const len = Math.sqrt(toCx * toCx + toCy * toCy);
+  // Pull toward center proportional to edge length
+  const pull = Math.min(dist * 0.25, 80);
+  if (len < 1) return { x: mx, y: my };
+  return {
+    x: mx + toCx / len * pull,
+    y: my + toCy / len * pull,
+  };
+}
+
+const edgeElements = edgeGroup.selectAll("path")
+  .data(edges)
+  .enter()
+  .append("path")
+  .attr("d", e => {
+    const s = nodeMap.get(e.source);
+    const t = nodeMap.get(e.target);
+    if (!s || !t) return "";
+    const cp = bezierControlPoint(s.x, s.y, t.x, t.y);
+    return `M${s.x},${s.y} Q${cp.x},${cp.y} ${t.x},${t.y}`;
+  })
+  .attr("fill", "none")
+  .attr("stroke", edgeColor)
+  .attr("stroke-width", edgeWidth)
+  .attr("opacity", edgeOpacity)
+  .attr("stroke-dasharray", edgeDash)
+  .attr("class", "edge-path");
+
+// ---------------------------------------------------------------------------
+// NODES
+// ---------------------------------------------------------------------------
+const nodeGroup = g.append("g").attr("class", "nodes");
+
+function nodeRadius(d) {
+  if (d.zone === 0) return 18; // Center — largest
+  if (d.zone === 1) return 13;
+  if (d.zone === 2) return 10;
+  if (d.zone === 3) return 9;
+  if (d.zone === 4) return 8;
+  if (d.zone === 5) return 7;
+  return 6; // Predictions — smallest
+}
+
+const nodeGs = nodeGroup.selectAll("g")
+  .data(nodeData)
+  .enter()
+  .append("g")
+  .attr("class", "node-g")
+  .attr("transform", d => `translate(${d.x},${d.y})`);
+
+// Outer glow circle
+nodeGs.append("circle")
+  .attr("r", d => nodeRadius(d) + 3)
+  .attr("fill", d => layerColors[d.layer])
+  .attr("opacity", 0.15)
+  .attr("class", "node-glow");
+
+// Main circle
+nodeGs.append("circle")
+  .attr("r", nodeRadius)
+  .attr("fill", d => {
+    const c = d3.color(layerColors[d.layer]);
+    return c.darker(0.3).toString();
+  })
+  .attr("stroke", d => layerColors[d.layer])
+  .attr("stroke-width", d => d.zone === 0 ? 2.5 : 1.5)
+  .attr("filter", d => glowMap[d.layer])
+  .attr("class", "node-circle")
+  .style("cursor", "pointer");
+
+// Center node special ring
+nodeGs.filter(d => d.zone === 0)
+  .append("circle")
+  .attr("r", 24)
+  .attr("fill", "none")
+  .attr("stroke", "rgba(240,160,48,0.3)")
+  .attr("stroke-width", 1)
+  .attr("stroke-dasharray", "3,3");
+
+// ---------------------------------------------------------------------------
+// LABELS — Radially oriented
+// ---------------------------------------------------------------------------
+const labelGroup = g.append("g").attr("class", "labels");
+
+nodeData.forEach(d => {
+  const angle = d.angle || 0;
+  const angleDeg = (angle * 180 / Math.PI) % 360;
+  // Flip text if it would be upside down
+  const flip = (angleDeg > 90 && angleDeg < 270);
+  const textAngle = flip ? angleDeg + 180 : angleDeg;
+  const anchor = flip ? "end" : "start";
+  const offset = nodeRadius(d) + 6;
+  const labelX = d.x + (flip ? -offset : offset) * Math.cos(angle);
+  const labelY = d.y + (flip ? -offset : offset) * Math.sin(angle);
+
+  if (d.zone === 0) {
+    // Center label — no rotation, centered below
+    labelGroup.append("text")
+      .attr("x", d.x).attr("y", d.y + 30)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#ffffff")
+      .attr("font-size", "14px")
+      .attr("font-weight", "700")
+      .attr("class", "node-label")
+      .attr("data-id", d.id)
+      .text(d.label);
+  } else {
+    labelGroup.append("text")
+      .attr("x", labelX).attr("y", labelY)
+      .attr("text-anchor", anchor)
+      .attr("dominant-baseline", "central")
+      .attr("transform", `rotate(${textAngle}, ${labelX}, ${labelY})`)
+      .attr("fill", d.zone === 6 ? "#67e8f9" : "#cccccc")
+      .attr("font-size", d.zone <= 2 ? "10px" : d.zone <= 4 ? "9px" : "8px")
+      .attr("font-weight", d.zone <= 1 ? "600" : "400")
+      .attr("opacity", 0.85)
+      .attr("class", "node-label")
+      .attr("data-id", d.id)
+      .text(d.label);
+  }
+});
+
+// ---------------------------------------------------------------------------
+// TOOLTIP & INTERACTIVITY
+// ---------------------------------------------------------------------------
+const tooltip = d3.select("#tooltip");
+
+// Build adjacency for highlight
+const adjacency = new Map();
+nodeData.forEach(n => adjacency.set(n.id, new Set()));
+edges.forEach(e => {
+  if (adjacency.has(e.source) && adjacency.has(e.target)) {
+    adjacency.get(e.source).add(e.target);
+    adjacency.get(e.target).add(e.source);
+  }
+});
+
+nodeGs
+  .on("mouseover", function(event, d) {
+    const connected = adjacency.get(d.id) || new Set();
+
+    // Highlight connected edges
+    edgeElements.attr("opacity", e => {
+      if (e.source === d.id || e.target === d.id) {
+        return e.pipeline >= 0 ? 1 : e.pipeline === -2 ? 0.85 : 0.5;
+      }
+      return 0.03;
+    }).attr("stroke-width", e => {
+      if (e.source === d.id || e.target === d.id) {
+        return edgeWidth(e) * 1.8;
+      }
+      return edgeWidth(e) * 0.5;
+    });
+
+    // Dim unconnected nodes
+    nodeGs.select(".node-circle").attr("opacity", n => {
+      if (n.id === d.id || connected.has(n.id)) return 1;
+      return 0.15;
+    });
+    nodeGs.select(".node-glow").attr("opacity", n => {
+      if (n.id === d.id) return 0.5;
+      if (connected.has(n.id)) return 0.3;
+      return 0.03;
+    });
+
+    // Dim labels
+    labelGroup.selectAll(".node-label").attr("opacity", function() {
+      const nid = d3.select(this).attr("data-id");
+      if (nid === d.id || connected.has(nid)) return 1;
+      return 0.1;
+    });
+
+    // Tooltip
+    tooltip.style("display", "block")
+      .html(`
+        <div class="tt-domain">${layerNames[d.layer]}</div>
+        <div class="tt-name" style="color:${layerColors[d.layer]}">${d.label}</div>
+        <div class="tt-eq">${d.eq}</div>
+        <div class="tt-zone">Zone ${d.zone} &mdash; ${zoneNames[d.zone]} &mdash; ${connected.size} connections</div>
+      `);
+  })
+  .on("mousemove", function(event) {
+    tooltip.style("left", (event.pageX + 16) + "px")
+           .style("top", (event.pageY - 10) + "px");
+  })
+  .on("mouseout", function() {
+    edgeElements.attr("opacity", edgeOpacity).attr("stroke-width", edgeWidth);
+    nodeGs.select(".node-circle").attr("opacity", 1);
+    nodeGs.select(".node-glow").attr("opacity", 0.15);
+    labelGroup.selectAll(".node-label").attr("opacity", 0.85);
+    tooltip.style("display", "none");
+  })
+  .on("click", function(event, d) {
+    // Ripple pulse animation
+    const connected = adjacency.get(d.id) || new Set();
+    const pulseGroup = g.append("g");
+
+    // Central ring pulse
+    for (let i = 0; i < 3; i++) {
+      pulseGroup.append("circle")
+        .attr("cx", d.x).attr("cy", d.y)
+        .attr("r", nodeRadius(d))
+        .attr("fill", "none")
+        .attr("stroke", layerColors[d.layer])
+        .attr("stroke-width", 2)
+        .attr("opacity", 0.8)
+        .transition()
+        .delay(i * 200)
+        .duration(1200)
+        .attr("r", 80 + i * 30)
+        .attr("opacity", 0)
+        .attr("stroke-width", 0.5)
+        .remove();
+    }
+
+    // Pulse along connected edges
+    connected.forEach(targetId => {
+      const tn = nodeMap.get(targetId);
+      if (!tn) return;
+      pulseGroup.append("circle")
+        .attr("cx", d.x).attr("cy", d.y)
+        .attr("r", 4)
+        .attr("fill", layerColors[d.layer])
+        .attr("opacity", 0.9)
+        .transition()
+        .duration(800)
+        .attr("cx", tn.x).attr("cy", tn.y)
+        .attr("r", 8)
+        .attr("opacity", 0)
+        .remove();
+    });
+
+    // Clean up group after animations
+    setTimeout(() => pulseGroup.remove(), 2000);
+  });
+
+// ---------------------------------------------------------------------------
+// CONTROLS
+// ---------------------------------------------------------------------------
+function resetZoom() {
+  svg.transition().duration(600).call(zoom.transform, d3.zoomIdentity);
+}
+
+function toggleLabels() {
+  labelsVisible = !labelsVisible;
+  labelGroup.selectAll(".node-label")
+    .transition().duration(300)
+    .attr("opacity", labelsVisible ? 0.85 : 0);
+}
+
+function toggleRotation() {
+  rotationActive = !rotationActive;
+  document.getElementById("btn-rotate").classList.toggle("active", rotationActive);
+}
+
+function toggleEdges() {
+  edgesVisible = !edgesVisible;
+  edgeGroup.transition().duration(400).attr("opacity", edgesVisible ? 1 : 0);
+  const btn = document.getElementById("btn-edges");
+  btn.textContent = edgesVisible ? "Hide Edges" : "Show Edges";
+}
+
+// ---------------------------------------------------------------------------
+// SLOW ROTATION ANIMATION
+// ---------------------------------------------------------------------------
+function animate() {
+  if (rotationActive) {
+    rotationAngle += 0.008; // degrees per frame
+    masterG.attr("transform", `rotate(${rotationAngle}, ${cx}, ${cy})`);
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+
+// ---------------------------------------------------------------------------
+// TWINKLING STARS
+// ---------------------------------------------------------------------------
+function twinkle() {
+  starGroup.selectAll("circle")
+    .filter(() => Math.random() < 0.01)
+    .transition()
+    .duration(1500 + Math.random() * 2000)
+    .attr("opacity", Math.random() * 0.5 + 0.05)
+    .transition()
+    .duration(1500 + Math.random() * 2000)
+    .attr("opacity", Math.random() * 0.3 + 0.05);
+  setTimeout(twinkle, 200);
+}
+twinkle();
+
+// ---------------------------------------------------------------------------
+// INITIAL ZOOM — fit the spiral nicely
+// ---------------------------------------------------------------------------
+{
+  const maxR = Math.max(...nodeData.map(n => n.radius || 0));
+  const targetR = minDim * 0.42;
+  const scale = targetR / (maxR + 40);
+  const t = d3.zoomIdentity
+    .translate(cx * (1 - scale), cy * (1 - scale))
+    .scale(scale);
+  // Don't apply if it would zoom out too far
+  if (scale < 1) {
+    svg.call(zoom.transform, t);
+  }
+}
+</script>
+</body>
+</html>
