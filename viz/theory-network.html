@@ -75,6 +75,12 @@
   <div class="legend-item"><span class="legend-dot" style="background:#ec4899"></span> Life & Consciousness</div>
   <div class="legend-item"><span class="legend-dot" style="background:#ffffff"></span> Unification</div>
   <div class="legend-item"><span class="legend-dot" style="background:#67e8f9"></span> Predictions</div>
+  <div style="margin-top:8px; border-top:1px solid #333; padding-top:6px">
+    <div class="title" style="font-size:11px">Connections</div>
+    <div class="legend-item"><span style="width:20px;height:2px;background:#e377c2;display:inline-block;margin-right:6px"></span> Pipeline</div>
+    <div class="legend-item"><span style="width:20px;height:2px;background:#f0a030;display:inline-block;margin-right:6px;border-top:2px dashed #f0a030"></span> Bridge equation</div>
+    <div class="legend-item"><span style="width:20px;height:2px;background:#444;display:inline-block;margin-right:6px"></span> Conceptual link</div>
+  </div>
 </div>
 
 <div id="tooltip"></div>
@@ -430,6 +436,44 @@ const edgeData = [
   // Multiscale connects to emergent spacetime (cross-scale gravity)
   { source: "multiscale", target: "emergent_spacetime", pipeline: -1 },
   { source: "multiscale", target: "electromechanical", pipeline: -1 },
+
+  // ── Bridge equations (pipeline: -2, gold) — mathematically implemented ──
+
+  // substrate_quantum bridges
+  { source: "impedance", target: "metric", pipeline: -2 },          // λ_eff(W) = λ/Z(W)
+  { source: "memory", target: "hilbert_bpr", pipeline: -2 },        // M(t,t') → BoundaryPhaseOperator
+  { source: "tdgl_bpr", target: "coherence_transitions", pipeline: -2 }, // α(T) = a₀(T/T_c-1)
+  { source: "rpst_extensions", target: "resonance", pipeline: -2 }, // Z_p FFT → Riemann zeros
+  { source: "geometry", target: "gravitational_waves", pipeline: -2 }, // boundary → quadrupole → GW
+  { source: "hilbert_bpr", target: "stability_manifolds", pipeline: -2 }, // ρ(T) → Lyapunov
+  { source: "fractional_boundary", target: "geometry", pipeline: -2 }, // fractal spectral degeneracy
+
+  // particles_matter bridges
+  { source: "impedance", target: "gauge_unification", pipeline: -2 }, // Z_B/Z_W → sin²θ_W
+  { source: "clifford_bpr", target: "gauge_unification", pipeline: -2 }, // E8 → SM, Tr[Y³]=0
+  { source: "nuclear_physics", target: "plasmoid", pipeline: -2 },   // transmutation in plasma
+  { source: "electromechanical", target: "nuclear_physics", pipeline: -2 }, // P=χ∇φ universal
+  { source: "qcd_flavor", target: "nuclear_physics", pipeline: -2 }, // Λ_QCD → hadrons → magic
+  { source: "gauge_unification", target: "topological_matter", pipeline: -2 }, // anomaly inflow
+  { source: "fluid_dynamics", target: "metric", pipeline: -2 },     // curved-space NS
+
+  // life_consciousness bridges
+  { source: "conscious_agents", target: "collective", pipeline: -2 }, // κ_ij → Kuramoto
+  { source: "collective", target: "coherence_transitions", pipeline: -2 }, // onset threshold
+  { source: "bioelectric", target: "decoherence", pipeline: -2 },   // τ_aging = 25 yr
+  { source: "functional_architecture", target: "coherence_transitions", pipeline: -2 }, // alignment
+  { source: "collective", target: "meta_boundary", pipeline: -2 },  // BPR² superlinear
+  { source: "complexity", target: "info_geometry", pipeline: -2 },   // Fisher ↔ complexity
+  { source: "memory", target: "coherence_transitions", pipeline: -2 }, // memory → K* → consciousness
+
+  // cosmology_gravity bridges
+  { source: "emergent_spacetime", target: "boundary_action", pipeline: -2 }, // Clausius → Einstein
+  { source: "black_hole", target: "quantum_gravity_pheno", pipeline: -2 }, // GUP remnant
+  { source: "cosmology", target: "gauge_unification", pipeline: -2 }, // full chain (p,z)→all
+  { source: "neutrino", target: "cosmology", pipeline: -2 },        // Σm_ν < 0.12 eV
+  { source: "boundary_action", target: "impedance", pipeline: -2 }, // ∫σ_eff → ρ_Λ
+  { source: "emergent_spacetime", target: "gravitational_waves", pipeline: -2 }, // GW dispersion
+  { source: "multiscale", target: "cosmology", pipeline: -2 },      // χ_cosmic = 0.107
 ];
 
 // ---------------------------------------------------------------------------
@@ -531,9 +575,10 @@ const link = g.append("g")
   .selectAll("line")
   .data(edges)
   .join("line")
-  .attr("stroke", d => d.pipeline >= 0 ? pipelineColors[d.pipeline] : "#333")
-  .attr("stroke-opacity", d => d.pipeline >= 0 ? 0.5 : 0.2)
-  .attr("stroke-width", d => d.pipeline >= 0 ? 1.5 : 0.8)
+  .attr("stroke", d => d.pipeline >= 0 ? pipelineColors[d.pipeline] : d.pipeline === -2 ? "#f0a030" : "#444")
+  .attr("stroke-opacity", d => d.pipeline >= 0 ? 0.5 : d.pipeline === -2 ? 0.6 : 0.2)
+  .attr("stroke-width", d => d.pipeline >= 0 ? 1.5 : d.pipeline === -2 ? 1.2 : 0.7)
+  .attr("stroke-dasharray", d => d.pipeline === -2 ? "4,2" : null)
   .attr("marker-end", "url(#arrowhead)");
 
 // ---------------------------------------------------------------------------
