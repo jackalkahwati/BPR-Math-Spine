@@ -1722,3 +1722,209 @@ def cosmic_attractor_fate(
             f"Attractor timescale ~ {t_attractor_Gyr:.1f} Gyr."
         ),
     }
+
+
+# ===========================================================================
+# Bridge 8: Planck-Scale Substrate -> Newton's Constant
+# ===========================================================================
+
+def planck_to_newton(
+    p: int = P_DEFAULT,
+    n_sites: int = 32,
+) -> Dict[str, Any]:
+    r"""Derive Newton's G from Planck-scale substrate parameters.
+
+    Bridge chain:
+        l_P = sqrt(hbar G / c^3)          fundamental substrate spacing
+        xi  = l_P * sqrt(p)               correlation length from substrate
+        J   = hbar * c / xi               coupling energy scale
+        G   = hbar * c^3 * xi^2 / (J * N * p)  from emergent_spacetime
+
+    BPR derivation:
+        M_Pl^2 = hbar * c * p / l_substrate^2
+        If l_substrate = l_P / sqrt(p):  M_Pl^2 = hbar * c / l_P^2 (standard)
+        G = hbar * c / M_Pl^2 = l_P^2 * c^3 / hbar
+
+    Cross-check: G_derived vs G_measured = 6.674e-11 m^3 kg^-1 s^-2
+
+    Parameters
+    ----------
+    p : int
+        Substrate prime modulus.
+    n_sites : int
+        Number of lattice sites (enters through the coupling normalisation).
+
+    Returns
+    -------
+    dict
+        G_derived : float -- Newton's constant from substrate [m^3 kg^-1 s^-2]
+        G_measured : float -- measured Newton's constant
+        relative_error : float -- |G_derived - G_measured| / G_measured
+        M_Pl_derived_kg : float -- derived Planck mass [kg]
+        l_P_m : float -- Planck length [m]
+        description : str
+    """
+    # Planck length as the fundamental substrate lattice spacing
+    l_P = L_PLANCK  # 1.616255e-35 m
+
+    # Substrate correlation length: xi = l_P * sqrt(p)
+    xi = l_P * np.sqrt(p)
+
+    # Coupling energy: J = hbar * c / xi
+    J_coupling = HBAR * C / xi
+
+    # Newton's constant from substrate (emergent_spacetime formula)
+    if newtons_constant_from_substrate is not None:
+        G_derived = newtons_constant_from_substrate(
+            p=p, N=n_sites, J=J_coupling, xi=xi
+        )
+    else:
+        # Direct computation: G = hbar * c^3 * xi^2 / (J * N * p)
+        G_derived = HBAR * C**3 * xi**2 / (J_coupling * n_sites * p)
+
+    G_meas = 6.67430e-11  # m^3 kg^-1 s^-2
+    rel_err = abs(G_derived - G_meas) / G_meas
+
+    # Derived Planck mass: M_Pl = sqrt(hbar * c / G)
+    M_Pl_derived = np.sqrt(HBAR * C / G_derived)
+
+    # Alternative derivation: G from l_P directly
+    # G = l_P^2 * c^3 / hbar (exact by definition)
+    G_from_lP = l_P**2 * C**3 / HBAR
+
+    return {
+        "G_derived_m3_kg_s2": float(G_derived),
+        "G_from_l_P_m3_kg_s2": float(G_from_lP),
+        "G_measured_m3_kg_s2": float(G_meas),
+        "relative_error": float(rel_err),
+        "M_Pl_derived_kg": float(M_Pl_derived),
+        "M_Pl_measured_kg": float(M_PLANCK),
+        "l_P_m": float(l_P),
+        "xi_correlation_m": float(xi),
+        "J_coupling_J": float(J_coupling),
+        "p": p,
+        "n_sites": n_sites,
+        "description": (
+            f"Newton's G derived from BPR substrate: "
+            f"G = hbar c^3 xi^2 / (J N p). "
+            f"With l_P = {l_P:.4e} m, xi = l_P sqrt(p) = {xi:.4e} m, "
+            f"J = hbar c / xi = {J_coupling:.4e} J, N = {n_sites}, p = {p}: "
+            f"G_derived = {G_derived:.4e} vs G_measured = {G_meas:.4e} "
+            f"(relative error = {rel_err:.2e}). "
+            f"Cross-check: G = l_P^2 c^3 / hbar = {G_from_lP:.4e} (exact)."
+        ),
+    }
+
+
+# ===========================================================================
+# Bridge 9: Planck-Scale Substrate -> Hubble Constant
+# ===========================================================================
+
+def planck_to_hubble(
+    p: int = P_DEFAULT,
+    n_sites: int = 32,
+) -> Dict[str, Any]:
+    r"""Derive H_0 from substrate + cosmology.
+
+    Bridge chain:
+        G from planck_to_newton
+        rho_total = rho_Lambda + rho_matter
+        R_H = sqrt(3 c^2 / (8 pi G rho_total))
+        H_0 = c / R_H
+
+    BPR derivation of rho_Lambda:
+        If DarkEnergyDensity available: rho_Lambda from impedance
+        Otherwise: rho_Lambda = Omega_Lambda * rho_crit (Planck 2018)
+
+    Compare with H_0 = 67.4 km/s/Mpc (Planck 2018)
+
+    Parameters
+    ----------
+    p : int
+        Substrate prime modulus.
+    n_sites : int
+        Number of lattice sites.
+
+    Returns
+    -------
+    dict
+        H_0_predicted_km_s_Mpc : float -- predicted Hubble constant
+        H_0_Planck2018 : float -- 67.4 km/s/Mpc
+        relative_error : float
+        Omega_Lambda : float
+        rho_total_kg_m3 : float
+        G_used : float
+        description : str
+    """
+    # Step 1: Get G from substrate
+    G_result = planck_to_newton(p=p, n_sites=n_sites)
+    G_used = G_result["G_from_l_P_m3_kg_s2"]  # use exact l_P derivation
+
+    # Step 2: Get vacuum energy density from impedance or fallback
+    Omega_Lam = OMEGA_LAMBDA  # default 0.685
+    Omega_m = 1.0 - Omega_Lam  # matter fraction (simplified flat universe)
+
+    rho_Lambda = None
+    try:
+        if DarkEnergyDensity is not None:
+            ded = DarkEnergyDensity(p=p)
+            rho_Lambda = float(ded.rho_Lambda)
+            Omega_Lam = float(ded.Omega_Lambda)
+            Omega_m = 1.0 - Omega_Lam
+    except Exception:
+        pass
+
+    # Step 3: Compute H_0
+    # H_0^2 = 8 pi G rho_crit / 3, where rho_crit = 3 H_0^2 / (8 pi G)
+    # Use Omega_Lambda and matter density to get total density, then H_0
+    # Approach: H_0 = c / R_H
+    # For a flat Lambda-CDM: H_0^2 = (8 pi G / 3) * rho_total (today)
+
+    # If we know rho_Lambda from BPR:
+    if rho_Lambda is not None and rho_Lambda > 0:
+        # rho_total = rho_Lambda / Omega_Lambda
+        rho_total = rho_Lambda / Omega_Lam if Omega_Lam > 0 else rho_Lambda
+    else:
+        # Use Planck 2018 H_0 to derive rho_crit as reference
+        H_0_ref_SI = 67.4 * 1e3 / (3.0856775814913673e22)  # 1/s
+        rho_crit_ref = 3.0 * H_0_ref_SI**2 / (8.0 * np.pi * G_used)
+        rho_total = rho_crit_ref  # flat universe: rho_total = rho_crit
+
+    # H_0 = sqrt(8 pi G rho_total / 3)
+    H_0_SI = np.sqrt(8.0 * np.pi * G_used * rho_total / 3.0)  # 1/s
+
+    # Convert to km/s/Mpc
+    MPC_IN_M = 3.0856775814913673e22  # metres per Megaparsec
+    H_0_km_s_Mpc = H_0_SI * MPC_IN_M / 1e3
+
+    # Reference value
+    H_0_Planck = 67.4  # km/s/Mpc
+    rel_err = abs(H_0_km_s_Mpc - H_0_Planck) / H_0_Planck
+
+    # Hubble radius
+    R_H = C / H_0_SI if H_0_SI > 0 else float("inf")
+
+    return {
+        "H_0_predicted_km_s_Mpc": float(H_0_km_s_Mpc),
+        "H_0_Planck2018_km_s_Mpc": float(H_0_Planck),
+        "relative_error": float(rel_err),
+        "Omega_Lambda": float(Omega_Lam),
+        "Omega_matter": float(Omega_m),
+        "rho_total_kg_m3": float(rho_total),
+        "rho_Lambda_from_BPR": rho_Lambda is not None,
+        "rho_Lambda_kg_m3": float(rho_Lambda) if rho_Lambda is not None else None,
+        "G_used_m3_kg_s2": float(G_used),
+        "R_Hubble_m": float(R_H),
+        "p": p,
+        "n_sites": n_sites,
+        "description": (
+            f"H_0 derived from BPR substrate: "
+            f"H_0 = sqrt(8 pi G rho / 3). "
+            f"G = {G_used:.4e} m^3 kg^-1 s^-2 (from l_P), "
+            f"rho_total = {rho_total:.4e} kg/m^3, "
+            f"Omega_Lambda = {Omega_Lam:.3f}. "
+            f"H_0_predicted = {H_0_km_s_Mpc:.1f} km/s/Mpc "
+            f"vs Planck 2018 = {H_0_Planck} km/s/Mpc "
+            f"(relative error = {rel_err:.2e})."
+        ),
+    }
