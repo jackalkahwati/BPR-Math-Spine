@@ -199,6 +199,25 @@ const nodeData = [
   { id: "GW_strain", layer: 7, label: "GW strain", eq: "h_BPR deviation", logEv: 18, abs: 1.0 },
   { id: "Born_correction", layer: 7, label: "Born correction", eq: "~10^-5 = 1/p", logEv: 14, abs: 1.0 },
   { id: "E8_dim", layer: 7, label: "E8 dim = 248", eq: "240 roots + 8 rank", logEv: 26, abs: 1.0 },
+
+  // Optics (center, phenomenology)
+  { id: "optics", layer: 4, label: "Optics", eq: "n = Z₀/Z_material", logEv: 2, abs: 3.5 },
+
+  // Condensed matter predictions (left-center, measurable)
+  { id: "condensed_predictions", layer: 4, label: "Cond. Matter", eq: "T_c, FQHE, TI gap", logEv: -2, abs: 3.0 },
+
+  // Emergence (upper-left, foundational)
+  { id: "emergence", layer: 5, label: "Emergence", eq: "SOC, 1/f noise, entropic force", logEv: -4, abs: 8.5 },
+
+  // New predictions
+  { id: "T_c_superconductor", layer: 7, label: "T_c MgB₂ = 39K", eq: "McMillan + BPR", logEv: -2, abs: 0.5 },
+  { id: "FQHE_plateaus", layer: 7, label: "FQHE = Farey fracs", eq: "1/3, 2/5, 3/7...", logEv: 0, abs: 0.5 },
+  { id: "alpha_EEG", layer: 7, label: "Alpha peak ≈ 9.5 Hz", eq: "Kuramoto harmonic", logEv: -4, abs: 0.5 },
+  { id: "seizure_threshold", layer: 7, label: "Seizure: +1% coupling", eq: "ΔK/K_c = 1/√N", logEv: -6, abs: 0.5 },
+  { id: "w_dark_energy", layer: 7, label: "w₀ ≈ -0.934", eq: "DESI testable", logEv: -8, abs: 0.5 },
+  { id: "m_nu1", layer: 7, label: "m_ν₁ ≈ 0.01 eV", eq: "seesaw from p", logEv: -2, abs: 1.0 },
+  { id: "cortical_column", layer: 7, label: "Column ≈ 0.5 mm", eq: "impedance matching", logEv: -4, abs: 1.0 },
+  { id: "plasmoid_recipe", layer: 7, label: "Plasmoid: 2.45GHz 200W", eq: "R ≈ 5cm stable", logEv: 4, abs: 1.0 },
 ];
 
 // All edges from theory-network.html (deduplicated, preserving pipeline)
@@ -398,6 +417,37 @@ const rawEdges = [
   { source: "multiscale", target: "phase_transitions", pipeline: -2 },
   { source: "multiscale", target: "decoherence", pipeline: -2 },
   { source: "multiscale", target: "memory", pipeline: -2 },
+
+  // Optics connections
+  { source: "optics", target: "impedance", pipeline: -2 },
+  { source: "optics", target: "metric", pipeline: -2 },
+  { source: "optics", target: "electromechanical", pipeline: -2 },
+  { source: "optics", target: "quantum_foundations", pipeline: -2 },
+  { source: "optics", target: "resonance_algebra", pipeline: -2 },
+
+  // Condensed matter connections
+  { source: "condensed_predictions", target: "phase_transitions", pipeline: -2 },
+  { source: "condensed_predictions", target: "topological_matter", pipeline: -2 },
+  { source: "condensed_predictions", target: "resonance_families", pipeline: -2 },
+  { source: "condensed_predictions", target: "impedance", pipeline: -2 },
+  { source: "condensed_predictions", target: "T_c_superconductor", pipeline: -2 },
+  { source: "condensed_predictions", target: "FQHE_plateaus", pipeline: -2 },
+
+  // Emergence connections
+  { source: "emergence", target: "collective", pipeline: -2 },
+  { source: "emergence", target: "complexity", pipeline: -2 },
+  { source: "emergence", target: "phase_transitions", pipeline: -2 },
+  { source: "emergence", target: "meta_boundary", pipeline: -2 },
+  { source: "emergence", target: "functional_architecture", pipeline: -2 },
+  { source: "emergence", target: "info_geometry", pipeline: -2 },
+
+  // New prediction edges
+  { source: "collective", target: "alpha_EEG", pipeline: -2 },
+  { source: "collective", target: "seizure_threshold", pipeline: -2 },
+  { source: "bioelectric", target: "cortical_column", pipeline: -2 },
+  { source: "impedance", target: "w_dark_energy", pipeline: -2 },
+  { source: "neutrino", target: "m_nu1", pipeline: -2 },
+  { source: "plasmoid", target: "plasmoid_recipe", pipeline: -2 },
 ];
 
 // Deduplicate edges
@@ -419,7 +469,7 @@ const W = window.innerWidth;
 const H = window.innerHeight;
 
 // Physics coordinate ranges
-const xMin = -6, xMax = 30;   // log10(eV)
+const xMin = -10, xMax = 30;   // log10(eV)
 const yMin = -0.5, yMax = 10.8;
 
 // Margins for axes
@@ -486,13 +536,14 @@ svg.call(zoom);
 // ───────────────────────────────────────────────────────────────────────────
 
 const energyBands = [
-  { label: "Cosmic", from: -6, to: -2, color: "rgba(100,60,160,0.04)" },
-  { label: "Thermal", from: -2, to: 2, color: "rgba(60,80,160,0.04)" },
-  { label: "Atomic", from: 2, to: 5, color: "rgba(60,130,160,0.04)" },
-  { label: "Nuclear", from: 5, to: 9, color: "rgba(60,160,100,0.04)" },
-  { label: "Electroweak", from: 9, to: 15, color: "rgba(160,140,60,0.04)" },
-  { label: "GUT", from: 15, to: 25, color: "rgba(160,80,60,0.04)" },
-  { label: "Planck", from: 25, to: 30, color: "rgba(160,60,100,0.04)" },
+  { label: "Dark Energy", from: -10, to: -6, color: "rgba(80,40,140,0.08)" },
+  { label: "Cosmic", from: -6, to: -2, color: "rgba(100,60,160,0.08)" },
+  { label: "Thermal", from: -2, to: 2, color: "rgba(60,80,160,0.08)" },
+  { label: "Atomic", from: 2, to: 5, color: "rgba(60,130,160,0.08)" },
+  { label: "Nuclear", from: 5, to: 9, color: "rgba(60,160,100,0.08)" },
+  { label: "Electroweak", from: 9, to: 15, color: "rgba(160,140,60,0.08)" },
+  { label: "GUT", from: 15, to: 25, color: "rgba(160,80,60,0.08)" },
+  { label: "Planck", from: 25, to: 30, color: "rgba(160,60,100,0.08)" },
 ];
 
 const bgLayer = g.append("g").attr("class", "bg-layer");
@@ -507,9 +558,10 @@ energyBands.forEach(b => {
     .attr("x", (xScale(b.from) + xScale(b.to)) / 2)
     .attr("y", yScale(yMax) + 14)
     .attr("text-anchor", "middle")
-    .attr("fill", "rgba(255,255,255,0.08)")
-    .attr("font-size", "11px")
-    .attr("font-weight", "600")
+    .attr("fill", "rgba(255,255,255,0.35)")
+    .attr("font-size", "14px")
+    .attr("font-weight", "700")
+    .attr("letter-spacing", "2px")
     .text(b.label.toUpperCase());
 });
 
@@ -527,16 +579,16 @@ absZones.forEach(z => {
     .attr("y", yMid)
     .attr("text-anchor", "end")
     .attr("dominant-baseline", "middle")
-    .attr("fill", "rgba(255,255,255,0.06)")
-    .attr("font-size", "9px")
-    .attr("font-weight", "600")
-    .attr("letter-spacing", "1px")
+    .attr("fill", "rgba(255,255,255,0.30)")
+    .attr("font-size", "11px")
+    .attr("font-weight", "700")
+    .attr("letter-spacing", "2px")
     .attr("transform", `rotate(-90, ${xScale(xMin) - 6}, ${yMid})`)
     .text(z.label);
 });
 
 // Grid lines at major energy decades
-const gridEnergies = [-4, 0, 4, 8, 12, 16, 20, 24, 28];
+const gridEnergies = [-8, -4, 0, 4, 8, 12, 16, 20, 24, 28];
 gridEnergies.forEach(ev => {
   bgLayer.append("line")
     .attr("x1", xScale(ev)).attr("x2", xScale(ev))
@@ -562,6 +614,7 @@ const axisLayer = g.append("g").attr("class", "axes");
 
 // X-axis labels
 const xTicks = [
+  { ev: -8, label: "10\u207B\u2078 eV" },
   { ev: -4, label: "10\u207B\u2074 eV" },
   { ev: 0, label: "1 eV" },
   { ev: 3, label: "keV" },

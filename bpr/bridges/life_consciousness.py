@@ -1297,11 +1297,12 @@ def seizure_threshold(
 
     if K_range is None:
         K_range = np.linspace(0.5 * K_c, 1.5 * K_c, 100)
-    R_curve = np.where(
-        K_range > K_c,
-        np.sqrt(1.0 - K_c / K_range),
-        0.0,
-    )
+    with np.errstate(invalid="ignore"):
+        R_curve = np.where(
+            K_range > K_c,
+            np.sqrt(np.maximum(1.0 - K_c / K_range, 0.0)),
+            0.0,
+        )
 
     return {
         "K_c": float(K_c),
