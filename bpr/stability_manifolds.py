@@ -1364,3 +1364,46 @@ class StabilityManifold:
             "pi_trajectory": pi_traj,
             "S_trajectory": S_traj,
         }
+
+
+# ---------------------------------------------------------------------------
+# §10.5  Lyapunov noise bounds
+# ---------------------------------------------------------------------------
+
+def lyapunov_noise_bound(alpha, epsilon):
+    """r = O(ε/α) — invariance radius under noise.
+    dV/dt ≤ -α‖∇V‖² + ε implies trajectories stay within r of attractor."""
+    if alpha <= 0:
+        return float('inf')
+    return epsilon / alpha
+
+def correctness_probability_bound(alpha, sigma_sq, c=1.0):
+    """β ≤ exp(-c·α/σ²) — probability of leaving attractor basin.
+    Lower α or higher noise σ² increases escape probability."""
+    return np.exp(-c * alpha / sigma_sq)
+
+def exponential_deviation_bound(r, u, alpha, sigma_sq, c=1.0):
+    """P(dist ≥ r+u) ≤ exp(-c·α·u²/σ²)
+    Tail probability of deviating u beyond invariance radius r."""
+    return np.exp(-c * alpha * u**2 / sigma_sq)
+
+def noisy_attractor_simulation(F, grad_V, x0, alpha, sigma, dt=0.01, n_steps=10000, seed=None):
+    """Simulate ẋ = F(x) + σξ(t) and track distance to attractor.
+    F should include the deterministic drift, sigma is noise amplitude.
+    Returns trajectory and distance history."""
+    rng = np.random.default_rng(seed)
+    dim = len(x0)
+    traj = np.zeros((n_steps, dim))
+    traj[0] = x0
+    for k in range(1, n_steps):
+        noise = rng.normal(0, sigma, dim)
+        traj[k] = traj[k-1] + dt * F(traj[k-1]) + np.sqrt(dt) * noise
+    return traj
+
+def hyperbolicity_regime(eigenvalues, threshold=0.0):
+    """Check if system is in hyperbolic regime.
+    All real parts of eigenvalues should be below threshold."""
+    real_parts = np.real(eigenvalues)
+    return {"is_hyperbolic": bool(np.all(real_parts < threshold)),
+            "max_real_part": float(np.max(real_parts)),
+            "spectral_gap": float(np.min(np.abs(real_parts)))}

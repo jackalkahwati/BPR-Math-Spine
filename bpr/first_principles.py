@@ -1034,3 +1034,43 @@ class SubstrateDerivedTheories:
         preds["P24.6_n_zeros_validated"] = ss["n_zeros_used"]
 
         return preds
+
+
+# ═══════════════════════════════════════════════════════════════════════
+#  Master Boundary Action (from "Toward a Unification" paper)
+# ═══════════════════════════════════════════════════════════════════════
+
+def master_boundary_action(L_phase, L_coupling, L_counterterm, gamma_det, dx):
+    """S_boundary[Psi,A,gamma;J] = integral sqrt|gamma|*[L_ph + L_cpl + L_ct] d^3x
+    Master boundary action: all physics from stationarity of this action."""
+    integrand = np.sqrt(np.abs(gamma_det)) * (L_phase + L_coupling + L_counterterm)
+    return np.sum(integrand) * dx**3
+
+def generalized_impedance_operator(phi, n_grad_phi):
+    """Z = phi/(n*grad_phi)|_boundary -- generalized boundary impedance.
+    Encodes the boundary condition type (Dirichlet Z->0, Neumann Z->inf)."""
+    denom = n_grad_phi.copy()
+    denom[np.abs(denom) < 1e-15] = 1e-15
+    return phi / denom
+
+def em_from_boundary(F_munu_boundary, Z_s, A_field, J_source):
+    """n_mu F^{mu_i} = Z_s*A^i - J^i -- Maxwell equations from boundary conditions.
+    Derives EM as a sectoral limit of the master boundary action."""
+    return Z_s * A_field - J_source
+
+def qm_from_boundary(psi, n_grad_psi, alpha_robin, beta_robin):
+    """n*grad_psi = alpha*psi - beta -- Robin boundary condition giving Schrodinger equation.
+    alpha, beta encode the quantum potential."""
+    return n_grad_psi - alpha_robin * psi + beta_robin
+
+def sectoral_limit(S_boundary, sector='em'):
+    """Extract a specific sector from the master boundary action.
+    Sectors: 'em' (Maxwell), 'qm' (Schrodinger), 'gr' (Einstein), 'ns' (Navier-Stokes)"""
+    # Sector coefficients (symbolic representation)
+    sectors = {
+        'em': {'field': 'A_mu', 'equation': 'Maxwell', 'boundary_type': 'Robin'},
+        'qm': {'field': 'psi', 'equation': 'Schrodinger', 'boundary_type': 'Robin'},
+        'gr': {'field': 'g_munu', 'equation': 'Einstein', 'boundary_type': 'Dirichlet'},
+        'ns': {'field': 'v_i', 'equation': 'Navier-Stokes', 'boundary_type': 'mixed'},
+    }
+    return sectors.get(sector, {})

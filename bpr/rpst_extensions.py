@@ -2128,3 +2128,41 @@ class SubstrateCoherenceMigration:
             ω_c.
         """
         return self.omega_c
+
+
+# ═══════════════════════════════════════════════════════════════════════
+#  Constructive Kernel, Harmonic Reconstruction, Field Overlap
+# ═══════════════════════════════════════════════════════════════════════
+
+def constructive_kernel(d_G, delta_phi, d_p, alpha=1.0, beta=1.0, eta=1.0):
+    """K_r = exp(-alpha*d_G)*exp(beta*cos(Delta_phi))*exp(-eta*d_p)
+    Constructive resonance kernel combining graph, phase, and prime distances."""
+    return np.exp(-alpha * d_G) * np.exp(beta * np.cos(delta_phi)) * np.exp(-eta * d_p)
+
+def eligibility_functional(grad_K, sigma, kappa=1.0, K=1.0):
+    """E(psi) = ||grad_K||*sigma/(1 + kappa/K) -- eligibility for resonant state.
+    High gradient + high variance + large K -> eligible for transition."""
+    return np.linalg.norm(grad_K) * sigma / (1 + kappa / max(K, 1e-15))
+
+def harmonic_reconstruction(x, gamma_n, n_zeros=20, C=0.0):
+    """S_h(x) = -Sum cos(gamma_n ln x) + C
+    Reconstruct prime structure from Riemann zeta zeros.
+    gamma_n: imaginary parts of nontrivial zeros."""
+    if np.any(x <= 0):
+        raise ValueError("x must be positive for logarithmic reconstruction")
+    x = np.atleast_1d(x)
+    result = np.full_like(x, C, dtype=float)
+    for gamma in gamma_n[:n_zeros]:
+        result -= np.cos(gamma * np.log(x))
+    return result
+
+def substrate_interaction_energy(psi_1, psi_2, alpha=1.0, beta=1.0, gamma=1.0, dx=1.0):
+    """E[psi_1,psi_2] on discrete substrate.
+    E = alpha Sum|psi|^2 + beta Sum(1-cos(phi_1-phi_2)) + gamma Sum|psi|^4
+    Produces Lennard-Jones-like emergent repulsion."""
+    phi_1 = np.angle(psi_1) if np.iscomplexobj(psi_1) else psi_1
+    phi_2 = np.angle(psi_2) if np.iscomplexobj(psi_2) else psi_2
+    E_kinetic = alpha * np.sum(np.abs(psi_1)**2 + np.abs(psi_2)**2) * dx
+    E_coupling = beta * np.sum(1 - np.cos(phi_1 - phi_2)) * dx
+    E_quartic = gamma * np.sum(np.abs(psi_1)**4 + np.abs(psi_2)**4) * dx
+    return E_kinetic + E_coupling + E_quartic

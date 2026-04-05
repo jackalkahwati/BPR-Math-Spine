@@ -1900,3 +1900,67 @@ def meta_boundary_predictions(
         "P23.4_tau_kappa": front.tau_kappa,
         "P23.5_detectability_theorem": "nontrivial transition implies ≥1 nonzero signature",
     }
+
+
+# ---------------------------------------------------------------------------
+# §23.5  BPR++/BPR² hierarchy
+# ---------------------------------------------------------------------------
+
+def bpr_plus_plus_encoding(Phi, y, beta=1.0):
+    """BPR++ information encoding: max I(Φ;y) - β·C_complexity.
+    Phi: phase field, y: observable, beta: complexity penalty."""
+    # Mutual information approximation via correlation
+    I_approx = np.abs(np.corrcoef(Phi.flatten(), y.flatten())[0, 1])
+    C_complexity = np.mean(np.abs(np.gradient(Phi)))
+    return I_approx - beta * C_complexity
+
+def holographic_reconstruction(G_kernel, dn_psi_boundary, ds):
+    """ψ(x) = ∫ G(x,s) ∂_n ψ ds — reconstruct bulk from boundary data.
+    G_kernel: Green's function sampled at boundary points.
+    dn_psi_boundary: normal derivative of ψ at boundary."""
+    return G_kernel @ dn_psi_boundary * ds
+
+def self_repair_gradient(J_cost, u_field, dt=0.01):
+    """u̇ = -∇_u J where J = ∫(1-C(a))dt
+    Self-repair: field evolves to minimize coherence deficit."""
+    grad_J = np.gradient(J_cost)
+    return u_field - dt * grad_J
+
+def composite_boundary_operator(boundaries, weights):
+    """B = ⊕ wᵣ B^(r) — composite boundary from multiple subsystems.
+    boundaries: list of boundary operator matrices
+    weights: list of scalar weights"""
+    total_dim = sum(B.shape[0] for B in boundaries)
+    B_composite = np.zeros((total_dim, total_dim))
+    offset = 0
+    for w, B in zip(weights, boundaries):
+        n = B.shape[0]
+        B_composite[offset:offset+n, offset:offset+n] = w * B
+        offset += n
+    return B_composite
+
+def meta_coherence(coherences, coupling_matrix=None):
+    """C_meta = coherence of coherences across subsystems.
+    If coupling_matrix provided: C_meta includes cross-system effects."""
+    C = np.array(coherences)
+    if coupling_matrix is None:
+        return float(np.mean(C))
+    # Cross-system: weighted average including coupling
+    cross_term = C @ coupling_matrix @ C
+    return float(np.mean(C) + 0.5 * cross_term / len(C)**2)
+
+def shared_eigenmodes(boundaries, n_modes=5):
+    """Find shared eigenmodes across multiple boundary operators.
+    Returns modes that appear (within tolerance) in all boundaries."""
+    all_eigenvalues = []
+    all_eigenvectors = []
+    for B in boundaries:
+        vals, vecs = np.linalg.eig(B)
+        all_eigenvalues.append(vals)
+        all_eigenvectors.append(vecs)
+    # Find eigenvalues common to all (within tolerance)
+    shared = all_eigenvalues[0].copy()
+    for ev in all_eigenvalues[1:]:
+        mask = np.array([np.min(np.abs(s - ev)) < 0.1 for s in shared])
+        shared = shared[mask]
+    return shared[:n_modes]

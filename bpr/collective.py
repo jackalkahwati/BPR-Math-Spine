@@ -275,3 +275,114 @@ class CooperativeWinding:
     def is_topologically_protected(self, threshold: float = 0.5) -> bool:
         """Protected if alignment exceeds threshold."""
         return self.alignment > threshold
+
+
+# ---------------------------------------------------------------------------
+# §12.7  Superlinear scaling & driven synchronization
+# ---------------------------------------------------------------------------
+
+def superlinear_collective_scaling(N, chi_individual, exponent=1.27):
+    """χ_group ~ N^{1.27} above Kuramoto K_c.
+    Superlinear scaling from constructive boundary interference."""
+    return N**exponent * chi_individual
+
+def critical_coupling_kuramoto(g_0):
+    """K_c = 2/(π·g(0)) — critical coupling for Kuramoto synchronization.
+    g(0) = value of natural frequency distribution at center."""
+    return 2.0 / (np.pi * g_0)
+
+def duty_cycle_stability(T_rest, T_cycle):
+    """D* = T_rest/T_cycle — duty cycle in BPR stability zone.
+    Optimal D* balances coherence accumulation vs dissipation."""
+    return T_rest / T_cycle
+
+
+class DrivenKuramoto:
+    """Externally driven Kuramoto model.
+
+    θ̇ᵢ = ωᵢ + (K/N)Σsin(θⱼ-θᵢ) + Γsin(Ωt - θᵢ)
+
+    External drive Γsin(Ωt-θ) models broadband forcing.
+    """
+    def __init__(self, N, K, Gamma=0.0, Omega=1.0, omega_spread=1.0, seed=None):
+        rng = np.random.default_rng(seed)
+        self.N = N
+        self.K = K
+        self.Gamma = Gamma
+        self.Omega = Omega
+        self.omega = rng.standard_cauchy(N) * omega_spread  # Lorentzian distribution
+        self.theta = rng.uniform(0, 2*np.pi, N)
+
+    def dtheta_dt(self, theta, t):
+        """RHS of driven Kuramoto."""
+        coupling = (self.K / self.N) * np.sum(np.sin(theta[None, :] - theta[:, None]), axis=1)
+        drive = self.Gamma * np.sin(self.Omega * t - theta)
+        return self.omega + coupling + drive
+
+    def step(self, dt=0.01):
+        """Euler step."""
+        t = 0  # track time externally if needed
+        self.theta += dt * self.dtheta_dt(self.theta, t)
+        self.theta %= 2 * np.pi
+
+    def order_parameter(self):
+        """Complex order parameter R·exp(iΨ)."""
+        z = np.mean(np.exp(1j * self.theta))
+        return np.abs(z), np.angle(z)
+
+    def run(self, T, dt=0.01):
+        """Run simulation for time T, return (times, R_history)."""
+        n_steps = int(T / dt)
+        times = np.zeros(n_steps)
+        R_hist = np.zeros(n_steps)
+        for k in range(n_steps):
+            t = k * dt
+            times[k] = t
+            R_hist[k] = self.order_parameter()[0]
+            dtheta = self.dtheta_dt(self.theta, t)
+            self.theta += dt * dtheta
+            self.theta %= 2 * np.pi
+        return times, R_hist
+
+
+class AdaptiveCouplingKuramoto:
+    """Kuramoto with adaptive (self-tuning) coupling.
+
+    kᵢⱼ(t) = k₀[1 + α cos(Φᵢ + Φⱼ + βE(t))]
+
+    Coupling evolves based on phase sum and global energy.
+    """
+    def __init__(self, N, k0=1.0, alpha=0.5, beta=0.1, seed=None):
+        rng = np.random.default_rng(seed)
+        self.N = N
+        self.k0 = k0
+        self.alpha = alpha
+        self.beta = beta
+        self.theta = rng.uniform(0, 2*np.pi, N)
+        self.omega = rng.normal(0, 1, N)
+
+    def coupling_matrix(self, E):
+        """kᵢⱼ(t) = k₀[1 + α cos(Φᵢ + Φⱼ + βE)]"""
+        phase_sum = self.theta[:, None] + self.theta[None, :]
+        return self.k0 * (1 + self.alpha * np.cos(phase_sum + self.beta * E))
+
+    def energy(self):
+        """Global energy E = 1 - R (disorder energy)."""
+        R = np.abs(np.mean(np.exp(1j * self.theta)))
+        return 1 - R
+
+    def step(self, dt=0.01):
+        E = self.energy()
+        K = self.coupling_matrix(E)
+        sin_diff = np.sin(self.theta[None, :] - self.theta[:, None])
+        coupling = np.sum(K * sin_diff, axis=1) / self.N
+        self.theta += dt * (self.omega + coupling)
+        self.theta %= 2 * np.pi
+
+    def run(self, T, dt=0.01):
+        n_steps = int(T / dt)
+        R_hist = np.zeros(n_steps)
+        for k in range(n_steps):
+            R_hist[k] = np.abs(np.mean(np.exp(1j * self.theta)))
+            self.step(dt)
+        return R_hist

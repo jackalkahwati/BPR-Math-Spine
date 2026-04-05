@@ -526,5 +526,825 @@ def export_metric_to_mathematica(metric_perturbation, filename):
     
     with open(filename, 'w') as f:
         f.write(mathematica_str)
-    
+
     return filename
+
+
+# ============================================================================
+# WARP-TARGET METRIC, STRESS-ENERGY PROGRAMMING, AND METRIC ENGINEERING
+# ============================================================================
+
+
+class WarpTargetMetric:
+    """Warp-target metric: ds² = -C²dt² + hᵢⱼdxⁱdxʲ + 2Aᵢdxⁱdt
+
+    C(x) = 1 - ε·S(x),  Aₓ = vₛ·F(x),  hₓₓ = 1 + η·G(x)
+
+    Parameters
+    ----------
+    epsilon : float
+        Lapse perturbation amplitude ε
+    v_s : float
+        Warp shift velocity vₛ
+    eta : float
+        Spatial metric perturbation amplitude η
+    R_bubble : float
+        Bubble radius R (length scale)
+    """
+
+    def __init__(self, epsilon, v_s, eta, R_bubble):
+        self.epsilon = float(epsilon)
+        self.v_s = float(v_s)
+        self.eta = float(eta)
+        self.R = float(R_bubble)
+
+    def lapse_function(self, x):
+        """C(x) = 1 - ε·S(x) where S(x) = exp(-x²/R²)."""
+        x = np.asarray(x, dtype=float)
+        S = np.exp(-x**2 / self.R**2)
+        return 1.0 - self.epsilon * S
+
+    def shift_vector(self, x):
+        """Aₓ = vₛ·F(x) where F(x) = sech⁴(x/R)."""
+        x = np.asarray(x, dtype=float)
+        F = 1.0 / np.cosh(x / self.R) ** 4
+        return self.v_s * F
+
+    def spatial_metric(self, x):
+        """hₓₓ = 1 + η·G(x) where G(x) = sech²(x/R)."""
+        x = np.asarray(x, dtype=float)
+        G = 1.0 / np.cosh(x / self.R) ** 2
+        return 1.0 + self.eta * G
+
+    def line_element(self, x, dt, dx):
+        """Compute ds² = -C²dt² + hₓₓ dx² + 2Aₓ dx dt."""
+        C = self.lapse_function(x)
+        A = self.shift_vector(x)
+        h = self.spatial_metric(x)
+        return -C**2 * dt**2 + h * dx**2 + 2.0 * A * dx * dt
+
+
+# ============================================================================
+# STRESS-ENERGY PROGRAMMING
+# ============================================================================
+
+
+def parametric_stress_energy(theta, phi, amplitude=1.0):
+    """Parametric stress-energy: T_xx ~ cos(Θ)sin(φ), T_xy ~ sin(Θ)cos(φ).
+
+    Parameters
+    ----------
+    theta : float or array
+        Control angle Θ (radians)
+    phi : float or array
+        Phase angle φ (radians)
+    amplitude : float
+        Overall amplitude scale
+
+    Returns
+    -------
+    dict
+        {'T_xx': ..., 'T_xy': ...} stress-energy components
+    """
+    theta = np.asarray(theta, dtype=float)
+    phi = np.asarray(phi, dtype=float)
+    T_xx = amplitude * np.cos(theta) * np.sin(phi)
+    T_xy = amplitude * np.sin(theta) * np.cos(phi)
+    return {"T_xx": T_xx, "T_xy": T_xy}
+
+
+def phase_control_law(phi, mode="longitudinal"):
+    """Control law Θ*(φ): selects optimal Θ for a given phase.
+
+    Modes
+    -----
+    longitudinal : Θ* = 0 if sin(φ) ≥ 0, else π
+    shear        : Θ* = π/2 always
+
+    Parameters
+    ----------
+    phi : float or array
+        Phase angle φ (radians)
+    mode : str
+        'longitudinal' or 'shear'
+
+    Returns
+    -------
+    theta_star : float or ndarray
+    """
+    phi = np.asarray(phi, dtype=float)
+    if mode == "longitudinal":
+        theta_star = np.where(np.sin(phi) >= 0, 0.0, np.pi)
+    elif mode == "shear":
+        theta_star = np.full_like(phi, np.pi / 2.0)
+    else:
+        raise ValueError(f"Unknown mode: {mode}")
+    return theta_star
+
+
+# ============================================================================
+# METRIC MAPPING OPERATOR
+# ============================================================================
+
+
+def mapping_operator(T_munu, G=6.674e-11, c=3e8):
+    """h_μν = M[T_μν] via linearized GR coupling.
+
+    Linearized Einstein equation: ∇²h̄_μν = -16πG/c⁴ T_μν
+
+    For a uniform source this gives h̄_μν = -(16πG/c⁴) T_μν / k²
+    where k is a characteristic wavenumber (set to 1 here for the
+    proportionality constant).
+
+    Parameters
+    ----------
+    T_munu : ndarray, shape (..., 4, 4)
+        Stress-energy tensor components
+    G : float
+        Newton's gravitational constant
+    c : float
+        Speed of light
+
+    Returns
+    -------
+    h_munu : ndarray, same shape as T_munu
+        Metric perturbation (trace-reversed)
+    """
+    T_munu = np.asarray(T_munu, dtype=float)
+    prefactor = -16.0 * np.pi * G / c**4
+    return prefactor * T_munu
+
+
+def retarded_greens_function(source_field, dx, c=3e8):
+    """Retarded solution h(x,t) = -4G/c⁴ ∫ T(x',t_ret)/|x-x'| d³x'.
+
+    Numerically evaluates the retarded Green's function integral on a
+    uniform 1-D grid (x-axis) for a static source (time-independent).
+
+    Parameters
+    ----------
+    source_field : ndarray, shape (N,)
+        Source T(x') sampled on a uniform grid
+    dx : float
+        Grid spacing
+    c : float
+        Speed of light
+
+    Returns
+    -------
+    h : ndarray, shape (N,)
+        Metric perturbation at each grid point
+    """
+    source_field = np.asarray(source_field, dtype=float)
+    N = len(source_field)
+    G = 6.674e-11
+    prefactor = -4.0 * G / c**4
+    h = np.zeros(N)
+    x = np.arange(N) * dx
+    for i in range(N):
+        dist = np.abs(x - x[i])
+        dist[i] = dx  # regularise self-distance
+        h[i] = prefactor * np.sum(source_field / dist) * dx
+    return h
+
+
+# ============================================================================
+# METRIC SCULPTING FEEDBACK
+# ============================================================================
+
+
+class MetricSculptor:
+    """Closed-loop control: h* = Σ βₖ M[ψₖ], iterate until Δh → 0.
+
+    Parameters
+    ----------
+    target_h : ndarray, shape (M,)
+        Desired metric perturbation profile on a 1-D grid
+    basis_modes : ndarray, shape (K, M)
+        K basis source modes ψₖ, each sampled on M grid points
+    """
+
+    def __init__(self, target_h, basis_modes):
+        self.target_h = np.asarray(target_h, dtype=float)
+        self.basis_modes = np.asarray(basis_modes, dtype=float)
+        self.K = self.basis_modes.shape[0]
+        self.beta = np.zeros(self.K)
+        self._delta_h = np.inf
+
+    def _current_h(self):
+        """Compute current h = Σ βₖ ψₖ (linear superposition)."""
+        return self.beta @ self.basis_modes
+
+    def sculpt_step(self, current_h=None, learning_rate=0.01):
+        """One gradient-descent step: update βₖ to reduce |h - h*|².
+
+        Parameters
+        ----------
+        current_h : ndarray or None
+            If None, computed from current β.
+        learning_rate : float
+            Step size α.
+
+        Returns
+        -------
+        delta_h_norm : float
+            Current ||h - h*||
+        """
+        if current_h is None:
+            current_h = self._current_h()
+        residual = current_h - self.target_h
+        # Gradient: d/dβₖ ||h - h*||² = 2 ψₖ · (h - h*)
+        grad = 2.0 * self.basis_modes @ residual
+        self.beta -= learning_rate * grad
+        self._delta_h = np.linalg.norm(residual)
+        return self._delta_h
+
+    def converged(self, tol=1e-6):
+        """Check |Δh| < tol."""
+        return self._delta_h < tol
+
+    def run(self, max_iter=1000, learning_rate=0.01, tol=1e-6):
+        """Full sculpting loop.
+
+        Returns
+        -------
+        beta : ndarray
+            Final coefficients
+        history : list[float]
+            Convergence history (||Δh|| per step)
+        """
+        history = []
+        for _ in range(max_iter):
+            dh = self.sculpt_step(learning_rate=learning_rate)
+            history.append(dh)
+            if self.converged(tol):
+                break
+        return self.beta.copy(), history
+
+
+# ============================================================================
+# METRIC SENSING OBSERVABLES
+# ============================================================================
+
+
+def interferometric_phase_shift(h, omega, L, c=3e8):
+    """Interferometric phase shift: Δφ ~ ωL/c · h.
+
+    Parameters
+    ----------
+    h : float or array
+        Metric perturbation amplitude
+    omega : float
+        Angular frequency of probe light (rad/s)
+    L : float
+        Arm length (m)
+    c : float
+        Speed of light
+
+    Returns
+    -------
+    delta_phi : float or array
+        Phase shift (radians)
+    """
+    return omega * L / c * np.asarray(h, dtype=float)
+
+
+def clock_frequency_shift(h_00):
+    """Gravitational clock frequency shift: Δf/f ~ h₀₀/2.
+
+    Parameters
+    ----------
+    h_00 : float or array
+        Time-time component of metric perturbation
+
+    Returns
+    -------
+    delta_f_over_f : float or array
+    """
+    return np.asarray(h_00, dtype=float) / 2.0
+
+
+def sensing_snr(Q, eta_dir, C):
+    """Sensing signal-to-noise ratio: SNR ~ Q · η_dir · C.
+
+    Parameters
+    ----------
+    Q : float
+        Resonator quality factor
+    eta_dir : float
+        Directionality factor
+    C : float
+        Coherence factor
+
+    Returns
+    -------
+    snr : float
+    """
+    return float(Q) * float(eta_dir) * float(C)
+
+
+# ============================================================================
+# BUGASPHERE METRIC
+# ============================================================================
+
+
+class BugaSphere:
+    """Metric-engineered resonant manifold trapping waves in closed geodesics.
+
+    The effective wave speed varies radially:
+        c(r) = c₀ [1 - α exp(-r²/σ²)]
+
+    Parameters
+    ----------
+    c0 : float
+        Background wave speed
+    alpha : float
+        Depth of the speed well (0 < α < 1 for subluminal trapping)
+    sigma : float
+        Gaussian width of the well
+    """
+
+    def __init__(self, c0, alpha, sigma):
+        self.c0 = float(c0)
+        self.alpha = float(alpha)
+        self.sigma = float(sigma)
+
+    def wave_speed(self, r):
+        """c(r) = c₀ [1 - α exp(-r²/σ²)]."""
+        r = np.asarray(r, dtype=float)
+        return self.c0 * (1.0 - self.alpha * np.exp(-r**2 / self.sigma**2))
+
+    def null_geodesic_radial(self, r, E, L):
+        """Radial null geodesic equation: (dr/dλ)² = E²/c²(r) - L²/r².
+
+        Parameters
+        ----------
+        r : float or array
+            Radial coordinate
+        E : float
+            Energy parameter
+        L : float
+            Angular momentum parameter
+
+        Returns
+        -------
+        dr_dlambda_sq : float or array
+        """
+        r = np.asarray(r, dtype=float)
+        c_r = self.wave_speed(r)
+        return E**2 / c_r**2 - L**2 / r**2
+
+    def trapped_orbit_radius(self, E=1.0, L=1.0, r_min=0.01, r_max=None, n_pts=10000):
+        """Find r where dr/dλ = 0 and d²(dr/dλ)²/dr² < 0 (stable trapping).
+
+        Returns
+        -------
+        r_trap : float or None
+            Radius of the trapped orbit, or None if not found
+        """
+        if r_max is None:
+            r_max = 5.0 * self.sigma
+        r_grid = np.linspace(r_min, r_max, n_pts)
+        V = self.null_geodesic_radial(r_grid, E, L)
+        # Find sign changes (zeros of V)
+        sign_changes = np.where(np.diff(np.sign(V)))[0]
+        for idx in sign_changes:
+            # Refine with linear interpolation
+            r_a, r_b = r_grid[idx], r_grid[idx + 1]
+            V_a, V_b = V[idx], V[idx + 1]
+            r_zero = r_a - V_a * (r_b - r_a) / (V_b - V_a)
+            # Check stability: V should be concave (d²V/dr² < 0) at this point
+            dr = r_grid[1] - r_grid[0]
+            if idx > 0 and idx < n_pts - 2:
+                d2V = (V[idx + 1] - 2 * V[idx] + V[idx - 1]) / dr**2
+                if d2V < 0:
+                    return float(r_zero)
+        return None
+
+    def wave_equation_1d(self, psi, r_grid):
+        """1-D wave equation spatial operator with variable c(r).
+
+        Returns d²ψ/dr² · c²(r) (the spatial part of ∂²ψ/∂t² = c²(r) ∂²ψ/∂r²).
+
+        Parameters
+        ----------
+        psi : ndarray, shape (N,)
+            Wavefunction sampled on r_grid
+        r_grid : ndarray, shape (N,)
+            Radial grid points
+
+        Returns
+        -------
+        L_psi : ndarray, shape (N,)
+            c²(r) d²ψ/dr²  (with zero boundary conditions)
+        """
+        psi = np.asarray(psi, dtype=float)
+        r_grid = np.asarray(r_grid, dtype=float)
+        dr = r_grid[1] - r_grid[0]
+        c_r = self.wave_speed(r_grid)
+        # Second derivative via central differences
+        d2psi = np.zeros_like(psi)
+        d2psi[1:-1] = (psi[2:] - 2.0 * psi[1:-1] + psi[:-2]) / dr**2
+        return c_r**2 * d2psi
+
+
+# ============================================================================
+# WARP SHELL IMPEDANCE
+# ============================================================================
+
+
+def warp_shell_impedance(phi, grad_phi, n_mu):
+    """Z = φ / (n^μ ∇_μ φ)|_Σ — impedance at warp shell boundary.
+
+    Parameters
+    ----------
+    phi : float or array
+        Scalar field value at the shell
+    grad_phi : ndarray, shape (..., 4)
+        Gradient ∇_μ φ at the shell
+    n_mu : ndarray, shape (..., 4)
+        Outward unit normal n^μ at the shell
+
+    Returns
+    -------
+    Z : float or array
+        Shell impedance
+    """
+    phi = np.asarray(phi, dtype=float)
+    grad_phi = np.asarray(grad_phi, dtype=float)
+    n_mu = np.asarray(n_mu, dtype=float)
+    normal_derivative = np.sum(n_mu * grad_phi, axis=-1)
+    # Regularise to avoid division by zero
+    normal_derivative = np.where(
+        np.abs(normal_derivative) < 1e-30,
+        np.sign(normal_derivative + 1e-60) * 1e-30,
+        normal_derivative,
+    )
+    return phi / normal_derivative
+
+
+def warp_shell_admittance(Z_boundary, Z_warp, Z_0=1.0):
+    """Y = (Z_B - Z_W) / Z₀ — admittance mismatch.
+
+    Parameters
+    ----------
+    Z_boundary : float or array
+        Boundary impedance
+    Z_warp : float or array
+        Warp region impedance
+    Z_0 : float
+        Reference impedance (default 1.0)
+
+    Returns
+    -------
+    Y : float or array
+    """
+    return (np.asarray(Z_boundary) - np.asarray(Z_warp)) / Z_0
+
+
+def prime_fractal_shells(R_bubble, n_shells=7, alpha_p=0.5):
+    """rⱼ = R (pⱼ / p_max)^{-α_p} — prime-indexed shell radii.
+
+    Parameters
+    ----------
+    R_bubble : float
+        Bubble radius
+    n_shells : int
+        Number of shells (uses first n_shells primes)
+    alpha_p : float
+        Power-law exponent
+
+    Returns
+    -------
+    radii : ndarray, shape (n_shells,)
+        Shell radii from outermost to innermost
+    """
+    def _first_n_primes(n):
+        primes = []
+        candidate = 2
+        while len(primes) < n:
+            if all(candidate % p != 0 for p in primes):
+                primes.append(candidate)
+            candidate += 1
+        return np.array(primes, dtype=float)
+
+    primes = _first_n_primes(n_shells)
+    p_max = primes[-1]
+    radii = R_bubble * (primes / p_max) ** (-alpha_p)
+    return radii
+
+
+# ============================================================================
+# ENERGY CONDITION CHECKER
+# ============================================================================
+
+
+class EnergyConditionChecker:
+    """Verify NEC, WEC, SEC, DEC for a given stress-energy tensor.
+
+    Parameters
+    ----------
+    T_munu_func : callable
+        Function (x) -> ndarray shape (4, 4), returning T_μν at a
+        spacetime point x = (t, x, y, z).
+    """
+
+    def __init__(self, T_munu_func):
+        self.T = T_munu_func
+        self._eta = np.diag([-1.0, 1.0, 1.0, 1.0])
+
+    def null_energy_condition(self, k_mu, x=None):
+        """T_μν k^μ k^ν ≥ 0 for null vector k (k·k = 0).
+
+        Parameters
+        ----------
+        k_mu : ndarray, shape (4,)
+        x : ndarray, shape (4,) or None
+            Spacetime point; defaults to origin.
+
+        Returns
+        -------
+        value : float
+            T_μν k^μ k^ν (should be ≥ 0 for NEC)
+        """
+        if x is None:
+            x = np.zeros(4)
+        T = self.T(x)
+        k = np.asarray(k_mu, dtype=float)
+        return float(k @ T @ k)
+
+    def weak_energy_condition(self, u_mu, x=None):
+        """T_μν u^μ u^ν ≥ 0 for timelike vector u.
+
+        Parameters
+        ----------
+        u_mu : ndarray, shape (4,)
+        x : ndarray, shape (4,) or None
+
+        Returns
+        -------
+        value : float
+        """
+        if x is None:
+            x = np.zeros(4)
+        T = self.T(x)
+        u = np.asarray(u_mu, dtype=float)
+        return float(u @ T @ u)
+
+    def strong_energy_condition(self, u_mu, x=None):
+        """(T_μν - ½ T g_μν) u^μ u^ν ≥ 0 for timelike u.
+
+        Parameters
+        ----------
+        u_mu : ndarray, shape (4,)
+        x : ndarray, shape (4,) or None
+
+        Returns
+        -------
+        value : float
+        """
+        if x is None:
+            x = np.zeros(4)
+        T = self.T(x)
+        u = np.asarray(u_mu, dtype=float)
+        trace_T = np.trace(self._eta @ T)  # T = η^{μν} T_{μν}
+        S = T - 0.5 * trace_T * self._eta
+        return float(u @ S @ u)
+
+    def dominant_energy_condition(self, u_mu, x=None):
+        """T_μν u^ν should be future-directed (non-spacelike).
+
+        Returns True if -T^μ_ν u^ν is future-directed causal.
+
+        Parameters
+        ----------
+        u_mu : ndarray, shape (4,)
+        x : ndarray, shape (4,) or None
+
+        Returns
+        -------
+        is_future_causal : bool
+        flux : ndarray, shape (4,)
+        """
+        if x is None:
+            x = np.zeros(4)
+        T = self.T(x)
+        u = np.asarray(u_mu, dtype=float)
+        # Raise first index: T^μ_ν = η^{μα} T_{αν}
+        T_mixed = self._eta @ T
+        flux = -T_mixed @ u
+        # Check if flux is future-directed causal: η_{μν} flux^μ flux^ν ≤ 0, flux^0 ≥ 0
+        norm_sq = float(flux @ self._eta @ flux)
+        is_future = flux[0] >= 0 and norm_sq <= 1e-10
+        return is_future, flux
+
+    def check_all(self, n_samples=1000, seed=42):
+        """Monte Carlo test all energy conditions.
+
+        Generates random timelike and null vectors and evaluates all
+        four conditions at the origin.
+
+        Returns
+        -------
+        results : dict
+            {'NEC': bool, 'WEC': bool, 'SEC': bool, 'DEC': bool,
+             'NEC_min': float, 'WEC_min': float, 'SEC_min': float,
+             'DEC_violations': int}
+        """
+        rng = np.random.default_rng(seed)
+        nec_min = np.inf
+        wec_min = np.inf
+        sec_min = np.inf
+        dec_violations = 0
+
+        for _ in range(n_samples):
+            # Random timelike vector: u^0 > |u_spatial|
+            spatial = rng.standard_normal(3)
+            u0 = np.sqrt(np.sum(spatial**2)) + rng.exponential(1.0)
+            u = np.array([u0, spatial[0], spatial[1], spatial[2]])
+
+            wec_val = self.weak_energy_condition(u)
+            sec_val = self.strong_energy_condition(u)
+            is_dec, _ = self.dominant_energy_condition(u)
+
+            wec_min = min(wec_min, wec_val)
+            sec_min = min(sec_min, sec_val)
+            if not is_dec:
+                dec_violations += 1
+
+            # Null vector: k^0 = |k_spatial|
+            k_spatial = rng.standard_normal(3)
+            k0 = np.sqrt(np.sum(k_spatial**2))
+            k = np.array([k0, k_spatial[0], k_spatial[1], k_spatial[2]])
+
+            nec_val = self.null_energy_condition(k)
+            nec_min = min(nec_min, nec_val)
+
+        return {
+            "NEC": nec_min >= -1e-12,
+            "WEC": wec_min >= -1e-12,
+            "SEC": sec_min >= -1e-12,
+            "DEC": dec_violations == 0,
+            "NEC_min": nec_min,
+            "WEC_min": wec_min,
+            "SEC_min": sec_min,
+            "DEC_violations": dec_violations,
+        }
+
+
+# ============================================================================
+# STRESS SHAPING FUNCTIONALS
+# ============================================================================
+
+
+def stress_coherence(P_locked, P_total):
+    """Coherence: C = Σ P_locked / Σ P_total.
+
+    Parameters
+    ----------
+    P_locked : array_like
+        Phase-locked power contributions
+    P_total : array_like
+        Total power contributions
+
+    Returns
+    -------
+    C : float
+        Coherence factor (0 to 1)
+    """
+    return float(np.sum(P_locked)) / float(np.sum(P_total))
+
+
+def stress_directionality(sigma_zz, sigma_total, dA):
+    """Directionality: D = ∫σ_zz dA / ∫|σ| dA.
+
+    Parameters
+    ----------
+    sigma_zz : array_like
+        Axial stress component on surface elements
+    sigma_total : array_like
+        Total stress magnitude on surface elements
+    dA : array_like
+        Area elements
+
+    Returns
+    -------
+    D : float
+        Directionality factor
+    """
+    sigma_zz = np.asarray(sigma_zz, dtype=float)
+    sigma_total = np.asarray(sigma_total, dtype=float)
+    dA = np.asarray(dA, dtype=float)
+    return float(np.sum(sigma_zz * dA)) / float(np.sum(np.abs(sigma_total) * dA))
+
+
+def propulsion_product(C, D):
+    """Propulsion figure of merit: Π = C × D.
+
+    Parameters
+    ----------
+    C : float
+        Coherence factor
+    D : float
+        Directionality factor
+
+    Returns
+    -------
+    Pi : float
+    """
+    return float(C) * float(D)
+
+
+def eigenvalue_gap_check(eigenvalues, Delta_min):
+    """Check inf(λ_{n+1} - λ_n) ≥ Δ_min.
+
+    Parameters
+    ----------
+    eigenvalues : array_like
+        Sorted eigenvalues (ascending)
+    Delta_min : float
+        Minimum required gap
+
+    Returns
+    -------
+    passes : bool
+    min_gap : float
+        The smallest gap found
+    """
+    evals = np.sort(np.asarray(eigenvalues, dtype=float))
+    gaps = np.diff(evals)
+    min_gap = float(np.min(gaps)) if len(gaps) > 0 else np.inf
+    return min_gap >= Delta_min, min_gap
+
+
+def quantum_energy_inequality(T_00_expectation, g_t_squared, tau):
+    """Quantum Energy Inequality bound: ∫⟨T₀₀⟩ g(t)² dt ≥ -K/τ⁴.
+
+    Evaluates the QEI integral and compares against the Ford-Roman bound
+    K/τ⁴ with K = 3/(32π²).
+
+    Parameters
+    ----------
+    T_00_expectation : array_like
+        Energy density expectation values ⟨T₀₀⟩ sampled in time
+    g_t_squared : array_like
+        Squared sampling function g(t)² on same time grid
+    tau : float
+        Characteristic sampling timescale (determines bound)
+
+    Returns
+    -------
+    satisfies : bool
+    integral_value : float
+    bound : float
+        -K / τ⁴
+    """
+    T_00 = np.asarray(T_00_expectation, dtype=float)
+    g2 = np.asarray(g_t_squared, dtype=float)
+    dt = 1.0  # assume unit time steps; caller should pre-scale
+    integral_value = float(np.sum(T_00 * g2) * dt)
+    K = 3.0 / (32.0 * np.pi**2)
+    bound = -K / tau**4
+    return integral_value >= bound, integral_value, bound
+
+
+# ============================================================================
+# BPR WARP STRESS-ENERGY TENSOR
+# ============================================================================
+
+
+def bpr_warp_stress_energy(grad_phi, g_munu, alpha_BPR, kappa=1.0, G=6.674e-11):
+    """BPR boundary stress-energy tensor.
+
+    T^boundary_μν = (κ / 8πG) [∇_μφ ∇_νφ + α_BPR g_μν |∇φ|²]
+
+    With α_BPR > 0 for energy condition compliance.
+    Predicted energy density: ρ ≈ 5.96e-4 J/m³.
+
+    Parameters
+    ----------
+    grad_phi : ndarray, shape (4,)
+        Covariant gradient ∇_μ φ
+    g_munu : ndarray, shape (4, 4)
+        Metric tensor g_μν
+    alpha_BPR : float
+        BPR coupling parameter (> 0 for NEC compliance)
+    kappa : float
+        Coupling strength κ
+    G : float
+        Newton's constant
+
+    Returns
+    -------
+    T_munu : ndarray, shape (4, 4)
+        BPR boundary stress-energy tensor
+    """
+    grad_phi = np.asarray(grad_phi, dtype=float)
+    g_munu = np.asarray(g_munu, dtype=float)
+    g_inv = np.linalg.inv(g_munu)
+    grad_sq = float(grad_phi @ g_inv @ grad_phi)
+    prefactor = kappa / (8.0 * np.pi * G)
+    T = prefactor * (
+        np.outer(grad_phi, grad_phi) + alpha_BPR * g_munu * grad_sq
+    )
+    return T

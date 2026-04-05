@@ -258,3 +258,63 @@ def hydrogen_energy_levels(n_max: int = 5) -> np.ndarray:
     """
     ns = np.arange(1, n_max + 1)
     return -13.6 / ns ** 2
+
+
+# ---------------------------------------------------------------------------
+# §21.6  Bond Coherence (from Molecular Phase Resonance paper)
+# ---------------------------------------------------------------------------
+
+def bond_coherence(delta_phi, zeta_s, R_e, A=1.0, alpha=1.0):
+    """χ_bond = A cos(Δφ)·ζ(s)·exp(-αR_e)
+    Bond stability peaks when Δφ → 0 (phase-aligned atoms)."""
+    return A * np.cos(delta_phi) * zeta_s * np.exp(-alpha * R_e)
+
+
+def catalytic_enhancement(chi_enzyme, phi_reactant, phi_site):
+    """k_cat ∝ χ_enzyme · cos(φ_reactant - φ_site)
+    Enzyme catalysis as phase transfer."""
+    return chi_enzyme * np.cos(phi_reactant - phi_site)
+
+
+def binding_probability(psi_ligand, psi_site, delta_phi):
+    """P_bind ∝ |⟨ψ_lig|ψ_site⟩|² · cos²(Δφ)
+    Molecular recognition via phase overlap."""
+    overlap = np.abs(np.vdot(psi_ligand, psi_site))**2
+    return overlap * np.cos(delta_phi)**2
+
+
+def reaction_rate_bpr(delta_phi, psi_TS, psi_cat, zeta_s):
+    """k_BPR ∝ cos²(Δφ)·|⟨ψ_TS|ψ_cat⟩|²·ζ(s)"""
+    overlap = np.abs(np.vdot(psi_TS, psi_cat))**2
+    return np.cos(delta_phi)**2 * overlap * zeta_s
+
+
+# ---------------------------------------------------------------------------
+# §21.7  Fibonacci Harmonic Quantization
+# ---------------------------------------------------------------------------
+
+PHI_GOLDEN = (1 + np.sqrt(5)) / 2
+
+
+def fibonacci_energy_level(n, m, f_0=1.0, H=1.0):
+    """E_{n,m} = H·f₀·φⁿ·(π²)ᵐ
+    Phi-scaled atomic energy quantization.
+    Prediction: mean deviation ~0.1 eV across 30 elements."""
+    return H * f_0 * PHI_GOLDEN**n * (np.pi**2)**m
+
+
+def fibonacci_energy_ratio(n):
+    """E_{n+1}/E_n = φ (golden ratio) — boundary stability condition"""
+    return PHI_GOLDEN
+
+
+def bpr_orbital_wavefunction(r, theta, phi, n, l, m, zeta_s=1.0):
+    """ψ^BPR_{nlm}(r,θ,φ) = R_n^prime(r) · Y_lm^ζ(θ,φ)
+    BPR-modified orbital with zeta-scaled spherical harmonics."""
+    from scipy.special import sph_harm
+    # Radial part: hydrogen-like with prime correction
+    a_0 = 0.529e-10  # Bohr radius [m]
+    R_n = (2*r/(n*a_0))**l * np.exp(-r/(n*a_0))
+    # Angular part with zeta scaling
+    Y_lm = sph_harm(m, l, phi, theta)
+    return R_n * Y_lm * zeta_s

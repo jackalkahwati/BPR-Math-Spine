@@ -595,3 +595,56 @@ def weinberg_angle_from_boundary(geometry: str = "sphere") -> float:
     elif geometry == "torus":
         return 2.0 / 8.0  # 2 Killing vectors for T²
     return 3.0 / 8.0
+
+
+# ---------------------------------------------------------------------------
+# §17.5  Boundary symplectic form & Weinberg angle from impedance
+# ---------------------------------------------------------------------------
+
+def boundary_symplectic_form(phi_fields, boundary_coords):
+    """Ω_∂ = boundary symplectic 2-form from field variations.
+    Foundation for deriving gauge group from boundary automorphisms."""
+    n = len(phi_fields)
+    omega = np.zeros((n, n))
+    for i in range(n):
+        for j in range(n):
+            # Symplectic form from field bracket on boundary
+            omega[i, j] = np.sum(phi_fields[i] * np.gradient(phi_fields[j])) - \
+                          np.sum(phi_fields[j] * np.gradient(phi_fields[i]))
+    return omega
+
+def weinberg_angle_from_impedance(zeta_BW, zeta_WW, zeta_BB):
+    """tan(2θ_W) = 2ζ_BW/(ζ_WW - ζ_BB)
+    Derives Weinberg angle from boundary impedance ratios.
+    Standard Model value: sin²θ_W ≈ 0.2312"""
+    tan_2theta = 2 * zeta_BW / (zeta_WW - zeta_BB)
+    theta_W = 0.5 * np.arctan(tan_2theta)
+    return {"theta_W": theta_W, "sin2_theta_W": np.sin(theta_W)**2,
+            "tan_2theta_W": tan_2theta}
+
+def yukawa_overlap_integral(phi_i, phi_j, phi_k, dx=1.0):
+    """y_ijk ~ ∫ φᵢ φⱼ φₖ dx — Yukawa coupling from boundary field overlap"""
+    return np.sum(phi_i * phi_j * phi_k) * dx
+
+def anomaly_cancellation_check(charges, gauge_dim=3):
+    """Check d^abc anomaly cancellation: Σ_f d^abc(f) = 0
+    for gauge group consistency.
+    charges: list of charge arrays for each fermion family"""
+    # Cubic anomaly: Tr[Q³] = 0 for each gauge factor
+    total = sum(q**3 for q in charges)
+    return {"anomaly_sum": float(np.sum(total)),
+            "is_cancelled": bool(np.abs(np.sum(total)) < 1e-10)}
+
+def boundary_variational_action(L_bulk, L_boundary, gamma_det, coords, dx=1.0):
+    """S = S_bulk + ∫ L_∂ √|γ| d³x — boundary variational principle"""
+    S_bulk = np.sum(L_bulk) * dx**4
+    S_boundary = np.sum(L_boundary * np.sqrt(np.abs(gamma_det))) * dx**3
+    return S_bulk + S_boundary
+
+def quasilocal_stress_tensor(S_boundary, gamma_metric, dx=1.0):
+    """T^ij_∂ = (2/√|γ|) δS/δγ_ij — Brown-York quasilocal stress tensor"""
+    sqrt_gamma = np.sqrt(np.abs(np.linalg.det(gamma_metric)))
+    if sqrt_gamma < 1e-15:
+        sqrt_gamma = 1e-15
+    # Numerical derivative approximation
+    return 2.0 / sqrt_gamma * np.gradient(S_boundary)

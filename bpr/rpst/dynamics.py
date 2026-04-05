@@ -95,3 +95,47 @@ class SymplecticEvolution:
         )
 
 
+# ═══════════════════════════════════════════════════════════════════════
+#  Substrate Initialization Dynamics (SID)
+# ═══════════════════════════════════════════════════════════════════════
+
+def boundary_transition_operator(phi, E_b, n_grad_phi, alpha=1.0):
+    """B[phi] = phi + alpha*E_b*n*grad_phi
+    Boundary impulse kicks the phase field, initiating substrate dynamics."""
+    return phi + alpha * E_b * n_grad_phi
+
+def prime_index_assignment(phi_fields, primes):
+    """p' = argmin Gamma(p) where Gamma(p) = integral |grad_phi_p|^2 dV
+    Assign each substrate region to the prime with minimal gradient energy."""
+    gamma_values = []
+    for phi_p in phi_fields:
+        grad = np.gradient(phi_p)
+        if isinstance(grad, list):
+            gamma = sum(np.sum(g**2) for g in grad)
+        else:
+            gamma = np.sum(grad**2)
+        gamma_values.append(gamma)
+    best_idx = int(np.argmin(gamma_values))
+    return primes[best_idx], gamma_values
+
+def attractor_selection(H_func, attractors, p_prime):
+    """A_k = argmin H(A, p') -- select attractor minimizing Hamiltonian.
+    H_func: callable H(A, p) returning energy.
+    attractors: list of candidate attractor states."""
+    energies = [H_func(A, p_prime) for A in attractors]
+    best_idx = int(np.argmin(energies))
+    return attractors[best_idx], energies[best_idx]
+
+def substrate_initialization_sequence(phi_0, E_b, n_grad, primes, H_func, attractors, alpha=1.0):
+    """Full SID sequence: boundary impulse -> prime assignment -> attractor selection.
+    Returns (initialized_phi, assigned_prime, selected_attractor)."""
+    # Step 1: Boundary impulse
+    phi_kicked = boundary_transition_operator(phi_0, E_b, n_grad, alpha)
+    # Step 2: Prime assignment
+    phi_fields = [phi_kicked * np.exp(1j * 2*np.pi/p) for p in primes]  # prime-modulated fields
+    p_prime, gammas = prime_index_assignment([np.real(f) for f in phi_fields], primes)
+    # Step 3: Attractor selection
+    attractor, energy = attractor_selection(H_func, attractors, p_prime)
+    return phi_kicked, p_prime, attractor
+
+

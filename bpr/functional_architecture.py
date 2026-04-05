@@ -1145,3 +1145,52 @@ class BPRStabilityMeasure:
         cov = np.cov(phi_ensemble, rowvar=False)
         I = np.eye(cov.shape[0])
         return float(np.sum((cov - I) ** 2))
+
+
+# ═══════════════════════════════════════════════════════════════════════
+#  Alignment Dynamics (from Alignment-Aware Source Resonance paper)
+# ═══════════════════════════════════════════════════════════════════════
+
+def alignment_dynamics(A, Phi_cognitive, D_cognitive, eta_1=1.0, eta_2=0.5):
+    """dA/dt = eta_1*Phi(x_cog) - eta_2*D(x_cog)
+    Alignment variable evolves based on cognitive coherence Phi and disorder D."""
+    return eta_1 * Phi_cognitive - eta_2 * D_cognitive
+
+def alignment_robin_bc(psi, dn_psi, A, alpha_func=None, beta_func=None):
+    """alpha(A)*psi + beta(A)*d_n psi = 0 -- alignment-dependent Robin boundary condition.
+    alpha, beta are functions of alignment A."""
+    if alpha_func is None:
+        alpha_A = 1.0 + A  # increases with alignment
+    else:
+        alpha_A = alpha_func(A)
+    if beta_func is None:
+        beta_A = 1.0 / (1.0 + A)  # decreases with alignment
+    else:
+        beta_A = beta_func(A)
+    return alpha_A * psi + beta_A * dn_psi
+
+def lyapunov_coherence_energy(C_int, p, p_star, J, J_star, mu=1.0, nu=1.0):
+    """V = -log(C) + mu*KL(p||p*) + nu*||J-J*||^2
+    Lyapunov functional for coherence: combines coherence, divergence, and judgement error."""
+    if C_int <= 0:
+        C_int = 1e-15
+    # KL divergence (simplified)
+    p = np.asarray(p, dtype=float)
+    p_star = np.asarray(p_star, dtype=float)
+    p = np.clip(p, 1e-15, None)
+    p_star = np.clip(p_star, 1e-15, None)
+    kl = np.sum(p * np.log(p / p_star))
+    return -np.log(C_int) + mu * kl + nu * np.sum((J - J_star)**2)
+
+def self_sustainment_condition(g_1, C_int, g_2, A, g_3, Xi_max):
+    """g_1*C_int + g_2*A > g_3*Xi_max -- self-sustainment condition.
+    System is self-sustaining when coherence+alignment overcome disorder."""
+    lhs = g_1 * C_int + g_2 * A
+    rhs = g_3 * Xi_max
+    return {"sustained": bool(lhs > rhs), "margin": float(lhs - rhs),
+            "lhs": float(lhs), "rhs": float(rhs)}
+
+def judgement_function(C_int, A, omega_1=0.5, omega_2=0.5):
+    """W = omega_1*C_int + omega_2*A -- judgement/activation score.
+    Weighted combination of coherence and alignment."""
+    return omega_1 * C_int + omega_2 * A

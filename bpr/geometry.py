@@ -440,3 +440,95 @@ def get_mesh_quality_metrics(boundary_mesh):
         return metrics
 
     return {"error": "Unrecognised mesh type"}
+
+
+# ═══════════════════════════════════════════════════════════════════════
+#  Near-Degeneracy Functional & Hyperbolic Metrics
+# ═══════════════════════════════════════════════════════════════════════
+
+def near_degeneracy_functional(eigenvalues, sigma=1.0):
+    """J_deg(Omega;sigma) = Sum_{i<j} exp(-(lambda_i-lambda_j)^2/(2*sigma^2))
+    Measures spectral crowding -- higher J means more near-degenerate modes."""
+    n = len(eigenvalues)
+    J = 0.0
+    for i in range(n):
+        for j in range(i+1, n):
+            J += np.exp(-(eigenvalues[i] - eigenvalues[j])**2 / (2 * sigma**2))
+    return J
+
+def coherence_functional(phi, dx=1.0):
+    """C[phi] = coherence functional measuring phase field order.
+    C = 1 - <|grad_phi|^2>/<|phi|^2> (normalized gradient energy)."""
+    grad_phi = np.gradient(phi, dx)
+    if isinstance(grad_phi, list):
+        grad_sq = sum(g**2 for g in grad_phi)
+    else:
+        grad_sq = grad_phi**2
+    phi_sq = np.mean(np.abs(phi)**2)
+    if phi_sq < 1e-15:
+        return 0.0
+    return 1.0 - np.mean(grad_sq) / phi_sq
+
+def fibonacci_delay_operator(phi_history, T_0, n_terms=10):
+    """d_t phi = L*phi - Sum_n beta_n phi(t-tau_n) where tau_n = T_0*F_n/F_{n+1}
+    Fibonacci delay equation. phi_history: time series of phi.
+    Returns the delay contribution at current time."""
+    fib = [1, 1]
+    for _ in range(n_terms):
+        fib.append(fib[-1] + fib[-2])
+
+    delay_sum = 0.0
+    beta_n = 1.0
+    for n in range(1, min(n_terms, len(phi_history))):
+        tau_n = T_0 * fib[n] / fib[n+1]
+        idx = max(0, len(phi_history) - 1 - int(tau_n))
+        delay_sum += beta_n * phi_history[idx]
+        beta_n *= 0.5  # Exponentially decaying coefficients
+    return delay_sum
+
+def golden_angle_sequence(N):
+    """theta_n = theta_0 + n*(2*pi/phi^2) -- golden angle sampling.
+    Minimizes sequential spectral crowding."""
+    phi = (1 + np.sqrt(5)) / 2
+    golden_angle = 2 * np.pi / phi**2
+    return np.array([n * golden_angle % (2*np.pi) for n in range(N)])
+
+def poincare_disk_distance(u, v):
+    """d(u,v) = arccosh(1 + 2*||u-v||^2/((1-||u||^2)(1-||v||^2)))
+    Hyperbolic distance in Poincare disk model."""
+    u, v = np.asarray(u), np.asarray(v)
+    diff_sq = np.sum((u - v)**2)
+    denom = (1 - np.sum(u**2)) * (1 - np.sum(v**2))
+    if denom <= 0:
+        return float('inf')
+    return np.arccosh(1 + 2 * diff_sq / denom)
+
+def exponential_state_growth(r, alpha=1.0, C=1.0):
+    """N(r) ~ C*exp(alpha*r) -- state count growth in hyperbolic geometry.
+    Exponential growth vs polynomial in Euclidean."""
+    return C * np.exp(alpha * r)
+
+def hexagonal_mesh_spectral_lift(n_vertices, n_eigenvectors=3):
+    """Build A2 hexagonal lattice Laplacian and lift to 3D via spectral embedding.
+    Returns 3D coordinates from graph Laplacian eigenfunctions."""
+    # Build hexagonal adjacency (simplified: triangular grid)
+    side = int(np.sqrt(n_vertices))
+    L = np.zeros((n_vertices, n_vertices))
+    for i in range(n_vertices):
+        row, col = i // side, i % side
+        neighbors = []
+        if col > 0: neighbors.append(i - 1)
+        if col < side - 1: neighbors.append(i + 1)
+        if row > 0: neighbors.append(i - side)
+        if row < side - 1: neighbors.append(i + side)
+        if row > 0 and col < side - 1: neighbors.append(i - side + 1)
+        if row < side - 1 and col > 0: neighbors.append(i + side - 1)
+        for j in neighbors:
+            if 0 <= j < n_vertices:
+                L[i, j] = -1
+                L[i, i] += 1
+    # Spectral embedding
+    vals, vecs = np.linalg.eigh(L)
+    # Skip zero eigenvalue, take next n_eigenvectors
+    coords = vecs[:, 1:1+n_eigenvectors]
+    return coords, vals[1:1+n_eigenvectors]

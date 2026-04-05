@@ -1787,3 +1787,38 @@ SYMBOLIC_CONCEPT_MAP: List[Dict[str, str]] = [
         "Islam": "Jannah / Jahannam / Ba'th",
     },
 ]
+
+
+# ═══════════════════════════════════════════════════════════════════════
+#  Landau Crossover Model
+# ═══════════════════════════════════════════════════════════════════════
+
+def landau_free_energy(Psi, a, b, c=0.0):
+    """F(Psi) = a|Psi|^2 + b|Psi|^4 + c|Psi|^6
+    Quantum-classical crossover Landau functional."""
+    Psi_sq = np.abs(Psi)**2
+    return a * Psi_sq + b * Psi_sq**2 + c * Psi_sq**3
+
+def critical_temperature_bpr(hbar, m, k_B, N_eff, L):
+    """T_c = hbar^2/(2*pi*m*k_B)*[N_eff/L]^2
+    Critical temperature for quantum-classical transition."""
+    return hbar**2 / (2 * np.pi * m * k_B) * (N_eff / L)**2
+
+def sigmoidal_crossover(T, T_c, V_min, V_max, Delta_T):
+    """V(T) = V_min + (V_max-V_min)/2*[1-tanh((T-T_c)/Delta_T)]
+    Smooth quantum-to-classical crossover."""
+    return V_min + (V_max - V_min) / 2 * (1 - np.tanh((T - T_c) / Delta_T))
+
+def finite_size_scaling(L, d_eff, T_c_inf, A=1.0):
+    """Delta_T ~ A*L^{-d_eff} -- finite-size rounding of the transition.
+    T_c(L) = T_c(inf) + A/L^{d_eff}"""
+    return T_c_inf + A / L**d_eff
+
+def susceptibility_peak(T, T_c, Delta_T, chi_max=1.0):
+    """Susceptibility chi peaks at T_c: chi(T) = chi_max / cosh^2((T-T_c)/Delta_T)"""
+    return chi_max / np.cosh((T - T_c) / Delta_T)**2
+
+def consciousness_coupling_modifier(a, chi, Phi, Phi_crit):
+    """a -> a[1 - chi*Phi/Phi_crit] -- optional consciousness coupling.
+    Modifies the Landau parameter a when integrated information Phi > 0."""
+    return a * (1 - chi * Phi / Phi_crit)
