@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bpr-math-spine"
-version = "0.1.0"
+version = "0.8.0"
 description = "Minimal, Reproducible Maths for Boundary Phase Resonance"
 authors = [{name = "StarDrive Research Group", email = "jack@stardrive.ai"}]
 license = {text = "MIT"}
@@ -47,6 +47,7 @@ Repository = "https://github.com/StarDrive/BPR-math-spine"
 Documentation = "https://github.com/StarDrive/BPR-math-spine/tree/main/doc"
 
 [project.scripts]
+bpr = "bpr.cli:main"
 bpr-demo = "scripts.run_casimir_demo:main"
 
 [tool.setuptools.packages.find]
