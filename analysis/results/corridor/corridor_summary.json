@@ -1,0 +1,49 @@
+{
+  "corridor": {
+    "lo": 103935,
+    "hi": 110634,
+    "width": 6699
+  },
+  "total_primes": 580,
+  "baseline": {
+    "p": 104729,
+    "rank": 435,
+    "core_score_pct": 0.784348,
+    "inv_alpha_err_ppm": 32.262,
+    "v_EW_err_pct": 1.109231,
+    "dist_from_lo": 0.11853,
+    "dist_from_hi": 0.88147,
+    "classification": "alpha-optimal",
+    "robustness": 0.00786459
+  },
+  "rms_optimal": {
+    "p": 107251,
+    "score": 0.306232,
+    "inv_alpha_err_ppm": 3986.276,
+    "v_EW_err_pct": 0.16927
+  },
+  "alpha_optimal": {
+    "p": 104743,
+    "inv_alpha_err_ppm": 9.711,
+    "score": 0.780628
+  },
+  "vEW_optimal": {
+    "p": 107713,
+    "v_EW_err_pct": 0.001447,
+    "score": 0.333265
+  },
+  "robustness_optimal": {
+    "p": 107243,
+    "robustness": 0.00308015,
+    "score": 0.306238
+  },
+  "near_rms_optimal_count": 76,
+  "near_alpha_optimal_count": 15,
+  "near_vew_optimal_count": 9,
+  "score_stats": {
+    "min": 0.306232,
+    "max": 0.998791,
+    "mean": 0.595882,
+    "std": 0.21623
+  }
+}
