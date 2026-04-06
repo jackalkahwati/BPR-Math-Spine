@@ -1,0 +1,48 @@
+{
+  "threshold_5pct": {
+    "viable_count": 321,
+    "threshold": 0.05,
+    "score_key": "score_core",
+    "families": [
+      {
+        "z": 5,
+        "p_min": 105971,
+        "p_max": 109721,
+        "p_center": 107632,
+        "count": 8,
+        "contains_baseline": false
+      },
+      {
+        "z": 6,
+        "p_min": 99761,
+        "p_max": 109721,
+        "p_center": 104399,
+        "count": 157,
+        "contains_baseline": true
+      },
+      {
+        "z": 7,
+        "p_min": 99761,
+        "p_max": 109097,
+        "p_center": 104396,
+        "count": 156,
+        "contains_baseline": true
+      }
+    ]
+  },
+  "threshold_1pct": {
+    "viable_count": 96,
+    "threshold": 0.01,
+    "score_key": "score_core",
+    "families": [
+      {
+        "z": 6,
+        "p_min": 104161,
+        "p_max": 109721,
+        "p_center": 104736,
+        "count": 96,
+        "contains_baseline": true
+      }
+    ]
+  }
+}
