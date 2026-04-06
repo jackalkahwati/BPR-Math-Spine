@@ -205,14 +205,13 @@
 <a class="text-slate-400 font-light hover:text-[#ffb95f] transition-colors duration-300 font-['Space_Grotesk'] tracking-tight flex items-center gap-1" href="bpr-paper.pdf" target="_blank">Paper <span style="font-size:11px;opacity:0.6">PDF</span></a>
 <a class="text-slate-400 font-light hover:text-[#adc6ff] transition-colors duration-300 font-['Space_Grotesk'] tracking-tight" href="api-access.html">API Key</a>
 </div>
-<!-- Mobile: hamburger + portal button -->
-<div class="flex md:hidden items-center gap-3">
-  <button id="mob-menu-btn" aria-label="Open menu" class="p-2 text-[#adc6ff]/70 hover:text-[#adc6ff] transition-colors">
-    <svg id="mob-icon-open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    <svg id="mob-icon-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="hidden"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  </button>
-</div>
-<a href="researcher-portal.html" class="resonance-gradient text-on-primary-container px-6 py-2 rounded-lg font-['Space_Grotesk'] text-sm tracking-wide hover:scale-95 transition-transform no-underline">Access Portal</a>
+<!-- Desktop: Access Portal CTA -->
+<a href="researcher-portal.html" class="hidden md:inline-flex resonance-gradient text-on-primary-container px-6 py-2 rounded-lg font-['Space_Grotesk'] text-sm tracking-wide hover:scale-95 transition-transform no-underline">Access Portal</a>
+<!-- Mobile: hamburger only, far right -->
+<button id="mob-menu-btn" aria-label="Open menu" class="flex md:hidden p-2 text-[#adc6ff]/70 hover:text-[#adc6ff] transition-colors">
+  <svg id="mob-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  <svg id="mob-icon-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="hidden"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
 </nav>
 <!-- Mobile drawer -->
 <div id="mob-drawer" class="hidden fixed inset-0 z-40 md:hidden">
