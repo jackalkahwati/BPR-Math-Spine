@@ -629,7 +629,7 @@ function getPredTooltip(id) {
     pred_mmu:       { name: 'm_\u03bc', pred: '107.2 MeV', expt: '105.7 MeV', err: '1.5%' },
     pred_mtau:      { name: 'm_\u03c4', pred: '1776.9 MeV', expt: '1776.86 MeV', err: 'anchor' },
     pred_koide:     { name: 'Koide Q', pred: '0.665', expt: '2/3', err: '0.2%' },
-    pred_gbar:      { name: 'g_antimatter', pred: '9.777 m/s\u00b2', expt: 'ALPHA-g pending', err: 'TBD' },
+    pred_gbar:      { name: 'g_antimatter', pred: '9.777 m/s\u00b2', expt: 'ALPHA-g pending', err: 'pending' },
     pred_magic:     { name: 'Magic numbers', pred: '2,8,20,28,50,82,126', expt: '2,8,20,28,50,82,126', err: 'exact' },
     pred_dt:        { name: 'D-T fusion energy', pred: '17.57 MeV', expt: '17.59 MeV', err: '0.06%' },
     pred_born:      { name: 'Born rule correction', pred: '~10\u207b\u2075', expt: 'Not yet measured', err: 'prediction' },
@@ -691,7 +691,7 @@ function getPredTooltip(id) {
   if (!d) return null;
 
   const errColor = d.err === 'exact' || d.err === 'anchor' ? '#60a5fa'
-    : d.err === 'structural' || d.err === 'prediction' || d.err === 'TBD' || d.err === 'consistent' ? '#a78bfa'
+    : d.err === 'structural' || d.err === 'prediction' || d.err === 'TBD' || d.err === 'pending' || d.err === 'consistent' ? '#a78bfa'
     : parseFloat(d.err) < 2 ? '#22c55e'
     : parseFloat(d.err) <= 10 ? '#eab308' : '#ef4444';
 
