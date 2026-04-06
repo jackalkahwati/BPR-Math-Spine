@@ -26,6 +26,7 @@
     { "source": "/calculator", "destination": "/constant-calculator.html" },
     { "source": "/explorer", "destination": "/derivation-explorer.html" },
     { "source": "/proofs", "destination": "/theoretical-proofs.html" },
-    { "source": "/docs", "destination": "/researcher-portal.html" }
+    { "source": "/docs", "destination": "/researcher-portal.html" },
+    { "source": "/api-access", "destination": "/api-access.html" }
   ]
 }
