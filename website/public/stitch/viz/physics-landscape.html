@@ -61,6 +61,29 @@
     position: absolute; bottom: 16px; right: 16px; z-index: 10;
     display: flex; flex-direction: column; gap: 5px;
   }
+
+  #mobile-notice {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    #controls { display: none; }
+    #legend { display: none; }
+    #mobile-notice {
+      display: flex; position: absolute; inset: 0; z-index: 30;
+      flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(6,6,18,0.92); backdrop-filter: blur(8px);
+      gap: 12px; padding: 32px; text-align: center;
+    }
+    #mobile-notice svg { opacity: 0.4; }
+    #mobile-notice p { font-size: 15px; color: #aad4ff; font-weight: 500; }
+    #mobile-notice span { font-size: 13px; color: #556; line-height: 1.6; }
+    #mobile-notice a {
+      margin-top: 8px; font-size: 12px; color: #67e8f9;
+      text-decoration: none; border-bottom: 1px solid #67e8f940;
+      padding-bottom: 2px;
+    }
+  }
   #controls button {
     background: rgba(16,16,28,0.92); border: 1px solid #2a2a3a; color: #99a;
     border-radius: 6px; padding: 6px 13px; font-size: 11px; cursor: pointer;
@@ -109,6 +132,15 @@
       <div class="legend-item"><span style="width:18px;height:2px;background:#333;display:inline-block"></span> Conceptual link</div>
     </div>
   </div>
+</div>
+
+<div id="mobile-notice">
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#aad4ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/>
+  </svg>
+  <p>Best viewed on desktop</p>
+  <span>The BPR physics landscape is an interactive force-directed graph that requires a larger screen to navigate.</span>
+  <a href="../researcher-portal.html">Back to Researcher Portal</a>
 </div>
 
 <div id="tooltip"></div>
