@@ -1,0 +1,40 @@
+{
+  "append_only_paths": [
+    "doc/experiments/papers.md",
+    "data/research/audit/research_events.jsonl"
+  ],
+  "evaluator_paths": [
+    "bpr/experimental_data.py",
+    "scripts/benchmark_predictions.py",
+    "experiments/validate_all_theories.py",
+    "tests/test_benchmark_regression.py",
+    "tests/test_consistency_cross_validation.py",
+    "VALIDATION_STATUS.md",
+    "doc/LIMITATIONS_AND_FALSIFICATION.md",
+    "doc/EXPERIMENTAL_ROADMAP.md"
+  ],
+  "flagship_prediction_ids": [
+    "P20.7_LI_delta_c_over_c",
+    "P4.7_Tc_niobium_K",
+    "P4.9_Tc_MgB2_K",
+    "P5.8_delta_m21_sq_eV2",
+    "P18.2_m_muon_MeV",
+    "P22.1_inv_alpha_0"
+  ],
+  "primary_sandbox": {
+    "acceptance_commands": [
+      "pytest -q tests/test_benchmark_regression.py -k 'electron or muon or tau or koide'",
+      "python3 scripts/benchmark_predictions.py"
+    ],
+    "description": "Improve charged-lepton mass derivation without touching evaluator policy or cross-theory scoring rules.",
+    "module_path": "bpr/charged_leptons.py",
+    "rationale": "This module has a clear local objective, existing regression coverage, and a visible derived discrepancy in the muon mass.",
+    "related_prediction_ids": [
+      "P18.1_m_electron_MeV",
+      "P18.2_m_muon_MeV",
+      "P18.3_m_tau_MeV",
+      "P18.4_koide_parameter"
+    ],
+    "slug": "charged_leptons"
+  }
+}

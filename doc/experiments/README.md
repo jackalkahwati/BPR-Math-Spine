@@ -9,6 +9,8 @@
 |----------|---------|
 | [**papers.md**](papers.md) | All papers with results vs BPR; CONFIRM / FALSIFY / INCONCLUSIVE verdicts |
 | [**THEORY_CONFIRMATION_BREAKDOWN.md**](THEORY_CONFIRMATION_BREAKDOWN.md) | Which part of each of the 21 theories is confirmed |
+| [**EVIDENCE_PIPELINE.md**](EVIDENCE_PIPELINE.md) | Continuous evidence ingestion, staging, and triage workflow |
+| [**evidence_queue.md**](evidence_queue.md) | Auto-generated queue of newly staged candidate evidence |
 | [**EXPERIMENTAL_ROADMAP.md**](../EXPERIMENTAL_ROADMAP.md) | Future tests and falsification criteria |
 
 ## Summary (as of Feb 2026)
@@ -40,3 +42,16 @@ When adding a new paper:
 1. Add to `papers.md` with full citation
 2. State BPR prediction and experimental result
 3. Assign verdict: CONFIRM | FALSIFY | INCONCLUSIVE
+
+## Continuous Intake
+
+The repo now includes a first-pass evidence worker:
+
+```bash
+python3 scripts/research_loop.py show-policy
+python3 scripts/research_loop.py evidence-scan
+```
+
+This stages machine-readable paper candidates under `data/evidence/staging/`,
+updates `evidence_queue.md`, and appends an event to the research audit log in
+`data/research/audit/`.

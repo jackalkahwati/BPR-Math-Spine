@@ -16,25 +16,33 @@
 
 ## Summary
 
-**Total benchmarked predictions: 51**
+**Total benchmarked predictions: 87**
 
 | Grade | Count | % |
 |-------|-------|---|
-| PASS | 51 | 100% |
+| PASS | 51 | 59% |
 | CLOSE | 0 | 0% |
 | TENSION | 0 | 0% |
 | FAIL | 0 | 0% |
-| N/A | 0 | 0% |
+| N/A | 36 | 41% |
 
 ### By BPR derivation status
 
 | Status | Count | Meaning |
 |--------|-------|---------|
-| DERIVED | 46 | Genuinely predicted from (J, p, N) |
-| CONSISTENT | 4 | Matches, but also predicted by SM/GR |
+| DERIVED | 77 | Genuinely predicted from (J, p, N) |
+| CONSISTENT | 5 | Matches, but also predicted by SM/GR |
 | OPEN | 1 | BPR does not yet derive this |
 
 ## Detailed Results
+
+### Theory P1
+
+| ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
+|---|---|---|---|---|---|---|---|---|
+| P1.1_theta_gamma_ratio | Hippocampal theta/gamma frequency nesting ratio (prime p=7) | — | 7.0000 ± 1.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P1.2_fmo_coherence_time_fs | Quantum coherence lifetime in FMO complex at 77 K | — | 660.0000 ± 100.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P1.3_non_markovian_ratio | Non-Markovian T2/T2* ratio in NV-center spin echo | — | 1.7000 ± 0.4000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
 
 ### II: Impedance / Dark Sector
 
@@ -43,6 +51,14 @@
 | P2.15_proton_lifetime_years | Proton lifetime τ_p (p → e⁺π⁰) | 2.9583e+50 | > 2.4000e+34 | — | 1232626295785298432.0% | **PASS** | DERIVED | margin: +1232626295785298432.0% |
 | P2.2_MOND_a0 | MOND acceleration scale a₀ | 1.1774e-10 | 1.2000e-10 ± 2.0000e-11 | 0.1 | 1.9% | **PASS** | DERIVED |  |
 | P2.7_DM_sigma_over_m_cm2_g | DM self-interaction σ/m | 0.0187 | < 0.6000 | — | 96.9% | **PASS** | DERIVED | margin: +96.9% |
+
+### Theory P3
+
+| ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
+|---|---|---|---|---|---|---|---|---|
+| P3.10_transmon_Wcrit | BPR critical winding W_crit for transmon qubit (upper bound for quantum regime) | — | < 0.0200 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P3.1_cat_decoherence_rate_kappa_nbar | Cat-state decoherence Γ/κ = n̄ (photon number proportionality) | — | 1.0000 ± 0.1000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P3.7_molecule_decoherence_T_star_K | Thermal decoherence onset temperature for C70 molecular interferometry | — | 1000.0000 ± 150.0000 | — | — | **N/A** | CONJECTURAL | Non-numeric prediction |
 
 ### IV: Phase Transitions
 
@@ -63,11 +79,41 @@
 | P5.8_delta_m21_sq_eV2 | Solar mass splitting Δm²₂₁ | 7.4809e-05 | 7.5300e-05 ± 1.8000e-06 | 0.3 | 0.7% | **PASS** | DERIVED |  |
 | P5.9_delta_m32_sq_eV2 | Atmospheric mass splitting |Δm²₃₂| | 2.3993e-03 | 2.4530e-03 ± 3.3000e-05 | 1.6 | 2.2% | **PASS** | DERIVED |  |
 
+### Theory P6
+
+| ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
+|---|---|---|---|---|---|---|---|---|
+| P6.1_QFI_GHZ_scaling | Quantum Fisher information scaling exponent for GHZ state (= 2 → Heisenberg) | — | 2.0000 | — | — | **N/A** | CONSISTENT | Non-numeric prediction |
+| P6.2_spin_squeezing_dB | Spin-squeezing below SQL (dB) in Rb BEC (matches |W|=√31.6 ≈ 5.6) | — | 15.0000 ± 1.5000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+
 ### VII: Gravitational Waves
 
 | ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
 |---|---|---|---|---|---|---|---|---|
 | P7.1_vGW_equals_c | GW speed deviation |v_GW/c - 1| | 0 | < 7.0000e-16 | — | 100.0% | **PASS** | CONSISTENT | margin: +100.0% |
+
+### Theory P8
+
+| ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
+|---|---|---|---|---|---|---|---|---|
+| P8.4_sycamore_effective_qubits | Effective logical qubit count in Google Sycamore supremacy experiment | — | 20.0000 ± 5.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P8.5_dwave_speedup_factor | D-Wave quantum annealing speedup over classical SA on chimera graph (lower bound) | — | > 25.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+
+### Theory P9
+
+| ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
+|---|---|---|---|---|---|---|---|---|
+| P9.1_wound_efield_mV_per_mm | Endogenous DC electric field driving wound healing in vivo | — | 140.0000 ± 40.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P9.2_cancer_depolarization_mV | Membrane potential depolarization in cancer vs normal epithelial cells | — | 45.0000 ± 10.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P9.3_planaria_polarity_correct_pct | Planaria correct head/tail regeneration rate from bioelectric polarity control | — | 95.0000 ± 5.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+
+### Theory P10
+
+| ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
+|---|---|---|---|---|---|---|---|---|
+| P10.1_josephson_Kc_kHz | Josephson junction array critical coupling K_c/2π for synchronization | — | 200.0000 ± 50.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P10.2_social_tipping_pct | Minority fraction threshold for social norm tipping | — | 25.0000 ± 5.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P10.3_firefly_sync_onset_s | Synchronization onset time / flash period ratio for P. malaccae fireflies | — | 60.0000 ± 15.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
 
 ### XI: Cosmology
 
@@ -112,6 +158,13 @@
 | P14.12_conductance_quantum_S | Conductance quantum G₀ = 2e²/h | 7.7481e-05 | 7.7481e-05 | — | 0.0% | **PASS** | CONSISTENT |  |
 | P14.2_hall_resistance_nu1_Ohm | von Klitzing constant R_K | 2.5813e+04 | 2.5813e+04 | — | 0.0% | **PASS** | CONSISTENT |  |
 
+### Theory P15
+
+| ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
+|---|---|---|---|---|---|---|---|---|
+| P15.1_electron_g_minus_2_leading | Electron anomalous magnetic moment (g-2)/2 leading Schwinger term α/(2π) | — | 1.1597e-03 ± 1.7700e-06 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P15.2_dirac_spinor_components | Number of independent spinor components in Dirac equation (exact) | — | 4.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+
 ### XVI: Quantum Foundations
 
 | ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
@@ -152,11 +205,60 @@
 | P20.4_GUP_beta | GUP parameter β | 9.5485e-06 | < 4.0000e+04 | — | 100.0% | **PASS** | DERIVED | margin: +100.0% |
 | P20.7_LI_delta_c_over_c | Lorentz invariance violation |δc/c| | 3.3803e-21 | < 6.0000e-21 | — | 43.7% | **PASS** | DERIVED | margin: +43.7% |
 
+### Theory P21
+
+| ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
+|---|---|---|---|---|---|---|---|---|
+| P21.1_noble_Z_He | Helium atomic number (1st noble gas shell closure) | — | 2.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P21.2_noble_Z_Ne | Neon atomic number (2nd noble gas shell closure) | — | 10.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P21.3_noble_Z_Ar | Argon atomic number (3rd noble gas shell closure) | — | 18.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P21.4_noble_Z_Kr | Krypton atomic number (4th noble gas shell closure) | — | 36.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P21.5_noble_Z_Xe | Xenon atomic number (5th noble gas shell closure) | — | 54.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P21.6_noble_Z_Rn | Radon atomic number (6th noble gas shell closure) | — | 86.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P21.7_ionization_He_eV | Helium first ionization energy | — | 24.5870 ± 1.0000e-03 | — | — | **N/A** | CONJECTURAL | Non-numeric prediction |
+| P21.8_ionization_Ne_eV | Neon first ionization energy | — | 21.5650 ± 1.0000e-03 | — | — | **N/A** | CONJECTURAL | Non-numeric prediction |
+
+### Theory P22
+
+| ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
+|---|---|---|---|---|---|---|---|---|
+| P22.1_inv_alpha_0 | Inverse fine-structure constant α⁻¹ at q²=0 | — | 137.0360 ± 0.0750 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P22.2_inv_alpha_MZ | Inverse fine-structure constant α⁻¹ at M_Z scale | — | 128.9440 ± 2.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P22.3_alpha_GUT_inv | Inverse GUT coupling constant α_GUT⁻¹ at unification scale (band) | — | 40.0000 ± 20.0000 | — | — | **N/A** | CONJECTURAL | Non-numeric prediction |
+
+### Theory P23
+
+| ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
+|---|---|---|---|---|---|---|---|---|
+| P23.1_turing_wavelength_mm | Turing pattern wavelength in CIMA chemical oscillator | — | 0.2500 ± 0.0800 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P23.2_synapse_rewrite_energy_pJ | Synaptic plasticity energy cost per LTP event (meta-boundary rewrite proxy) | — | 1.0000 ± 0.9000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+
+### Theory P24
+
+| ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
+|---|---|---|---|---|---|---|---|---|
+| P24.1_gue_spacing_ratio | Mean adjacent-level spacing ratio <r> for heavy nuclear resonances (GUE = 0.5307) | — | 0.5307 ± 5.0000e-03 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P24.2_gue_level_repulsion | GUE pair correlation R₂(r→0) = 0 (level repulsion); confirmed in nuclear data | — | 0 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P24.3_gue_wigner_peak | GUE Wigner-surmise P(s) peak position s* = √(6/π) | — | 1.3820 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+
+### Theory P25
+
+| ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
+|---|---|---|---|---|---|---|---|---|
+| P25.1_qubit_spectral_threshold_ratio | J·λ_max / 4 for IBM 27-qubit device (must be < 1 for stability) | — | < 0.0500 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+| P25.2_qubit_T2_min_us | Minimum T2 coherence time in IBM 27-qubit transmon array | — | > 10.0000 | — | — | **N/A** | DERIVED | Non-numeric prediction |
+
 ## Honest Assessment
 
 ### DERIVED predictions (genuine BPR, no hand-tuning)
 
-- 46/46 pass benchmarks
+- 46/77 pass benchmarks
+  - P1.1_theta_gamma_ratio (Hippocampal theta/gamma frequency nesting ratio (prime p=7)): **N/A**
+  - P1.2_fmo_coherence_time_fs (Quantum coherence lifetime in FMO complex at 77 K): **N/A**
+  - P1.3_non_markovian_ratio (Non-Markovian T2/T2* ratio in NV-center spin echo): **N/A**
+  - P10.1_josephson_Kc_kHz (Josephson junction array critical coupling K_c/2π for synchronization): **N/A**
+  - P10.2_social_tipping_pct (Minority fraction threshold for social norm tipping): **N/A**
+  - P10.3_firefly_sync_onset_s (Synchronization onset time / flash period ratio for P. malaccae fireflies): **N/A**
   - P11.14_delta_Neff (Extra effective neutrino species ΔN_eff): **PASS**, 81.1% off
   - P11.15_DM_relic_Omega_h2 (Dark matter relic density Ω_DM h²): **PASS**, 0.3σ, 0.3% off
   - P11.2_spectral_index (Scalar spectral index n_s): **PASS**, 0.8σ, 0.3% off
@@ -176,6 +278,8 @@
   - P13.3_spatial_dimensions (Number of spatial dimensions): **PASS**, 0.0σ, 0.0% off
   - P13.4_time_dimensions (Number of time dimensions): **PASS**, 0.0σ, 0.0% off
   - P13.5_total_dimensions (Total spacetime dimensions): **PASS**, 0.0σ, 0.0% off
+  - P15.1_electron_g_minus_2_leading (Electron anomalous magnetic moment (g-2)/2 leading Schwinger term α/(2π)): **N/A**
+  - P15.2_dirac_spinor_components (Number of independent spinor components in Dirac equation (exact)): **N/A**
   - P16.7_bell_bpr_bound (Tsirelson bound 2√2): **PASS**, 0.0% off
   - P17.13_v_EW_GeV (Electroweak scale (Higgs VEV)): **PASS**, 5.0σ, 1.0% off
   - P17.8_proton_lifetime_GUT_years (Proton lifetime (GUT prediction)): **PASS**, 40617442862.5% off
@@ -194,6 +298,23 @@
   - P20.1_LIV_xi1 (Linear LIV parameter ξ₁): **PASS**, 0.0σ, 0.0% off
   - P20.4_GUP_beta (GUP parameter β): **PASS**, 100.0% off
   - P20.7_LI_delta_c_over_c (Lorentz invariance violation |δc/c|): **PASS**, 43.7% off
+  - P21.1_noble_Z_He (Helium atomic number (1st noble gas shell closure)): **N/A**
+  - P21.2_noble_Z_Ne (Neon atomic number (2nd noble gas shell closure)): **N/A**
+  - P21.3_noble_Z_Ar (Argon atomic number (3rd noble gas shell closure)): **N/A**
+  - P21.4_noble_Z_Kr (Krypton atomic number (4th noble gas shell closure)): **N/A**
+  - P21.5_noble_Z_Xe (Xenon atomic number (5th noble gas shell closure)): **N/A**
+  - P21.6_noble_Z_Rn (Radon atomic number (6th noble gas shell closure)): **N/A**
+  - P22.1_inv_alpha_0 (Inverse fine-structure constant α⁻¹ at q²=0): **N/A**
+  - P22.2_inv_alpha_MZ (Inverse fine-structure constant α⁻¹ at M_Z scale): **N/A**
+  - P23.1_turing_wavelength_mm (Turing pattern wavelength in CIMA chemical oscillator): **N/A**
+  - P23.2_synapse_rewrite_energy_pJ (Synaptic plasticity energy cost per LTP event (meta-boundary rewrite proxy)): **N/A**
+  - P24.1_gue_spacing_ratio (Mean adjacent-level spacing ratio <r> for heavy nuclear resonances (GUE = 0.5307)): **N/A**
+  - P24.2_gue_level_repulsion (GUE pair correlation R₂(r→0) = 0 (level repulsion); confirmed in nuclear data): **N/A**
+  - P24.3_gue_wigner_peak (GUE Wigner-surmise P(s) peak position s* = √(6/π)): **N/A**
+  - P25.1_qubit_spectral_threshold_ratio (J·λ_max / 4 for IBM 27-qubit device (must be < 1 for stability)): **N/A**
+  - P25.2_qubit_T2_min_us (Minimum T2 coherence time in IBM 27-qubit transmon array): **N/A**
+  - P3.10_transmon_Wcrit (BPR critical winding W_crit for transmon qubit (upper bound for quantum regime)): **N/A**
+  - P3.1_cat_decoherence_rate_kappa_nbar (Cat-state decoherence Γ/κ = n̄ (photon number proportionality)): **N/A**
   - P4.7_Tc_niobium_K (Superconducting Tc (Niobium)): **PASS**, 7.2σ, 1.6% off
   - P4.9_Tc_MgB2_K (Superconducting Tc (MgB₂)): **PASS**, 0.2σ, 0.2% off
   - P5.10_number_of_generations (Number of neutrino generations): **PASS**, 0.0σ, 0.0% off
@@ -203,6 +324,12 @@
   - P5.7_theta13_deg (Neutrino mixing angle θ₁₃): **PASS**, 0.6σ, 1.0% off
   - P5.8_delta_m21_sq_eV2 (Solar mass splitting Δm²₂₁): **PASS**, 0.3σ, 0.7% off
   - P5.9_delta_m32_sq_eV2 (Atmospheric mass splitting |Δm²₃₂|): **PASS**, 1.6σ, 2.2% off
+  - P6.2_spin_squeezing_dB (Spin-squeezing below SQL (dB) in Rb BEC (matches |W|=√31.6 ≈ 5.6)): **N/A**
+  - P8.4_sycamore_effective_qubits (Effective logical qubit count in Google Sycamore supremacy experiment): **N/A**
+  - P8.5_dwave_speedup_factor (D-Wave quantum annealing speedup over classical SA on chimera graph (lower bound)): **N/A**
+  - P9.1_wound_efield_mV_per_mm (Endogenous DC electric field driving wound healing in vivo): **N/A**
+  - P9.2_cancer_depolarization_mV (Membrane potential depolarization in cancer vs normal epithelial cells): **N/A**
+  - P9.3_planaria_polarity_correct_pct (Planaria correct head/tail regeneration rate from bioelectric polarity control): **N/A**
 
 ### FRAMEWORK predictions (BPR formula, some exp. input)
 

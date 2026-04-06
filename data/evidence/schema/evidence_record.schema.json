@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stardrive.ai/bpr/evidence_record.schema.json",
+  "title": "BPREvidenceRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_id",
+    "prediction_id",
+    "measurement_name",
+    "candidate",
+    "proposed_verdict",
+    "measurement",
+    "mapping_score",
+    "extraction_confidence",
+    "review_status",
+    "notes",
+    "linked_prediction_ids",
+    "created_at"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "pattern": "^ev-[a-f0-9]{12}$"
+    },
+    "prediction_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "measurement_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "proposed_verdict": {
+      "type": "string",
+      "enum": [
+        "LIKELY_RELEVANT",
+        "REVIEW",
+        "UNLINKED",
+        "CONFIRM",
+        "FALSIFY",
+        "INCONCLUSIVE"
+      ]
+    },
+    "mapping_score": {
+      "type": "number",
+      "minimum": 0
+    },
+    "extraction_confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "review_status": {
+      "type": "string",
+      "enum": [
+        "unreviewed",
+        "accepted",
+        "rejected",
+        "promoted"
+      ]
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "linked_prediction_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "source_id",
+        "title",
+        "abstract",
+        "url",
+        "published",
+        "authors",
+        "metadata"
+      ],
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "abstract": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "published": {
+          "type": "string"
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "metadata": {
+          "type": "object"
+        }
+      }
+    },
+    "measurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relation",
+        "value",
+        "uncertainty",
+        "unit",
+        "extracted_text",
+        "comparison_target"
+      ],
+      "properties": {
+        "relation": {
+          "type": "string",
+          "enum": [
+            "central",
+            "upper_bound",
+            "lower_bound",
+            "qualitative"
+          ]
+        },
+        "value": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "uncertainty": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "unit": {
+          "type": "string"
+        },
+        "extracted_text": {
+          "type": "string"
+        },
+        "comparison_target": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}
