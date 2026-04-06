@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPR Physics Landscape</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #060612; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #e0e0e0; }
+  svg { display: block; width: 100%; height: 100%; }
+
+  #title-bar {
+    position: absolute; top: 0; left: 0; right: 0;
+    padding: 18px 28px 10px;
+    background: linear-gradient(180deg, rgba(6,6,18,0.97) 0%, rgba(6,6,18,0) 100%);
+    pointer-events: none; z-index: 10;
+  }
+  #title-bar h1 { font-size: 21px; font-weight: 700; letter-spacing: -0.4px; color: #fff; }
+  #title-bar p { font-size: 13px; color: #667; margin-top: 3px; font-style: italic; }
+
+  #legend {
+    position: absolute; bottom: 16px; left: 16px;
+    background: rgba(10,10,20,0.93); border: 1px solid #1e1e30;
+    border-radius: 8px; padding: 8px 12px; z-index: 10;
+    font-size: 11px; backdrop-filter: blur(10px);
+    min-width: 150px;
+  }
+  #legend-header {
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; user-select: none; gap: 10px;
+  }
+  #legend-header .title { font-weight: 600; font-size: 12px; color: #aab; margin: 0; }
+  #legend-toggle {
+    background: none; border: 1px solid #2a2a3a; color: #667;
+    border-radius: 4px; padding: 1px 6px; font-size: 10px; cursor: pointer;
+    line-height: 1.6; transition: all 0.15s;
+  }
+  #legend-toggle:hover { color: #aab; border-color: #444; }
+  #legend-body {
+    display: none; margin-top: 8px; border-top: 1px solid #1e1e30;
+    padding-top: 6px; line-height: 1.9; max-height: 80vh; overflow-y: auto;
+  }
+  #legend-body.open { display: block; }
+  .legend-item { display: flex; align-items: center; gap: 7px; }
+  .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+  #tooltip {
+    position: absolute; pointer-events: none; z-index: 20;
+    background: rgba(10,10,18,0.97); border: 1px solid #2a2a40;
+    border-radius: 6px; padding: 10px 14px; font-size: 12px;
+    line-height: 1.6; max-width: 300px; display: none;
+    backdrop-filter: blur(14px); box-shadow: 0 6px 24px rgba(0,0,0,0.6);
+  }
+  #tooltip .tt-name { font-weight: 600; font-size: 13px; color: #fff; }
+  #tooltip .tt-layer { color: #778; font-size: 11px; }
+  #tooltip .tt-eq { color: #99a; font-family: 'Courier New', monospace; font-size: 11px; margin-top: 4px; }
+  #tooltip .tt-pos { color: #556; font-size: 10px; margin-top: 3px; }
+
+  #controls {
+    position: absolute; bottom: 16px; right: 16px; z-index: 10;
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  #controls button {
+    background: rgba(16,16,28,0.92); border: 1px solid #2a2a3a; color: #99a;
+    border-radius: 6px; padding: 6px 13px; font-size: 11px; cursor: pointer;
+    transition: all 0.15s; text-align: left; white-space: nowrap;
+  }
+  #controls button:hover { background: rgba(30,30,50,0.95); color: #fff; border-color: #444; }
+  #controls button.active { background: rgba(40,40,70,0.95); color: #67e8f9; border-color: #67e8f9; }
+
+  #trace-info {
+    position: absolute; top: 70px; right: 20px; z-index: 10;
+    background: rgba(10,10,18,0.95); border: 1px solid #2a2a40;
+    border-radius: 8px; padding: 12px 16px; font-size: 12px;
+    line-height: 1.7; display: none; max-width: 280px;
+    backdrop-filter: blur(10px);
+  }
+  #trace-info .trace-title { font-weight: 600; color: #67e8f9; font-size: 13px; margin-bottom: 4px; }
+  #trace-info .trace-chain { color: #99a; font-size: 11px; }
+  #trace-info .trace-chain span { color: #ccd; }
+</style>
+</head>
+<body>
+
+<div id="title-bar">
+  <h1>The BPR Landscape: Energy &times; Abstraction</h1>
+  <p>Position = physics. Bottom = measurable. Top = foundational. Every edge is an equation.</p>
+</div>
+
+<div id="legend">
+  <div id="legend-header" onclick="toggleLegend()">
+    <span class="title">Physics Domains</span>
+    <button id="legend-toggle">show ▸</button>
+  </div>
+  <div id="legend-body">
+    <div class="legend-item"><span class="legend-dot" style="background:#f0a030"></span> Substrate</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#a855f7"></span> Spacetime &amp; Gravity</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#3b82f6"></span> Quantum &amp; Information</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#22c55e"></span> Particles &amp; Forces</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#ef4444"></span> Matter &amp; Chemistry</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#ec4899"></span> Life &amp; Consciousness</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#ffffff"></span> Unification</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#67e8f9"></span> Predictions</div>
+    <div style="margin-top:7px; border-top:1px solid #1e1e30; padding-top:5px">
+      <div class="title" style="font-size:10px">Connections</div>
+      <div class="legend-item"><span style="width:18px;height:2px;background:#e377c2;display:inline-block"></span> Pipeline</div>
+      <div class="legend-item"><span style="width:18px;height:0;border-top:2px dashed #f0a030;display:inline-block"></span> Bridge equation</div>
+      <div class="legend-item"><span style="width:18px;height:2px;background:#333;display:inline-block"></span> Conceptual link</div>
+    </div>
+  </div>
+</div>
+
+<div id="tooltip"></div>
+
+<div id="controls">
+  <button onclick="resetZoom()">Reset View</button>
+  <button onclick="toggleLabels()">Toggle Labels</button>
+  <button id="btn-trace" onclick="toggleTraceMode()">Trace Prediction</button>
+  <button onclick="clearTrace()">Clear Trace</button>
+</div>
+
+<div id="trace-info">
+  <div class="trace-title"></div>
+  <div class="trace-chain"></div>
+</div>
+
+<script>
+// ───────────────────────────────────────────────────────────────────────────
+// DATA
+// ───────────────────────────────────────────────────────────────────────────
+
+const layerColors = {
+  0: "#f0a030", 1: "#a855f7", 2: "#3b82f6", 3: "#22c55e",
+  4: "#ef4444", 5: "#ec4899", 6: "#ffffff", 7: "#67e8f9",
+};
+const layerNames = {
+  0: "Substrate", 1: "Spacetime & Gravity", 2: "Quantum & Information",
+  3: "Particles & Forces", 4: "Matter & Chemistry", 5: "Life & Consciousness",
+  6: "Unification", 7: "Predictions",
+};
+
+const pipelineColors = [
+  "#e377c2", "#17becf", "#bcbd22", "#8c564b", "#7f7f7f", "#aec7e8", "#98df8a",
+];
+
+// Node data: id, layer, label, equation, physics position (logEv, abstraction)
+const nodeData = [
+  // Substrate (layer 0)
+  { id: "geometry", layer: 0, label: "Geometry", eq: "Boundary mesh on S^2", logEv: 22, abs: 9.0 },
+  { id: "metric", layer: 0, label: "Metric", eq: "Delta g_{mu nu} = lambda phi", logEv: 20, abs: 8.5 },
+  { id: "resonance", layer: 0, label: "Resonance", eq: "gamma_n (Riemann zeros)", logEv: 24, abs: 9.0 },
+  { id: "memory", layer: 0, label: "Memory", eq: "M(t,t') = exp(-|t-t'|/tau) cos(omega)", logEv: 18, abs: 8.5 },
+  { id: "rpst_extensions", layer: 0, label: "RPST", eq: "Z_p symplectic lattice", logEv: 26, abs: 9.5 },
+  { id: "stability_manifolds", layer: 0, label: "Stability", eq: "Lyapunov: dV/dt <= -alpha|grad V|^2", logEv: 24, abs: 8.5 },
+  { id: "resonance_families", layer: 0, label: "Res. Families", eq: "Farey tree, quasi-integers", logEv: 20, abs: 8.0 },
+  { id: "resonance_algebra", layer: 0, label: "Res. Algebra", eq: "Fused PDE step: band->NL->project", logEv: 22, abs: 8.0 },
+  { id: "fractional_boundary", layer: 0, label: "Fractal Boundary", eq: "G ~ L^{D_S - 1}, D_S = ln3/ln2", logEv: 14, abs: 8.5 },
+  { id: "hilbert_bpr", layer: 0, label: "Hilbert BPR", eq: "T = [[A,B],[C,D]], rho(T) < 1", logEv: 22, abs: 9.5 },
+  { id: "tdgl_bpr", layer: 0, label: "TDGL", eq: "d_t psi = -(alpha psi + beta|psi|^2 psi - kappa nabla^2 psi)", logEv: 10, abs: 7.5 },
+  { id: "optimization", layer: 0, label: "Optimization", eq: "Max-Cut via phase oscillators", logEv: 16, abs: 8.0 },
+  { id: "constants", layer: 6, label: "Constants", eq: "Canonical physical constants", logEv: 22, abs: 10.0 },
+
+  // Spacetime & Gravity (layer 1)
+  { id: "emergent_spacetime", layer: 1, label: "Emerg. Spacetime", eq: "g_{mu nu} from boundary entropy", logEv: 26, abs: 7.0 },
+  { id: "cosmology", layer: 1, label: "Cosmology", eq: "H^2 = 8piG/3 rho, Omega_Lambda", logEv: -4, abs: 5.0 },
+  { id: "gravitational_waves", layer: 1, label: "Grav. Waves", eq: "h ~ (G/c^5) d^3 Q/dt^3", logEv: 18, abs: 5.0 },
+  { id: "black_hole", layer: 1, label: "Black Hole", eq: "S_BH = A/(4 l_P^2)", logEv: 26, abs: 6.0 },
+  { id: "quantum_gravity_pheno", layer: 1, label: "Quantum Gravity", eq: "Delta x >= l_P/sqrt(p)", logEv: 28, abs: 7.5 },
+
+  // Quantum & Information (layer 2)
+  { id: "impedance", layer: 2, label: "Impedance", eq: "Z(W) = Z_0 sqrt(1 + W^2/W_c^2)", logEv: 16, abs: 7.0 },
+  { id: "decoherence", layer: 2, label: "Decoherence", eq: "Gamma ~ (DeltaZ/Z_0)^2 k_B T/hbar", logEv: 12, abs: 6.0 },
+  { id: "quantum_foundations", layer: 2, label: "Quantum Found.", eq: "Born rule + 1/p correction", logEv: 14, abs: 7.5 },
+  { id: "coherence_transitions", layer: 2, label: "Coherence Trans.", eq: "Landau F = a|Psi|^2 + b|Psi|^4", logEv: 8, abs: 6.5 },
+  { id: "phase_transitions", layer: 2, label: "Phase Trans.", eq: "Class A/B/C/D taxonomy", logEv: 6, abs: 5.5 },
+  { id: "info_geometry", layer: 2, label: "Info Geometry", eq: "Fisher metric g_{ij}", logEv: 14, abs: 8.0 },
+  { id: "complexity", layer: 2, label: "Complexity", eq: "C(t) = d/dt S_boundary", logEv: 10, abs: 7.5 },
+
+  // Particles & Forces (layer 3)
+  { id: "gauge_unification", layer: 3, label: "Gauge Unif.", eq: "SM from boundary automorphisms", logEv: 24, abs: 5.0 },
+  { id: "alpha_derivation", layer: 3, label: "Alpha Deriv.", eq: "1/alpha = 137.032 from (p,z)", logEv: 20, abs: 6.0 },
+  { id: "charged_leptons", layer: 3, label: "Charged Leptons", eq: "m_l from Koide + v_EW", logEv: 10, abs: 3.0 },
+  { id: "neutrino", layer: 3, label: "Neutrino", eq: "m_nu ~ v^2/p (boundary seesaw)", logEv: 0, abs: 3.5 },
+  { id: "qcd_flavor", layer: 3, label: "QCD & Flavor", eq: "m_q = Z_q Lambda_QCD", logEv: 8, abs: 4.0 },
+  { id: "clifford_bpr", layer: 3, label: "E8 / Clifford", eq: "240 roots, dim 248, SM decomp", logEv: 26, abs: 6.5 },
+  { id: "topological_matter", layer: 3, label: "Topo. Matter", eq: "Chern number nu = integral F/2pi", logEv: 2, abs: 4.5 },
+
+  // Matter & Chemistry (layer 4)
+  { id: "nuclear_physics", layer: 4, label: "Nuclear Phys.", eq: "Magic numbers 2,8,20,28,50,82,126", logEv: 6, abs: 2.5 },
+  { id: "quantum_chemistry", layer: 4, label: "Quantum Chem.", eq: "chi_bond = A cos(Delta phi) zeta(s)", logEv: 0, abs: 3.0 },
+  { id: "plasmoid", layer: 4, label: "Plasmoid", eq: "Stable R ~ 5-15 cm at 2.45 GHz", logEv: 4, abs: 2.0 },
+  { id: "electromechanical", layer: 4, label: "Electromech.", eq: "P = chi nabla phi", logEv: -2, abs: 2.5 },
+  { id: "fluid_dynamics", layer: 4, label: "Fluid Dyn.", eq: "T_BPR = beta cos(Delta phi) grad u", logEv: -2, abs: 2.0 },
+  { id: "experimental_data", layer: 4, label: "Exp. Data", eq: "g_anti, nuclear yields", logEv: 6, abs: 1.0 },
+
+  // Life & Consciousness (layer 5)
+  { id: "bioelectric", layer: 5, label: "Bioelectric", eq: "V_m from gap junction impedance", logEv: -2, abs: 5.0 },
+  { id: "collective", layer: 5, label: "Collective", eq: "Kuramoto: K_c = 2/(pi g_0)", logEv: -2, abs: 6.5 },
+  { id: "conscious_agents", layer: 5, label: "Conscious Agents", eq: "kappa_ij = <phi_i|B|phi_j>", logEv: -4, abs: 7.5 },
+  { id: "functional_architecture", layer: 5, label: "Func. Arch.", eq: "Alignment dA/dt = eta Phi - eta D", logEv: -2, abs: 7.0 },
+  { id: "meta_boundary", layer: 5, label: "Meta Boundary", eq: "BPR^2: C_meta > (1/R) sum C^(r)", logEv: 2, abs: 8.0 },
+
+  // Unification (layer 6)
+  { id: "boundary_action", layer: 6, label: "Boundary Action", eq: "S_partial = integral sqrt|gamma| L d^3x", logEv: 20, abs: 9.5 },
+  { id: "multiscale", layer: 6, label: "Multiscale", eq: "L_total = sum w_n L_n[chi_n, Phi_n]", logEv: 12, abs: 9.0 },
+  { id: "pipelines", layer: 6, label: "Pipelines", eq: "7 end-to-end prediction chains", logEv: 12, abs: 1.5 },
+
+  // Predictions (layer 7)
+  { id: "alpha_EM", layer: 7, label: "1/alpha = 137.032", eq: "0.003% error", logEv: 18, abs: 0.5 },
+  { id: "sin2_theta_W", layer: 7, label: "sin^2 theta_W", eq: "0.1% error", logEv: 20, abs: 0.5 },
+  { id: "m_e", layer: 7, label: "m_e = 0.510 MeV", eq: "0.11% error", logEv: 10, abs: 0.5 },
+  { id: "m_mu", layer: 7, label: "m_mu = 107.2 MeV", eq: "1.5% error", logEv: 12, abs: 0.5 },
+  { id: "m_tau", layer: 7, label: "m_tau = 1776.9 MeV", eq: "anchor", logEv: 14, abs: 0.5 },
+  { id: "v_EW", layer: 7, label: "v_EW = 243.5 GeV", eq: "1.0% error", logEv: 22, abs: 0.5 },
+  { id: "Koide_Q", layer: 7, label: "Koide Q = 0.665", eq: "0.2% error", logEv: 12, abs: 1.0 },
+  { id: "g_anti", layer: 7, label: "g_anti = 9.777 m/s^2", eq: "ALPHA-g consistent", logEv: 16, abs: 0.5 },
+  { id: "Casimir_delta", layer: 7, label: "Casimir delta", eq: "Testable at 1 um", logEv: 8, abs: 0.5 },
+  { id: "GW_strain", layer: 7, label: "GW strain", eq: "h_BPR deviation", logEv: 18, abs: 1.0 },
+  { id: "Born_correction", layer: 7, label: "Born correction", eq: "~10^-5 = 1/p", logEv: 14, abs: 1.0 },
+  { id: "E8_dim", layer: 7, label: "E8 dim = 248", eq: "240 roots + 8 rank", logEv: 26, abs: 1.0 },
+
+  // Optics (center, phenomenology)
+  { id: "optics", layer: 4, label: "Optics", eq: "n = Z₀/Z_material", logEv: 2, abs: 3.5 },
+
+  // Condensed matter predictions (left-center, measurable)
+  { id: "condensed_predictions", layer: 4, label: "Cond. Matter", eq: "T_c, FQHE, TI gap", logEv: -2, abs: 3.0 },
+
+  // Emergence (upper-left, foundational)
+  { id: "emergence", layer: 5, label: "Emergence", eq: "SOC, 1/f noise, entropic force", logEv: -4, abs: 8.5 },
+
+  // New predictions
+  { id: "T_c_superconductor", layer: 7, label: "T_c MgB₂ = 39K", eq: "McMillan + BPR", logEv: -2, abs: 0.5 },
+  { id: "FQHE_plateaus", layer: 7, label: "FQHE = Farey fracs", eq: "1/3, 2/5, 3/7...", logEv: 0, abs: 0.5 },
+  { id: "alpha_EEG", layer: 7, label: "Alpha peak ≈ 9.5 Hz", eq: "Kuramoto harmonic", logEv: -4, abs: 0.5 },
+  { id: "seizure_threshold", layer: 7, label: "Seizure: +1% coupling", eq: "ΔK/K_c = 1/√N", logEv: -6, abs: 0.5 },
+  { id: "w_dark_energy", layer: 7, label: "w₀ ≈ -0.934", eq: "DESI testable", logEv: -8, abs: 0.5 },
+  { id: "m_nu1", layer: 7, label: "m_ν₁ ≈ 0.01 eV", eq: "seesaw from p", logEv: -2, abs: 1.0 },
+  { id: "cortical_column", layer: 7, label: "Column ≈ 0.5 mm", eq: "impedance matching", logEv: -4, abs: 1.0 },
+  { id: "plasmoid_recipe", layer: 7, label: "Plasmoid: 2.45GHz 200W", eq: "R ≈ 5cm stable", logEv: 4, abs: 1.0 },
+];
+
+// All edges from theory-network.html (deduplicated, preserving pipeline)
+const rawEdges = [
+  // Pipeline 1 - lepton masses
+  { source: "gauge_unification", target: "impedance", pipeline: 0 },
+  { source: "impedance", target: "charged_leptons", pipeline: 0 },
+  { source: "charged_leptons", target: "m_e", pipeline: 0 },
+  { source: "charged_leptons", target: "m_mu", pipeline: 0 },
+  { source: "charged_leptons", target: "m_tau", pipeline: 0 },
+  { source: "charged_leptons", target: "sin2_theta_W", pipeline: 0 },
+  // Pipeline 2 - decoherence
+  { source: "impedance", target: "decoherence", pipeline: 1 },
+  { source: "decoherence", target: "coherence_transitions", pipeline: 1 },
+  { source: "coherence_transitions", target: "quantum_foundations", pipeline: 1 },
+  { source: "quantum_foundations", target: "Born_correction", pipeline: 1 },
+  // Pipeline 3 - Casimir
+  { source: "rpst_extensions", target: "resonance_algebra", pipeline: 2 },
+  { source: "resonance_algebra", target: "Casimir_delta", pipeline: 2 },
+  // Pipeline 4 - TDGL
+  { source: "tdgl_bpr", target: "coherence_transitions", pipeline: 3 },
+  { source: "coherence_transitions", target: "phase_transitions", pipeline: 3 },
+  // Pipeline 5 - Kuramoto
+  { source: "collective", target: "phase_transitions", pipeline: 4 },
+  { source: "phase_transitions", target: "coherence_transitions", pipeline: 4 },
+  // Pipeline 6 - consciousness
+  { source: "conscious_agents", target: "collective", pipeline: 5 },
+  { source: "collective", target: "coherence_transitions", pipeline: 5 },
+  // Pipeline 7 - fractal
+  { source: "quantum_chemistry", target: "resonance_families", pipeline: 6 },
+  { source: "resonance_families", target: "fractional_boundary", pipeline: 6 },
+  // Cross-theory (gray)
+  { source: "boundary_action", target: "gauge_unification", pipeline: -1 },
+  { source: "boundary_action", target: "emergent_spacetime", pipeline: -1 },
+  { source: "boundary_action", target: "quantum_foundations", pipeline: -1 },
+  { source: "boundary_action", target: "fluid_dynamics", pipeline: -1 },
+  { source: "multiscale", target: "nuclear_physics", pipeline: -1 },
+  { source: "multiscale", target: "quantum_chemistry", pipeline: -1 },
+  { source: "multiscale", target: "bioelectric", pipeline: -1 },
+  { source: "multiscale", target: "collective", pipeline: -1 },
+  { source: "multiscale", target: "cosmology", pipeline: -1 },
+  { source: "constants", target: "alpha_EM", pipeline: -1 },
+  { source: "gauge_unification", target: "sin2_theta_W", pipeline: -1 },
+  { source: "gauge_unification", target: "v_EW", pipeline: -1 },
+  { source: "cosmology", target: "emergent_spacetime", pipeline: -1 },
+  { source: "clifford_bpr", target: "gauge_unification", pipeline: -1 },
+  { source: "clifford_bpr", target: "topological_matter", pipeline: -1 },
+  { source: "meta_boundary", target: "collective", pipeline: -1 },
+  { source: "meta_boundary", target: "info_geometry", pipeline: -1 },
+  { source: "hilbert_bpr", target: "stability_manifolds", pipeline: -1 },
+  { source: "plasmoid", target: "nuclear_physics", pipeline: -1 },
+  { source: "plasmoid", target: "electromechanical", pipeline: -1 },
+  { source: "impedance", target: "decoherence", pipeline: -1 },
+  { source: "impedance", target: "cosmology", pipeline: -1 },
+  { source: "impedance", target: "metric", pipeline: -1 },
+  { source: "impedance", target: "gauge_unification", pipeline: -1 },
+  { source: "metric", target: "gravitational_waves", pipeline: -1 },
+  { source: "emergent_spacetime", target: "black_hole", pipeline: -1 },
+  { source: "black_hole", target: "quantum_gravity_pheno", pipeline: -1 },
+  { source: "alpha_derivation", target: "alpha_EM", pipeline: -1 },
+  { source: "alpha_derivation", target: "gauge_unification", pipeline: -1 },
+  { source: "gauge_unification", target: "cosmology", pipeline: -1 },
+  { source: "nuclear_physics", target: "experimental_data", pipeline: -1 },
+  { source: "collective", target: "bioelectric", pipeline: -1 },
+  { source: "phase_transitions", target: "topological_matter", pipeline: -1 },
+  { source: "decoherence", target: "quantum_foundations", pipeline: -1 },
+  { source: "tdgl_bpr", target: "phase_transitions", pipeline: -1 },
+  { source: "resonance", target: "rpst_extensions", pipeline: -1 },
+  { source: "memory", target: "decoherence", pipeline: -1 },
+  { source: "memory", target: "coherence_transitions", pipeline: -1 },
+  { source: "info_geometry", target: "complexity", pipeline: -1 },
+  { source: "neutrino", target: "cosmology", pipeline: -1 },
+  { source: "qcd_flavor", target: "nuclear_physics", pipeline: -1 },
+  { source: "charged_leptons", target: "Koide_Q", pipeline: -1 },
+  { source: "optimization", target: "resonance_algebra", pipeline: -1 },
+  { source: "fluid_dynamics", target: "metric", pipeline: -1 },
+  { source: "functional_architecture", target: "conscious_agents", pipeline: -1 },
+  { source: "functional_architecture", target: "bioelectric", pipeline: -1 },
+  { source: "stability_manifolds", target: "meta_boundary", pipeline: -1 },
+  { source: "fractional_boundary", target: "geometry", pipeline: -1 },
+  { source: "geometry", target: "emergent_spacetime", pipeline: -1 },
+  { source: "geometry", target: "metric", pipeline: -1 },
+  { source: "cosmology", target: "gravitational_waves", pipeline: -1 },
+  { source: "quantum_chemistry", target: "bioelectric", pipeline: -1 },
+  { source: "electromechanical", target: "gravitational_waves", pipeline: -1 },
+  { source: "impedance", target: "g_anti", pipeline: -1 },
+  { source: "clifford_bpr", target: "E8_dim", pipeline: -1 },
+  { source: "plasmoid", target: "GW_strain", pipeline: -1 },
+  { source: "emergent_spacetime", target: "cosmology", pipeline: -1 },
+  { source: "pipelines", target: "gauge_unification", pipeline: -1 },
+  { source: "pipelines", target: "impedance", pipeline: -1 },
+  { source: "pipelines", target: "quantum_chemistry", pipeline: -1 },
+  { source: "pipelines", target: "tdgl_bpr", pipeline: -1 },
+  { source: "pipelines", target: "collective", pipeline: -1 },
+  { source: "pipelines", target: "conscious_agents", pipeline: -1 },
+  { source: "constants", target: "impedance", pipeline: -1 },
+  { source: "constants", target: "cosmology", pipeline: -1 },
+  { source: "constants", target: "nuclear_physics", pipeline: -1 },
+  { source: "constants", target: "gauge_unification", pipeline: -1 },
+  { source: "hilbert_bpr", target: "tdgl_bpr", pipeline: -1 },
+  { source: "hilbert_bpr", target: "resonance_algebra", pipeline: -1 },
+  { source: "hilbert_bpr", target: "decoherence", pipeline: -1 },
+  { source: "quantum_gravity_pheno", target: "emergent_spacetime", pipeline: -1 },
+  { source: "quantum_gravity_pheno", target: "cosmology", pipeline: -1 },
+  { source: "resonance", target: "resonance_families", pipeline: -1 },
+  { source: "resonance", target: "resonance_algebra", pipeline: -1 },
+  { source: "resonance", target: "geometry", pipeline: -1 },
+  { source: "complexity", target: "meta_boundary", pipeline: -1 },
+  { source: "complexity", target: "collective", pipeline: -1 },
+  { source: "complexity", target: "coherence_transitions", pipeline: -1 },
+  { source: "neutrino", target: "gauge_unification", pipeline: -1 },
+  { source: "neutrino", target: "charged_leptons", pipeline: -1 },
+  { source: "qcd_flavor", target: "gauge_unification", pipeline: -1 },
+  { source: "qcd_flavor", target: "cosmology", pipeline: -1 },
+  { source: "experimental_data", target: "g_anti", pipeline: -1 },
+  { source: "experimental_data", target: "Casimir_delta", pipeline: -1 },
+  { source: "optimization", target: "collective", pipeline: -1 },
+  { source: "optimization", target: "fractional_boundary", pipeline: -1 },
+  { source: "electromechanical", target: "nuclear_physics", pipeline: -1 },
+  { source: "electromechanical", target: "bioelectric", pipeline: -1 },
+  { source: "topological_matter", target: "quantum_foundations", pipeline: -1 },
+  { source: "topological_matter", target: "resonance", pipeline: -1 },
+  { source: "memory", target: "rpst_extensions", pipeline: -1 },
+  { source: "memory", target: "hilbert_bpr", pipeline: -1 },
+  { source: "info_geometry", target: "quantum_foundations", pipeline: -1 },
+  { source: "info_geometry", target: "decoherence", pipeline: -1 },
+  { source: "stability_manifolds", target: "tdgl_bpr", pipeline: -1 },
+  { source: "stability_manifolds", target: "resonance_algebra", pipeline: -1 },
+  { source: "fluid_dynamics", target: "plasmoid", pipeline: -1 },
+  { source: "fluid_dynamics", target: "collective", pipeline: -1 },
+  { source: "resonance_families", target: "nuclear_physics", pipeline: -1 },
+  { source: "fractional_boundary", target: "metric", pipeline: -1 },
+  { source: "alpha_derivation", target: "charged_leptons", pipeline: -1 },
+  { source: "black_hole", target: "gravitational_waves", pipeline: -1 },
+  { source: "black_hole", target: "cosmology", pipeline: -1 },
+  { source: "functional_architecture", target: "memory", pipeline: -1 },
+  { source: "functional_architecture", target: "coherence_transitions", pipeline: -1 },
+  { source: "boundary_action", target: "multiscale", pipeline: -1 },
+  { source: "boundary_action", target: "metric", pipeline: -1 },
+  { source: "boundary_action", target: "decoherence", pipeline: -1 },
+  { source: "multiscale", target: "emergent_spacetime", pipeline: -1 },
+  { source: "multiscale", target: "electromechanical", pipeline: -1 },
+  // Bridge equations (gold dashed)
+  { source: "impedance", target: "metric", pipeline: -2 },
+  { source: "memory", target: "hilbert_bpr", pipeline: -2 },
+  { source: "tdgl_bpr", target: "coherence_transitions", pipeline: -2 },
+  { source: "rpst_extensions", target: "resonance", pipeline: -2 },
+  { source: "geometry", target: "gravitational_waves", pipeline: -2 },
+  { source: "hilbert_bpr", target: "stability_manifolds", pipeline: -2 },
+  { source: "fractional_boundary", target: "geometry", pipeline: -2 },
+  { source: "impedance", target: "gauge_unification", pipeline: -2 },
+  { source: "clifford_bpr", target: "gauge_unification", pipeline: -2 },
+  { source: "nuclear_physics", target: "plasmoid", pipeline: -2 },
+  { source: "electromechanical", target: "nuclear_physics", pipeline: -2 },
+  { source: "qcd_flavor", target: "nuclear_physics", pipeline: -2 },
+  { source: "gauge_unification", target: "topological_matter", pipeline: -2 },
+  { source: "fluid_dynamics", target: "metric", pipeline: -2 },
+  { source: "conscious_agents", target: "collective", pipeline: -2 },
+  { source: "collective", target: "coherence_transitions", pipeline: -2 },
+  { source: "bioelectric", target: "decoherence", pipeline: -2 },
+  { source: "functional_architecture", target: "coherence_transitions", pipeline: -2 },
+  { source: "collective", target: "meta_boundary", pipeline: -2 },
+  { source: "complexity", target: "info_geometry", pipeline: -2 },
+  { source: "memory", target: "coherence_transitions", pipeline: -2 },
+  { source: "emergent_spacetime", target: "boundary_action", pipeline: -2 },
+  { source: "black_hole", target: "quantum_gravity_pheno", pipeline: -2 },
+  { source: "cosmology", target: "gauge_unification", pipeline: -2 },
+  { source: "neutrino", target: "cosmology", pipeline: -2 },
+  { source: "boundary_action", target: "impedance", pipeline: -2 },
+  { source: "emergent_spacetime", target: "gravitational_waves", pipeline: -2 },
+  { source: "multiscale", target: "cosmology", pipeline: -2 },
+  { source: "resonance", target: "charged_leptons", pipeline: -2 },
+  { source: "resonance", target: "neutrino", pipeline: -2 },
+  { source: "rpst_extensions", target: "gauge_unification", pipeline: -2 },
+  { source: "hilbert_bpr", target: "quantum_foundations", pipeline: -2 },
+  { source: "resonance_algebra", target: "quantum_chemistry", pipeline: -2 },
+  { source: "optimization", target: "nuclear_physics", pipeline: -2 },
+  { source: "resonance", target: "cosmology", pipeline: -2 },
+  { source: "rpst_extensions", target: "emergent_spacetime", pipeline: -2 },
+  { source: "tdgl_bpr", target: "cosmology", pipeline: -2 },
+  { source: "metric", target: "black_hole", pipeline: -2 },
+  { source: "stability_manifolds", target: "cosmology", pipeline: -2 },
+  { source: "quantum_foundations", target: "conscious_agents", pipeline: -2 },
+  { source: "phase_transitions", target: "bioelectric", pipeline: -2 },
+  { source: "coherence_transitions", target: "bioelectric", pipeline: -2 },
+  { source: "impedance", target: "bioelectric", pipeline: -2 },
+  { source: "gauge_unification", target: "emergent_spacetime", pipeline: -2 },
+  { source: "gauge_unification", target: "gravitational_waves", pipeline: -2 },
+  { source: "alpha_derivation", target: "cosmology", pipeline: -2 },
+  { source: "clifford_bpr", target: "emergent_spacetime", pipeline: -2 },
+  { source: "charged_leptons", target: "cosmology", pipeline: -2 },
+  { source: "quantum_chemistry", target: "functional_architecture", pipeline: -2 },
+  { source: "nuclear_physics", target: "bioelectric", pipeline: -2 },
+  { source: "fluid_dynamics", target: "bioelectric", pipeline: -2 },
+  { source: "boundary_action", target: "cosmology", pipeline: -2 },
+  { source: "boundary_action", target: "nuclear_physics", pipeline: -2 },
+  { source: "multiscale", target: "phase_transitions", pipeline: -2 },
+  { source: "multiscale", target: "decoherence", pipeline: -2 },
+  { source: "multiscale", target: "memory", pipeline: -2 },
+
+  // Optics connections
+  { source: "optics", target: "impedance", pipeline: -2 },
+  { source: "optics", target: "metric", pipeline: -2 },
+  { source: "optics", target: "electromechanical", pipeline: -2 },
+  { source: "optics", target: "quantum_foundations", pipeline: -2 },
+  { source: "optics", target: "resonance_algebra", pipeline: -2 },
+
+  // Condensed matter connections
+  { source: "condensed_predictions", target: "phase_transitions", pipeline: -2 },
+  { source: "condensed_predictions", target: "topological_matter", pipeline: -2 },
+  { source: "condensed_predictions", target: "resonance_families", pipeline: -2 },
+  { source: "condensed_predictions", target: "impedance", pipeline: -2 },
+  { source: "condensed_predictions", target: "T_c_superconductor", pipeline: -2 },
+  { source: "condensed_predictions", target: "FQHE_plateaus", pipeline: -2 },
+
+  // Emergence connections
+  { source: "emergence", target: "collective", pipeline: -2 },
+  { source: "emergence", target: "complexity", pipeline: -2 },
+  { source: "emergence", target: "phase_transitions", pipeline: -2 },
+  { source: "emergence", target: "meta_boundary", pipeline: -2 },
+  { source: "emergence", target: "functional_architecture", pipeline: -2 },
+  { source: "emergence", target: "info_geometry", pipeline: -2 },
+
+  // New prediction edges
+  { source: "collective", target: "alpha_EEG", pipeline: -2 },
+  { source: "collective", target: "seizure_threshold", pipeline: -2 },
+  { source: "bioelectric", target: "cortical_column", pipeline: -2 },
+  { source: "impedance", target: "w_dark_energy", pipeline: -2 },
+  { source: "neutrino", target: "m_nu1", pipeline: -2 },
+  { source: "plasmoid", target: "plasmoid_recipe", pipeline: -2 },
+];
+
+// Deduplicate edges
+const edgeSet = new Set();
+const edges = [];
+rawEdges.forEach(e => {
+  const key = e.source + "|" + e.target;
+  if (!edgeSet.has(key)) {
+    edgeSet.add(key);
+    edges.push({ ...e });
+  }
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// LAYOUT
+// ───────────────────────────────────────────────────────────────────────────
+
+const W = window.innerWidth;
+const H = window.innerHeight;
+
+// Physics coordinate ranges
+const xMin = -10, xMax = 30;   // log10(eV)
+const yMin = -0.5, yMax = 10.8;
+
+// Margins for axes
+const margin = { top: 80, right: 40, bottom: 60, left: 70 };
+const plotW = W - margin.left - margin.right;
+const plotH = H - margin.top - margin.bottom;
+
+// Scales: physics coords -> pixel coords
+const xScale = d3.scaleLinear().domain([xMin, xMax]).range([margin.left, margin.left + plotW]);
+const yScale = d3.scaleLinear().domain([yMin, yMax]).range([margin.top + plotH, margin.top]);
+
+// Map node IDs to positions
+const nodeMap = {};
+nodeData.forEach(d => {
+  d.px = xScale(d.logEv);
+  d.py = yScale(d.abs);
+  nodeMap[d.id] = d;
+});
+
+// Adjacency for trace mode
+const adj = {};
+nodeData.forEach(d => adj[d.id] = []);
+edges.forEach(e => {
+  if (nodeMap[e.source] && nodeMap[e.target]) {
+    adj[e.source].push(e.target);
+    adj[e.target].push(e.source);
+  }
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// SVG SETUP
+// ───────────────────────────────────────────────────────────────────────────
+
+const svg = d3.select("body").append("svg").attr("width", W).attr("height", H);
+
+const defs = svg.append("defs");
+
+// Glow filter
+const glow = defs.append("filter").attr("id", "glow").attr("x", "-80%").attr("y", "-80%").attr("width", "260%").attr("height", "260%");
+glow.append("feGaussianBlur").attr("stdDeviation", "4").attr("result", "blur");
+const gMerge = glow.append("feMerge");
+gMerge.append("feMergeNode").attr("in", "blur");
+gMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+// Subtle glow for highlighted edges
+const edgeGlow = defs.append("filter").attr("id", "edge-glow").attr("x", "-20%").attr("y", "-20%").attr("width", "140%").attr("height", "140%");
+edgeGlow.append("feGaussianBlur").attr("stdDeviation", "2").attr("result", "blur");
+const eMerge = edgeGlow.append("feMerge");
+eMerge.append("feMergeNode").attr("in", "blur");
+eMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+// Background
+svg.append("rect").attr("width", W).attr("height", H).attr("fill", "#060612");
+
+// Main transform group for zoom
+const g = svg.append("g");
+
+// Zoom
+const zoom = d3.zoom().scaleExtent([0.3, 6]).on("zoom", ev => g.attr("transform", ev.transform));
+svg.call(zoom);
+
+// ───────────────────────────────────────────────────────────────────────────
+// BACKGROUND: Energy regime bands (vertical)
+// ───────────────────────────────────────────────────────────────────────────
+
+const energyBands = [
+  { label: "Dark Energy", from: -10, to: -6, color: "rgba(80,40,140,0.08)" },
+  { label: "Cosmic", from: -6, to: -2, color: "rgba(100,60,160,0.08)" },
+  { label: "Thermal", from: -2, to: 2, color: "rgba(60,80,160,0.08)" },
+  { label: "Atomic", from: 2, to: 5, color: "rgba(60,130,160,0.08)" },
+  { label: "Nuclear", from: 5, to: 9, color: "rgba(60,160,100,0.08)" },
+  { label: "Electroweak", from: 9, to: 15, color: "rgba(160,140,60,0.08)" },
+  { label: "GUT", from: 15, to: 25, color: "rgba(160,80,60,0.08)" },
+  { label: "Planck", from: 25, to: 30, color: "rgba(160,60,100,0.08)" },
+];
+
+const bgLayer = g.append("g").attr("class", "bg-layer");
+
+energyBands.forEach(b => {
+  bgLayer.append("rect")
+    .attr("x", xScale(b.from)).attr("y", yScale(yMax))
+    .attr("width", xScale(b.to) - xScale(b.from))
+    .attr("height", yScale(yMin) - yScale(yMax))
+    .attr("fill", b.color);
+  bgLayer.append("text")
+    .attr("x", (xScale(b.from) + xScale(b.to)) / 2)
+    .attr("y", yScale(yMax) + 14)
+    .attr("text-anchor", "middle")
+    .attr("fill", "rgba(255,255,255,0.35)")
+    .attr("font-size", "14px")
+    .attr("font-weight", "700")
+    .attr("letter-spacing", "2px")
+    .text(b.label.toUpperCase());
+});
+
+// Abstraction zone labels (horizontal)
+const absZones = [
+  { label: "MEASURABLE", from: 0, to: 2 },
+  { label: "PHENOMENOLOGY", from: 3, to: 5 },
+  { label: "THEORY", from: 6, to: 8 },
+  { label: "FOUNDATION", from: 9, to: 10 },
+];
+absZones.forEach(z => {
+  const yMid = (yScale(z.from) + yScale(z.to)) / 2;
+  bgLayer.append("text")
+    .attr("x", xScale(xMin) - 6)
+    .attr("y", yMid)
+    .attr("text-anchor", "end")
+    .attr("dominant-baseline", "middle")
+    .attr("fill", "rgba(255,255,255,0.30)")
+    .attr("font-size", "11px")
+    .attr("font-weight", "700")
+    .attr("letter-spacing", "2px")
+    .attr("transform", `rotate(-90, ${xScale(xMin) - 6}, ${yMid})`)
+    .text(z.label);
+});
+
+// Grid lines at major energy decades
+const gridEnergies = [-8, -4, 0, 4, 8, 12, 16, 20, 24, 28];
+gridEnergies.forEach(ev => {
+  bgLayer.append("line")
+    .attr("x1", xScale(ev)).attr("x2", xScale(ev))
+    .attr("y1", yScale(yMin)).attr("y2", yScale(yMax))
+    .attr("stroke", "rgba(255,255,255,0.035)")
+    .attr("stroke-width", 0.5);
+});
+
+// Horizontal grid at abstraction levels
+[0, 2, 4, 6, 8, 10].forEach(a => {
+  bgLayer.append("line")
+    .attr("x1", xScale(xMin)).attr("x2", xScale(xMax))
+    .attr("y1", yScale(a)).attr("y2", yScale(a))
+    .attr("stroke", "rgba(255,255,255,0.025)")
+    .attr("stroke-width", 0.5);
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// AXES
+// ───────────────────────────────────────────────────────────────────────────
+
+const axisLayer = g.append("g").attr("class", "axes");
+
+// X-axis labels
+const xTicks = [
+  { ev: -8, label: "10\u207B\u2078 eV" },
+  { ev: -4, label: "10\u207B\u2074 eV" },
+  { ev: 0, label: "1 eV" },
+  { ev: 3, label: "keV" },
+  { ev: 6, label: "MeV" },
+  { ev: 9, label: "GeV" },
+  { ev: 12, label: "TeV" },
+  { ev: 16, label: "10\u00B9\u2076" },
+  { ev: 20, label: "10\u00B2\u2070" },
+  { ev: 24, label: "GUT" },
+  { ev: 28, label: "Planck" },
+];
+
+xTicks.forEach(t => {
+  const x = xScale(t.ev);
+  axisLayer.append("line")
+    .attr("x1", x).attr("x2", x)
+    .attr("y1", yScale(yMin) + 4).attr("y2", yScale(yMin) + 10)
+    .attr("stroke", "#445");
+  axisLayer.append("text")
+    .attr("x", x).attr("y", yScale(yMin) + 24)
+    .attr("text-anchor", "middle")
+    .attr("fill", "#556")
+    .attr("font-size", "10px")
+    .text(t.label);
+});
+
+// X-axis title
+axisLayer.append("text")
+  .attr("x", (xScale(xMin) + xScale(xMax)) / 2)
+  .attr("y", yScale(yMin) + 44)
+  .attr("text-anchor", "middle")
+  .attr("fill", "#667")
+  .attr("font-size", "12px")
+  .attr("font-weight", "600")
+  .attr("letter-spacing", "2px")
+  .text("ENERGY SCALE (log\u2081\u2080 eV)");
+
+// Y-axis labels
+const yTicks = [
+  { a: 0, label: "0" }, { a: 2, label: "2" },
+  { a: 4, label: "4" }, { a: 6, label: "6" },
+  { a: 8, label: "8" }, { a: 10, label: "10" },
+];
+yTicks.forEach(t => {
+  const y = yScale(t.a);
+  axisLayer.append("line")
+    .attr("x1", xScale(xMin) - 4).attr("x2", xScale(xMin) - 10)
+    .attr("y1", y).attr("y2", y)
+    .attr("stroke", "#445");
+  axisLayer.append("text")
+    .attr("x", xScale(xMin) - 14).attr("y", y + 3)
+    .attr("text-anchor", "end")
+    .attr("fill", "#556")
+    .attr("font-size", "10px")
+    .text(t.label);
+});
+
+// Y-axis title
+axisLayer.append("text")
+  .attr("x", xScale(xMin) - 50)
+  .attr("y", (yScale(yMin) + yScale(yMax)) / 2)
+  .attr("text-anchor", "middle")
+  .attr("fill", "#667")
+  .attr("font-size", "12px")
+  .attr("font-weight", "600")
+  .attr("letter-spacing", "2px")
+  .attr("transform", `rotate(-90, ${xScale(xMin) - 50}, ${(yScale(yMin) + yScale(yMax)) / 2})`)
+  .text("ABSTRACTION");
+
+// ───────────────────────────────────────────────────────────────────────────
+// EDGES
+// ───────────────────────────────────────────────────────────────────────────
+
+const edgeLayer = g.append("g").attr("class", "edges");
+
+function edgeColor(e) {
+  if (e.pipeline >= 0) return pipelineColors[e.pipeline];
+  if (e.pipeline === -2) return "#f0a030";
+  return "#222233";
+}
+
+function edgeOpacity(e) {
+  if (e.pipeline >= 0) return 0.55;
+  if (e.pipeline === -2) return 0.3;
+  return 0.1;
+}
+
+function edgeDash(e) {
+  if (e.pipeline === -2) return "6,4";
+  return "none";
+}
+
+function edgeWidth(e) {
+  if (e.pipeline >= 0) return 1.8;
+  if (e.pipeline === -2) return 1.2;
+  return 0.6;
+}
+
+// Curved edges
+function edgePath(e) {
+  const s = nodeMap[e.source];
+  const t = nodeMap[e.target];
+  if (!s || !t) return "";
+  const dx = t.px - s.px;
+  const dy = t.py - s.py;
+  const dist = Math.sqrt(dx*dx + dy*dy);
+  // Gentle curve proportional to distance
+  const curve = Math.min(dist * 0.15, 40);
+  const mx = (s.px + t.px) / 2 - dy * curve / dist * 0.3;
+  const my = (s.py + t.py) / 2 + dx * curve / dist * 0.3;
+  return `M${s.px},${s.py} Q${mx},${my} ${t.px},${t.py}`;
+}
+
+const edgeEls = edgeLayer.selectAll("path")
+  .data(edges.filter(e => nodeMap[e.source] && nodeMap[e.target]))
+  .join("path")
+  .attr("d", edgePath)
+  .attr("fill", "none")
+  .attr("stroke", edgeColor)
+  .attr("stroke-width", edgeWidth)
+  .attr("stroke-opacity", edgeOpacity)
+  .attr("stroke-dasharray", edgeDash)
+  .attr("class", d => `edge edge-${d.source} edge-${d.target}`);
+
+// ───────────────────────────────────────────────────────────────────────────
+// NODES
+// ───────────────────────────────────────────────────────────────────────────
+
+const nodeLayer = g.append("g").attr("class", "nodes");
+
+function nodeRadius(d) {
+  if (d.layer === 7) return 5;
+  if (d.layer === 6) return 11;
+  if (d.layer === 0) return 10;
+  return 8;
+}
+
+const nodeGroups = nodeLayer.selectAll("g")
+  .data(nodeData)
+  .join("g")
+  .attr("transform", d => `translate(${d.px},${d.py})`)
+  .attr("class", d => `node node-${d.id}`)
+  .style("cursor", "pointer")
+  .on("mouseenter", onNodeEnter)
+  .on("mouseleave", onNodeLeave)
+  .on("click", onNodeClick);
+
+// Outer glow ring
+nodeGroups.append("circle")
+  .attr("r", d => nodeRadius(d) + 3)
+  .attr("fill", "none")
+  .attr("stroke", d => layerColors[d.layer])
+  .attr("stroke-width", 1)
+  .attr("stroke-opacity", 0.15)
+  .attr("class", "node-ring");
+
+// Main circle
+nodeGroups.append("circle")
+  .attr("r", nodeRadius)
+  .attr("fill", d => layerColors[d.layer])
+  .attr("fill-opacity", d => d.layer === 7 ? 0.85 : 0.7)
+  .attr("stroke", d => layerColors[d.layer])
+  .attr("stroke-width", 1.5)
+  .attr("stroke-opacity", 0.6)
+  .attr("filter", "url(#glow)")
+  .attr("class", "node-core");
+
+// Labels
+let labelsVisible = true;
+nodeGroups.append("text")
+  .attr("dy", d => -nodeRadius(d) - 5)
+  .attr("text-anchor", "middle")
+  .attr("fill", d => {
+    const c = d3.color(layerColors[d.layer]);
+    c.opacity = 0.85;
+    return c + "";
+  })
+  .attr("font-size", d => d.layer === 7 ? "8px" : "9px")
+  .attr("font-weight", d => d.layer === 6 ? "600" : "400")
+  .attr("class", "node-label")
+  .text(d => d.label);
+
+// ───────────────────────────────────────────────────────────────────────────
+// TOOLTIP
+// ───────────────────────────────────────────────────────────────────────────
+
+const tooltip = d3.select("#tooltip");
+
+function onNodeEnter(event, d) {
+  if (traceMode && !traceActive) return; // In trace mode, let clicks handle it
+  if (traceActive) return; // Don't override trace highlights
+
+  // Highlight connected edges
+  edgeEls.attr("stroke-opacity", e => {
+    if (e.source === d.id || e.target === d.id) return e.pipeline >= 0 ? 0.9 : e.pipeline === -2 ? 0.7 : 0.35;
+    return 0.03;
+  }).attr("stroke-width", e => {
+    if (e.source === d.id || e.target === d.id) return edgeWidth(e) * 1.5;
+    return edgeWidth(e);
+  });
+
+  // Dim unconnected nodes
+  const connected = new Set([d.id, ...adj[d.id]]);
+  nodeGroups.attr("opacity", n => connected.has(n.id) ? 1 : 0.15);
+
+  // Tooltip
+  const evLabel = d.logEv >= 0 ? `10^${d.logEv} eV` : `10^(${d.logEv}) eV`;
+  tooltip.html(
+    `<div class="tt-name" style="color:${layerColors[d.layer]}">${d.label}</div>` +
+    `<div class="tt-layer">${layerNames[d.layer]}</div>` +
+    `<div class="tt-eq">${d.eq}</div>` +
+    `<div class="tt-pos">Energy: ${evLabel} | Abstraction: ${d.abs}/10</div>`
+  ).style("display", "block")
+   .style("left", (event.pageX + 14) + "px")
+   .style("top", (event.pageY - 10) + "px");
+}
+
+function onNodeLeave(event, d) {
+  if (traceActive) return;
+
+  edgeEls.attr("stroke-opacity", edgeOpacity).attr("stroke-width", edgeWidth);
+  nodeGroups.attr("opacity", 1);
+  tooltip.style("display", "none");
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// TRACE PREDICTION MODE
+// ───────────────────────────────────────────────────────────────────────────
+
+let traceMode = false;
+let traceActive = false;
+
+function toggleTraceMode() {
+  traceMode = !traceMode;
+  d3.select("#btn-trace").classed("active", traceMode);
+  if (!traceMode) clearTrace();
+}
+
+function clearTrace() {
+  traceActive = false;
+  edgeEls.attr("stroke-opacity", edgeOpacity).attr("stroke-width", edgeWidth).attr("filter", null);
+  nodeGroups.attr("opacity", 1);
+  d3.select("#trace-info").style("display", "none");
+  tooltip.style("display", "none");
+}
+
+// BFS upward: find all paths from a prediction to foundations (abs >= 8)
+function traceUpward(startId) {
+  const visited = new Set();
+  const queue = [{ id: startId, path: [startId] }];
+  const reachable = new Set([startId]);
+  const reachableEdges = new Set();
+  const chains = [];
+
+  visited.add(startId);
+
+  while (queue.length > 0) {
+    const { id, path } = queue.shift();
+    const node = nodeMap[id];
+
+    // If we reached a foundation-level node, record the chain
+    if (node && node.abs >= 8.5 && id !== startId) {
+      chains.push([...path]);
+    }
+
+    // Explore neighbors with higher abstraction (upward)
+    for (const nbr of (adj[id] || [])) {
+      const nbrNode = nodeMap[nbr];
+      if (!nbrNode) continue;
+      // Go upward or same level (allow some lateral movement)
+      if (nbrNode.abs >= node.abs - 0.5 && !visited.has(nbr)) {
+        visited.add(nbr);
+        reachable.add(nbr);
+        reachableEdges.add(id + "|" + nbr);
+        reachableEdges.add(nbr + "|" + id);
+        queue.push({ id: nbr, path: [...path, nbr] });
+      }
+    }
+  }
+
+  return { reachable, reachableEdges, chains };
+}
+
+function onNodeClick(event, d) {
+  event.stopPropagation();
+
+  if (!traceMode) return;
+
+  // Only trace from prediction nodes (or allow any node)
+  clearTrace();
+  traceActive = true;
+
+  const { reachable, reachableEdges, chains } = traceUpward(d.id);
+
+  // Highlight reachable nodes
+  nodeGroups.attr("opacity", n => reachable.has(n.id) ? 1 : 0.08);
+
+  // Highlight edges in trace
+  edgeEls
+    .attr("stroke-opacity", e => {
+      const key1 = e.source + "|" + e.target;
+      const key2 = e.target + "|" + e.source;
+      if (reachableEdges.has(key1) || reachableEdges.has(key2)) {
+        return e.pipeline >= 0 ? 0.9 : e.pipeline === -2 ? 0.8 : 0.4;
+      }
+      return 0.02;
+    })
+    .attr("stroke-width", e => {
+      const key1 = e.source + "|" + e.target;
+      const key2 = e.target + "|" + e.source;
+      if (reachableEdges.has(key1) || reachableEdges.has(key2)) {
+        return edgeWidth(e) * 2;
+      }
+      return edgeWidth(e) * 0.5;
+    })
+    .attr("filter", e => {
+      const key1 = e.source + "|" + e.target;
+      const key2 = e.target + "|" + e.source;
+      return (reachableEdges.has(key1) || reachableEdges.has(key2)) ? "url(#edge-glow)" : null;
+    });
+
+  // Show trace info
+  const traceInfo = d3.select("#trace-info");
+  const longestChain = chains.sort((a, b) => b.length - a.length)[0] || [d.id];
+  const chainLabels = longestChain.map(id => {
+    const n = nodeMap[id];
+    return `<span>${n ? n.label : id}</span>`;
+  });
+
+  traceInfo.select(".trace-title").html(`Tracing: ${d.label}`);
+  traceInfo.select(".trace-chain").html(
+    `Longest path (${longestChain.length} nodes):<br>` +
+    chainLabels.join(' &rarr; ')
+  );
+  traceInfo.style("display", "block");
+}
+
+// Click background to clear trace
+svg.on("click", () => {
+  if (traceActive) clearTrace();
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// CONTROLS
+// ───────────────────────────────────────────────────────────────────────────
+
+function resetZoom() {
+  svg.transition().duration(600).call(zoom.transform, d3.zoomIdentity);
+}
+
+function toggleLabels() {
+  labelsVisible = !labelsVisible;
+  g.selectAll(".node-label").transition().duration(200).attr("opacity", labelsVisible ? 1 : 0);
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// RESPONSIVE
+// ───────────────────────────────────────────────────────────────────────────
+
+window.addEventListener("resize", () => {
+  // Simple: just reload for now
+  location.reload();
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// INITIAL FIT
+// ───────────────────────────────────────────────────────────────────────────
+
+// Auto-fit content to viewport
+(function autoFit() {
+  const pad = 40;
+  const allX = nodeData.map(d => d.px);
+  const allY = nodeData.map(d => d.py);
+  const bx0 = Math.min(...allX) - pad;
+  const by0 = Math.min(...allY) - pad;
+  const bx1 = Math.max(...allX) + pad;
+  const by1 = Math.max(...allY) + pad;
+  const bw = bx1 - bx0;
+  const bh = by1 - by0;
+  const scale = Math.min(W / bw, H / bh) * 0.88;
+  const tx = W / 2 - (bx0 + bw / 2) * scale;
+  const ty = H / 2 - (by0 + bh / 2) * scale;
+  svg.call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
+})();
+</script>
+<script>
+function toggleLegend() {
+  const body = document.getElementById('legend-body');
+  const btn = document.getElementById('legend-toggle');
+  const open = body.classList.toggle('open');
+  btn.textContent = open ? 'hide ▾' : 'show ▸';
+}
+</script>
+</body>
+</html>

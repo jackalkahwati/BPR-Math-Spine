@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BPR Research Terminal | Documentation Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#004395",
+                        "tertiary-container": "#ca8100",
+                        "surface-container": "#18202f",
+                        "secondary-container": "#6f00be",
+                        "on-tertiary": "#472a00",
+                        "surface-container-low": "#131c2b",
+                        "secondary-fixed": "#f0dbff",
+                        "primary-fixed-dim": "#adc6ff",
+                        "tertiary": "#ffb95f",
+                        "surface-dim": "#0b1323",
+                        "outline-variant": "#424754",
+                        "on-error": "#690005",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "background": "#0b1323",
+                        "surface-variant": "#2d3546",
+                        "on-primary-container": "#00285d",
+                        "error-container": "#93000a",
+                        "inverse-primary": "#005ac2",
+                        "on-surface": "#dbe2f8",
+                        "on-primary": "#002e6a",
+                        "primary-fixed": "#d8e2ff",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "tertiary-fixed": "#ffddb8",
+                        "error": "#ffb4ab",
+                        "surface-container-lowest": "#060e1d",
+                        "inverse-on-surface": "#283041",
+                        "surface-container-highest": "#2d3546",
+                        "on-tertiary-container": "#3e2400",
+                        "primary": "#adc6ff",
+                        "on-tertiary-fixed": "#2a1700",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "on-error-container": "#ffdad6",
+                        "secondary": "#ddb7ff",
+                        "on-background": "#dbe2f8",
+                        "outline": "#8c909f",
+                        "on-secondary-container": "#d6a9ff",
+                        "surface-bright": "#31394a",
+                        "surface-tint": "#adc6ff",
+                        "on-secondary-fixed": "#2c0051",
+                        "inverse-surface": "#dbe2f8",
+                        "on-primary-fixed": "#001a42",
+                        "on-secondary": "#490080",
+                        "primary-container": "#4d8eff",
+                        "on-surface-variant": "#c2c6d6",
+                        "surface-container-high": "#222a3a",
+                        "surface": "#0b1323"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .resonance-gradient {
+            background: linear-gradient(135deg, #adc6ff 0%, #4d8eff 100%);
+        }
+        .glass-panel {
+            background: rgba(45, 53, 70, 0.8);
+            backdrop-filter: blur(20px);
+        }
+
+        /* Progressive disclosure researcher details */
+        details.researcher-detail { margin-top: 1.25rem; }
+        details.researcher-detail summary {
+          display: inline-flex; align-items: center; gap: 6px;
+          cursor: pointer; list-style: none;
+          font-size: 0.7rem; font-family: 'Space Grotesk', sans-serif;
+          letter-spacing: 0.08em; text-transform: uppercase;
+          color: #adc6ff; opacity: 0.6;
+          padding: 5px 14px; border-radius: 999px;
+          border: 1px solid rgba(173,198,255,0.2);
+          transition: opacity 0.2s, border-color 0.2s;
+          user-select: none;
+        }
+        details.researcher-detail summary::-webkit-details-marker { display: none; }
+        details.researcher-detail summary::before {
+          content: '▸'; font-size: 0.65rem; transition: transform 0.2s;
+        }
+        details.researcher-detail[open] summary::before { transform: rotate(90deg); }
+        details.researcher-detail summary:hover { opacity: 1; border-color: rgba(173,198,255,0.5); }
+        details.researcher-detail .detail-body {
+          margin-top: 1rem;
+          padding: 1rem 1.25rem;
+          border-left: 2px solid rgba(173,198,255,0.2);
+          background: rgba(173,198,255,0.03);
+          border-radius: 0 8px 8px 0;
+          font-size: 0.82rem;
+          color: rgba(255,255,255,0.55);
+          line-height: 1.7;
+        }
+        details.researcher-detail .detail-body code {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.78rem; color: #ffb95f;
+          background: rgba(255,185,95,0.08);
+          padding: 1px 6px; border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body min-h-screen">
+<!-- TopNavBar -->
+<header class="w-full top-0 z-50 sticky bg-[#0b1323] border-b border-white/5 shadow-[0_0_20px_rgba(173,198,255,0.05)]">
+<div class="flex justify-between items-center px-8 h-16 w-full max-w-[1920px] mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-xl font-light tracking-tighter text-[#adc6ff] font-['Space_Grotesk']">BPR Research Terminal</span>
+<nav class="hidden md:flex gap-6 items-center h-full">
+<a class="text-[#adc6ff]/60 hover:text-[#adc6ff] transition-colors font-['Space_Grotesk'] font-light tracking-tight" href="experimental-roadmap.html">Roadmap</a>
+<a class="text-[#adc6ff]/60 hover:text-[#adc6ff] transition-colors font-['Space_Grotesk'] font-light tracking-tight" href="global-consistency-audit.html">Consistency</a>
+<a class="text-[#adc6ff]/60 hover:text-[#adc6ff] transition-colors font-['Space_Grotesk'] font-light tracking-tight" href="viz/physics-landscape.html" target="_blank">Explorer</a>
+<a class="text-[#adc6ff] border-b-2 border-[#adc6ff] pb-1 font-['Space_Grotesk'] font-light tracking-tight" href="researcher-portal.html">Docs</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<span class="material-symbols-outlined text-[#adc6ff]/60 absolute left-3 top-1/2 -translate-y-1/2 text-lg">search</span>
+<input class="bg-surface-container-low border-b border-outline-variant/30 focus:border-primary focus:ring-0 text-sm py-1.5 pl-10 pr-4 w-64 transition-all duration-300 font-label" placeholder="Query archive..." type="text"/>
+</div>
+<div class="flex gap-2">
+<button onclick="openPanel('settings-panel')" class="p-2 hover:bg-white/5 transition-all duration-300 cursor-pointer active:scale-95" title="Settings">
+<span class="material-symbols-outlined text-[#adc6ff]">settings</span>
+</button>
+<button onclick="openPanel('profile-panel')" class="p-2 hover:bg-white/5 transition-all duration-300 cursor-pointer active:scale-95" title="Profile">
+<span class="material-symbols-outlined text-[#adc6ff]">account_circle</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<div class="flex max-w-[1920px] mx-auto">
+<!-- SideNavBar (Contextual: Docs Sidebar) -->
+<aside class="h-[calc(100vh-64px)] w-64 sticky top-16 bg-[#0b1323] border-r border-white/5 flex flex-col py-6 px-4 gap-4 hidden lg:flex">
+<div class="mb-6 px-2">
+<h2 class="text-lg font-['Space_Grotesk'] text-[#ddb7ff] mb-1">BPR Core</h2>
+<p class="text-xs text-[#adc6ff]/40 font-label tracking-widest uppercase">Documentation Portal</p>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 py-2.5 px-3 bg-white/5 text-[#adc6ff] border-r-2 border-[#adc6ff] font-['Inter'] text-sm tracking-wide transition-all duration-200" href="#getting-started">
+<span class="material-symbols-outlined text-lg">rocket_launch</span>
+<span>Getting Started</span>
+</a>
+<a class="flex items-center gap-3 py-2.5 px-3 text-[#adc6ff]/40 hover:text-[#adc6ff]/80 font-['Inter'] text-sm tracking-wide transition-all duration-200 hover:bg-white/5" href="bpr-paper.pdf" target="_blank">
+<span class="material-symbols-outlined text-lg">architecture</span>
+<span>Mathematical Spine</span>
+</a>
+<a class="flex items-center gap-3 py-2.5 px-3 text-[#adc6ff]/40 hover:text-[#adc6ff]/80 font-['Inter'] text-sm tracking-wide transition-all duration-200 hover:bg-white/5" href="#api-access">
+<span class="material-symbols-outlined text-lg">terminal</span>
+<span>API &amp; CLI</span>
+</a>
+<a class="flex items-center gap-3 py-2.5 px-3 text-[#adc6ff]/40 hover:text-[#adc6ff]/80 font-['Inter'] text-sm tracking-wide transition-all duration-200 hover:bg-white/5" href="#peer-review">
+<span class="material-symbols-outlined text-lg">fact_check</span>
+<span>Peer Review Status</span>
+</a>
+<a class="flex items-center gap-3 py-2.5 px-3 text-[#adc6ff]/40 hover:text-[#adc6ff]/80 font-['Inter'] text-sm tracking-wide transition-all duration-200 hover:bg-white/5" href="#whitepapers">
+<span class="material-symbols-outlined text-lg">menu_book</span>
+<span>Papers &amp; Docs</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-white/5">
+<a href="viz/physics-landscape.html" target="_blank" class="w-full resonance-gradient text-on-primary-container font-medium py-2.5 rounded-md flex items-center justify-center gap-2 transition-all active:scale-95 no-underline">
+<span class="material-symbols-outlined text-sm">bolt</span>
+<span>Open Explorer</span>
+</a>
+<div class="mt-6 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-1.5 text-[#adc6ff]/40 hover:text-[#adc6ff]/80 text-xs" href="https://github.com/jackalkahwati/BPR-Math-Spine/issues" target="_blank" rel="noopener">
+<span class="material-symbols-outlined text-sm">help_outline</span>
+<span>Support</span>
+</a>
+<span class="flex items-center gap-3 px-3 py-1.5 text-[#adc6ff]/40 text-xs cursor-default select-none">
+<span class="material-symbols-outlined text-sm">verified_user</span>
+<span>Access Level: L4</span>
+</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 px-8 py-12 lg:px-16 overflow-x-hidden">
+<!-- Hero Section -->
+<section class="mb-20 max-w-5xl">
+<div class="flex items-baseline gap-4 mb-4">
+<span class="bg-tertiary/10 text-tertiary px-2 py-0.5 text-[10px] font-mono tracking-widest uppercase rounded">Substrate v2.09</span>
+<span class="text-primary/40 font-mono text-[10px] tracking-widest uppercase" id="last-sync">Last Sync: </span>
+<script>document.getElementById('last-sync').textContent = 'Last Sync: ' + new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',timeZone:'UTC',hour12:false}) + ' UTC';</script>
+</div>
+<h1 class="font-headline font-light text-5xl md:text-7xl text-on-surface tracking-tighter leading-none mb-8">
+                    Documentation <br/> <span class="text-primary italic">&amp; Structural Hub</span>
+</h1>
+<p class="font-body text-on-surface-variant text-lg leading-relaxed max-w-2xl">
+                    Technical documentation, derivation papers, and CLI reference for the BPR framework. Start with the Mathematical Spine if you're new; jump to Whitepapers if you want the derivations.
+                </p>
+</section>
+<!-- Bento Layout Sections -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-20">
+<!-- Recent Updates (The Stream) -->
+<div class="lg:col-span-7 flex flex-col gap-6" id="system-feed">
+<div class="flex justify-between items-end mb-2">
+<h3 class="font-headline text-2xl font-light text-primary">System Feed</h3>
+<a class="text-xs uppercase tracking-widest text-primary/60 hover:text-primary transition-colors" href="https://github.com/jackalkahwati/BPR-Math-Spine/commits/main" target="_blank" rel="noopener">View All Logs</a>
+</div>
+<div class="space-y-4">
+<!-- Update: a0 derivation -->
+<a href="https://github.com/jackalkahwati/BPR-Math-Spine/commit/46270f8" target="_blank" class="bg-surface-container-low p-6 transition-colors hover:bg-surface-container-high flex gap-6 items-start group no-underline block">
+<div class="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-surface-container-highest rounded-full text-primary">
+<span class="material-symbols-outlined">function</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-headline text-lg text-on-surface font-light group-hover:text-primary transition-colors">a₀ Derived from Gibbons-Hawking Temperature</h4>
+<span class="font-mono text-[10px] text-on-surface-variant/50">APR 5</span>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed mb-3">
+First-principles derivation of the Bohr radius a₀ from substrate Gibbons-Hawking temperature. Closes the loop on the hydrogen energy spectrum without any atomic-scale inputs.
+</p>
+<div class="flex gap-2">
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-mono uppercase">Derivation</span>
+<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-[10px] font-mono uppercase">Quantum</span>
+</div>
+</div>
+</a>
+<!-- Update: BPRBoundaryPhonon -->
+<a href="https://github.com/jackalkahwati/BPR-Math-Spine/commit/955850e" target="_blank" class="bg-surface-container-low p-6 transition-colors hover:bg-surface-container-high flex gap-6 items-start group no-underline block">
+<div class="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-surface-container-highest rounded-full text-secondary">
+<span class="material-symbols-outlined">science</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-headline text-lg text-on-surface font-light group-hover:text-secondary transition-colors">BPRBoundaryPhonon: p^{1/3} ΔN_eff Ceiling</h4>
+<span class="font-mono text-[10px] text-on-surface-variant/50">APR 5</span>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed mb-3">
+New falsifiable prediction: the effective number of relativistic species ΔN_eff is bounded above by p^{1/3} ≈ 47.1, matching CMB constraints. Direct test for next-generation CMB-S4 observations.
+</p>
+<div class="flex gap-2">
+<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-[10px] font-mono uppercase">Prediction</span>
+<span class="px-2 py-0.5 bg-tertiary/10 text-tertiary text-[10px] font-mono uppercase">Cosmology</span>
+</div>
+</div>
+</a>
+<!-- Update: Cosmology v7 -->
+<a href="https://github.com/jackalkahwati/BPR-Math-Spine/commit/0100c29" target="_blank" class="bg-surface-container-low p-6 transition-colors hover:bg-surface-container-high flex gap-6 items-start group no-underline block">
+<div class="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-surface-container-highest rounded-full text-tertiary">
+<span class="material-symbols-outlined">public</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-headline text-lg text-on-surface font-light group-hover:text-tertiary transition-colors">BPR Cosmology v7: MOND-Enhanced Baryonic Retention</h4>
+<span class="font-mono text-[10px] text-on-surface-variant/50">APR 4</span>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed mb-3">
+Added f_star channel: BPR predicts the stellar fraction f_★ from substrate impedance and MOND acceleration scale. Connects dark matter, baryogenesis, and structure formation in a single derivation chain.
+</p>
+<div class="flex gap-2">
+<span class="px-2 py-0.5 bg-tertiary/10 text-tertiary text-[10px] font-mono uppercase">Cosmology</span>
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-mono uppercase">v7</span>
+</div>
+</div>
+</a>
+</div>
+</div>
+<!-- Featured Instrument / Resource -->
+<div class="lg:col-span-5">
+<div class="glass-panel p-8 h-full relative overflow-hidden flex flex-col">
+<div class="relative z-10">
+<h3 class="font-headline text-2xl font-light text-secondary mb-4">Core Mathematical Spine</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed mb-8">
+                                Interactive visualization of resonance equations. Access the raw LaTeX files and Wolfram integration modules.
+                            </p>
+<div class="bg-surface-container-lowest p-4 rounded mb-8 font-mono text-[11px] text-secondary/80 leading-loose border border-white/5">
+                                ∫ ∂ψ/∂t = Ĥψ<br/>
+                                Ψ(x, t) = Σ cₙ φₙ(x) e^(-iEₙt/ħ)<br/>
+<span class="text-primary">// Resonance Node Delta v1.2</span>
+</div>
+<a href="bpr-paper.pdf" target="_blank" class="mt-auto text-xs font-mono uppercase tracking-[0.2em] py-3 border border-secondary/20 w-full hover:bg-secondary/10 transition-colors text-secondary text-center no-underline block">
+                                Read the Full Paper
+                            </a>
+</div>
+<!-- Abstract Resonance Graphic -->
+<div class="absolute -right-20 -bottom-20 w-64 h-64 bg-secondary/10 rounded-full blur-[80px]"></div>
+</div>
+</div>
+</div>
+<!-- Whitepaper Gallery -->
+<section class="mb-20" id="whitepapers">
+<div class="flex items-center justify-between mb-10">
+<div>
+<h2 class="font-headline text-3xl font-light text-on-surface mb-2">Papers &amp; Documents</h2>
+<p class="text-sm text-on-surface-variant">Core BPR documents hover to download or open.</p>
+</div>
+<div class="flex gap-2">
+<button id="btn-grid" onclick="setDocView('grid')" class="p-2 border border-primary/40 text-primary hover:bg-primary/5 transition-colors" title="Grid view">
+<span class="material-symbols-outlined">grid_view</span>
+</button>
+<button id="btn-list" onclick="setDocView('list')" class="p-2 border border-outline-variant/30 text-on-surface-variant hover:bg-primary/5 transition-colors" title="List view">
+<span class="material-symbols-outlined">list</span>
+</button>
+</div>
+<script>
+function setDocView(mode) {
+  const grid = document.getElementById('docs-grid');
+  const btnG = document.getElementById('btn-grid');
+  const btnL = document.getElementById('btn-list');
+  if (mode === 'list') {
+    grid.classList.remove('md:grid-cols-2','xl:grid-cols-3');
+    grid.classList.add('grid-cols-1','max-w-2xl');
+    btnL.classList.add('border-primary/40','text-primary');
+    btnL.classList.remove('border-outline-variant/30','text-on-surface-variant');
+    btnG.classList.remove('border-primary/40','text-primary');
+    btnG.classList.add('border-outline-variant/30','text-on-surface-variant');
+  } else {
+    grid.classList.add('md:grid-cols-2','xl:grid-cols-3');
+    grid.classList.remove('grid-cols-1','max-w-2xl');
+    btnG.classList.add('border-primary/40','text-primary');
+    btnG.classList.remove('border-outline-variant/30','text-on-surface-variant');
+    btnL.classList.remove('border-primary/40','text-primary');
+    btnL.classList.add('border-outline-variant/30','text-on-surface-variant');
+  }
+}
+</script>
+</div>
+<div id="docs-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
+<!-- Paper Card 1: Main Paper -->
+<div class="group flex flex-col">
+<div class="aspect-[3/4] bg-surface-container-high relative overflow-hidden mb-4 p-8 flex flex-col justify-between border border-white/5">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-4xl">picture_as_pdf</span>
+<span class="text-[10px] font-mono text-primary/40 uppercase">Core</span>
+</div>
+<div>
+<h4 class="font-headline text-xl text-on-surface font-light mb-2 group-hover:text-primary transition-colors">Boundary Phase Resonance: Full Mathematical Spine</h4>
+<p class="text-xs text-on-surface-variant/60 font-mono">13 pages · Apr 2026 · Jack Al-Kahwati</p>
+</div>
+<div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3 bg-surface-dim/80 backdrop-blur-sm">
+<a href="bpr-paper.pdf" download class="resonance-gradient px-6 py-2.5 text-on-primary-container text-xs font-mono uppercase tracking-widest flex items-center gap-2 no-underline"><span class="material-symbols-outlined text-sm">download</span> Download PDF</a>
+<a href="bpr-paper.pdf" target="_blank" class="border border-primary/30 text-primary px-6 py-2.5 text-xs font-mono uppercase tracking-widest flex items-center gap-2 no-underline hover:bg-primary/10"><span class="material-symbols-outlined text-sm">open_in_new</span> Read Online</a>
+</div>
+<svg class="absolute inset-0 w-full h-full opacity-20 mix-blend-overlay pointer-events-none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><pattern id="wave-p" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse"><circle cx="30" cy="30" r="28" fill="none" stroke="#adc6ff" stroke-width="0.5" opacity="0.5"/><circle cx="30" cy="30" r="18" fill="none" stroke="#adc6ff" stroke-width="0.3" opacity="0.4"/><circle cx="30" cy="30" r="8" fill="none" stroke="#ddb7ff" stroke-width="0.3" opacity="0.5"/></pattern></defs><rect width="100%" height="100%" fill="url(#wave-p)"/></svg>
+</div>
+<div class="flex justify-between items-center px-1">
+<span class="text-xs text-on-surface-variant font-medium">BPR Core · PDF</span>
+<span class="text-[10px] text-on-surface-variant/40">201 KB</span>
+</div>
+</div>
+<!-- Paper Card 2: Experimental Roadmap -->
+<div class="group flex flex-col">
+<div class="aspect-[3/4] bg-surface-container-high relative overflow-hidden mb-4 p-8 flex flex-col justify-between border border-white/5">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-secondary text-4xl">science</span>
+<span class="text-[10px] font-mono text-secondary/40 uppercase">Experimental</span>
+</div>
+<div>
+<h4 class="font-headline text-xl text-on-surface font-light mb-2 group-hover:text-secondary transition-colors">Experimental Falsification Roadmap</h4>
+<p class="text-xs text-on-surface-variant/60 font-mono">10 concrete tests · 2026–2030</p>
+</div>
+<div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center bg-surface-dim/80 backdrop-blur-sm">
+<a href="experimental-roadmap.html" class="bg-secondary text-on-secondary px-6 py-2.5 text-xs font-mono uppercase tracking-widest flex items-center gap-2 no-underline">
+<span class="material-symbols-outlined text-sm">open_in_new</span> Open Roadmap
+</a>
+</div>
+<svg class="absolute inset-0 w-full h-full opacity-20 mix-blend-overlay pointer-events-none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><pattern id="hex-p" x="0" y="0" width="52" height="60" patternUnits="userSpaceOnUse"><polygon points="26,2 50,15 50,45 26,58 2,45 2,15" fill="none" stroke="#ddb7ff" stroke-width="0.6" opacity="0.6"/><circle cx="26" cy="30" r="2" fill="#ddb7ff" opacity="0.4"/></pattern></defs><rect width="100%" height="100%" fill="url(#hex-p)"/></svg>
+</div>
+<div class="flex justify-between items-center px-1">
+<span class="text-xs text-on-surface-variant font-medium">Falsification Tests</span>
+<span class="text-[10px] text-on-surface-variant/40">Web</span>
+</div>
+</div>
+<!-- Paper Card 3: Textbook -->
+<div class="group flex flex-col">
+<div class="aspect-[3/4] bg-surface-container-high relative overflow-hidden mb-4 p-8 flex flex-col justify-between border border-white/5">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-secondary text-4xl">menu_book</span>
+<span class="text-[10px] font-mono text-secondary/40 uppercase">Full Book</span>
+</div>
+<div>
+<h4 class="font-headline text-xl text-on-surface font-light mb-2 group-hover:text-secondary transition-colors">BPR: A Mathematical Theory of Everything</h4>
+<p class="text-xs text-on-surface-variant/60 font-mono">228 KB · 24 theories · Jack Al-Kahwati</p>
+</div>
+<div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3 bg-surface-dim/80 backdrop-blur-sm">
+<a href="bpr-textbook.pdf" download class="resonance-gradient px-6 py-2.5 text-on-primary-container text-xs font-mono uppercase tracking-widest flex items-center gap-2 no-underline"><span class="material-symbols-outlined text-sm">download</span> Download PDF</a>
+<a href="bpr-textbook.pdf" target="_blank" class="border border-secondary/30 text-secondary px-6 py-2.5 text-xs font-mono uppercase tracking-widest flex items-center gap-2 no-underline hover:bg-secondary/10"><span class="material-symbols-outlined text-sm">open_in_new</span> Open in Browser</a>
+</div>
+<svg class="absolute inset-0 w-full h-full opacity-20 mix-blend-overlay pointer-events-none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><pattern id="book-p" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse"><rect x="4" y="4" width="32" height="32" fill="none" stroke="#ddb7ff" stroke-width="0.4" opacity="0.5"/><line x1="0" y1="20" x2="40" y2="20" stroke="#ddb7ff" stroke-width="0.2" opacity="0.3"/></pattern></defs><rect width="100%" height="100%" fill="url(#book-p)"/></svg>
+</div>
+<div class="flex justify-between items-center px-1">
+<span class="text-xs text-on-surface-variant font-medium">Textbook · PDF</span>
+<span class="text-[10px] text-on-surface-variant/40">228 KB</span>
+</div>
+</div>
+<!-- Paper Card 4 (was 3): GitHub Source -->
+<div class="group flex flex-col">
+<div class="aspect-[3/4] bg-surface-container-high relative overflow-hidden mb-4 p-8 flex flex-col justify-between border border-white/5">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-tertiary text-4xl">terminal</span>
+<span class="text-[10px] font-mono text-tertiary/40 uppercase">Open Source</span>
+</div>
+<div>
+<h4 class="font-headline text-xl text-on-surface font-light mb-2 group-hover:text-tertiary transition-colors">BPR-Math-Spine Codebase</h4>
+<p class="text-xs text-on-surface-variant/60 font-mono">24 theories · 87 predictions · 1,225 tests</p>
+</div>
+<div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center bg-surface-dim/80 backdrop-blur-sm">
+<a href="https://github.com/jackalkahwati/BPR-Math-Spine" target="_blank" class="bg-tertiary text-on-tertiary px-6 py-2.5 text-xs font-mono uppercase tracking-widest flex items-center gap-2 no-underline">
+<span class="material-symbols-outlined text-sm">open_in_new</span> View on GitHub
+</a>
+</div>
+<svg class="absolute inset-0 w-full h-full opacity-20 mix-blend-overlay pointer-events-none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><radialGradient id="burst-g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffb95f" stop-opacity="0.6"/><stop offset="100%" stop-color="#0b1323" stop-opacity="0"/></radialGradient><pattern id="radial-p" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse"><line x1="40" y1="0" x2="40" y2="80" stroke="#ffb95f" stroke-width="0.3" opacity="0.3"/><line x1="0" y1="40" x2="80" y2="40" stroke="#ffb95f" stroke-width="0.3" opacity="0.3"/></pattern></defs><rect width="100%" height="100%" fill="url(#radial-p)"/><rect width="100%" height="100%" fill="url(#burst-g)"/></svg>
+</div>
+<div class="flex justify-between items-center px-1">
+<span class="text-xs text-on-surface-variant font-medium">MIT License</span>
+<span class="text-[10px] text-on-surface-variant/40">GitHub</span>
+</div>
+</div>
+</div>
+<!-- GETTING STARTED -->
+<section class="mb-20" id="getting-started">
+<p class="font-label text-primary text-[0.6875rem] uppercase tracking-[0.2em] mb-1">Quickstart</p>
+<h2 class="font-headline text-3xl font-light text-on-surface mb-2">Getting Started</h2>
+<p class="text-on-surface-variant text-sm mb-8 max-w-2xl">Three ways to run BPR, in order of effort. All produce the same predictions.</p>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+  <!-- Option 1: Browser -->
+  <div class="bg-surface-container-low rounded-2xl border border-outline-variant/20 p-6">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-mono font-bold">1</span>
+      <h3 class="font-headline text-lg font-light text-on-surface">Browser (0 setup)</h3>
+    </div>
+    <p class="text-xs text-on-surface-variant mb-4 leading-relaxed">Use this site. The constant calculator, physics landscape, and experimental roadmap all run in your browser with no installation.</p>
+    <div class="flex flex-col gap-2">
+      <a href="constant-calculator.html" class="text-xs font-mono text-primary no-underline hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-sm">calculate</span> Constant Calculator</a>
+      <a href="viz/physics-landscape.html" target="_blank" class="text-xs font-mono text-primary no-underline hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-sm">hub</span> Physics Landscape</a>
+      <a href="experimental-roadmap.html" class="text-xs font-mono text-primary no-underline hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-sm">science</span> Experimental Roadmap</a>
+    </div>
+  </div>
+  <!-- Option 2: Python -->
+  <div class="bg-surface-container-low rounded-2xl border border-primary/20 p-6">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-mono font-bold">2</span>
+      <h3 class="font-headline text-lg font-light text-on-surface">Python (5 min)</h3>
+    </div>
+    <p class="text-xs text-on-surface-variant mb-4 leading-relaxed">Clone and run. Requires Python 3.10+. FEniCS optional most functionality works without it.</p>
+    <div class="bg-surface-container rounded-lg p-3 font-mono text-xs text-on-surface-variant">
+      <div class="text-outline text-[10px] mb-2">Terminal</div>
+      <div class="text-primary">git clone</div>
+      <div class="text-on-surface-variant pl-2 text-[11px] break-all">github.com/jackalkahwati/<br/>BPR-Math-Spine</div>
+      <div class="text-primary mt-2">cd</div> <span class="text-on-surface-variant">BPR-Math-Spine</span>
+      <div class="text-primary">pip install</div> <span class="text-on-surface-variant">-e .</span>
+      <div class="text-primary">python</div> <span class="text-on-surface-variant">scripts/run_casimir_demo.py</span>
+    </div>
+  </div>
+  <!-- Option 3: Docker -->
+  <div class="bg-surface-container-low rounded-2xl border border-outline-variant/20 p-6">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary text-sm font-mono font-bold">3</span>
+      <h3 class="font-headline text-lg font-light text-on-surface">Docker (full FEniCS)</h3>
+    </div>
+    <p class="text-xs text-on-surface-variant mb-4 leading-relaxed">Universal runs on any platform including Apple Silicon. Includes FEniCS for boundary mesh generation and all 1,225 tests.</p>
+    <div class="bg-surface-container rounded-lg p-3 font-mono text-xs text-on-surface-variant">
+      <div class="text-outline text-[10px] mb-2">Terminal</div>
+      <div><span class="text-secondary">docker-compose</span> up -d</div>
+      <div class="text-outline text-[10px] mt-2">Opens Jupyter at :8888</div>
+      <div class="mt-2"><span class="text-secondary">docker-compose</span></div>
+      <div class="pl-2">--profile testing up</div>
+      <div class="text-outline text-[10px] mt-1">Runs all 1,225 tests</div>
+    </div>
+  </div>
+</div>
+
+<!-- What you get box -->
+<div class="bg-surface-container-low rounded-2xl border border-outline-variant/20 p-6">
+  <h3 class="font-headline text-lg font-light text-on-surface mb-4">What BPR Derives from Two Numbers (J, p)</h3>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="text-center p-4 bg-surface-container rounded-xl border border-primary/10">
+      <div class="text-2xl font-headline font-light text-primary mb-1">205</div>
+      <div class="text-[10px] font-mono text-outline uppercase tracking-wider">Predictions</div>
+    </div>
+    <div class="text-center p-4 bg-surface-container rounded-xl border border-secondary/10">
+      <div class="text-2xl font-headline font-light text-secondary mb-1">21</div>
+      <div class="text-[10px] font-mono text-outline uppercase tracking-wider">Theories</div>
+    </div>
+    <div class="text-center p-4 bg-surface-container rounded-xl border border-tertiary/10">
+      <div class="text-2xl font-headline font-light text-tertiary mb-1">488</div>
+      <div class="text-[10px] font-mono text-outline uppercase tracking-wider">Tests Passing</div>
+    </div>
+    <div class="text-center p-4 bg-surface-container rounded-xl border border-primary/10">
+      <div class="text-2xl font-headline font-light text-primary mb-1">0</div>
+      <div class="text-[10px] font-mono text-outline uppercase tracking-wider">Free Parameters</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- PEER REVIEW STATUS -->
+<section class="mb-20" id="peer-review">
+<p class="font-label text-secondary text-[0.6875rem] uppercase tracking-[0.2em] mb-1">Transparency</p>
+<h2 class="font-headline text-3xl font-light text-on-surface mb-2">Peer Review Status</h2>
+<p class="text-on-surface-variant text-sm mb-8 max-w-2xl">Honest assessment of where BPR stands. We believe open pre-publication review is more valuable than a single round of anonymous referee feedback.</p>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+  <!-- Status card -->
+  <div class="bg-surface-container-low rounded-2xl border border-tertiary/20 p-6">
+    <div class="flex items-center gap-3 mb-5">
+      <span class="w-3 h-3 rounded-full bg-tertiary animate-pulse shrink-0"></span>
+      <span class="text-tertiary font-mono text-xs uppercase tracking-widest">Public Draft Open Review</span>
+    </div>
+    <div class="space-y-3 text-sm text-on-surface-variant">
+      <div class="flex justify-between items-center py-2 border-b border-white/5">
+        <span>Journal submission</span><span class="text-outline font-mono text-xs">Not yet submitted</span>
+      </div>
+      <div class="flex justify-between items-center py-2 border-b border-white/5">
+        <span>arXiv preprint</span><span class="text-outline font-mono text-xs">Planned Q2 2026</span>
+      </div>
+      <div class="flex justify-between items-center py-2 border-b border-white/5">
+        <span>Math consistency tests</span><span class="text-primary font-mono text-xs">58 / 58 passing</span>
+      </div>
+      <div class="flex justify-between items-center py-2 border-b border-white/5">
+        <span>Predictions vs. experiment</span><span class="text-primary font-mono text-xs">50 / 51 pass (1 close)</span>
+      </div>
+      <div class="flex justify-between items-center py-2">
+        <span>Independent replication</span><span class="text-outline font-mono text-xs">Seeking</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- What we claim / don't claim -->
+  <div class="bg-surface-container-low rounded-2xl border border-outline-variant/20 p-6">
+    <h3 class="font-headline text-lg font-light text-on-surface mb-4">What We Claim vs. Don't Claim</h3>
+    <div class="space-y-3 text-xs text-on-surface-variant leading-relaxed">
+      <div class="flex items-start gap-2">
+        <span class="text-primary mt-0.5 shrink-0">✓</span>
+        <span>The boundary action S_∂ reproduces Maxwell, Schrödinger, and Einstein equations as mathematical limits verified symbolically.</span>
+      </div>
+      <div class="flex items-start gap-2">
+        <span class="text-primary mt-0.5 shrink-0">✓</span>
+        <span>Constants α, sin²θ_W, electron/muon masses match experiment to &lt;2% from two substrate parameters (J, p).</span>
+      </div>
+      <div class="flex items-start gap-2">
+        <span class="text-primary mt-0.5 shrink-0">✓</span>
+        <span>Explicit falsifiable predictions exist: hydrogen 1S–2S shift of 66.8 Hz, phonon-MEMS coupling at 10⁻⁸, ΔN_eff ceiling at 47.1.</span>
+      </div>
+      <div class="flex items-start gap-2">
+        <span class="text-tertiary mt-0.5 shrink-0"></span>
+        <span>We do not claim BPR is the correct theory of physics. We claim it is internally consistent and testable.</span>
+      </div>
+      <div class="flex items-start gap-2">
+        <span class="text-tertiary mt-0.5 shrink-0"></span>
+        <span>Some derivations (strong force mass, CKM matrix) remain at approximation level. See <a href="https://github.com/jackalkahwati/BPR-Math-Spine/blob/main/doc/LIMITATIONS_AND_FALSIFICATION.md" target="_blank" class="text-primary hover:underline">LIMITATIONS.md</a>.</span>
+      </div>
+    </div>
+    <a href="mailto:jack@thestardrive.com?subject=BPR Review Comment" class="mt-5 block text-center text-xs font-mono uppercase tracking-widest py-2.5 border border-secondary/20 text-secondary hover:bg-secondary/10 transition-colors rounded-lg no-underline">Submit a Review Comment</a>
+  </div>
+</div>
+
+<!-- Consistency audit teaser -->
+<a href="global-consistency-audit.html" class="flex items-center justify-between bg-surface-container-low rounded-2xl border border-primary/10 p-6 no-underline group hover:border-primary/30 transition-colors">
+  <div>
+    <h3 class="font-headline text-lg font-light text-on-surface group-hover:text-primary transition-colors mb-1">Global Consistency Audit</h3>
+    <p class="text-xs text-on-surface-variant">58 internal mathematical consistency tests no experiments needed. All pass.</p>
+  </div>
+  <span class="material-symbols-outlined text-primary/40 group-hover:text-primary transition-colors text-3xl">arrow_forward</span>
+</a>
+</section>
+
+<!-- API ACCESS SECTION -->
+<section class="mb-20" id="api-access">
+<div class="flex items-center justify-between mb-8">
+  <div>
+    <p class="font-label text-tertiary text-[0.6875rem] uppercase tracking-[0.2em] mb-1">Developer Access</p>
+    <h2 class="font-headline text-3xl font-light text-on-surface mb-2">API &amp; Rate Limits</h2>
+    <p class="text-on-surface-variant text-sm max-w-2xl">Programmatic access to BPR predictions, derivations, and parameter lookups. All tiers are free during the public research period.</p>
+  </div>
+</div>
+
+<!-- Tier cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+  <!-- Anonymous -->
+  <div class="bg-surface-container-low rounded-2xl border border-outline-variant/20 p-6 flex flex-col gap-4">
+    <div>
+      <span class="text-[10px] font-mono uppercase tracking-[0.18em] text-outline px-2 py-0.5 border border-outline/30 rounded-full">Anonymous</span>
+      <h3 class="font-headline text-xl font-light text-on-surface mt-3">Public</h3>
+      <p class="text-on-surface-variant text-xs mt-1">No key required. Good for exploration.</p>
+    </div>
+    <ul class="space-y-2 text-xs text-on-surface-variant flex-1">
+      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-outline shrink-0"></span>30 requests / hour</li>
+      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-outline shrink-0"></span>5 requests / minute</li>
+      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-outline shrink-0"></span>Read-only endpoints</li>
+      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-outline shrink-0"></span>JSON responses</li>
+    </ul>
+    <div class="font-mono text-xs bg-surface-container rounded-lg p-3 text-on-surface-variant">
+      <div class="text-outline text-[10px] mb-1">curl example</div>
+      <code class="text-primary break-all">curl https://api.bpr.science/v1/constants/alpha</code>
+    </div>
+  </div>
+
+  <!-- Researcher -->
+  <div class="bg-surface-container-low rounded-2xl border border-primary/30 p-6 flex flex-col gap-4 relative">
+    <div class="absolute -top-3 left-6">
+      <span class="resonance-gradient text-on-primary text-[10px] font-mono uppercase tracking-widest px-3 py-1 rounded-full">Recommended</span>
+    </div>
+    <div>
+      <span class="text-[10px] font-mono uppercase tracking-[0.18em] text-primary px-2 py-0.5 border border-primary/30 rounded-full">Researcher</span>
+      <h3 class="font-headline text-xl font-light text-on-surface mt-3">Free Key</h3>
+      <p class="text-on-surface-variant text-xs mt-1">Request via email. Approved within 24h.</p>
+    </div>
+    <ul class="space-y-2 text-xs text-on-surface-variant flex-1">
+      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>1,000 requests / hour</li>
+      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>60 requests / minute</li>
+      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>All endpoints incl. batch</li>
+      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>CSV + JSON responses</li>
+      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>Full predictions CSV (205 rows)</li>
+      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>Python SDK access</li>
+    </ul>
+    <a href="mailto:jack@thestardrive.com?subject=BPR API Key Request&body=Institution:%0AResearch use case:%0AGitHub username (optional):" class="resonance-gradient text-on-primary text-xs font-mono uppercase tracking-widest py-2.5 rounded-lg text-center no-underline hover:scale-95 transition-transform">Request Key</a>
+  </div>
+
+  <!-- Institution -->
+  <div class="bg-surface-container-low rounded-2xl border border-secondary/20 p-6 flex flex-col gap-4">
+    <div>
+      <span class="text-[10px] font-mono uppercase tracking-[0.18em] text-secondary px-2 py-0.5 border border-secondary/30 rounded-full">Institution</span>
+      <h3 class="font-headline text-xl font-light text-on-surface mt-3">Unlimited</h3>
+      <p class="text-on-surface-variant text-xs mt-1">For universities, labs, and research groups.</p>
+    </div>
+    <ul class="space-y-2 text-xs text-on-surface-variant flex-1">
+      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>Unlimited requests</li>
+      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>Priority queue</li>
+      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>Private derivation runs</li>
+      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>Webhook callbacks</li>
+      <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>Dedicated support</li>
+    </ul>
+    <a href="mailto:jack@thestardrive.com?subject=BPR Institutional Access" class="bg-secondary/10 border border-secondary/30 text-secondary text-xs font-mono uppercase tracking-widest py-2.5 rounded-lg text-center no-underline hover:bg-secondary/20 transition-colors">Contact Us</a>
+  </div>
+</div>
+
+<!-- Endpoint reference -->
+<div class="bg-surface-container-low rounded-2xl border border-outline-variant/20 p-6">
+  <h3 class="font-headline text-lg font-light text-on-surface mb-5">Key Endpoints</h3>
+  <div class="overflow-x-auto">
+    <table class="w-full text-xs font-mono">
+      <thead>
+        <tr class="text-outline border-b border-outline-variant/20">
+          <th class="text-left pb-3 pr-8 font-normal uppercase tracking-widest text-[10px]">Method</th>
+          <th class="text-left pb-3 pr-8 font-normal uppercase tracking-widest text-[10px]">Endpoint</th>
+          <th class="text-left pb-3 pr-8 font-normal uppercase tracking-widest text-[10px]">Returns</th>
+          <th class="text-left pb-3 font-normal uppercase tracking-widest text-[10px]">Tier</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-outline-variant/10">
+        <tr class="py-2"><td class="py-2.5 pr-8 text-primary">GET</td><td class="pr-8 text-on-surface-variant">/v1/constants/{name}</td><td class="pr-8 text-on-surface-variant">Single constant + derivation</td><td><span class="text-outline">Public</span></td></tr>
+        <tr><td class="py-2.5 pr-8 text-primary">GET</td><td class="pr-8 text-on-surface-variant">/v1/constants</td><td class="pr-8 text-on-surface-variant">All 87 constants</td><td><span class="text-outline">Public</span></td></tr>
+        <tr><td class="py-2.5 pr-8 text-primary">GET</td><td class="pr-8 text-on-surface-variant">/v1/predictions</td><td class="pr-8 text-on-surface-variant">Full 205-row CSV / JSON</td><td><span class="text-primary">Key</span></td></tr>
+        <tr><td class="py-2.5 pr-8 text-secondary">POST</td><td class="pr-8 text-on-surface-variant">/v1/derive</td><td class="pr-8 text-on-surface-variant">Run derivation from (J,p,N)</td><td><span class="text-primary">Key</span></td></tr>
+        <tr><td class="py-2.5 pr-8 text-primary">GET</td><td class="pr-8 text-on-surface-variant">/v1/landscape</td><td class="pr-8 text-on-surface-variant">Physics landscape graph JSON</td><td><span class="text-primary">Key</span></td></tr>
+        <tr><td class="py-2.5 pr-8 text-primary">GET</td><td class="pr-8 text-on-surface-variant">/v1/audit/consistency</td><td class="pr-8 text-on-surface-variant">58 consistency test results</td><td><span class="text-secondary">Institution</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Python SDK snippet -->
+  <div class="mt-6 bg-surface-container rounded-xl p-5 border border-outline-variant/10">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-[10px] font-mono uppercase tracking-widest text-outline">Python SDK</span>
+      <a href="https://github.com/jackalkahwati/BPR-Math-Spine" target="_blank" class="text-[10px] font-mono text-primary no-underline hover:underline">github.com/jackalkahwati/BPR-Math-Spine</a>
+    </div>
+    <pre class="text-xs text-on-surface-variant leading-relaxed overflow-x-auto"><code><span class="text-outline"># Install: git clone + pip install -e .</span>
+<span class="text-secondary">from</span> bpr.alpha_derivation <span class="text-secondary">import</span> derive_alpha
+<span class="text-secondary">from</span> bpr.cross_predictions <span class="text-secondary">import</span> full_cosmological_chain
+<span class="text-secondary">from</span> bpr <span class="text-secondary">import</span> pipelines
+
+<span class="text-outline"># Derive the fine-structure constant from substrate integers</span>
+result = derive_alpha(p=<span class="text-tertiary">104729</span>, z=<span class="text-tertiary">6</span>)
+<span class="text-primary">print</span>(result[<span class="text-tertiary">"alpha"</span>], result[<span class="text-tertiary">"inv_alpha_percent_error"</span>])
+
+<span class="text-outline"># Run 200+ predictions from (p, z)</span>
+chain = full_cosmological_chain(p=<span class="text-tertiary">104729</span>, z=<span class="text-tertiary">6</span>)
+
+<span class="text-outline"># Run a named prediction pipeline</span>
+casimir = pipelines.pipeline_substrate_to_casimir(p=<span class="text-tertiary">104729</span>, z=<span class="text-tertiary">6</span>)</code></pre>
+  </div>
+
+  <!-- CLI section -->
+  <div class="mt-4 bg-surface-container rounded-xl p-5 border border-outline-variant/10">
+    <div class="text-[10px] font-mono uppercase tracking-widest text-outline mb-3">CLI</div>
+    <pre class="text-xs text-on-surface-variant leading-relaxed overflow-x-auto"><code><span class="text-outline"># Install (from repo)</span>
+pip install -e .
+
+<span class="text-outline"># Look up constants (filter by name)</span>
+bpr constants --filter alpha
+
+<span class="text-outline"># Run a named derivation pipeline</span>
+bpr pipeline casimir
+
+<span class="text-outline"># Verify field equations symbolically</span>
+bpr verify</code></pre>
+  </div>
+</div>
+</section>
+</main>
+</div>
+<!-- Floating Action -->
+<button onclick="openPanel('settings-panel')" class="fixed bottom-8 right-8 w-14 h-14 resonance-gradient rounded-full shadow-[0_0_20px_rgba(173,198,255,0.3)] flex items-center justify-center text-on-primary-container z-[60] active:scale-90 transition-transform cursor-pointer" title="Settings">
+<span class="material-symbols-outlined text-2xl">auto_awesome</span>
+</button>
+
+<!-- Panel backdrop -->
+<div id="panel-backdrop" onclick="closePanel()" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[70] hidden opacity-0 transition-opacity duration-200"></div>
+
+<!-- SETTINGS PANEL -->
+<aside id="settings-panel" class="fixed top-0 right-0 h-full w-80 bg-[#0b1323] border-l border-white/5 z-[80] flex flex-col translate-x-full transition-transform duration-300 ease-out shadow-[-20px_0_60px_rgba(0,0,0,0.5)]">
+  <div class="flex items-center justify-between px-6 py-5 border-b border-white/5">
+    <div>
+      <h2 class="font-headline text-lg font-light text-on-surface">Settings</h2>
+      <p class="text-[10px] font-mono text-outline uppercase tracking-widest mt-0.5">Portal preferences</p>
+    </div>
+    <button onclick="closePanel()" class="p-2 hover:bg-white/5 rounded transition-colors text-outline hover:text-on-surface">
+      <span class="material-symbols-outlined text-lg">close</span>
+    </button>
+  </div>
+  <div class="flex-1 overflow-y-auto px-6 py-6 space-y-8">
+
+    <!-- API Key -->
+    <div>
+      <h3 class="text-xs font-mono uppercase tracking-widest text-primary mb-3">API Key</h3>
+      <div class="relative">
+        <input id="api-key-input" type="password" placeholder="Enter your API key…" class="w-full bg-surface-container-low border border-outline-variant/20 text-xs font-mono text-on-surface px-3 py-2.5 pr-10 rounded-lg focus:outline-none focus:border-primary/40 placeholder:text-outline/40" />
+        <button onclick="toggleApiKey()" class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors">
+          <span class="material-symbols-outlined text-base" id="api-key-eye">visibility</span>
+        </button>
+      </div>
+      <p class="text-[10px] text-outline mt-2">Used for /v1/predictions and /v1/derive endpoints. <a href="#api-access" onclick="closePanel()" class="text-primary hover:underline">Request a key →</a></p>
+    </div>
+
+    <!-- Display -->
+    <div>
+      <h3 class="text-xs font-mono uppercase tracking-widest text-primary mb-3">Display</h3>
+      <div class="space-y-3">
+        <label class="flex items-center justify-between cursor-pointer">
+          <span class="text-sm text-on-surface-variant">Compact system feed</span>
+          <div class="relative">
+            <input type="checkbox" id="toggle-compact" class="sr-only peer" />
+            <div class="w-10 h-5 bg-outline-variant/30 rounded-full peer-checked:bg-primary/60 transition-colors"></div>
+            <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+          </div>
+        </label>
+        <label class="flex items-center justify-between cursor-pointer">
+          <span class="text-sm text-on-surface-variant">Show equation previews</span>
+          <div class="relative">
+            <input type="checkbox" id="toggle-eq" class="sr-only peer" checked />
+            <div class="w-10 h-5 bg-outline-variant/30 rounded-full peer-checked:bg-primary/60 transition-colors"></div>
+            <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+          </div>
+        </label>
+        <label class="flex items-center justify-between cursor-pointer">
+          <span class="text-sm text-on-surface-variant">Open papers in new tab</span>
+          <div class="relative">
+            <input type="checkbox" id="toggle-newtab" class="sr-only peer" checked />
+            <div class="w-10 h-5 bg-outline-variant/30 rounded-full peer-checked:bg-primary/60 transition-colors"></div>
+            <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div>
+      <h3 class="text-xs font-mono uppercase tracking-widest text-primary mb-3">Notify me when</h3>
+      <div class="space-y-2">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="checkbox" checked class="w-3.5 h-3.5 accent-[#adc6ff]" />
+          <span class="text-sm text-on-surface-variant">New DESI-II result published</span>
+        </label>
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="checkbox" checked class="w-3.5 h-3.5 accent-[#adc6ff]" />
+          <span class="text-sm text-on-surface-variant">BPR codebase new release</span>
+        </label>
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="checkbox" class="w-3.5 h-3.5 accent-[#adc6ff]" />
+          <span class="text-sm text-on-surface-variant">Peer review comments</span>
+        </label>
+      </div>
+      <p class="text-[10px] text-outline mt-3">Notifications require a researcher API key.</p>
+    </div>
+
+    <!-- Links -->
+    <div>
+      <h3 class="text-xs font-mono uppercase tracking-widest text-primary mb-3">Resources</h3>
+      <div class="space-y-2">
+        <a href="https://github.com/jackalkahwati/BPR-Math-Spine" target="_blank" class="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors no-underline">
+          <span class="material-symbols-outlined text-base">code</span> GitHub Repository
+        </a>
+        <a href="bpr-paper.pdf" target="_blank" class="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors no-underline">
+          <span class="material-symbols-outlined text-base">picture_as_pdf</span> Download Paper PDF
+        </a>
+        <a href="mailto:jack@thestardrive.com" class="flex items-center gap-2 text-sm text-on-surface-variant hover:text-primary transition-colors no-underline">
+          <span class="material-symbols-outlined text-base">mail</span> Contact Research Team
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="px-6 py-4 border-t border-white/5">
+    <button onclick="closePanel()" class="w-full py-2.5 resonance-gradient text-on-primary text-xs font-mono uppercase tracking-widest rounded-lg active:scale-95 transition-transform">
+      Save &amp; Close
+    </button>
+  </div>
+</aside>
+
+<!-- PROFILE PANEL -->
+<aside id="profile-panel" class="fixed top-0 right-0 h-full w-80 bg-[#0b1323] border-l border-white/5 z-[80] flex flex-col translate-x-full transition-transform duration-300 ease-out shadow-[-20px_0_60px_rgba(0,0,0,0.5)]">
+  <div class="flex items-center justify-between px-6 py-5 border-b border-white/5">
+    <div>
+      <h2 class="font-headline text-lg font-light text-on-surface">Researcher Profile</h2>
+      <p class="text-[10px] font-mono text-outline uppercase tracking-widest mt-0.5">Access Level: Public</p>
+    </div>
+    <button onclick="closePanel()" class="p-2 hover:bg-white/5 rounded transition-colors text-outline hover:text-on-surface">
+      <span class="material-symbols-outlined text-lg">close</span>
+    </button>
+  </div>
+  <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+
+    <!-- Avatar + identity -->
+    <div class="flex flex-col items-center py-4 border border-white/5 rounded-2xl bg-surface-container-low">
+      <div class="w-16 h-16 rounded-full resonance-gradient flex items-center justify-center text-on-primary text-2xl font-headline font-light mb-3">
+        <span class="material-symbols-outlined text-3xl">person</span>
+      </div>
+      <p class="text-on-surface font-headline font-light text-lg">Guest Researcher</p>
+      <p class="text-[10px] font-mono text-outline uppercase tracking-wider mt-1">Public Access · No key</p>
+      <div class="flex items-center gap-2 mt-3 px-3 py-1.5 bg-primary/10 rounded-full">
+        <span class="w-2 h-2 rounded-full bg-primary"></span>
+        <span class="text-[10px] font-mono text-primary">30 req/hr · Read-only</span>
+      </div>
+    </div>
+
+    <!-- Access tiers -->
+    <div>
+      <h3 class="text-xs font-mono uppercase tracking-widest text-primary mb-3">Your Access Level</h3>
+      <div class="space-y-2">
+        <div class="flex items-center gap-3 p-3 bg-primary/5 border border-primary/20 rounded-xl">
+          <span class="w-2 h-2 rounded-full bg-primary shrink-0"></span>
+          <div class="flex-1">
+            <p class="text-xs text-on-surface font-medium">Public</p>
+            <p class="text-[10px] text-outline">30 req/hr · Read-only endpoints</p>
+          </div>
+          <span class="material-symbols-outlined text-primary text-base">check</span>
+        </div>
+        <div class="flex items-center gap-3 p-3 border border-white/5 rounded-xl opacity-40">
+          <span class="w-2 h-2 rounded-full bg-secondary shrink-0"></span>
+          <div class="flex-1">
+            <p class="text-xs text-on-surface-variant font-medium">Researcher</p>
+            <p class="text-[10px] text-outline">1,000 req/hr · Full API</p>
+          </div>
+          <span class="material-symbols-outlined text-outline text-base">lock</span>
+        </div>
+        <div class="flex items-center gap-3 p-3 border border-white/5 rounded-xl opacity-40">
+          <span class="w-2 h-2 rounded-full bg-tertiary shrink-0"></span>
+          <div class="flex-1">
+            <p class="text-xs text-on-surface-variant font-medium">Institution</p>
+            <p class="text-[10px] text-outline">Unlimited · Priority queue</p>
+          </div>
+          <span class="material-symbols-outlined text-outline text-base">lock</span>
+        </div>
+      </div>
+      <a href="mailto:jack@thestardrive.com?subject=BPR API Key Request&body=Institution:%0AResearch use case:%0AGitHub username (optional):" class="block mt-3 text-center text-xs font-mono uppercase tracking-widest py-2.5 border border-secondary/20 text-secondary hover:bg-secondary/10 transition-colors rounded-lg no-underline">
+        Request Researcher Key
+      </a>
+    </div>
+
+    <!-- Session info -->
+    <div>
+      <h3 class="text-xs font-mono uppercase tracking-widest text-primary mb-3">Session</h3>
+      <div class="space-y-2 text-xs font-mono text-on-surface-variant">
+        <div class="flex justify-between"><span class="text-outline">Started</span><span id="session-start"></span></div>
+        <div class="flex justify-between"><span class="text-outline">Framework version</span><span class="text-primary">v2.09</span></div>
+        <div class="flex justify-between"><span class="text-outline">Predictions loaded</span><span class="text-primary">205</span></div>
+        <div class="flex justify-between"><span class="text-outline">Tests passing</span><span class="text-primary">488 / 509</span></div>
+      </div>
+    </div>
+
+    <!-- Quick links -->
+    <div>
+      <h3 class="text-xs font-mono uppercase tracking-widest text-primary mb-3">Quick Links</h3>
+      <div class="grid grid-cols-2 gap-2">
+        <a href="experimental-roadmap.html" onclick="closePanel()" class="p-3 bg-surface-container-low rounded-xl border border-white/5 text-center no-underline hover:border-primary/20 transition-colors group">
+          <span class="material-symbols-outlined text-outline group-hover:text-primary text-xl transition-colors block mb-1">science</span>
+          <span class="text-[10px] text-outline group-hover:text-primary transition-colors">Roadmap</span>
+        </a>
+        <a href="global-consistency-audit.html" onclick="closePanel()" class="p-3 bg-surface-container-low rounded-xl border border-white/5 text-center no-underline hover:border-primary/20 transition-colors group">
+          <span class="material-symbols-outlined text-outline group-hover:text-primary text-xl transition-colors block mb-1">fact_check</span>
+          <span class="text-[10px] text-outline group-hover:text-primary transition-colors">Audit</span>
+        </a>
+        <a href="viz/physics-landscape.html" target="_blank" onclick="closePanel()" class="p-3 bg-surface-container-low rounded-xl border border-white/5 text-center no-underline hover:border-primary/20 transition-colors group">
+          <span class="material-symbols-outlined text-outline group-hover:text-primary text-xl transition-colors block mb-1">hub</span>
+          <span class="text-[10px] text-outline group-hover:text-primary transition-colors">Explorer</span>
+        </a>
+        <a href="constant-calculator.html" onclick="closePanel()" class="p-3 bg-surface-container-low rounded-xl border border-white/5 text-center no-underline hover:border-primary/20 transition-colors group">
+          <span class="material-symbols-outlined text-outline group-hover:text-primary text-xl transition-colors block mb-1">calculate</span>
+          <span class="text-[10px] text-outline group-hover:text-primary transition-colors">Calculator</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="px-6 py-4 border-t border-white/5">
+    <button onclick="openPanel('settings-panel')" class="w-full py-2.5 border border-outline/20 text-outline text-xs font-mono uppercase tracking-widest rounded-lg hover:bg-white/5 transition-colors">
+      Open Settings
+    </button>
+  </div>
+</aside>
+
+<script>
+function openPanel(id) {
+  // close any open panel first
+  document.querySelectorAll('aside[id$="-panel"]').forEach(p => {
+    p.classList.add('translate-x-full');
+  });
+  const panel = document.getElementById(id);
+  const backdrop = document.getElementById('panel-backdrop');
+  backdrop.classList.remove('hidden');
+  requestAnimationFrame(() => {
+    backdrop.classList.remove('opacity-0');
+    backdrop.classList.add('opacity-100');
+    panel.classList.remove('translate-x-full');
+  });
+  // set session start time once
+  const ss = document.getElementById('session-start');
+  if (ss && ss.textContent === '') {
+    ss.textContent = new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+  }
+}
+function closePanel() {
+  document.querySelectorAll('aside[id$="-panel"]').forEach(p => {
+    p.classList.add('translate-x-full');
+  });
+  const backdrop = document.getElementById('panel-backdrop');
+  backdrop.classList.remove('opacity-100');
+  backdrop.classList.add('opacity-0');
+  setTimeout(() => backdrop.classList.add('hidden'), 200);
+}
+function toggleApiKey() {
+  const input = document.getElementById('api-key-input');
+  const eye = document.getElementById('api-key-eye');
+  if (input.type === 'password') {
+    input.type = 'text';
+    eye.textContent = 'visibility_off';
+  } else {
+    input.type = 'password';
+    eye.textContent = 'visibility';
+  }
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+</script>
+<footer class="bg-[#060e1d] border-t border-white/5 w-full mt-auto">
+  <div class="max-w-7xl mx-auto px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+
+      <!-- Brand -->
+      <div class="md:col-span-2">
+        <a href="index.html" class="text-[#adc6ff] font-['Space_Grotesk'] font-light text-lg tracking-tight no-underline hover:opacity-80 transition-opacity">Boundary Phase Resonance</a>
+        <p class="text-slate-500 text-xs font-['Inter'] mt-2 leading-relaxed max-w-sm">An open physics research framework deriving 87 physical constants from two integers. Pre-publication research not yet formally peer reviewed.</p>
+        <a href="https://www.thestardrive.com" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 mt-4 text-[#ffb95f] text-xs font-['Space_Grotesk'] uppercase tracking-widest no-underline hover:opacity-80 transition-opacity">
+          A StarDrive Inc. project ↗
+        </a>
+      </div>
+
+      <!-- Research links -->
+      <div>
+        <p class="text-[10px] font-['Space_Grotesk'] uppercase tracking-[0.2em] text-slate-600 mb-4">Research</p>
+        <div class="flex flex-col gap-3">
+          <a href="experimental-roadmap.html" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">Experimental Roadmap</a>
+          <a href="global-consistency-audit.html" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">Consistency Audit</a>
+          <a href="constant-calculator.html" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">Constant Calculator</a>
+          <a href="viz/physics-landscape.html" target="_blank" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">Physics Landscape</a>
+          <a href="bpr-paper.pdf" target="_blank" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">Paper PDF</a>
+          <a href="https://github.com/jackalkahwati/BPR-Math-Spine" target="_blank" rel="noopener" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">GitHub</a>
+        </div>
+      </div>
+
+      <!-- Company -->
+      <div>
+        <p class="text-[10px] font-['Space_Grotesk'] uppercase tracking-[0.2em] text-slate-600 mb-4">StarDrive Inc.</p>
+        <div class="flex flex-col gap-3">
+          <a href="https://www.thestardrive.com" target="_blank" rel="noopener" class="text-slate-500 hover:text-[#ffb95f] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">www.thestardrive.com</a>
+          <a href="researcher-portal.html" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">Researcher Portal</a>
+          <a href="researcher-portal.html#api-access" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">API Access</a>
+          <a href="mailto:jack@thestardrive.com" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">Contact</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legal bar -->
+    <div class="pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div class="flex flex-col gap-1.5">
+        <p class="text-slate-600 text-[10px] font-['Inter'] uppercase tracking-widest">© 2026 StarDrive Inc. All rights reserved.</p>
+        <p class="text-slate-700 text-[10px] font-['Inter'] leading-relaxed max-w-2xl">BPR is pre-publication research. Results have not been formally peer reviewed and should not be used as the basis for engineering, financial, or medical decisions. Source code released under the MIT License.</p>
+      </div>
+      <div class="flex gap-6 shrink-0 mt-2 md:mt-0">
+        <a href="privacy.html" class="text-slate-600 hover:text-slate-400 transition-colors font-['Inter'] text-[10px] uppercase tracking-widest no-underline">Privacy</a>
+        <a href="terms.html" class="text-slate-600 hover:text-slate-400 transition-colors font-['Inter'] text-[10px] uppercase tracking-widest no-underline">Terms</a>
+        <a href="https://www.thestardrive.com" target="_blank" rel="noopener" class="text-[#ffb95f]/60 hover:text-[#ffb95f] transition-colors font-['Inter'] text-[10px] uppercase tracking-widest no-underline">StarDrive Inc. ↗</a>
+      </div>
+    </div>
+  </div>
+</footer>
+</body></html>

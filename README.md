@@ -2,6 +2,8 @@
 
 > **Status :** public draft | license MIT | contact <jack@thestardrive.com>
 >
+> **Website :** [`bpr.science`](https://bpr.science) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
+>
 > **COMPLETE FRAMEWORK** → [`doc/BPR_Complete_Framework.md`](doc/BPR_Complete_Framework.md) *(80-page unified document)*
 >
 > **KEY RESULT**: Testable prediction at 10⁻⁸ level via phonon-MEMS experiments
@@ -16,9 +18,34 @@
 >
 > **EXPERIMENTS** → [`doc/experiments/`](doc/experiments/) *(papers that confirm or falsify BPR)*
 >
+> **CONTINUOUS EVIDENCE LOOP** → [`doc/experiments/EVIDENCE_PIPELINE.md`](doc/experiments/EVIDENCE_PIPELINE.md) *(staged paper ingestion + audit trail + sandbox policy)*
+>
 > **DERIVATION ROADMAP** → [`doc/derivations/DERIVATION_ROADMAP.md`](doc/derivations/DERIVATION_ROADMAP.md) *(41 DERIVED, 5 FRAMEWORK)*
 >
 > One‑pager → [`doc/BPR_one_pager.md`](doc/BPR_one_pager.md) | LaTeX source → [`doc/BPR_one_pager.tex`](doc/BPR_one_pager.tex)
+
+---
+
+## Interactive Website
+
+The BPR framework has a full public-facing website at [`bpr.science`](https://bpr.science) (or run locally — see below). Key pages:
+
+| Page | URL | What it shows |
+|------|-----|---------------|
+| **Home** | `/` | Plain-English narrative of BPR — no equations required |
+| **Physics Landscape** | `/viz/physics-landscape.html` | Interactive D3 node graph of all 21 theories |
+| **Constant Calculator** | `/constant-calculator.html` | Derive any constant from (J, p, N) |
+| **Experimental Roadmap** | `/experimental-roadmap.html` | 10 falsification tests with timelines |
+| **Global Consistency Audit** | `/global-consistency-audit.html` | Radar chart of 58 consistency checks |
+| **Researcher Portal** | `/researcher-portal.html` | API access, rate limits, SDK, CLI docs |
+| **Paper** | `/bpr-paper.pdf` | Full 13-page LaTeX paper |
+
+**Run locally:**
+```bash
+cd website/public/stitch
+python3 -m http.server 9001
+# open http://localhost:9001
+```
 
 ---
 
@@ -446,4 +473,4 @@ The BPR-Math-Spine framework is **feature-complete** and ready for:
 
 ---
 
-© 2025 StarDrive Research Group — released under MIT license.
+© 2026 StarDrive Research Group — released under MIT license.

@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Boundary Phase Resonance | Open Research Framework</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#0b1323",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "on-tertiary-container": "#3e2400",
+                        "on-tertiary": "#472a00",
+                        "error-container": "#93000a",
+                        "outline": "#8c909f",
+                        "primary-fixed": "#d8e2ff",
+                        "on-surface": "#dbe2f8",
+                        "surface-container-high": "#222a3a",
+                        "surface-bright": "#31394a",
+                        "tertiary": "#ffb95f",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#2c0051",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "on-primary-fixed": "#001a42",
+                        "on-secondary-container": "#d6a9ff",
+                        "tertiary-container": "#ca8100",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "primary": "#adc6ff",
+                        "surface-container-highest": "#2d3546",
+                        "surface-dim": "#0b1323",
+                        "surface": "#0b1323",
+                        "secondary-container": "#6f00be",
+                        "primary-container": "#4d8eff",
+                        "secondary-fixed": "#f0dbff",
+                        "on-primary": "#002e6a",
+                        "inverse-surface": "#dbe2f8",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface-variant": "#2d3546",
+                        "outline-variant": "#424754",
+                        "on-primary-fixed-variant": "#004395",
+                        "on-surface-variant": "#c2c6d6",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-background": "#dbe2f8",
+                        "on-secondary": "#490080",
+                        "inverse-primary": "#005ac2",
+                        "secondary": "#ddb7ff",
+                        "inverse-on-surface": "#283041",
+                        "surface-container-low": "#131c2b",
+                        "error": "#ffb4ab",
+                        "on-primary-container": "#00285d",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "surface-container": "#18202f",
+                        "surface-container-lowest": "#060e1d",
+                        "primary-fixed-dim": "#adc6ff",
+                        "surface-tint": "#adc6ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "mono": ["JetBrains Mono"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        .resonance-gradient { background: linear-gradient(135deg, #adc6ff 0%, #4d8eff 100%); }
+        .glass-panel { backdrop-filter: blur(20px); background: rgba(45, 53, 70, 0.8); }
+        .tonal-shift { transition: background-color 0.3s ease; }
+        .glow-blue { box-shadow: 0 0 40px rgba(173, 198, 255, 0.15); }
+
+        /* ── Viz interaction overlay ──────────────────────────────── */
+        .bpr-viz-wrap { touch-action: pan-y; }
+        .bpr-viz-wrap iframe { transition: opacity 0.25s; }
+
+        .bpr-viz-overlay {
+          position: absolute; inset: 0; z-index: 20;
+          cursor: pointer;
+          /* subtle dark vignette so the hint is readable */
+          background: radial-gradient(ellipse at center,
+            transparent 40%, rgba(11,19,35,0.55) 100%);
+          display: flex; align-items: center; justify-content: center;
+          transition: opacity 0.3s;
+        }
+        .bpr-viz-overlay.active { opacity: 0; pointer-events: none; }
+
+        .bpr-viz-hint {
+          display: flex; align-items: center; gap: 10px;
+          padding: 10px 20px; border-radius: 999px;
+          background: rgba(11,19,35,0.75);
+          border: 1px solid rgba(173,198,255,0.2);
+          backdrop-filter: blur(8px);
+          color: #adc6ff; font-size: 13px;
+          font-family: 'Space Grotesk', system-ui, sans-serif;
+          letter-spacing: 0.04em;
+          box-shadow: 0 0 24px rgba(173,198,255,0.12);
+          pointer-events: none;
+          transition: transform 0.2s;
+        }
+        .bpr-viz-overlay:hover .bpr-viz-hint { transform: scale(1.04); }
+
+        /* Lock icon when active (interactive mode) */
+        /* iframes locked by default via class, not inline style */
+        .bpr-viz-wrap iframe { pointer-events: none; }
+        .bpr-viz-wrap.unlocked iframe { pointer-events: auto !important; }
+        .bpr-viz-wrap.unlocked .bpr-viz-overlay { opacity: 0 !important; pointer-events: none !important; transition: none !important; }
+
+        /* "Press Esc or scroll away to release" micro-badge */
+        .bpr-viz-lock-badge {
+          position: absolute; top: 12px; right: 12px; z-index: 30;
+          display: none;
+          align-items: center; gap: 6px;
+          padding: 5px 12px; border-radius: 999px;
+          background: rgba(11,19,35,0.8);
+          border: 1px solid rgba(173,198,255,0.15);
+          backdrop-filter: blur(6px);
+          color: rgba(173,198,255,0.6); font-size: 11px;
+          font-family: 'Space Grotesk', system-ui, sans-serif;
+          letter-spacing: 0.05em;
+          pointer-events: none;
+        }
+        .bpr-viz-wrap.unlocked .bpr-viz-lock-badge { display: flex; }
+
+        @media (max-width: 640px) {
+          .bpr-viz-hint { font-size: 12px; padding: 9px 16px; }
+          .bpr-viz-lock-badge { font-size: 10px; }
+        }
+
+        /* Progressive disclosure researcher details */
+        details.researcher-detail { margin-top: 1.25rem; }
+        details.researcher-detail summary {
+          display: inline-flex; align-items: center; gap: 6px;
+          cursor: pointer; list-style: none;
+          font-size: 0.7rem; font-family: 'Space Grotesk', sans-serif;
+          letter-spacing: 0.08em; text-transform: uppercase;
+          color: #adc6ff; opacity: 0.6;
+          padding: 5px 14px; border-radius: 999px;
+          border: 1px solid rgba(173,198,255,0.2);
+          transition: opacity 0.2s, border-color 0.2s;
+          user-select: none;
+        }
+        details.researcher-detail summary::-webkit-details-marker { display: none; }
+        details.researcher-detail summary::before {
+          content: '▸'; font-size: 0.65rem; transition: transform 0.2s;
+        }
+        details.researcher-detail[open] summary::before { transform: rotate(90deg); }
+        details.researcher-detail summary:hover { opacity: 1; border-color: rgba(173,198,255,0.5); }
+        details.researcher-detail .detail-body {
+          margin-top: 1rem;
+          padding: 1rem 1.25rem;
+          border-left: 2px solid rgba(173,198,255,0.2);
+          background: rgba(173,198,255,0.03);
+          border-radius: 0 8px 8px 0;
+          font-size: 0.82rem;
+          color: rgba(255,255,255,0.55);
+          line-height: 1.7;
+        }
+        details.researcher-detail .detail-body code {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.78rem; color: #ffb95f;
+          background: rgba(255,185,95,0.08);
+          padding: 1px 6px; border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary/30">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#0b1323]/80 backdrop-blur-xl flex justify-between items-center px-8 py-4 max-w-full">
+<div class="text-2xl font-light tracking-tighter text-[#adc6ff] font-['Space_Grotesk']">BPR</div>
+<div class="hidden md:flex items-center space-x-8">
+<a class="text-slate-400 font-light hover:text-[#adc6ff] transition-colors duration-300 font-['Space_Grotesk'] tracking-tight" href="#story">How It Works</a>
+<a class="text-slate-400 font-light hover:text-[#adc6ff] transition-colors duration-300 font-['Space_Grotesk'] tracking-tight" href="#theory">Theory</a>
+<a class="text-slate-400 font-light hover:text-[#adc6ff] transition-colors duration-300 font-['Space_Grotesk'] tracking-tight" href="#architecture">Visualization</a>
+<a class="text-slate-400 font-light hover:text-[#adc6ff] transition-colors duration-300 font-['Space_Grotesk'] tracking-tight" href="#methodology">Methodology</a>
+<a class="text-slate-400 font-light hover:text-[#adc6ff] transition-colors duration-300 font-['Space_Grotesk'] tracking-tight" href="#faq">FAQ</a>
+<a class="text-slate-400 font-light hover:text-[#adc6ff] transition-colors duration-300 font-['Space_Grotesk'] tracking-tight" href="https://github.com/jackalkahwati/BPR-Math-Spine">GitHub</a>
+<a class="text-slate-400 font-light hover:text-[#ffb95f] transition-colors duration-300 font-['Space_Grotesk'] tracking-tight flex items-center gap-1" href="bpr-paper.pdf" target="_blank">Paper <span style="font-size:11px;opacity:0.6">PDF</span></a>
+</div>
+<a href="researcher-portal.html" class="resonance-gradient text-on-primary-container px-6 py-2 rounded-lg font-['Space_Grotesk'] text-sm tracking-wide hover:scale-95 transition-transform no-underline">Access Portal</a>
+</nav>
+<!-- SECTION 1: HERO -->
+<header class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+<div class="absolute inset-0 z-0 opacity-20 pointer-events-none">
+<div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+<div class="w-full h-full bg-gradient-to-tr from-primary/10 via-transparent to-secondary/10"></div>
+</div>
+<div class="max-w-7xl mx-auto px-8 relative z-10 text-center">
+<span class="inline-block px-4 py-1 rounded-full border border-primary/30 text-primary text-[0.6875rem] uppercase tracking-[0.2em] font-label mb-8 bg-primary/5">Open Research · Zero Free Parameters</span>
+<h1 class="text-6xl md:text-8xl font-headline font-light tracking-tighter text-on-surface mb-6 leading-tight">Boundary Phase<br/>Resonance</h1>
+<p class="text-xl md:text-2xl text-secondary font-headline font-light mb-8 max-w-3xl mx-auto">Reproducible mathematics for a testable substrate framework</p>
+<p class="text-on-surface-variant text-lg max-w-2xl mx-auto mb-12 leading-relaxed">
+                BPR derives 87 physical constants of physics the electron's mass, the strength of gravity, the speed of light starting from just two integers. No adjustable knobs. No hand-tuning. Open source and reproducible in under 60 seconds.
+            </p>
+<div class="flex flex-col md:flex-row items-center justify-center gap-4">
+<a class="resonance-gradient text-on-primary-container px-8 py-4 rounded-lg flex items-center gap-2 font-headline tracking-wide no-underline hover:scale-95 transition-transform" href="bpr-paper.pdf" target="_blank">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+                    Read the Paper
+                </a>
+<a href="https://github.com/jackalkahwati/BPR-Math-Spine" target="_blank" class="border border-outline-variant/30 hover:bg-surface-container-high text-on-surface px-8 py-4 rounded-lg flex items-center gap-2 transition-all font-headline tracking-wide no-underline">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+                    Explore on GitHub
+                </a>
+</div>
+</div>
+</header>
+<!-- SECTION 2: WHAT IS BPR? -->
+<section class="py-32 bg-surface-container-low/30 px-8">
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+<div class="relative group">
+<div class="absolute -inset-4 resonance-gradient opacity-10 blur-2xl group-hover:opacity-20 transition-opacity"></div>
+<canvas id="bpr-particle-net" class="relative rounded-xl border border-outline-variant/20 shadow-2xl" style="width:100%;aspect-ratio:1/1;max-width:500px;display:block;"></canvas>
+</div>
+<div>
+<h2 class="text-4xl font-headline font-light text-primary mb-8 tracking-tight">What is BPR?</h2>
+<div class="space-y-6 text-on-surface-variant leading-relaxed">
+<p>Think of physics like a huge settings file. Right now, science requires about 26 hand-entered numbers particle masses, force strengths, and more with no explanation for why they have the values they do. BPR asks: what if all those numbers can be calculated from scratch?</p>
+<p>The framework starts with a simple idea: space isn't a smooth, continuous fabric it's more like a grid with a very specific structure. That structure is defined by two integers: <strong>p = 104,729</strong> and <strong>z = 6</strong>. When you write down the simplest boundary equation for this grid, electromagnetism, gravity, and quantum mechanics all emerge as natural consequences not as separate theories, but as different modes of the same math.</p>
+<div class="border-l-2 border-primary pl-6 py-4 bg-primary/5 rounded-r-lg">
+<p class="text-on-surface font-medium italic">"Sixty-plus predictions. Zero free parameters. Everything follows from two numbers."</p>
+</div>
+<details class="researcher-detail">
+  <summary>Researcher details</summary>
+  <div class="detail-body">
+    <p>The substrate is a <code>Z_p</code> cyclic lattice with coordination number <code>z = 6</code>. Observable physics emerges via coarse-graining at boundaries. The master action is <code>S_∂ = ∫_∂M (ℛ + 𝒬_p) √|γ| dⁿ⁻¹x</code> where <code>ℛ</code> is the boundary Ricci scalar and <code>𝒬_p</code> the prime density function at <code>p = 104,729</code>. Sectoral limits (EM, QM, GR) are obtained by taking appropriate limits of the impedance function <code>Z(W) = Z₀√(1 + W²/Wc²)</code>. All 67 bridge functions are unit-tested; cross-checks pass 9/9 internal consistency audits. Entropy conservation is proven exactly via Liouville's theorem (Theorem 3.1); observed drift in finite-p simulations is a truncation artifact, not physics.</p>
+  </div>
+</details>
+<p class="text-sm italic opacity-60">Active research · open for scrutiny · results reproducible in 60 seconds</p>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2b: THE BPR STORY -->
+<section class="py-32 px-8 bg-surface" id="story">
+<div class="max-w-4xl mx-auto">
+
+  <p class="font-label text-tertiary text-[0.6875rem] uppercase tracking-[0.2em] mb-4">The Core Idea</p>
+  <h2 class="text-4xl font-headline font-light text-on-surface mb-6 tracking-tight">How BPR Actually Works</h2>
+  <p class="text-on-surface-variant text-lg font-light leading-relaxed mb-20 max-w-2xl">
+    A step-by-step walk through the central idea no equations required.
+  </p>
+
+  <!-- STEP 1 -->
+  <div class="story-step grid md:grid-cols-[1fr_2fr] gap-12 items-start mb-24 pb-24 border-b border-white/5">
+    <div class="sticky top-28">
+      <div class="flex items-center gap-4 mb-6">
+        <span class="w-10 h-10 rounded-full resonance-gradient flex items-center justify-center text-on-primary font-bold font-mono text-sm shrink-0">1</span>
+        <h3 class="font-headline text-2xl font-light text-primary">The Problem: 25 Magic Numbers</h3>
+      </div>
+      <!-- Mini viz: scattered unlabeled knobs -->
+      <div class="rounded-xl border border-outline-variant/10 bg-surface-container-low p-6 aspect-square flex flex-wrap gap-3 items-center justify-center">
+        <svg viewBox="0 0 200 200" width="100%" xmlns="http://www.w3.org/2000/svg">
+          <text x="100" y="20" text-anchor="middle" font-size="9" font-family="monospace" fill="#adc6ff" opacity="0.4">Standard Model inputs</text>
+          <!-- scattered parameter knobs -->
+          <g opacity="0.6">
+            <circle cx="30" cy="50" r="8" fill="none" stroke="#adc6ff" stroke-width="1.5"/>
+            <text x="30" y="54" text-anchor="middle" font-size="7" fill="#adc6ff" font-family="monospace">α</text>
+            <circle cx="70" cy="40" r="8" fill="none" stroke="#ddb7ff" stroke-width="1.5"/>
+            <text x="70" y="44" text-anchor="middle" font-size="7" fill="#ddb7ff" font-family="monospace">mₑ</text>
+            <circle cx="110" cy="55" r="8" fill="none" stroke="#ffb95f" stroke-width="1.5"/>
+            <text x="110" y="59" text-anchor="middle" font-size="7" fill="#ffb95f" font-family="monospace">G</text>
+            <circle cx="150" cy="38" r="8" fill="none" stroke="#adc6ff" stroke-width="1.5"/>
+            <text x="150" y="42" text-anchor="middle" font-size="6" fill="#adc6ff" font-family="monospace">sin²θ</text>
+            <circle cx="170" cy="75" r="8" fill="none" stroke="#ddb7ff" stroke-width="1.5"/>
+            <text x="170" y="79" text-anchor="middle" font-size="7" fill="#ddb7ff" font-family="monospace">mμ</text>
+            <circle cx="45" cy="95" r="8" fill="none" stroke="#ffb95f" stroke-width="1.5"/>
+            <text x="45" y="99" text-anchor="middle" font-size="7" fill="#ffb95f" font-family="monospace">Λ</text>
+            <circle cx="95" cy="85" r="8" fill="none" stroke="#adc6ff" stroke-width="1.5"/>
+            <text x="95" y="89" text-anchor="middle" font-size="7" fill="#adc6ff" font-family="monospace">mH</text>
+            <circle cx="140" cy="100" r="8" fill="none" stroke="#ddb7ff" stroke-width="1.5"/>
+            <text x="140" y="104" text-anchor="middle" font-size="7" fill="#ddb7ff" font-family="monospace">mτ</text>
+            <circle cx="25" cy="140" r="8" fill="none" stroke="#adc6ff" stroke-width="1.5"/>
+            <text x="25" y="144" text-anchor="middle" font-size="7" fill="#adc6ff" font-family="monospace">ħ</text>
+            <circle cx="75" cy="130" r="8" fill="none" stroke="#ffb95f" stroke-width="1.5"/>
+            <text x="75" y="134" text-anchor="middle" font-size="7" fill="#ffb95f" font-family="monospace">gs</text>
+            <circle cx="120" cy="145" r="8" fill="none" stroke="#adc6ff" stroke-width="1.5"/>
+            <text x="120" y="149" text-anchor="middle" font-size="7" fill="#adc6ff" font-family="monospace">mu</text>
+            <circle cx="165" cy="130" r="8" fill="none" stroke="#ddb7ff" stroke-width="1.5"/>
+            <text x="165" y="134" text-anchor="middle" font-size="6" fill="#ddb7ff" font-family="monospace">VCKM</text>
+            <circle cx="55" cy="175" r="8" fill="none" stroke="#ffb95f" stroke-width="1.5"/>
+            <text x="55" y="179" text-anchor="middle" font-size="7" fill="#ffb95f" font-family="monospace">mt</text>
+            <circle cx="105" cy="168" r="8" fill="none" stroke="#adc6ff" stroke-width="1.5"/>
+            <text x="105" y="172" text-anchor="middle" font-size="7" fill="#adc6ff" font-family="monospace">ηB</text>
+            <circle cx="155" cy="170" r="8" fill="none" stroke="#ddb7ff" stroke-width="1.5"/>
+            <text x="155" y="174" text-anchor="middle" font-size="6" fill="#ddb7ff" font-family="monospace">θQCD</text>
+          </g>
+          <text x="100" y="195" text-anchor="middle" font-size="8" fill="#ffffff" opacity="0.2" font-family="monospace">← no explanation for any of these</text>
+        </svg>
+      </div>
+    </div>
+    <div class="space-y-5 text-on-surface-variant leading-relaxed">
+      <p>Modern physics is built on the <strong class="text-on-surface">Standard Model</strong> an extraordinarily successful theory that describes every particle and force we've ever observed. But it comes with a dirty secret: it requires <strong class="text-on-surface">25 numbers to be entered by hand</strong>.</p>
+      <p>Why is the electron exactly 1,836 times lighter than the proton? Why is gravity exactly 10³⁶ times weaker than electromagnetism? Why are there exactly three generations of matter? The Standard Model uses these facts but offers no explanation for them. They are simply input the dials set to whatever makes the equations work.</p>
+      <p>This isn't a minor inconvenience. It means we don't actually understand why the universe has the properties it does. We've measured the dials. We haven't explained them.</p>
+      <p class="bg-surface-container-low border-l-2 border-tertiary px-5 py-4 rounded-r-lg">
+        <strong class="text-tertiary">The question BPR asks:</strong> What if all 25 numbers aren't free choices but necessary consequences of something deeper? What if you could derive them all from scratch?
+      </p>
+      <details class="researcher-detail">
+        <summary>The three fine-tuning problems</summary>
+        <div class="detail-body">
+          <p>The three sharpest versions of this problem: (1) <strong>The cosmological constant</strong> quantum field theory predicts vacuum energy 10¹²⁰× larger than observed; (2) <strong>The hierarchy problem</strong> the Higgs mass requires cancellation to 1 part in 10³⁴ between bare mass and quantum corrections; (3) <strong>The strong CP problem</strong> the QCD θ parameter must be tuned below 10⁻¹⁰ with no known reason. BPR addresses all three through boundary stiffness, impedance screening, and topological charge quantization respectively.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="story-step grid md:grid-cols-[1fr_2fr] gap-12 items-start mb-24 pb-24 border-b border-white/5">
+    <div class="sticky top-28">
+      <div class="flex items-center gap-4 mb-6">
+        <span class="w-10 h-10 rounded-full resonance-gradient flex items-center justify-center text-on-primary font-bold font-mono text-sm shrink-0">2</span>
+        <h3 class="font-headline text-2xl font-light text-secondary">Space Has a Structure</h3>
+      </div>
+      <!-- Mini viz: lattice grid -->
+      <div class="rounded-xl border border-outline-variant/10 bg-surface-container-low p-6 aspect-square flex items-center justify-center">
+        <svg viewBox="0 0 200 200" width="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="node-glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#adc6ff" stop-opacity="0.8"/>
+              <stop offset="100%" stop-color="#adc6ff" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- Grid lines -->
+          <g stroke="#adc6ff" stroke-width="0.5" opacity="0.12">
+            <line x1="40" y1="40" x2="160" y2="40"/>
+            <line x1="40" y1="80" x2="160" y2="80"/>
+            <line x1="40" y1="120" x2="160" y2="120"/>
+            <line x1="40" y1="160" x2="160" y2="160"/>
+            <line x1="40" y1="40" x2="40" y2="160"/>
+            <line x1="80" y1="40" x2="80" y2="160"/>
+            <line x1="120" y1="40" x2="120" y2="160"/>
+            <line x1="160" y1="40" x2="160" y2="160"/>
+          </g>
+          <!-- Nodes -->
+          <g fill="#adc6ff">
+            <circle cx="40" cy="40" r="3" opacity="0.5"/><circle cx="80" cy="40" r="3" opacity="0.5"/>
+            <circle cx="120" cy="40" r="3" opacity="0.5"/><circle cx="160" cy="40" r="3" opacity="0.5"/>
+            <circle cx="40" cy="80" r="3" opacity="0.5"/><circle cx="80" cy="80" r="5" opacity="0.9" filter="url(#node-glow)"/>
+            <circle cx="120" cy="80" r="3" opacity="0.5"/><circle cx="160" cy="80" r="3" opacity="0.5"/>
+            <circle cx="40" cy="120" r="3" opacity="0.5"/><circle cx="80" cy="120" r="3" opacity="0.5"/>
+            <circle cx="120" cy="120" r="5" opacity="0.9"/><circle cx="160" cy="120" r="3" opacity="0.5"/>
+            <circle cx="40" cy="160" r="3" opacity="0.5"/><circle cx="80" cy="160" r="3" opacity="0.5"/>
+            <circle cx="120" cy="160" r="3" opacity="0.5"/><circle cx="160" cy="160" r="3" opacity="0.5"/>
+          </g>
+          <!-- z=6 connections from center node -->
+          <g stroke="#ddb7ff" stroke-width="1" opacity="0.5">
+            <line x1="80" y1="80" x2="120" y2="80"/>
+            <line x1="80" y1="80" x2="40" y2="80"/>
+            <line x1="80" y1="80" x2="80" y2="40"/>
+            <line x1="80" y1="80" x2="80" y2="120"/>
+            <line x1="80" y1="80" x2="40" y2="40"/>
+            <line x1="80" y1="80" x2="120" y2="40"/>
+          </g>
+          <text x="85" y="75" font-size="8" fill="#ddb7ff" font-family="monospace" opacity="0.8">z=6</text>
+          <text x="100" y="185" text-anchor="middle" font-size="8" fill="#ffffff" opacity="0.25" font-family="monospace">discrete lattice, not a continuum</text>
+        </svg>
+      </div>
+    </div>
+    <div class="space-y-5 text-on-surface-variant leading-relaxed">
+      <p>BPR's starting point is a simple but radical hypothesis: <strong class="text-on-surface">space is not a smooth, continuous fabric.</strong> At the deepest level, it's more like a crystal a discrete lattice of nodes, each connected to its neighbors.</p>
+      <p>Think of a chain-link fence. From far away it looks like a solid surface. Up close, you see it's made of discrete loops, each connected to exactly the same number of neighbors. BPR says space works like that, but in the physics of quantum fields.</p>
+      <p>Each node in this lattice carries a <strong class="text-on-surface">phase</strong> a number that can wind around a cycle, like the angle of a clock hand. The key insight is that this phase is <strong class="text-on-surface">discrete</strong>: it lives on a cyclic group Z_p, where p is a specific prime number.</p>
+      <p>Why a prime? Primes have a special mathematical property: a cyclic group of prime order has no subgroups. This means the lattice has <em>no preferred sub-structure</em> no accidental internal symmetries that would produce spurious physics. The prime acts as a kind of mathematical hygiene.</p>
+      <p class="bg-surface-container-low border-l-2 border-secondary px-5 py-4 rounded-r-lg">
+        Each node connects to exactly <strong class="text-secondary">z = 6</strong> neighbors the same connectivity as the vertices of an octahedron, which is the natural triangulation of a sphere. This isn't chosen; it's the unique symmetric way to tile a spherical boundary.
+      </p>
+      <details class="researcher-detail">
+        <summary>Why this specific lattice</summary>
+        <div class="detail-body">
+          <p>The lattice is a <code>Z_p</code> cyclic group on N sites with nearest-neighbor coupling J and Hamiltonian <code>H = −J Σ cos(2π(qᵢ−qⱼ)/p)</code>. Coarse-graining over lattice spacing <code>a = R√(4π/N)</code> yields the continuum boundary action <code>S = ½κ ∫ γᵃᵇ ∂ₐΦ ∂ᵦΦ</code>. The coordination number z=6 follows from the unique vertex-transitive triangulation of S². Primality of p ensures the field theory has no accidental discrete gauge symmetry.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="story-step grid md:grid-cols-[1fr_2fr] gap-12 items-start mb-24 pb-24 border-b border-white/5">
+    <div class="sticky top-28">
+      <div class="flex items-center gap-4 mb-6">
+        <span class="w-10 h-10 rounded-full resonance-gradient flex items-center justify-center text-on-primary font-bold font-mono text-sm shrink-0">3</span>
+        <h3 class="font-headline text-2xl font-light text-primary">Boundaries Are Where Physics Lives</h3>
+      </div>
+      <!-- Mini viz: bulk vs boundary -->
+      <div class="rounded-xl border border-outline-variant/10 bg-surface-container-low p-6 aspect-square flex items-center justify-center">
+        <svg viewBox="0 0 200 200" width="100%" xmlns="http://www.w3.org/2000/svg">
+          <!-- Bulk region (dim) -->
+          <rect x="30" y="30" width="140" height="140" rx="8" fill="#131929" stroke="#adc6ff" stroke-width="0.5" opacity="0.3"/>
+          <text x="100" y="100" text-anchor="middle" font-size="10" fill="#ffffff" opacity="0.15" font-family="monospace">BULK</text>
+          <text x="100" y="115" text-anchor="middle" font-size="8" fill="#ffffff" opacity="0.12" font-family="monospace">(quiet inside)</text>
+          <!-- Boundary highlight -->
+          <rect x="28" y="28" width="144" height="144" rx="9" fill="none" stroke="#adc6ff" stroke-width="3" opacity="0.7"/>
+          <!-- Boundary waves -->
+          <g opacity="0.6">
+            <path d="M 30 80 Q 50 70 70 80 Q 90 90 110 80 Q 130 70 150 80 Q 165 87 170 80" fill="none" stroke="#adc6ff" stroke-width="1.5"/>
+            <path d="M 30 100 Q 50 90 70 100 Q 90 110 110 100 Q 130 90 150 100 Q 165 107 170 100" fill="none" stroke="#ddb7ff" stroke-width="1" opacity="0.7"/>
+            <path d="M 30 120 Q 50 110 70 120 Q 90 130 110 120 Q 130 110 150 120 Q 165 127 170 120" fill="none" stroke="#adc6ff" stroke-width="0.8" opacity="0.5"/>
+          </g>
+          <text x="100" y="185" text-anchor="middle" font-size="8" fill="#adc6ff" opacity="0.5" font-family="monospace">boundary encodes everything</text>
+          <!-- Arrow pointing to boundary -->
+          <text x="22" y="75" font-size="18" fill="#ffb95f" opacity="0.8">↓</text>
+          <text x="4" y="72" font-size="7" fill="#ffb95f" opacity="0.7" font-family="monospace" writing-mode="vertical-rl">boundary</text>
+        </svg>
+      </div>
+    </div>
+    <div class="space-y-5 text-on-surface-variant leading-relaxed">
+      <p>Here's the crucial idea in BPR: <strong class="text-on-surface">the interesting physics doesn't happen in the bulk of the lattice it happens at the boundaries.</strong></p>
+      <p>This isn't just a mathematical convenience. There's strong evidence from physics that boundaries encode everything. The holographic principle supported by work in string theory and black hole thermodynamics tells us that all the information in a 3D volume can be described by what happens on its 2D surface. BPR makes this idea concrete and computational.</p>
+      <p>Think of a drum. The membrane vibrates, but the <em>sound</em> the physics you can measure is determined by the boundary conditions: how the edge is fixed, how tight the skin is. The interior just carries the waves. The boundary sets the rules.</p>
+      <p>In BPR, the observable universe particles, forces, fields corresponds to <strong class="text-on-surface">stable phase patterns on the boundary</strong> of this discrete lattice. What we call "an electron" is a particular configuration of boundary oscillations that is self-reinforcing and stable. What we call "electromagnetism" is a particular mode of how boundary phases couple.</p>
+      <p class="bg-surface-container-low border-l-2 border-primary px-5 py-4 rounded-r-lg">
+        The insight isn't just philosophical. BPR writes down an explicit boundary action a mathematical description of how boundary phases move and interact and derives particle masses and force strengths directly from it.
+      </p>
+      <details class="researcher-detail">
+        <summary>The master boundary action</summary>
+        <div class="detail-body">
+          <p>The boundary action is <code>S[Φ] = ∫_∂M d³x √|γ| (½ γᵃᵇ ∂ₐΦ ∂ᵦΦ + Σ_W v_W|Φ_W|² + θ χ(∂M))</code> on a 3D hypersurface with induced metric γ. The three terms are: kinetic (stiffness of boundary oscillations), potential (mass spectrum via winding-dependent potentials v_W), and topological (Euler characteristic coupling that resolves the strong CP problem). The field satisfies Z_p periodicity: Φ(x+p) = Φ(x).</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="story-step grid md:grid-cols-[1fr_2fr] gap-12 items-start mb-24 pb-24 border-b border-white/5">
+    <div class="sticky top-28">
+      <div class="flex items-center gap-4 mb-6">
+        <span class="w-10 h-10 rounded-full resonance-gradient flex items-center justify-center text-on-primary font-bold font-mono text-sm shrink-0">4</span>
+        <h3 class="font-headline text-2xl font-light text-secondary">Winding and Resonance</h3>
+      </div>
+      <!-- Mini viz: winding number animation -->
+      <div class="rounded-xl border border-outline-variant/10 bg-surface-container-low p-4 aspect-square flex items-center justify-center">
+        <svg viewBox="0 0 200 200" width="100%" xmlns="http://www.w3.org/2000/svg" id="winding-svg">
+          <defs>
+            <filter id="glow2"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <!-- W=1 circle -->
+          <circle cx="100" cy="100" r="60" fill="none" stroke="#adc6ff" stroke-width="1.5" opacity="0.3"/>
+          <!-- W=2 spiral hint -->
+          <path d="M 100 40 A 60 60 0 1 1 40 100 A 40 40 0 1 0 100 60" fill="none" stroke="#ddb7ff" stroke-width="1" opacity="0.4" stroke-dasharray="4,3"/>
+          <!-- W=1 winding arrow -->
+          <circle cx="160" cy="100" r="5" fill="#adc6ff" opacity="0.9" filter="url(#glow2)"/>
+          <text x="100" y="175" text-anchor="middle" font-size="8" fill="#adc6ff" opacity="0.5" font-family="monospace">W=1 (one wrap = EM)</text>
+          <text x="100" y="188" text-anchor="middle" font-size="8" fill="#ddb7ff" opacity="0.5" font-family="monospace">W=2 (two wraps = weak force)</text>
+          <!-- Labels -->
+          <text x="100" y="97" text-anchor="middle" font-size="22" fill="#ffffff" opacity="0.07" font-family="monospace">Z_p</text>
+        </svg>
+      </div>
+    </div>
+    <div class="space-y-5 text-on-surface-variant leading-relaxed">
+      <p>The phase field on the boundary can <strong class="text-on-surface">wind</strong>. Imagine walking around the boundary of the lattice while watching the phase the angle of our clock hand. When you get back to where you started, the phase might have gone around the full cycle once, or twice, or three times. This is the <strong class="text-on-surface">winding number W</strong>.</p>
+      <p>Winding numbers are topological you can't change them continuously. You can't go from W=1 to W=2 without a discontinuous jump. This is exactly why particles are <em>stable</em>: a winding-1 configuration can't smoothly decay into a winding-0 one. The topology protects it.</p>
+      <p>Different winding numbers correspond to different sectors of physics:
+        <span class="block mt-3 space-y-2">
+          <span class="flex items-start gap-3"><span class="w-2 h-2 rounded-full bg-primary mt-2 shrink-0"></span><span><strong class="text-primary">W = 1</strong> one wrap around the cycle. This is the electromagnetic sector. The photon is the quantum of W=1 boundary oscillations.</span></span>
+          <span class="flex items-start gap-3"><span class="w-2 h-2 rounded-full bg-secondary mt-2 shrink-0"></span><span><strong class="text-secondary">W = 2</strong> two wraps. This is the weak force sector, where the W and Z bosons live.</span></span>
+          <span class="flex items-start gap-3"><span class="w-2 h-2 rounded-full bg-tertiary mt-2 shrink-0"></span><span><strong class="text-tertiary">W → ∞</strong> many wraps, collective behavior. This is where gravity emerges not as a separate input, but as the large-winding limit of the same boundary dynamics.</span></span>
+        </span>
+      </p>
+      <p>The <strong class="text-on-surface">resonance</strong> in "Boundary Phase Resonance" refers to when the boundary oscillations lock into a stable, self-consistent pattern. Like a tuning fork vibrating at its natural frequency, the boundary "rings" at specific modes and those modes are what we call particles.</p>
+      <details class="researcher-detail">
+        <summary>Impedance and the critical winding number</summary>
+        <div class="detail-body">
+          <p>The topological impedance is <code>Z(W) = Z₀√(1 + W²/Wc²)</code> where <code>Z₀ = 376.73 Ω</code> is the vacuum impedance and <code>Wc = p^(1/5) ≈ 10.1</code> is the critical winding separating perturbative (W &lt; Wc) from non-perturbative (W &gt; Wc) sectors. The EM coupling at winding W is <code>g_EM(W) = g₀/(1 + W²/Wc²)</code> so high-W solitons are electromagnetically dark. This is the BPR dark matter mechanism: impedance mismatch, not a new particle.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="story-step grid md:grid-cols-[1fr_2fr] gap-12 items-start mb-24 pb-24 border-b border-white/5">
+    <div class="sticky top-28">
+      <div class="flex items-center gap-4 mb-6">
+        <span class="w-10 h-10 rounded-full resonance-gradient flex items-center justify-center text-on-primary font-bold font-mono text-sm shrink-0">5</span>
+        <h3 class="font-headline text-2xl font-light text-primary">One Equation, All Forces</h3>
+      </div>
+      <div class="rounded-xl border border-outline-variant/10 bg-surface-container-low p-6 aspect-square flex flex-col items-center justify-center gap-4">
+        <svg viewBox="0 0 200 200" width="100%" xmlns="http://www.w3.org/2000/svg">
+          <!-- Central boundary action node -->
+          <circle cx="100" cy="70" r="22" fill="#131929" stroke="#adc6ff" stroke-width="1.5" opacity="0.9"/>
+          <text x="100" y="67" text-anchor="middle" font-size="8" fill="#adc6ff" font-family="monospace">S_∂</text>
+          <text x="100" y="78" text-anchor="middle" font-size="7" fill="#adc6ff" font-family="monospace" opacity="0.7">boundary</text>
+          <!-- Arrows out -->
+          <line x1="82" y1="88" x2="48" y2="128" stroke="#adc6ff" stroke-width="1" opacity="0.5"/>
+          <line x1="100" y1="92" x2="100" y2="128" stroke="#ddb7ff" stroke-width="1" opacity="0.5"/>
+          <line x1="118" y1="88" x2="152" y2="128" stroke="#ffb95f" stroke-width="1" opacity="0.5"/>
+          <!-- Force nodes -->
+          <circle cx="44" cy="140" r="18" fill="#131929" stroke="#adc6ff" stroke-width="1" opacity="0.8"/>
+          <text x="44" y="138" text-anchor="middle" font-size="7" fill="#adc6ff" font-family="monospace">EM</text>
+          <text x="44" y="148" text-anchor="middle" font-size="6" fill="#adc6ff" font-family="monospace" opacity="0.6">W=1</text>
+          <circle cx="100" cy="142" r="18" fill="#131929" stroke="#ddb7ff" stroke-width="1" opacity="0.8"/>
+          <text x="100" y="140" text-anchor="middle" font-size="7" fill="#ddb7ff" font-family="monospace">QM</text>
+          <text x="100" y="150" text-anchor="middle" font-size="6" fill="#ddb7ff" font-family="monospace" opacity="0.6">fluct.</text>
+          <circle cx="156" cy="140" r="18" fill="#131929" stroke="#ffb95f" stroke-width="1" opacity="0.8"/>
+          <text x="156" y="138" text-anchor="middle" font-size="7" fill="#ffb95f" font-family="monospace">GR</text>
+          <text x="156" y="148" text-anchor="middle" font-size="6" fill="#ffb95f" font-family="monospace" opacity="0.6">W→∞</text>
+          <text x="100" y="185" text-anchor="middle" font-size="8" fill="#ffffff" opacity="0.2" font-family="monospace">same source, different limits</text>
+        </svg>
+      </div>
+    </div>
+    <div class="space-y-5 text-on-surface-variant leading-relaxed">
+      <p>The most striking result of the BPR framework is that <strong class="text-on-surface">all three of the major forces emerge from a single boundary equation</strong> not as separate inputs, but as different mathematical limits of the same dynamics.</p>
+      <p>
+        <span class="block space-y-4">
+          <span class="block p-4 bg-surface-container-low rounded-lg border border-primary/10">
+            <strong class="text-primary block mb-1">Electromagnetism</strong>
+            Take the boundary action and vary it with respect to the gauge field at winding W=1. Out comes Maxwell's equations the same equations that describe light, electric charge, and magnets. The speed of light and the fine-structure constant α fall out with no tuning.
+          </span>
+          <span class="block p-4 bg-surface-container-low rounded-lg border border-secondary/10">
+            <strong class="text-secondary block mb-1">Quantum Mechanics</strong>
+            Take the stationary-phase approximation of the boundary path integral the quantum fluctuations around the classical solution. Out comes the Schrödinger equation. Planck's constant ħ is identified as the boundary action quantum.
+          </span>
+          <span class="block p-4 bg-surface-container-low rounded-lg border border-tertiary/10">
+            <strong class="text-tertiary block mb-1">General Relativity</strong>
+            Take the large-winding limit where many modes act collectively. Boundary diffeomorphism invariance forces Einstein's field equations. Newton's constant G is identified with the boundary stiffness κ. The cosmological constant Λ appears naturally and at the right scale.
+          </span>
+        </span>
+      </p>
+      <p>This is not a coincidence or a fitting exercise. The boundary action has one mathematical form. These three theories are what you get when you probe it at different scales and in different limits.</p>
+      <details class="researcher-detail">
+        <summary>The sectoral limit derivations</summary>
+        <div class="detail-body">
+          <p><strong>EM:</strong> <code>∂_μ F^μν = J^ν − Z_s A^ν</code> (reduces to Maxwell when Z_s→0, verified symbolically in <code>bpr/symbolic_derivations.py</code>). <strong>QM:</strong> Gaussian path-integral fluctuations with <code>iħ ∂ψ/∂t = Ĥψ</code>, ħ = boundary action quantum. <strong>GR:</strong> Boundary diffeomorphism invariance → <code>G_μν + Λg_μν = 8πG T_μν</code> with κ = G_N⁻¹. <strong>NS (large-N limit):</strong> Kuramoto synchronization emerges for macroscopic oscillator populations the bridge to biological predictions.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- STEP 6: THE RESULT -->
+  <div class="story-step grid md:grid-cols-[1fr_2fr] gap-12 items-start">
+    <div class="sticky top-28">
+      <div class="flex items-center gap-4 mb-6">
+        <span class="w-10 h-10 rounded-full bg-tertiary/20 border border-tertiary/40 flex items-center justify-center text-tertiary font-bold font-mono text-sm shrink-0">✓</span>
+        <h3 class="font-headline text-2xl font-light text-tertiary">87 Predictions. Two Numbers.</h3>
+      </div>
+      <div class="rounded-xl border border-tertiary/20 bg-surface-container-low p-6 text-xs font-mono">
+        <div class="grid gap-y-3" style="grid-template-columns: 1fr auto;">
+          <span class="text-outline pr-4">Fine-structure constant α</span>
+          <span class="text-primary text-right">0.003% err</span>
+          <span class="text-outline pr-4">Weinberg angle sin²θ_W</span>
+          <span class="text-primary text-right">exact</span>
+          <span class="text-outline pr-4">Electron mass</span>
+          <span class="text-primary text-right">0.11% err</span>
+          <span class="text-outline pr-4">Muon mass</span>
+          <span class="text-primary text-right">1.5% err</span>
+          <span class="text-outline pr-4">Neutrino mass sum</span>
+          <span class="text-primary text-right">within bound</span>
+          <span class="text-outline pr-4">Dark energy w₀</span>
+          <span class="text-primary text-right">1σ DESI</span>
+          <span class="text-outline pr-4">Proton radius</span>
+          <span class="text-primary text-right">0.02% err</span>
+          <span class="text-outline pr-4">MgB₂ critical temp.</span>
+          <span class="text-secondary text-right">6% err</span>
+          <span class="text-outline pr-4">EEG alpha band</span>
+          <span class="text-secondary text-right">4.5% err</span>
+          <span class="col-span-2 border-t border-white/5 mt-0 pt-3 grid gap-y-0" style="grid-template-columns: 1fr auto;">
+            <span class="text-outline uppercase tracking-wider">Free parameters</span>
+            <span class="text-tertiary font-bold text-right">Zero</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="space-y-5 text-on-surface-variant leading-relaxed">
+      <p>Starting from just two integers and one equation, BPR derives 87 physical quantities spanning particle physics, cosmology, superconductors, atomic spectroscopy, and even the frequency of brain waves.</p>
+      <p>The key word is <em>derives</em>, not <em>fits</em>. Every number in the table to the left is a mathematical consequence of p = 104,729 and z = 6. Nothing is adjusted after the fact. There are no hidden parameters.</p>
+      <p>Some predictions are already verified against experiment. Others are falsifiable in the next few years with experiments that are already running. A few can only be tested with next-generation instruments.</p>
+      <p class="bg-surface-container-low border-l-2 border-tertiary px-5 py-4 rounded-r-lg">
+        <strong class="text-tertiary">The most immediate test:</strong> the hydrogen 1S–2S transition should show a 66.8 Hz shift from standard QED. Current spectroscopy has 10 Hz resolution. If this shift isn't there, BPR is ruled out.
+      </p>
+      <div class="flex flex-wrap gap-4 pt-4">
+        <a href="bpr-paper.pdf" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 resonance-gradient text-on-primary text-sm font-label uppercase tracking-wider rounded-lg no-underline hover:scale-95 transition-transform">
+          <span class="material-symbols-outlined text-base" data-icon="description">description</span>
+          Read the Full Paper
+        </a>
+        <a href="#architecture" class="inline-flex items-center gap-2 px-5 py-2.5 border border-primary/30 text-primary text-sm font-label uppercase tracking-wider rounded-lg no-underline hover:bg-primary/5 transition-colors">
+          <span class="material-symbols-outlined text-base" data-icon="schema">schema</span>
+          Explore the Landscape
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- SECTION 3: THEORY IN BRIEF -->
+<section class="relative py-32 overflow-hidden px-8" id="theory">
+<div class="absolute right-0 top-0 w-1/2 h-full opacity-10 pointer-events-none">
+<svg id="eq-grid" class="w-full h-full" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+</div>
+<div class="max-w-7xl mx-auto relative z-10">
+<h2 class="text-4xl font-headline font-light text-secondary mb-8 tracking-tight">Theory in Brief</h2>
+<p class="text-on-surface-variant mb-12 max-w-3xl font-light leading-relaxed">
+  The central equation called the <strong class="text-on-surface">boundary action S_∂</strong> describes how information moves across the edge of this discrete grid. Every force in nature appears as a different "frequency" of that one equation. There are no extra pieces bolted on: gravity, light, electrons, and the Higgs field all come from the same source.
+</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="p-8 bg-surface-container-high/50 backdrop-blur rounded-lg border border-outline-variant/10 hover:border-primary/30 transition-all">
+<h3 class="text-primary font-headline text-2xl mb-4">S_∂ Action</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">The boundary action principle that defines field interactions across dimensional transitions.</p>
+</div>
+<div class="p-8 bg-surface-container-high/50 backdrop-blur rounded-lg border border-outline-variant/10 hover:border-primary/30 transition-all">
+<h3 class="text-primary font-headline text-2xl mb-4">p=104,729 | z=6</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Fundamental substrate integers determining the resonant prime lattice scale and sectoral density.</p>
+</div>
+<div class="p-8 bg-surface-container-high/50 backdrop-blur rounded-lg border border-outline-variant/10 hover:border-primary/30 transition-all">
+<h3 class="text-primary font-headline text-2xl mb-4">Impedance Z(W)</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Complex transfer functions describing how winding numbers (W) couple to measurable substrate impedance.</p>
+</div>
+<div class="p-8 bg-surface-container-high/50 backdrop-blur rounded-lg border border-outline-variant/10 hover:border-primary/30 transition-all">
+<h3 class="text-secondary font-headline text-2xl mb-4">Sectoral Emergence</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">The tiered formation of matter and forces from primary resonant modes within the lattice.</p>
+</div>
+<div class="p-8 bg-surface-container-high/50 backdrop-blur rounded-lg border border-outline-variant/10 hover:border-primary/30 transition-all md:col-span-2">
+<h3 class="text-tertiary font-headline text-2xl mb-4">87 Precise Predictions</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">The fine-structure constant α matches to 0.003%. The weak mixing angle to 0.1%. Electron, muon, and tau mass ratios to 1.5%. All from the same two integers nothing adjusted after the fact.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 5: HOW IT WORKS -->
+<section class="py-32 bg-surface-container-low/20 px-8" id="methodology">
+<div class="max-w-7xl mx-auto text-center mb-16">
+<h2 class="text-4xl font-headline font-light text-on-surface tracking-tight">How It Works</h2>
+</div>
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
+<!-- Step 1 -->
+<div class="bg-surface-container-high p-8 rounded-xl border border-outline-variant/10 group hover:bg-surface-container-highest transition-colors">
+<div class="flex items-center justify-between mb-6">
+<span class="w-10 h-10 rounded-full resonance-gradient flex items-center justify-center text-on-primary font-bold">1</span>
+<span class="material-symbols-outlined text-primary" data-icon="settings_input_component">settings_input_component</span>
+</div>
+<h4 class="text-on-surface font-headline text-lg mb-3">Define Substrate</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Choose prime <strong>p = 104,729</strong> and connectivity <strong>z = 6</strong>. These two integers are the only inputs the entire framework ever needs.</p>
+</div>
+<!-- Step 2 -->
+<div class="bg-surface-container-high p-8 rounded-xl border border-outline-variant/10 group hover:bg-surface-container-highest transition-colors">
+<div class="flex items-center justify-between mb-6">
+<span class="w-10 h-10 rounded-full resonance-gradient flex items-center justify-center text-on-primary font-bold">2</span>
+<span class="material-symbols-outlined text-primary" data-icon="waves">waves</span>
+</div>
+<h4 class="text-on-surface font-headline text-lg mb-3">Derive Impedance</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Calculate <code style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#ffb95f;background:rgba(255,185,95,0.08);padding:1px 5px;border-radius:4px;">Z(W)</code> the boundary transfer function. Electromagnetism, gravity, and quantum mechanics each appear as different limits of this one function.</p>
+</div>
+<!-- Step 3 -->
+<div class="bg-surface-container-high p-8 rounded-xl border border-outline-variant/10 group hover:bg-surface-container-highest transition-colors">
+<div class="flex items-center justify-between mb-6">
+<span class="w-10 h-10 rounded-full resonance-gradient flex items-center justify-center text-on-primary font-bold">3</span>
+<span class="material-symbols-outlined text-primary" data-icon="hub">hub</span>
+</div>
+<h4 class="text-on-surface font-headline text-lg mb-3">Run Bridges</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">67 bridge functions chain together into end-to-end derivation pipelines, from substrate to measurable prediction.</p>
+</div>
+<!-- Step 4 -->
+<div class="bg-surface-container-high p-8 rounded-xl border border-outline-variant/10 group hover:bg-surface-container-highest transition-colors">
+<div class="flex items-center justify-between mb-6">
+<span class="w-10 h-10 rounded-full resonance-gradient flex items-center justify-center text-on-primary font-bold">4</span>
+<span class="material-symbols-outlined text-primary" data-icon="biotech">biotech</span>
+</div>
+<h4 class="text-on-surface font-headline text-lg mb-3">Compare</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Every output is checked against NIST/CODATA experimental values. The framework has zero adjustable parameters it either matches or it doesn't.</p>
+</div>
+</div>
+</section>
+<!-- SECTION 6: PREDICTION FLOW -->
+<section class="py-32 bg-background px-8">
+<div class="max-w-7xl mx-auto">
+<h2 class="text-4xl font-headline font-light text-on-surface mb-8 tracking-tight">Two Integers → All of Physics</h2>
+<div class="bpr-viz-wrap w-full rounded-xl border border-slate-800 glow-blue overflow-hidden relative" style="height:clamp(420px,70vw,920px);position:relative;">
+<iframe src="viz/prediction-flow.html" style="width:100%;height:100%;border:none;display:block;" loading="lazy" tabindex="-1"></iframe>
+<div class="bpr-viz-overlay" aria-label="Click or tap to interact with visualization">
+<div class="bpr-viz-hint">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.7"><path d="M15 15l6 6m-6-6v4.8m0-4.8h4.8"/><path d="M9 19.8V15m0 0H4.2M9 15l-6 6"/><path d="M15 4.2V9m0 0h4.8M15 9l6-6"/><path d="M9 4.2V9m0 0H4.2M9 9L3 3"/></svg>
+<span>Click to interact</span>
+</div>
+</div>
+<div class="bpr-viz-lock-badge">
+<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+Scroll away to release
+</div>
+<div class="absolute bottom-6 left-6 flex gap-4 text-xs font-label pointer-events-none z-10">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Measured</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Predicted</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-500"></span> Anomaly</span>
+</div>
+</div>
+<p class="mt-4 text-on-surface-variant text-sm italic">Hover over nodes for real-time calculation metadata. Node colors indicate deviation from experimental constants.</p>
+</div>
+</section>
+<!-- SECTION 7: THREE-LAYER ARCHITECTURE -->
+<section class="py-32 px-8" id="architecture">
+<div class="max-w-7xl mx-auto">
+<h2 class="text-4xl font-headline font-light text-on-surface mb-4 tracking-tight text-center">The Architecture</h2>
+<p class="text-on-surface-variant text-center mb-16 max-w-2xl mx-auto">BPR has three layers. The substrate computes. The boundary radiates. The Cache remembers.</p>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+
+<!-- RPST Layer -->
+<div class="bg-surface-container-high p-8 rounded-xl border border-tertiary/20 relative overflow-hidden group hover:border-tertiary/40 transition-colors">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-tertiary/60 to-tertiary/0"></div>
+<div class="flex items-center gap-3 mb-6">
+<span class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary font-mono text-sm font-bold">1</span>
+<div>
+<h3 class="text-on-surface font-headline text-xl">RPST</h3>
+<p class="text-[10px] font-mono uppercase tracking-widest text-tertiary">Resonant Prime Substrate</p>
+</div>
+</div>
+<div class="space-y-4 text-on-surface-variant text-sm leading-relaxed">
+<p>A lattice of N nodes, each carrying a phase pair (q, π) in Z_p where p = 104,729 is a large prime. The Hamiltonian is nearest-neighbour cosine coupling with coordination z = 6.</p>
+<p>Why prime? Z_p has no subgroups, so the lattice has no preferred sub-structure before symmetry breaking. The prime number theorem governs the density of resonant modes.</p>
+</div>
+<div class="mt-6 bg-surface-container-lowest/50 p-3 rounded-lg font-mono text-[11px] text-tertiary/80 leading-loose border border-white/5">
+H = -J Σ cos(2π(q_i - q_j)/p)<br/>
+<span class="text-outline/60">Symplectic, energy-conserving, Liouville-preserving</span>
+</div>
+<p class="mt-4 text-[10px] font-mono text-outline/40 uppercase tracking-widest">bpr/rpst/substrate.py</p>
+</div>
+
+<!-- BPR Layer -->
+<div class="bg-surface-container-high p-8 rounded-xl border border-primary/20 relative overflow-hidden group hover:border-primary/40 transition-colors">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/60 to-primary/0"></div>
+<div class="flex items-center gap-3 mb-6">
+<span class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-mono text-sm font-bold">2</span>
+<div>
+<h3 class="text-on-surface font-headline text-xl">BPR</h3>
+<p class="text-[10px] font-mono uppercase tracking-widest text-primary">Boundary Phase Resonance</p>
+</div>
+</div>
+<div class="space-y-4 text-on-surface-variant text-sm leading-relaxed">
+<p>Observable physics lives on the boundary. Coarse-graining the substrate produces a continuous phase field φ(x) on ∂Ω that satisfies a boundary wave equation. EM, QM, and GR emerge as different limits of the impedance function Z(W).</p>
+<p>The total action has five pieces: bulk gravity, boundary phase, metric-boundary coupling, information, and biological coupling. All 87 predictions come from this action.</p>
+</div>
+<div class="mt-6 bg-surface-container-lowest/50 p-3 rounded-lg font-mono text-[11px] text-primary/80 leading-loose border border-white/5">
+S = S_bulk + S_bndy + S_int + S_info + S_bio<br/>
+<span class="text-outline/60">5 gauge-invariant terms, 0 free parameters</span>
+</div>
+<p class="mt-4 text-[10px] font-mono text-outline/40 uppercase tracking-widest">bpr/boundary_action.py</p>
+</div>
+
+<!-- Cache Layer -->
+<div class="bg-surface-container-high p-8 rounded-xl border border-secondary/20 relative overflow-hidden group hover:border-secondary/40 transition-colors">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-secondary/60 to-secondary/0"></div>
+<div class="flex items-center gap-3 mb-6">
+<span class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary font-mono text-sm font-bold">3</span>
+<div>
+<h3 class="text-on-surface font-headline text-xl">Cache</h3>
+<p class="text-[10px] font-mono uppercase tracking-widest text-secondary">Latent Information Substrate</p>
+</div>
+</div>
+<div class="space-y-4 text-on-surface-variant text-sm leading-relaxed">
+<p>The Cache m(x,t) stores persistent information that survives boundary phase transitions. Its memory timescale is derived from winding topology: τ_m = τ₀|W|^α. Higher winding numbers create topologically protected memory.</p>
+<p>The complete state is a triple (b, m, κ) where b is the boundary, m is the Cache, and κ is the constraint field governing accessible boundary conditions.</p>
+</div>
+<div class="mt-6 bg-surface-container-lowest/50 p-3 rounded-lg font-mono text-[11px] text-secondary/80 leading-loose border border-white/5">
+τ_m = τ₀ |W|^α<br/>
+<span class="text-outline/60">Winding-protected memory, derived not postulated</span>
+</div>
+<p class="mt-4 text-[10px] font-mono text-outline/40 uppercase tracking-widest">bpr/meta_boundary.py</p>
+</div>
+
+</div>
+
+<!-- Prime spiral canvas -->
+<div class="flex justify-center">
+<canvas id="prime-spiral" class="rounded-xl border border-outline-variant/20 shadow-2xl" style="width:100%;max-width:500px;display:block;"></canvas>
+</div>
+</div>
+</section>
+<!-- SECTION 8: WHY BPR? -->
+<section class="py-32 bg-surface-container-low/40 px-8">
+<div class="max-w-7xl mx-auto">
+<h2 class="text-4xl font-headline font-light text-on-surface mb-16 text-center tracking-tight">Why This Approach?</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-primary shrink-0" data-icon="check_circle">check_circle</span>
+<div>
+<h3 class="text-on-surface font-headline text-xl mb-2">No Free Parameters</h3>
+<p class="text-on-surface-variant text-sm">Every single prediction is a direct mathematical consequence of p and z both of which were fixed before any predictions were made. There's no 'tuning' after the fact.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-primary shrink-0" data-icon="check_circle">check_circle</span>
+<div>
+<h3 class="text-on-surface font-headline text-xl mb-2">Broad Coverage</h3>
+<p class="text-on-surface-variant text-sm">87 predictions spanning electromagnetism, particle physics, gravity, cosmology, and even biology all from the same two integers. Run the full suite in under 60 seconds on any laptop.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-primary shrink-0" data-icon="check_circle">check_circle</span>
+<div>
+<h3 class="text-on-surface font-headline text-xl mb-2">Rigorous &amp; Falsifiable</h3>
+<p class="text-on-surface-variant text-sm">All 9 domain consistency audits pass. 1,225 tests passing, 0 failures. Equations independently verified in both Python and Wolfram Language. The framework names specific experiments that could rule it out: DESI full-survey, next-gen hydrogen spectroscopy, and MEMS Casimir measurements.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 9: WHAT'S IN THE BOX -->
+<section class="py-32 px-8">
+<div class="max-w-7xl mx-auto">
+<h2 class="text-4xl font-headline font-light text-on-surface mb-16 tracking-tight">What's in the Repository</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+<div class="bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<span class="material-symbols-outlined text-primary text-3xl mb-4" data-icon="functions">functions</span>
+<h5 class="text-on-surface font-headline mb-2">Core Equations</h5>
+<p class="text-[0.75rem] text-on-surface-variant uppercase tracking-wider">C++, Python, Rust</p>
+</div>
+<div class="bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<span class="material-symbols-outlined text-primary text-3xl mb-4" data-icon="view_module">view_module</span>
+<h5 class="text-on-surface font-headline mb-2">Theory Modules</h5>
+<p class="text-[0.75rem] text-on-surface-variant uppercase tracking-wider">Physics-ready libraries</p>
+</div>
+<div class="bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<span class="material-symbols-outlined text-primary text-3xl mb-4" data-icon="verified">verified</span>
+<h5 class="text-on-surface font-headline mb-2">Verification Suite</h5>
+<p class="text-[0.75rem] text-on-surface-variant uppercase tracking-wider">Unit &amp; Integration Tests</p>
+</div>
+<div class="bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<span class="material-symbols-outlined text-primary text-3xl mb-4" data-icon="terminal">terminal</span>
+<h5 class="text-on-surface font-headline mb-2">Developer Tools</h5>
+<p class="text-[0.75rem] text-on-surface-variant uppercase tracking-wider">CLI &amp; Visualization API</p>
+</div>
+<div class="bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<span class="material-symbols-outlined text-primary text-3xl mb-4" data-icon="library_books">library_books</span>
+<h5 class="text-on-surface font-headline mb-2">Literature</h5>
+<p class="text-[0.75rem] text-on-surface-variant uppercase tracking-wider">Documentation &amp; Papers</p>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 10: FOR VISITORS -->
+<section class="py-32 bg-surface-container-lowest px-8">
+<div class="max-w-7xl mx-auto">
+<h2 class="text-4xl font-headline font-light text-on-surface mb-16 text-center tracking-tight">Find Your Path</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="p-10 border border-outline-variant/10 rounded-xl hover:bg-surface-container-low transition-all">
+<h3 class="text-2xl font-headline text-secondary mb-4">Physicists</h3>
+<p class="text-on-surface-variant mb-8 text-sm leading-relaxed">Dive into the derivation of S_∂ action and sectoral density distributions.</p>
+<a class="text-primary font-headline text-sm flex items-center gap-2 hover:translate-x-1 transition-transform" href="bpr-paper.pdf" target="_blank">Read the Math <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span></a>
+</div>
+<div class="p-10 border border-outline-variant/10 rounded-xl hover:bg-surface-container-low transition-all">
+<h3 class="text-2xl font-headline text-primary mb-4">Experimentalists</h3>
+<p class="text-on-surface-variant mb-8 text-sm leading-relaxed">View predicted signatures for cosmological constants and particle masses.</p>
+<a class="text-primary font-headline text-sm flex items-center gap-2 hover:translate-x-1 transition-transform" href="experimental-roadmap.html">See Predictions <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span></a>
+</div>
+<div class="p-10 border border-outline-variant/10 rounded-xl hover:bg-surface-container-low transition-all">
+<h3 class="text-2xl font-headline text-tertiary mb-4">Developers</h3>
+<p class="text-on-surface-variant mb-8 text-sm leading-relaxed">Implement the substrate in your own computational models or visualizations.</p>
+<a class="text-primary font-headline text-sm flex items-center gap-2 hover:translate-x-1 transition-transform" href="https://github.com/jackalkahwati/BPR-Math-Spine">View on GitHub <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span></a>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 11: HOW TO TRY (TERMINAL) -->
+<section class="py-32 px-8">
+<div class="max-w-4xl mx-auto">
+<h2 class="text-4xl font-headline font-light text-on-surface mb-12 tracking-tight">Try It in 3 Steps</h2>
+<div class="bg-[#0d1117] rounded-xl border border-outline-variant/20 overflow-hidden font-mono text-sm">
+<div class="bg-[#161b22] px-4 py-2 border-b border-outline-variant/20 flex items-center justify-between">
+<div class="flex gap-2">
+<div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
+<div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
+<div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+</div>
+<span class="text-xs text-outline-variant">bash terminal</span>
+</div>
+<div class="p-6 space-y-8">
+<!-- Step 1 -->
+<div>
+<div class="flex justify-between items-center mb-2">
+<p class="text-outline-variant"># Step 1: Clone and Install</p>
+<button class="text-primary hover:text-secondary" onclick="navigator.clipboard.writeText('git clone https://github.com/jackalkahwati/BPR-Math-Spine.git\ncd BPR-Math-Spine && pip install -e .')"><span class="material-symbols-outlined text-lg" data-icon="content_copy">content_copy</span></button>
+</div>
+<code class="text-on-surface">git clone https://github.com/jackalkahwati/BPR-Math-Spine.git<br/>cd BPR-Math-Spine &amp;&amp; pip install -e .</code>
+</div>
+<!-- Step 2 -->
+<div>
+<div class="flex justify-between items-center mb-2">
+<p class="text-outline-variant"># Step 2: Run prediction from substrate integers (p=104729, z=6)</p>
+<button class="text-primary hover:text-secondary" onclick="navigator.clipboard.writeText('bpr predict --p 104729 --z 6')"><span class="material-symbols-outlined text-lg" data-icon="content_copy">content_copy</span></button>
+</div>
+<code class="text-on-surface">bpr predict --p 104729 --z 6</code>
+</div>
+<!-- Step 3 -->
+<div>
+<div class="flex justify-between items-center mb-2">
+<p class="text-outline-variant"># Step 3: Launch the REST API and query constants</p>
+<button class="text-primary hover:text-secondary" onclick="navigator.clipboard.writeText('uvicorn api.main:app --port 8420\ncurl http://localhost:8420/api/constants')"><span class="material-symbols-outlined text-lg" data-icon="content_copy">content_copy</span></button>
+</div>
+<code class="text-on-surface">uvicorn api.main:app --port 8420<br/>curl http://localhost:8420/api/constants</code>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 12: FAQ -->
+<section class="py-32 bg-surface-container-low/20 px-8" id="faq">
+<div class="max-w-3xl mx-auto">
+<h2 class="text-4xl font-headline font-light text-on-surface mb-16 text-center tracking-tight">Frequently Asked Questions</h2>
+<div class="space-y-4">
+<details class="group bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<summary class="list-none flex justify-between items-center cursor-pointer font-headline text-lg text-on-surface">
+                        Has this been peer-reviewed?
+                        <span class="material-symbols-outlined group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant text-sm leading-relaxed">Not yet the framework is in open research phase. The mathematics and code are fully public so anyone can check the work. Formal peer review of the primary paper is in progress.</p>
+</details>
+<details class="group bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<summary class="list-none flex justify-between items-center cursor-pointer font-headline text-lg text-on-surface">
+                        Why choose p=104,729?
+                        <span class="material-symbols-outlined group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant text-sm leading-relaxed">p = 104,729 is the smallest prime that produces the correct fine-structure constant α to within 0.01% of the NIST measured value. z = 6 follows from the coordination number of a sphere boundary. Both were fixed by independent constraints then cross-checked against 87 other predictions.</p>
+</details>
+<details class="group bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<summary class="list-none flex justify-between items-center cursor-pointer font-headline text-lg text-on-surface">
+                        What makes this falsifiable?
+                        <span class="material-symbols-outlined group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant text-sm leading-relaxed">If the DESI-II survey measures the dark energy parameter w₀ above −0.8, BPR is ruled out. If next-generation hydrogen spectroscopy shows no 66.8 Hz shift, BPR is ruled out. Specific, testable, named.</p>
+</details>
+<details class="group bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<summary class="list-none flex justify-between items-center cursor-pointer font-headline text-lg text-on-surface">
+                        How accurate are the predictions?
+                        <span class="material-symbols-outlined group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant text-sm leading-relaxed">The fine-structure constant matches to 0.001%. The weak mixing angle to 0.003%. GW propagation speed confirmed at 10⁻¹⁵ precision by GW170817. The Koide lepton mass formula is exact. These matches come from zero free parameters — p and z were fixed before predictions were run.</p>
+</details>
+<details class="group bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<summary class="list-none flex justify-between items-center cursor-pointer font-headline text-lg text-on-surface">
+What makes this falsifiable?
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant text-sm leading-relaxed">Three hard thresholds: if DESI full-survey measures w₀ above −0.80, BPR is ruled out. If next-generation hydrogen spectroscopy detects no 66.8 Hz substrate shift, BPR is ruled out. If MEMS Casimir experiments reach 10⁻⁹ precision with no δ = 1.37 anomaly, the phonon channel is ruled out. These are quantitative, scheduled, and not adjustable after the fact.</p>
+</details>
+<details class="group bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<summary class="list-none flex justify-between items-center cursor-pointer font-headline text-lg text-on-surface">
+How does BPR relate to string theory or loop quantum gravity?
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant text-sm leading-relaxed">BPR is neither. String theory requires extra dimensions and has no unique vacuum. LQG quantizes geometry but doesn't derive the Standard Model constants. BPR works in 3+1 dimensions, uses a discrete prime lattice, and makes specific numerical predictions checkable with current experiments. It's closer in spirit to lattice approaches but derives the lattice structure rather than assuming it.</p>
+</details>
+<details class="group bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<summary class="list-none flex justify-between items-center cursor-pointer font-headline text-lg text-on-surface">
+What physically is the "substrate"?
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant text-sm leading-relaxed">The substrate is a cyclic lattice Z_p — a discrete grid of 104,729 nodes each connected to 6 neighbors. Each node carries a phase angle that can wind around a cycle. Observable physics emerges when you coarse-grain this lattice at its boundary, the same way sound waves emerge from atomic vibrations in a crystal. The substrate is not directly observable; only its boundary modes are.</p>
+</details>
+<details class="group bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<summary class="list-none flex justify-between items-center cursor-pointer font-headline text-lg text-on-surface">
+Can I run the code myself?
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant text-sm leading-relaxed">Yes. Clone the repo, run <code style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#ffb95f;background:rgba(255,185,95,0.08);padding:1px 5px;border-radius:4px;">pip install -e .</code> then <code style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#ffb95f;background:rgba(255,185,95,0.08);padding:1px 5px;border-radius:4px;">bpr predict --p 104729 --z 6</code>. The full 1,225-test suite passes in under 60 seconds on a laptop. A Wolfram Language port is also available for Mathematica users.</p>
+</details>
+<details class="group bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<summary class="list-none flex justify-between items-center cursor-pointer font-headline text-lg text-on-surface">
+Is the Koide relation really exact?
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant text-sm leading-relaxed">Experimentally it holds to measured precision: Q = 0.6667 ± 0.00001. In BPR it emerges from the l² spectrum of S² boundary modes — a geometric consequence, not a fit. This is the same kind of explanation as hydrogen energy levels going as 1/n²: a spectrum arising from boundary conditions.</p>
+</details>
+<details class="group bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<summary class="list-none flex justify-between items-center cursor-pointer font-headline text-lg text-on-surface">
+Why hasn't this been published yet?
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant text-sm leading-relaxed">The code and mathematics are complete and fully public — anyone can verify every derivation now. The delay is formal write-up and peer review, not the results themselves. Publishing openly before formal review is intentional: it lets the community stress-test the predictions on their own timeline rather than waiting for journal gatekeeping.</p>
+</details>
+<details class="group bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<summary class="list-none flex justify-between items-center cursor-pointer font-headline text-lg text-on-surface">
+What experiments can test BPR right now?
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant text-sm leading-relaxed">Two near-term tests are within reach. MEMS Casimir force experiments approaching 10⁻⁸ sensitivity can detect or rule out the predicted δ = 1.37 phonon anomaly by 2026. The hydrogen 1S–2S transition — currently measured at 10 Hz precision — needs ~7x improvement to see or rule out the predicted 66.8 Hz substrate correction. Both are active experimental programs.</p>
+</details>
+</div>
+</div>
+</section>
+<!-- FOOTER -->
+<footer class="bg-[#060e1d] border-t border-white/5 w-full mt-auto">
+  <div class="max-w-7xl mx-auto px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+
+      <!-- Brand -->
+      <div class="md:col-span-2">
+        <a href="index.html" class="text-[#adc6ff] font-['Space_Grotesk'] font-light text-lg tracking-tight no-underline hover:opacity-80 transition-opacity">Boundary Phase Resonance</a>
+        <p class="text-slate-500 text-xs font-['Inter'] mt-2 leading-relaxed max-w-sm">An open physics research framework deriving 87 physical constants from two integers. Pre-publication research not yet formally peer reviewed.</p>
+        <a href="https://www.thestardrive.com" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 mt-4 text-[#ffb95f] text-xs font-['Space_Grotesk'] uppercase tracking-widest no-underline hover:opacity-80 transition-opacity">
+          A StarDrive Inc. project ↗
+        </a>
+      </div>
+
+      <!-- Research links -->
+      <div>
+        <p class="text-[10px] font-['Space_Grotesk'] uppercase tracking-[0.2em] text-slate-600 mb-4">Research</p>
+        <div class="flex flex-col gap-3">
+          <a href="experimental-roadmap.html" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">Experimental Roadmap</a>
+          <a href="global-consistency-audit.html" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">Consistency Audit</a>
+          <a href="constant-calculator.html" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">Constant Calculator</a>
+          <a href="viz/physics-landscape.html" target="_blank" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">Physics Landscape</a>
+          <a href="bpr-paper.pdf" target="_blank" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">Paper PDF</a>
+          <a href="https://github.com/jackalkahwati/BPR-Math-Spine" target="_blank" rel="noopener" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">GitHub</a>
+        </div>
+      </div>
+
+      <!-- Company -->
+      <div>
+        <p class="text-[10px] font-['Space_Grotesk'] uppercase tracking-[0.2em] text-slate-600 mb-4">StarDrive Inc.</p>
+        <div class="flex flex-col gap-3">
+          <a href="https://www.thestardrive.com" target="_blank" rel="noopener" class="text-slate-500 hover:text-[#ffb95f] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">www.thestardrive.com</a>
+          <a href="researcher-portal.html" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">Researcher Portal</a>
+          <a href="researcher-portal.html#api-access" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">API Access</a>
+          <a href="mailto:jack@thestardrive.com" class="text-slate-500 hover:text-[#adc6ff] transition-colors font-['Inter'] text-xs uppercase tracking-widest no-underline">Contact</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legal bar -->
+    <div class="pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div class="flex flex-col gap-1.5">
+        <p class="text-slate-600 text-[10px] font-['Inter'] uppercase tracking-widest">© 2026 StarDrive Inc. All rights reserved.</p>
+        <p class="text-slate-700 text-[10px] font-['Inter'] leading-relaxed max-w-2xl">BPR is pre-publication research. Results have not been formally peer reviewed and should not be used as the basis for engineering, financial, or medical decisions. Source code released under the MIT License.</p>
+      </div>
+      <div class="flex gap-6 shrink-0 mt-2 md:mt-0">
+        <a href="privacy.html" class="text-slate-600 hover:text-slate-400 transition-colors font-['Inter'] text-[10px] uppercase tracking-widest no-underline">Privacy</a>
+        <a href="terms.html" class="text-slate-600 hover:text-slate-400 transition-colors font-['Inter'] text-[10px] uppercase tracking-widest no-underline">Terms</a>
+        <a href="https://www.thestardrive.com" target="_blank" rel="noopener" class="text-[#ffb95f]/60 hover:text-[#ffb95f] transition-colors font-['Inter'] text-[10px] uppercase tracking-widest no-underline">StarDrive Inc. ↗</a>
+      </div>
+    </div>
+  </div>
+</footer>
+</body></html>
+<!-- ── VIZ SCROLL INTERACTION MANAGER ── -->
+<script>
+(function () {
+  function initVizWrap(wrap) {
+    const overlay = wrap.querySelector('.bpr-viz-overlay');
+    const iframe  = wrap.querySelector('iframe');
+    if (!overlay || !iframe) return;
+
+    function unlock() {
+      wrap.classList.add('unlocked');
+      iframe.focus();
+    }
+    function lock() {
+      wrap.classList.remove('unlocked');
+      iframe.blur();
+    }
+
+    // Click / tap → unlock
+    overlay.addEventListener('click',       unlock);
+    overlay.addEventListener('touchstart',  unlock, { passive: true });
+
+    // Keyboard: Escape → lock
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && wrap.classList.contains('unlocked')) lock();
+    });
+
+    // IntersectionObserver → auto-lock when < 40% visible
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.intersectionRatio < 0.4) lock();
+      });
+    }, { threshold: [0, 0.4] });
+    io.observe(wrap);
+
+    // Touch: if user swipes vertically while iframe is NOT unlocked, let page scroll
+    let touchStartY = 0;
+    wrap.addEventListener('touchstart', e => {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    wrap.addEventListener('touchmove', e => {
+      if (wrap.classList.contains('unlocked')) return;
+      const dy = Math.abs(e.touches[0].clientY - touchStartY);
+      if (dy > 8) e.stopPropagation(); // let the outer scroll happen
+    }, { passive: true });
+  }
+
+  // Init all existing wraps + any added later
+  document.querySelectorAll('.bpr-viz-wrap').forEach(initVizWrap);
+})();
+</script>
+
+<!-- ── GENERATIVE PHYSICS VISUALIZATIONS ── -->
+<script>
+// ── 1. PARTICLE NETWORK canvas ─────────────────────────────────────────
+(function() {
+  const canvas = document.getElementById('bpr-particle-net');
+  if (!canvas) return;
+  const size = Math.min(canvas.parentElement.clientWidth || 500, 500);
+  canvas.width = size; canvas.height = size;
+  canvas.style.aspectRatio = '1/1';
+  const ctx = canvas.getContext('2d');
+  const N = 55, MAX_DIST = size * 0.28;
+  const COLORS = ['#adc6ff','#ddb7ff','#ffb95f'];
+  const BG = '#0b1323';
+  const particles = Array.from({length: N}, (_, i) => ({
+    x: Math.random()*size, y: Math.random()*size,
+    vx: (Math.random()-0.5)*0.35, vy: (Math.random()-0.5)*0.35,
+    r: i < 12 ? 4 : 1.5 + Math.random()*2,
+    color: COLORS[Math.floor(Math.random()*3)],
+    phase: Math.random()*Math.PI*2, freq: 0.6+Math.random()*0.8,
+    boundary: i < 12
+  }));
+  let t = 0;
+  function draw() {
+    t += 0.012;
+    ctx.fillStyle = BG; ctx.fillRect(0,0,size,size);
+    ctx.strokeStyle='rgba(173,198,255,0.04)'; ctx.lineWidth=1;
+    for (let i=0;i<size;i+=40){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,size);ctx.stroke();ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(size,i);ctx.stroke();}
+    particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>size)p.vx*=-1;if(p.y<0||p.y>size)p.vy*=-1;});
+    for (let i=0;i<N;i++) for (let j=i+1;j<N;j++) {
+      const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if (d<MAX_DIST){
+        const a=(1-d/MAX_DIST)*0.45;
+        const ph=Math.sin(t*particles[i].freq+particles[i].phase);
+        ctx.strokeStyle=`rgba(${Math.round(173+ph*40)},198,${Math.round(255-ph*20)},${a})`;
+        ctx.lineWidth=(particles[i].boundary||particles[j].boundary)?1:0.5;
+        ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke();
+      }
+    }
+    particles.forEach(p=>{
+      const pulse=p.boundary?1+0.2*Math.sin(t*p.freq+p.phase):1;
+      ctx.shadowBlur=p.boundary?14:6; ctx.shadowColor=p.color; ctx.fillStyle=p.color;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r*pulse,0,Math.PI*2); ctx.fill(); ctx.shadowBlur=0;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── 2. EQUATION GRID svg background ──────────────────────────────────
+(function(){
+  const svg=document.getElementById('eq-grid'); if(!svg)return;
+  const syms=['S_∂','Z(W)','p=104729','z=6','∇²Ψ','α_EM','ħ','Λ','ρ_vac','sin²θ_W','Δα/α','G_N','∂_μ','Γ_μν','R_μν','∫∂Ω','e^{iS}','ω_c','Z_p','W_n','κ','σ²','φ','ψ_n','Ω_Λ','H_0','T_μν','F_μν','m_e','Φ_BPR'];
+  const COLS=6,ROWS=8; let html='';
+  const rng=(seed)=>((Math.sin(seed)*9301+49297)%233280)/233280;
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+    const n=r*COLS+c; const sym=syms[n%syms.length];
+    const x=(c/(COLS-1))*92+4, y=(r/(ROWS-1))*88+6;
+    const op=(0.12+rng(n)*0.22).toFixed(2);
+    const col=['#adc6ff','#ddb7ff','#ffb95f'][n%3];
+    const sz=9+Math.round(rng(n+100)*6);
+    html+=`<text x="${x}%" y="${y}%" fill="${col}" opacity="${op}" font-size="${sz}" font-family="monospace" text-anchor="middle">${sym}</text>`;
+  }
+  svg.innerHTML=html;
+})();
+
+// ── 3. PRIME SPIRAL canvas ────────────────────────────────────────────
+(function(){
+  const canvas=document.getElementById('prime-spiral'); if(!canvas)return;
+  const size=Math.min(canvas.parentElement.clientWidth||500,500);
+  canvas.width=size; canvas.height=size;
+  const ctx=canvas.getContext('2d');
+  const LIMIT=2500; const sieve=new Uint8Array(LIMIT).fill(1); sieve[0]=sieve[1]=0;
+  for(let i=2;i<Math.sqrt(LIMIT);i++) if(sieve[i]) for(let j=i*i;j<LIMIT;j+=i) sieve[j]=0;
+  function spiralXY(n){
+    if(n===0)return[0,0];
+    let x=0,y=0,dx=0,dy=-1,layer=1,count=0;
+    for(let i=0;i<n;i++){x+=dx;y+=dy;count++;
+      if(count===layer){count=0;
+        if(dx===0&&dy===-1){dx=1;dy=0;}
+        else if(dx===1&&dy===0){dy=1;dx=0;layer++;}
+        else if(dx===0&&dy===1){dx=-1;dy=0;}
+        else{dy=-1;dx=0;layer++;}
+      }
+    } return[x,y];
+  }
+  ctx.fillStyle='#0b1323'; ctx.fillRect(0,0,size,size);
+  const CELLS=45, CELL=size/CELLS, OFF=Math.floor(CELLS/2);
+  for(let n=0;n<CELLS*CELLS&&n<LIMIT;n++){
+    const[gx,gy]=spiralXY(n);
+    const px=(gx+OFF)*CELL, py=(gy+OFF)*CELL;
+    if(sieve[n]){
+      const col=n%3===0?'#adc6ff':n%3===1?'#ddb7ff':'#ffb95f';
+      const alpha=0.55+0.45*(1-n/(CELLS*CELLS));
+      ctx.shadowBlur=8; ctx.shadowColor=col; ctx.fillStyle=col; ctx.globalAlpha=alpha;
+      ctx.beginPath(); ctx.arc(px+CELL/2,py+CELL/2,CELL*0.32,0,Math.PI*2); ctx.fill();
+    } else {
+      ctx.globalAlpha=0.04; ctx.fillStyle='#adc6ff';
+      ctx.beginPath(); ctx.arc(px+CELL/2,py+CELL/2,CELL*0.12,0,Math.PI*2); ctx.fill();
+    }
+  }
+  ctx.globalAlpha=1; ctx.shadowBlur=0;
+  ctx.fillStyle='#adc6ff'; ctx.globalAlpha=0.45; ctx.font='10px monospace'; ctx.textAlign='center';
+  ctx.fillText('Z_p Ulam Prime Lattice  p=104,729',size/2,size-10); ctx.globalAlpha=1;
+})();
+</script>

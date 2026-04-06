@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)\\.pdf",
+      "headers": [
+        { "key": "Content-Type", "value": "application/pdf" },
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
+      ]
+    },
+    {
+      "source": "/(.*)\\.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=300" }
+      ]
+    }
+  ],
+  "rewrites": [
+    { "source": "/paper", "destination": "/paper.html" },
+    { "source": "/roadmap", "destination": "/experimental-roadmap.html" },
+    { "source": "/audit", "destination": "/global-consistency-audit.html" },
+    { "source": "/calculator", "destination": "/constant-calculator.html" },
+    { "source": "/explorer", "destination": "/derivation-explorer.html" },
+    { "source": "/proofs", "destination": "/theoretical-proofs.html" },
+    { "source": "/docs", "destination": "/researcher-portal.html" }
+  ]
+}
