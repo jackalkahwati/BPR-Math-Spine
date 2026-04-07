@@ -321,6 +321,8 @@ def root():
             {"method": "POST", "path": "/api/monte-carlo",        "description": "RPST Monte Carlo"},
             {"method": "GET",  "path": "/api/theories",           "description": "List all 36 theories"},
             {"method": "GET",  "path": "/api/theory/{name}",      "description": "Theory module source"},
+            {"method": "GET",  "path": "/api/the-well",           "description": "The Well validation harness results"},
+            {"method": "GET",  "path": "/api/the-well/{dataset}", "description": "Run a single Well validator"},
         ],
     }
 
@@ -652,3 +654,106 @@ def api_theory(name: str):
         "public_api": public_api,
         "source": source,
     }
+
+
+# ===================================================================
+#  GET /api/the-well  — The Well validation harness results
+# ===================================================================
+
+_WELL_VALIDATORS = {
+    "turing": "bpr.the_well.validators.turing",
+    "brusselator": "bpr.the_well.validators.brusselator",
+    "acoustic": "bpr.the_well.validators.acoustic",
+    "convection": "bpr.the_well.validators.convection",
+    "active": "bpr.the_well.validators.active_matter",
+    "mhd": "bpr.the_well.validators.mhd",
+    "turb2d": "bpr.the_well.validators.turbulence_2d",
+    "stratified": "bpr.the_well.validators.turbulence_stratified",
+    "rt": "bpr.the_well.validators.rayleigh_taylor",
+    "supernova": "bpr.the_well.validators.supernova",
+    "turb3d": "bpr.the_well.validators.turbulence_3d",
+    "acoustic_maze": "bpr.the_well.validators.acoustic_maze",
+    "shear": "bpr.the_well.validators.shear_flow",
+    "planet": "bpr.the_well.validators.planetswe",
+    "helmholtz": "bpr.the_well.validators.helmholtz",
+    "viscoelastic": "bpr.the_well.validators.viscoelastic",
+    "euler": "bpr.the_well.validators.euler_compressible",
+    "rsg": "bpr.the_well.validators.convective_rsg",
+    "nsmerger": "bpr.the_well.validators.neutron_star",
+}
+
+
+def _sanitise_result(r: dict) -> dict:
+    """Replace NaN/inf with None for JSON serialisation."""
+    import math
+    out = {}
+    for k, v in r.items():
+        if isinstance(v, float) and not math.isfinite(v):
+            out[k] = None
+        else:
+            out[k] = v
+    return out
+
+
+@app.get("/api/the-well")
+def api_the_well(dataset: Optional[str] = Query(None, description="Run a single validator")):
+    """Run The Well validation harness.
+
+    Without ?dataset: returns cached summary of all 20 validators.
+    With ?dataset=mhd: runs and returns that single validator.
+    """
+    if dataset:
+        return api_the_well_single(dataset)
+
+    results = []
+    for key, module_path in _WELL_VALIDATORS.items():
+        try:
+            mod = importlib.import_module(module_path)
+            r = mod.validate(verbose=False)
+            r["_key"] = key
+            results.append(_sanitise_result(r))
+        except Exception as exc:
+            results.append({
+                "_key": key,
+                "pid": key,
+                "name": key,
+                "skipped": True,
+                "skip_reason": f"Import/run error: {exc}",
+            })
+
+    passed = sum(1 for r in results
+                 if not r.get("skipped")
+                 and ((r.get("satisfies") is True)
+                      or (r.get("satisfies") is None
+                          and r.get("sigma") is not None
+                          and r["sigma"] < 3.0)))
+    ran = sum(1 for r in results if not r.get("skipped"))
+    skipped = sum(1 for r in results if r.get("skipped"))
+
+    return {
+        "harness": "BPR ↔ The Well",
+        "source": "PolymathicAI — 15TB physics simulations",
+        "total": len(results),
+        "ran": ran,
+        "passed": passed,
+        "failed": ran - passed,
+        "skipped": skipped,
+        "results": results,
+    }
+
+
+@app.get("/api/the-well/{dataset}")
+def api_the_well_single(dataset: str):
+    """Run a single Well validator by key."""
+    if dataset not in _WELL_VALIDATORS:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Unknown dataset '{dataset}'. Available: {list(_WELL_VALIDATORS.keys())}",
+        )
+    try:
+        mod = importlib.import_module(_WELL_VALIDATORS[dataset])
+        r = mod.validate(verbose=False)
+        r["_key"] = dataset
+        return _sanitise_result(r)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Validator failed: {exc}\n{traceback.format_exc()}")

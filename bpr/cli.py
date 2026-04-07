@@ -405,6 +405,16 @@ def cmd_status(args):
     except Exception:
         print(f"  Test files: (could not count)")
 
+    # The Well harness
+    try:
+        from bpr.the_well.validators import __path__ as _well_path
+        import pathlib
+        well_dir = pathlib.Path(_well_path[0])
+        well_count = len([f for f in well_dir.glob("*.py") if f.name != "__init__.py"])
+        print(f"  Well validators: {well_count}  (run: bpr well)")
+    except Exception:
+        print(f"  Well validators: (not available)")
+
     # Module availability check
     print(f"\n  Module availability:")
     core_modules = [
@@ -454,6 +464,120 @@ def cmd_table(args):
     return 0
 
 
+# ── Subcommand: well ──────────────────────────────────────────────────
+
+def cmd_well(args):
+    """Run The Well validation harness."""
+    import importlib
+    import math
+
+    _print_header("BPR ↔ The Well Validation Harness")
+    print("  PolymathicAI · 15TB physics simulations · 20 datasets\n")
+
+    # Import the harness registry
+    try:
+        from experiments.the_well_harness import VALIDATORS, run_validator
+    except ImportError:
+        # Fallback: inline registry
+        VALIDATORS = {
+            "turing": {"module": "bpr.the_well.validators.turing"},
+            "brusselator": {"module": "bpr.the_well.validators.brusselator"},
+            "acoustic": {"module": "bpr.the_well.validators.acoustic"},
+            "convection": {"module": "bpr.the_well.validators.convection"},
+            "active": {"module": "bpr.the_well.validators.active_matter"},
+            "mhd": {"module": "bpr.the_well.validators.mhd"},
+            "turb2d": {"module": "bpr.the_well.validators.turbulence_2d"},
+            "stratified": {"module": "bpr.the_well.validators.turbulence_stratified"},
+            "rt": {"module": "bpr.the_well.validators.rayleigh_taylor"},
+            "supernova": {"module": "bpr.the_well.validators.supernova"},
+            "turb3d": {"module": "bpr.the_well.validators.turbulence_3d"},
+            "acoustic_maze": {"module": "bpr.the_well.validators.acoustic_maze"},
+            "shear": {"module": "bpr.the_well.validators.shear_flow"},
+            "planet": {"module": "bpr.the_well.validators.planetswe"},
+            "helmholtz": {"module": "bpr.the_well.validators.helmholtz"},
+            "viscoelastic": {"module": "bpr.the_well.validators.viscoelastic"},
+            "euler": {"module": "bpr.the_well.validators.euler_compressible"},
+            "rsg": {"module": "bpr.the_well.validators.convective_rsg"},
+            "nsmerger": {"module": "bpr.the_well.validators.neutron_star"},
+        }
+        run_validator = None
+
+    # Filter to single dataset if specified
+    if args.dataset:
+        if args.dataset not in VALIDATORS:
+            print(f"  Unknown dataset '{args.dataset}'. Available:")
+            for k in VALIDATORS:
+                print(f"    {k}")
+            return 1
+        keys = [args.dataset]
+    elif args.list:
+        for key, info in VALIDATORS.items():
+            mod = info.get("module", "?")
+            desc = info.get("description", mod)
+            print(f"  {key:<16} {desc}")
+        return 0
+    else:
+        keys = list(VALIDATORS.keys())
+
+    results = []
+    for key in keys:
+        info = VALIDATORS[key]
+        try:
+            if run_validator:
+                r = run_validator(key, verbose=args.verbose)
+            else:
+                mod = importlib.import_module(info["module"])
+                r = mod.validate(verbose=args.verbose)
+                r["_key"] = key
+            results.append(r)
+        except Exception as exc:
+            results.append({"_key": key, "skipped": True, "skip_reason": str(exc)})
+
+    # Print results table
+    print(f"  {'Key':<16} {'PID':<10} {'Status':<12} {'σ':>8}  Result")
+    print("  " + "-" * 68)
+    passed = skipped = failed = 0
+    for r in results:
+        key = r.get("_key", "?")
+        pid = r.get("pid", "?")
+        status = r.get("status", "?")
+        sigma = r.get("sigma")
+        sat = r.get("satisfies")
+        skip = r.get("skipped", False)
+
+        if skip:
+            outcome = "SKIP"
+            skipped += 1
+            sig_str = "—"
+        elif sat is True:
+            outcome = "PASS (bound)"
+            passed += 1
+            sig_str = "✓"
+        elif sat is False:
+            outcome = "FAIL (bound)"
+            failed += 1
+            sig_str = "✗"
+        elif sigma is not None and math.isfinite(sigma):
+            sig_str = f"{sigma:.2f}σ"
+            if sigma < 3.0:
+                outcome = "PASS"
+                passed += 1
+            else:
+                outcome = "FAIL"
+                failed += 1
+        else:
+            outcome = "—"
+            sig_str = "—"
+            skipped += 1
+
+        print(f"  {key:<16} {pid:<10} {status:<12} {sig_str:>8}  {outcome}")
+
+    ran = passed + failed
+    print(f"\n  Ran: {ran}/{len(results)}  |  Pass: {passed}  |  Fail: {failed}  |  Skip: {skipped}")
+    print()
+    return 1 if failed > 0 else 0
+
+
 # ── Argument parser ───────────────────────────────────────────────────
 
 def build_parser() -> argparse.ArgumentParser:
@@ -473,6 +597,9 @@ def build_parser() -> argparse.ArgumentParser:
               bpr e8                          E8 root system check
               bpr status                      Codebase overview
               bpr table                       Full prediction table
+              bpr well                        The Well validation harness (all 20 datasets)
+              bpr well --dataset mhd          Single validator
+              bpr well --list                 List all validators
         """),
     )
 
@@ -511,6 +638,15 @@ def build_parser() -> argparse.ArgumentParser:
     # table
     sub.add_parser("table", help="Generate full prediction table")
 
+    # well
+    p_well = sub.add_parser("well", help="The Well validation harness")
+    p_well.add_argument("--dataset", "-d", type=str, default=None,
+                        help="Run a single validator by key")
+    p_well.add_argument("--list", "-l", action="store_true",
+                        help="List all validators")
+    p_well.add_argument("--verbose", "-v", action="store_true",
+                        help="Verbose per-frame output")
+
     return parser
 
 
@@ -530,6 +666,7 @@ def main(argv=None):
         "e8":        cmd_e8,
         "status":    cmd_status,
         "table":     cmd_table,
+        "well":      cmd_well,
     }
 
     handler = dispatch.get(args.command)
