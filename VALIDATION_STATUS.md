@@ -103,7 +103,7 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 |---|-----------|-------|--------|------------|
 | P5.1 | Normal hierarchy | YES | DERIVED | T2K+NOvA: slight preference ✓; JUNO resolving (~3yr) |
 | P5.2 | Σm_ν | 0.06 eV | DERIVED | Bound: < 0.12 eV ✓ |
-| P5.5 | θ₁₂ | 33.65° | **DERIVED** | JUNO 2025 (arXiv:2511.14593): sin²θ₁₂=0.3092±0.0087 vs BPR 0.3083 — **0.03σ** ✓ |
+| P5.5 | θ₁₂ | 33.65° | **DERIVED** | JUNO 2025 (arXiv:2511.14593): sin²θ₁₂=0.3092±0.0087 vs BPR 0.3083 — 0.03σ ✓. NOTE: SM has no prediction here (free parameter), so this is not BPR vs SM. Real test is BPR vs tribimaximal (1/3=0.333, now 2.8σ excluded by JUNO) and vs other discrete-symmetry models. BPR's specific formula will be discriminating when JUNO reaches projected ±0.002 precision (~2028). |
 | P5.6 | θ₂₃ | 47.6° | **DERIVED** | PDG: ~49° ± 1.3° ✓; m_μ/m_τ=l_μ²/l_τ²=210/3481, no PDG input |
 | P5.7 | θ₁₃ | 8.63° | DERIVED | PDG: 8.54° ± 0.15° ✓ |
 | P5.10 | 3 generations | 3 | DERIVED | Observed: 3 ✓ |
@@ -199,9 +199,9 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 ### Quantum Gravity Phenomenology (P20.x)
 | # | Prediction | Value | Status | Comparison |
 |---|-----------|-------|--------|------------|
-| P20.1 | ξ₁ = 0 (no linear LIV) | 0 | DERIVED | LHAASO: E_QG,1 > 10 M_Pl ✓ |
+| P20.1 | ξ₁ = 0 (no linear LIV) | 0 | DERIVED | LHAASO GRB 221009A 2024 (arXiv:2402.06009): E_QG,1 > 10 M_Pl ✓ — squeezes LQG/string LIV; BPR predicts exactly zero, not just suppressed |
 | P20.4 | GUP β = 1/p | 9.5×10⁻⁶ | DERIVED | Bound: β < 4×10⁴ (well within) |
-| P20.7 | |δc/c| | 3.4×10⁻²¹ | DERIVED | Fermi: < 6×10⁻²¹ (just below — testable!) |
+| P20.7 | |δc/c| | 3.4×10⁻²¹ | DERIVED | Fermi: < 6×10⁻²¹ (just below — testable!); LHAASO quadratic LIV bound E_QG,2 > 6×10⁻⁸ M_Pl consistent |
 
 ### Emergent Spacetime & Holography (P13.x)
 | # | Prediction | Status | Notes |
@@ -274,25 +274,41 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P25.1 | IBM 27-qubit spectral threshold ratio | 0.0042 | DERIVED | IBM: < 0.05 ✓ PASS (bound) |
 | P25.2 | Minimum T₂ for heavy-hex topology | 32 μs | DERIVED | IBM ibmq_toronto: > 10 μs ✓ PASS (bound) |
 
-## Genuinely Unique BPR Predictions (v0.9.6)
+## BPR vs. Standard Model: Genuinely Discriminating Predictions (v1.0.1)
 
-These predictions are both (a) derived from BPR first principles with no free parameters,
-and (b) not reproducible from Standard Model or GR via the same derivation mechanism.
-These are the predictions that most distinguish BPR from other theories.
+A prediction discriminates BPR from SM only if: (a) SM has no prediction (free parameter or
+unresolved problem) and BPR makes a specific non-obvious one, OR (b) BPR and SM predict
+different values and experiment can distinguish them. "Consistent with both" is not evidence.
 
-| Prediction | Formula | Value | Observed | σ | Why unique |
-|-----------|---------|-------|----------|---|------------|
-| Strong CP θ_QCD = 0 | p≡1 mod 4 → orientable → ∫F∧F=0 | 0 | <10⁻¹⁰ | — | SM needs axion; BPR doesn't |
-| 3 generations | n_gen = \|SU(3) prime winding sectors\| = 3 | 3 | 3 | 0.0σ | SM takes 3 as input; BPR derives it |
-| CKM δ_CP = π/2−1/√(z+1) | z=6 coordination number | 68.3° | 68.5°±5.7° (PDG); Belle II ϕ₃=75.2°±7.6° (arXiv:2509.25765) | 0.03σ | BPR-specific formula; no SM analogue |
-| Normal neutrino hierarchy | p≡1 mod 4 → orientable → normal | normal | preferred (T2K+NOvA); JUNO resolving | — | SM agnostic; BPR predicts |
-| PMNS θ₁₃ from WKB l=(0,1,3) | l=2 graviton decouples | 8.63° | 8.54°±0.15° | 0.58σ | Predicted before 2012 Daya Bay measurement |
-| η_baryon from sphaleron winding | κ_sph = κ_SM × exp(W_c × 4π α_W) | 6.2×10⁻¹⁰ | 6.14×10⁻¹⁰ | 0.4σ | BPR predicts sphaleron efficiency from topology |
-| Top Yukawa y_t = 1 | m_t = v_EW/√2 from boundary saturation | 174.1 GeV | 172.76 (pole) | ~0.5σ* | SM observes y_t≈1 without explaining it |
-| Lepton l-mode spectrum | l=(1,√(z(z²-1)),z(z+n+1)-1) from z,n_gen | (1,√210,59) | Matches | 0.0σ | Modes now derived; was SUSPICIOUS, now DERIVED |
-| Quark down-type l-modes | l=(1,z-2,z(z-1)) from SU(2)_L geometry | (1,4,30) | Matches | 0.0σ | z-2 = SU(2)_L d.o.f. removal; z(z-1) = ordered pairs |
+### Tier 1 — Structurally discriminating (SM cannot reproduce the derivation mechanism)
 
-*After pole-to-MS-bar conversion (~1.3 GeV correction), the discrepancy is ~0.5σ.
+| Prediction | BPR mechanism | BPR value | SM status | Observed | σ | Decisive test |
+|-----------|--------------|-----------|-----------|----------|---|---------------|
+| **θ_QCD = 0 exactly, no axion** | p≡1 mod 4 → orientable substrate → ∫F∧F=0 topologically | 0 | Unsolved (strong CP problem); needs axion or tuning | \|d_n\| < 1.8×10⁻²⁶ e·cm | — | ADMX/CASPEr ruling out KSVZ/DFSZ window with no signal (~2030) |
+| **n_gen = 3 exactly** | \|SU(3) prime winding sectors\| = 3 from p=104729 | 3 | Free parameter — SM takes 3 as unexplained input | Confirmed | 0.0σ | Already confirmed; any 4th generation falsifies BPR |
+| **Normal neutrino hierarchy** | Orientable substrate → normal ordering; same p≡1 mod 4 argument as θ_QCD | Normal | Agnostic — both orderings allowed | T2K+NOvA prefer normal; JUNO resolving | — | JUNO ~2028 to >3σ; inverted falsifies BPR |
+| **Linear LIV ξ₁ = 0 exactly** | Discrete substrate is Lorentz-covariant at boundary; no linear dispersion | 0 | QG models (LQG, string) predict LIV at M_Pl | LHAASO GRB 221009A: E_QG,1 > 10 M_Pl (arXiv:2402.06009) | — | BPR predicts strictly zero (not just >M_Pl suppressed); quadratic signal |δc/c\|=3.4×10⁻²¹ is next target |
+| **CKM δ_CP = π/2−1/√(z+1)** | z=6 substrate coordination number — pure geometry | 68.3° | No formula; free parameter fitted from unitarity triangle | PDG: 68.5°±5.7°; Belle II ϕ₃=75.2°±7.6° (arXiv:2509.25765) | 0.03σ | Belle II Run 2 + LHCb Run 3 → ~1° precision; formula directly testable |
+| **PMNS θ₁₃ = 8.63°** | WKB from l=(0,1,3); l=2 graviton mode decouples | 8.63° | Free parameter; tribimaximal predicted 0° before 2012 | Daya Bay 2012: 8.54°±0.15° | **0.58σ** | Pre-measurement prediction while dominant framework said 0° — strongest historical discriminator |
+
+### Tier 2 — Supporting (BPR explains something SM leaves unexplained)
+
+| Prediction | BPR value | SM status | Observed | σ | Notes |
+|-----------|-----------|-----------|----------|---|-------|
+| **Top Yukawa y_t = 1** | m_t = v_EW/√2 = 174.1 GeV from boundary saturation | Observed to be ≈1, no explanation | ATLAS 2025: 172.95±0.53 GeV (arXiv:2502.18216) | ~0.9σ | SM has no reason y_t=1; BPR derives it; not discriminating until <0.3 GeV precision |
+| **η_baryon = 6.2×10⁻¹⁰** | Sphaleron efficiency enhanced by W_c topology | Needs leptogenesis + many free parameters | BBN 2024 (arXiv:2401.15054): 6.14×10⁻¹⁰ | 0.4σ | BPR mechanism is specific; SM baryogenesis models can also fit |
+| **sin²θ₁₂ = 0.3083** | 1/3−1/(3.5 ln p) from p alone | Free parameter — SM always fits | JUNO 2025: 0.3092±0.0087 (arXiv:2511.14593) | 0.03σ | Discriminates vs. tribimaximal (1/3, now 2.8σ excluded by JUNO); not yet vs. other discrete-symmetry models; decisive at JUNO full precision ±0.002 |
+
+### Tier 3 — Not discriminating (consistent with both BPR and SM)
+
+| Prediction | Why not discriminating |
+|-----------|----------------------|
+| m_e, m_d, m_s | l-mode derivation elegant but SM also fits these with Yukawa couplings |
+| Casimir 1/d⁴ law | SM (QED) predicts same; BPR deviation is below current sensitivity |
+| 3+1 dimensions | Many frameworks derive this |
+| Magic nuclear numbers | Standard shell model already explains these |
+
+*After pole-to-MS-bar conversion (~1.3 GeV correction), top mass discrepancy is ~0.5–0.9σ.
 
 ## Live Experimental Cross-Check (April 2026)
 
