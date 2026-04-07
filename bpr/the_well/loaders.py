@@ -69,6 +69,68 @@ DATASET_FILES: dict[str, list[str]] = {
     "acoustic_scattering_discontinuous": [
         "data/test/acoustic_scattering_inclusions_chunk_36.hdf5",  # fallback to inclusions
     ],
+    "brusselator": [
+        "data/test/brusselator_a_1.0_b_3.0.hdf5",
+        "data/test/brusselator_a_1.0_b_2.5.hdf5",
+        "data/test/brusselator_a_2.0_b_5.0.hdf5",
+    ],
+    "turbulent_radiative_layer_2D": [
+        "data/test/turbulent_radiative_layer_2D_0.hdf5",
+        "data/test/turbulent_radiative_layer_2D_1.hdf5",
+    ],
+    "turbulent_radiative_layer_3D": [
+        "data/test/turbulent_radiative_layer_tcool_0.03.hdf5",
+        "data/test/turbulent_radiative_layer_tcool_0.06.hdf5",
+    ],
+    "rayleigh_taylor_instability": [
+        "data/test/rayleigh_taylor_instability_At_0625.hdf5",
+        "data/test/rayleigh_taylor_instability_At_125.hdf5",
+        "data/test/rayleigh_taylor_instability_At_25.hdf5",
+    ],
+    "supernova_explosion_64": [
+        "data/test/supernova_explosion_Msun_0.1_dim64_file_00.hdf5",
+        "data/test/supernova_explosion_Msun_0.1_dim64_file_01.hdf5",
+    ],
+    "supernova_explosion_128": [
+        "data/test/supernova_explosion_Msun_0.1_dim128_file_00.hdf5",
+    ],
+    "shear_flow": [
+        "data/test/shear_flow_Reynolds_1e4_Schmidt_1e-1.hdf5",
+        "data/test/shear_flow_Reynolds_1e4_Schmidt_1e0.hdf5",
+        "data/test/shear_flow_Reynolds_1e4_Schmidt_1e1.hdf5",
+    ],
+    "helmholtz_staircase": [
+        "data/test/helmholtz_staircase_omega_006.hdf5",
+        "data/test/helmholtz_staircase_omega_02.hdf5",
+        "data/test/helmholtz_staircase_omega_04.hdf5",
+    ],
+    "planetswe": [
+        "data/test/planetswe_IC36_s1.hdf5",
+        "data/test/planetswe_IC36_s2.hdf5",
+    ],
+    "viscoelastic_instability": [
+        "data/test/viscoelastic_instability_AH.hdf5",
+        "data/test/viscoelastic_instability_CAR.hdf5",
+        "data/test/viscoelastic_instability_EIT.hdf5",
+    ],
+    "euler_multi_quadrants_openBC": [
+        "data/test/euler_multi_quadrants_openBC_gamma_1.13_C3H8_16_chunk_0.hdf5",
+    ],
+    "convective_envelope_rsg": [
+        "data/test/convective_envelope_rsg_trajectories_11.hdf5",
+    ],
+    "post_neutron_star_merger": [
+        "data/test/post_neutron_star_merger_scenario_2.hdf5",
+    ],
+    "acoustic_scattering_maze": [
+        "data/test/acoustic_scattering_maze_chunk_18.hdf5",
+        "data/test/acoustic_scattering_maze_chunk_19.hdf5",
+    ],
+    "turbulence_gravity_cooling": [
+        "data/test/turbulence_gravity_cooling_rho0_0.445_Z_0.1_T0_10.hdf5",
+        "data/test/turbulence_gravity_cooling_rho0_0.445_Z_0.1_T0_100.hdf5",
+        "data/test/turbulence_gravity_cooling_rho0_0.445_Z_0.1_T0_1000.hdf5",
+    ],
 }
 
 

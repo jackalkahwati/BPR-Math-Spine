@@ -50,6 +50,51 @@ class MorphogeneticField:
             return self.alpha_bio * np.zeros(self.n_cells)
         return self.alpha_bio * self.V_mem
 
+    @staticmethod
+    def turing_wavelength(D_u: float = 0.16, D_v: float = 0.08,
+                          F: float = 0.035, k: float = 0.065) -> float:
+        """Predicted Turing instability wavelength for a 2-component RD system.
+
+        Uses the proper 2-component onset wavenumber for a reaction-diffusion
+        system with kinetics f(u,v), g(u,v):
+
+            k_c² = (1/2) × (|f_u| / D_u + |g_v| / D_v)
+            λ_T  = 2π / k_c   (in domain units matching D_u, D_v length scale)
+
+        For the Gray-Scott parameterisation near the trivial steady state
+        (u*=1, v*=0):
+            f_u = −F                 g_v = −(F + k)
+
+        .. note::
+            Gray-Scott *spot* patterns are maintained by a self-replicating
+            mechanism (Pearson 1993), not a classical Turing instability from
+            the trivial state (det J > 0 there).  This formula gives the
+            onset wavelength for classical 2-component Turing instabilities
+            (e.g. CIMA, activator-inhibitor models with det J < 0 at steady
+            state).  Applying it to GS spots over-predicts λ by ~30×.
+
+        Parameters
+        ----------
+        D_u, D_v : float
+            Diffusion coefficients of substrate and activator.
+        F : float
+            Feed rate (Gray-Scott) or corresponding kinetic parameter.
+        k : float
+            Kill rate (Gray-Scott) or corresponding kinetic parameter.
+
+        Returns
+        -------
+        float
+            Predicted onset wavelength λ_T in the same length units as D_u/D_v.
+        """
+        import math
+        f_u = -F
+        g_v = -(F + k)
+        k_c_sq = 0.5 * (abs(f_u) / D_u + abs(g_v) / D_v)
+        if k_c_sq <= 0:
+            return float("nan")
+        return 2.0 * math.pi / math.sqrt(k_c_sq)
+
     def solve_1d(self, L: float = 1.0, n_grid: int = 256) -> np.ndarray:
         """Solve the morphogenetic BPR equation on a 1-D domain [0, L].
 

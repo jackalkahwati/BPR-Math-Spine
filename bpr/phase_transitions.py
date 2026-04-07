@@ -95,14 +95,21 @@ TRANSITION_CATALOG = [
 
 @dataclass
 class SubstrateCriticalExponents:
-    """Critical exponents for Class B (connectivity) transitions on a
+    """Critical exponents for **Class B (connectivity)** transitions on a
     d-dimensional substrate lattice.
+
+    .. warning::
+        These exponents apply **only to Class B** (percolation / graph
+        topology) transitions.  For Class C (Landau continuous / impedance)
+        transitions — e.g. ferromagnetism, superconductivity, or
+        Rayleigh-Bénard convection — use :class:`ClassCCriticalExponents`.
 
     ν  = 4 / (d + 2)
     β  = (d − 2) / (d + 2)
     γ  = 2(d + 1) / (d + 2)
 
     For d = 3:  ν ≈ 0.80, β ≈ 0.20, γ ≈ 1.60
+    For d = 2:  β = 0   (boundary case; Class B formula breaks down in 2-D).
     """
     d: int = 3
 
@@ -123,8 +130,92 @@ class SubstrateCriticalExponents:
 
 
 def class_b_critical_exponents(d: int = 3) -> dict:
-    """Convenience wrapper returning {ν, β, γ} for dimension *d*."""
+    """Convenience wrapper returning {ν, β, γ} for Class B dimension *d*."""
     return SubstrateCriticalExponents(d).as_dict()
+
+
+# ---------------------------------------------------------------------------
+# §6.4b  Class C (Landau continuous / impedance) critical exponents
+# ---------------------------------------------------------------------------
+
+@dataclass
+class ClassCCriticalExponents:
+    """Mean-field (Landau) critical exponents for **Class C** transitions.
+
+    Class C transitions (impedance / Landau continuous) cover:
+    - Ferromagnetism / superconductivity (order parameter ψ)
+    - Rayleigh-Bénard convection onset
+    - Decoherence transitions
+    - Any transition described by a scalar or complex Landau functional
+
+    Mean-field values (exact at d ≥ d_c = 4; approximate below):
+
+        β  = 1/2   (order parameter onset: ⟨ψ⟩ ~ (T_c − T)^β)
+        δ  = 3     (equation of state at T_c: h ~ |ψ|^δ)
+        γ  = 1     (susceptibility: χ ~ |T − T_c|^{-γ})
+        ν  = 1/2   (correlation length: ξ ~ |T − T_c|^{-ν})
+        η  = 0     (anomalous dimension, mean-field)
+
+    Renormalization-group corrections (d = 3, Ising universality):
+        β ≈ 0.326, ν ≈ 0.630, γ ≈ 1.237
+
+    For **thermal convection** (Rayleigh-Bénard), the Nusselt scaling
+    Nu ~ Ra^β_Nu is *not* a standard Landau order-parameter exponent.
+    The Grossmann-Lohse (2000) theory gives β_Nu ≈ 0.285 – 0.33 in the
+    weakly turbulent regime; hard turbulence gives β_Nu → 1/2.  BPR is
+    CONSISTENT with this range (Class C framework) but does not uniquely
+    derive β_Nu from first principles.
+
+    Notes
+    -----
+    Do not confuse the Landau β (= 1/2) with the convective Nu-exponent
+    β_Nu (≈ 0.30); they describe different physical quantities.
+    """
+    use_rg_corrections: bool = False   # True → 3-D Ising RG values
+
+    @property
+    def beta(self) -> float:
+        """Order-parameter exponent."""
+        return 0.326 if self.use_rg_corrections else 0.5
+
+    @property
+    def delta(self) -> float:
+        """Equation-of-state exponent at T_c."""
+        return 4.789 if self.use_rg_corrections else 3.0
+
+    @property
+    def gamma(self) -> float:
+        """Susceptibility exponent."""
+        return 1.237 if self.use_rg_corrections else 1.0
+
+    @property
+    def nu(self) -> float:
+        """Correlation-length exponent."""
+        return 0.630 if self.use_rg_corrections else 0.5
+
+    @property
+    def eta(self) -> float:
+        """Anomalous dimension."""
+        return 0.036 if self.use_rg_corrections else 0.0
+
+    def as_dict(self) -> dict:
+        return {"beta": self.beta, "delta": self.delta,
+                "gamma": self.gamma, "nu": self.nu, "eta": self.eta}
+
+    @staticmethod
+    def nusselt_exponent_range() -> tuple[float, float]:
+        """Expected range of the Nu~Ra^β_Nu exponent for Rayleigh-Bénard.
+
+        Returns (β_min, β_max) = (0.285, 0.33) for weakly turbulent regime
+        (Grossmann-Lohse theory / experimental observations).
+        BPR is CONSISTENT with this range under Class C classification.
+        """
+        return (0.285, 0.33)
+
+
+def class_c_critical_exponents(use_rg: bool = False) -> dict:
+    """Convenience wrapper returning Class C Landau exponents."""
+    return ClassCCriticalExponents(use_rg_corrections=use_rg).as_dict()
 
 
 # ---------------------------------------------------------------------------

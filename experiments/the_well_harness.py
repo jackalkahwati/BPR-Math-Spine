@@ -17,11 +17,25 @@ Usage
 
 Dataset → Validator mapping
 ----------------------------
-turing        gray_scott_reaction_diffusion → P23.1 Turing wavelength
-acoustic      acoustic_scattering_*         → Check1 l(l+1) eigenvalues
-convection    rayleigh_benard               → P4.x  β critical exponent
+turing        gray_scott_reaction_diffusion → INAPPLICABLE (GS ≠ Turing)
+brusselator   brusselator                   → P23.1 Turing wavelength (DERIVED)
+acoustic      acoustic_scattering_inclusions→ mode entropy (impedance mismatch)
+convection    rayleigh_benard               → P4.x  β scaling (Class C)
 active        active_matter                 → P10.x Kuramoto coherence
-mhd           MHD_64 / MHD_256             → P7.1  Alfvén isotropy
+mhd           MHD_64 / MHD_256             → P7.1  energy spectral index
+turb2d        turbulent_radiative_layer_2D  → P8.x  2-D enstrophy cascade k^{-3}
+stratified    turbulence_gravity_cooling    → P8.y  Fr_c=1 stratification
+rt            rayleigh_taylor_instability   → P9.x  RT mixing energy spectrum
+supernova     supernova_explosion_64        → P10.x blast wave spectrum
+turb3d        turbulent_radiative_layer_3D  → P11.x 3-D Kolmogorov k^{-5/3}
+acoustic_maze acoustic_scattering_maze      → mode entropy (impedance mismatch)
+shear         shear_flow                    → P13.x 2-D enstrophy cascade
+planet        planetswe                     → P14.x geostrophic turbulence k^{-3}
+helmholtz     helmholtz_staircase           → P15.x mode spacing regularity
+viscoelastic  viscoelastic_instability      → P16.x steep spectrum (Class A+C)
+euler         euler_multi_quadrants_openBC  → P17.x Burgers spectrum k^{-2}
+rsg           convective_envelope_rsg       → P18.x stellar Kolmogorov k^{-5/3}
+nsmerger      post_neutron_star_merger      → P19.x MHD energy spectrum
 
 Data access
 -----------
@@ -65,19 +79,25 @@ VALIDATORS = {
         "module": "bpr.the_well.validators.turing",
         "dataset": "gray_scott_reaction_diffusion",
         "bpr_id": "P23.1",
-        "description": "Turing pattern wavelength scaling",
+        "description": "Gray-Scott pattern wavelength (CONJECTURAL — GS spots ≠ Turing)",
+    },
+    "brusselator": {
+        "module": "bpr.the_well.validators.brusselator",
+        "dataset": "brusselator",
+        "bpr_id": "P23.1-B",
+        "description": "Brusselator Turing wavelength (DERIVED — genuine Turing instability)",
     },
     "acoustic": {
         "module": "bpr.the_well.validators.acoustic",
         "dataset": "acoustic_scattering_inclusions",
-        "bpr_id": "Check-1",
-        "description": "Boundary Laplacian l(l+1) eigenvalue spectrum",
+        "bpr_id": "P-imp",
+        "description": "Acoustic scattering mode entropy (impedance mismatch)",
     },
     "convection": {
         "module": "bpr.the_well.validators.convection",
         "dataset": "rayleigh_benard",
         "bpr_id": "P4.x",
-        "description": "Rayleigh-Bénard Nu~Ra^β critical exponent",
+        "description": "Rayleigh-Bénard Nu~Ra^β Class C scaling (CONSISTENT)",
     },
     "active": {
         "module": "bpr.the_well.validators.active_matter",
@@ -89,7 +109,85 @@ VALIDATORS = {
         "module": "bpr.the_well.validators.mhd",
         "dataset": "MHD_64",
         "bpr_id": "P7.1",
-        "description": "MHD Alfvén wave propagation isotropy",
+        "description": "MHD turbulence energy spectral index E∝k^α",
+    },
+    "turb2d": {
+        "module": "bpr.the_well.validators.turbulence_2d",
+        "dataset": "turbulent_radiative_layer_2D",
+        "bpr_id": "P8.x",
+        "description": "2-D turbulence enstrophy cascade E(k)∝k^{-3}",
+    },
+    "stratified": {
+        "module": "bpr.the_well.validators.turbulence_stratified",
+        "dataset": "turbulence_gravity_cooling",
+        "bpr_id": "P8.y",
+        "description": "Stratified turbulence Fr_c=1 transition (Brunt-Väisälä)",
+    },
+    "rt": {
+        "module": "bpr.the_well.validators.rayleigh_taylor",
+        "dataset": "rayleigh_taylor_instability",
+        "bpr_id": "P9.x",
+        "description": "Rayleigh-Taylor mixing zone energy spectrum (Class D)",
+    },
+    "supernova": {
+        "module": "bpr.the_well.validators.supernova",
+        "dataset": "supernova_explosion_64",
+        "bpr_id": "P10.x",
+        "description": "Supernova blast wave post-shock energy spectrum",
+    },
+    "turb3d": {
+        "module": "bpr.the_well.validators.turbulence_3d",
+        "dataset": "turbulent_radiative_layer_3D",
+        "bpr_id": "P11.x",
+        "description": "3-D Kolmogorov cascade E(k)∝k^{-5/3}",
+    },
+    "acoustic_maze": {
+        "module": "bpr.the_well.validators.acoustic_maze",
+        "dataset": "acoustic_scattering_maze",
+        "bpr_id": "P-imp",
+        "description": "Acoustic maze scattering mode entropy (impedance mismatch)",
+    },
+    "shear": {
+        "module": "bpr.the_well.validators.shear_flow",
+        "dataset": "shear_flow",
+        "bpr_id": "P13.x",
+        "description": "Shear flow 2-D enstrophy cascade E(k)∝k^{-3}",
+    },
+    "planet": {
+        "module": "bpr.the_well.validators.planetswe",
+        "dataset": "planetswe",
+        "bpr_id": "P14.x",
+        "description": "Planetary shallow water geostrophic turbulence k^{-3}",
+    },
+    "helmholtz": {
+        "module": "bpr.the_well.validators.helmholtz",
+        "dataset": "helmholtz_staircase",
+        "bpr_id": "P15.x",
+        "description": "Helmholtz staircase vertical mode regularity",
+    },
+    "viscoelastic": {
+        "module": "bpr.the_well.validators.viscoelastic",
+        "dataset": "viscoelastic_instability",
+        "bpr_id": "P16.x",
+        "description": "Viscoelastic instability steep spectrum (Class A+C)",
+    },
+    "euler": {
+        "module": "bpr.the_well.validators.euler_compressible",
+        "dataset": "euler_multi_quadrants_openBC",
+        "bpr_id": "P17.x",
+        "description": "Compressible Euler post-shock Burgers spectrum k^{-2}",
+    },
+    "rsg": {
+        "module": "bpr.the_well.validators.convective_rsg",
+        "dataset": "convective_envelope_rsg",
+        "bpr_id": "P18.x",
+        "description": "Red supergiant convective envelope Kolmogorov cascade",
+    },
+    "nsmerger": {
+        "module": "bpr.the_well.validators.neutron_star",
+        "dataset": "post_neutron_star_merger",
+        "bpr_id": "P19.x",
+        "description": "Post-neutron-star-merger MHD energy spectrum",
     },
 }
 
