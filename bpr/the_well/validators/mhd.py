@@ -104,32 +104,29 @@ def validate(verbose: bool = False) -> dict:
 
     for frame in frames:
         try:
-            rho = first_array(frame, "density", "rho", "mass_density", "d")
-            bx = first_array(frame, "Bx", "bx", "B_x", "magnetic_x", "b1")
-            by = first_array(frame, "By", "by", "B_y", "magnetic_y", "b2")
-            bz = first_array(frame, "Bz", "bz", "B_z", "magnetic_z", "b3")
+            # The Well MHD_64: magnetic_field shape (1, t, x, y, z, 3)
+            B_all = np.asarray(frame["magnetic_field"], dtype=float)
+            rho = np.asarray(frame["density"], dtype=float)
+            # Squeeze sample/time dims → (x, y, z, 3); use last time step
+            while B_all.ndim > 4:
+                B_all = B_all[0]
+            while rho.ndim > 3:
+                rho = rho[0]
+            bx = B_all[..., 0]
+            by = B_all[..., 1]
+            bz = B_all[..., 2]
             vax = alfven_speed(bx, rho)
             vay = alfven_speed(by, rho)
             vaz = alfven_speed(bz, rho)
             speeds = np.array([vax, vay, vaz])
             anisotropy = np.std(speeds) / (np.mean(speeds) + 1e-30)
             anisotropies.append(float(anisotropy))
-        except Exception:
-            # Try with a single magnetic field array
-            try:
-                B_all = first_array(frame, "B", "magnetic", "B_field")
-                while B_all.ndim > 4:
-                    B_all = B_all[0]
-                rho = first_array(frame, "density", "rho", "d")
-                if B_all.ndim == 4 and B_all.shape[-1] >= 3:
-                    vax = alfven_speed(B_all[..., 0], rho)
-                    vay = alfven_speed(B_all[..., 1], rho)
-                    vaz = alfven_speed(B_all[..., 2], rho)
-                    speeds = np.array([vax, vay, vaz])
-                    anisotropy = np.std(speeds) / (np.mean(speeds) + 1e-30)
-                    anisotropies.append(float(anisotropy))
-            except Exception:
-                pass
+            if verbose:
+                print(f"  Ma={frame.get('Ma','?')} Ms={frame.get('Ms','?')}"
+                      f"  v_A=({vax:.3f},{vay:.3f},{vaz:.3f})  δv/v={anisotropy:.2e}")
+        except Exception as e:
+            if verbose:
+                print(f"  Frame error: {e}")
 
     if not anisotropies:
         return _skip("Could not extract B-field / density from MHD frames", bpr_bound)

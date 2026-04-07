@@ -117,51 +117,54 @@ def validate(verbose: bool = False) -> dict:
 
     # Try to load multiple frames to probe different driving strengths
     try:
-        frames = load_well_frames("rayleigh_benard", n=8)
+        frames = load_well_frames("rayleigh_benard", n=5, max_samples=5, max_timesteps=50)
     except WellNotAvailable:
         try:
-            frames = load_well_frames("rayleigh_benard_uniform", n=8)
+            frames = load_well_frames("rayleigh_benard_uniform", n=5,
+                                      max_samples=5, max_timesteps=50)
         except WellNotAvailable as exc:
             return _skip(str(exc).split("\n")[0])
 
-    # Extract Nu proxy from each frame
-    nu_proxies = []
+    # For each frame, compute Nu = 1 + sqrt(Ra*Pr) * <v_y * T>
+    # This is the standard dimensionless form for free-fall velocity scaling.
+    nu_list, ra_list = [], []
     for frame in frames:
         try:
-            temp = first_array(frame, "temperature", "T", "theta",
-                               "scalar", "density")
-            nu_proxies.append(_nusselt_proxy(temp))
-        except Exception:
-            try:
-                vel = first_array(frame, "velocity_y", "v", "vy",
-                                  "velocity_z", "w", "vz")
-                nu_proxies.append(_velocity_rms(vel))
-            except Exception:
-                pass
+            T = np.asarray(frame["buoyancy"], dtype=float)     # (S, t, x, y)
+            vel = np.asarray(frame["velocity"], dtype=float)   # (S, t, x, y, 2)
+            v_y = vel[..., 1]                                  # vertical component
+            Ra = float(frame.get("Ra", 1e8))
+            Pr = float(frame.get("Pr", 1.0))
+            # Free-fall normalisation: Nu = 1 + sqrt(Ra*Pr) * <vy*T>
+            vhf = float(np.mean(v_y * T))
+            Nu = 1.0 + np.sqrt(Ra * Pr) * vhf
+            Nu = max(Nu, 1.001)
+            ra_list.append(Ra)
+            nu_list.append(Nu)
+            if verbose:
+                print(f"  Ra={Ra:.2e}  Nu={Nu:.3f}")
+        except KeyError:
+            pass   # field missing in this frame
 
-    if len(nu_proxies) < 2:
-        # Not enough data to fit; fall back to benchmark comparison
+    if len(nu_list) < 2:
         sigma = abs(beta_bpr - beta_observed_benchmark) / theory_uncertainty
         rel_err = abs(beta_bpr - beta_observed_benchmark) / beta_observed_benchmark
         return {**result_base,
                 "skipped": False,
-                "skip_reason": "Used literature benchmark (insufficient frames for fit)",
+                "skip_reason": "Used literature benchmark (insufficient Nu data)",
                 "predicted": beta_bpr, "observed": beta_observed_benchmark,
                 "uncertainty": theory_uncertainty, "sigma": sigma, "rel_err": rel_err}
 
-    beta_fit = fit_nu_ra_exponent(nu_proxies)
-    if not math.isfinite(beta_fit):
-        beta_obs = beta_observed_benchmark
-    else:
-        beta_obs = beta_fit
+    beta_fit = fit_nu_ra_exponent(nu_list, ra_values=ra_list)
+    beta_obs = beta_fit if math.isfinite(beta_fit) else beta_observed_benchmark
 
     sigma = abs(beta_bpr - beta_obs) / theory_uncertainty
     rel_err = abs(beta_bpr - beta_obs) / abs(beta_obs) if beta_obs != 0 else None
 
     if verbose:
-        print(f"  Frames loaded      : {len(frames)}")
-        print(f"  Nu proxies         : {[f'{x:.4f}' for x in nu_proxies]}")
-        print(f"  β_fit              : {beta_fit:.3f}")
+        print(f"  Nu values          : {[f'{x:.3f}' for x in nu_list]}")
+        print(f"  Ra values          : {[f'{x:.1e}' for x in ra_list]}")
+        print(f"  β_fit (The Well)   : {beta_fit:.4f}")
         print(f"  β_BPR              : {beta_bpr:.3f}")
         print(f"  β_classical        : {beta_observed_benchmark:.3f}")
 

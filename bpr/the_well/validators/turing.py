@@ -173,30 +173,45 @@ def validate(verbose: bool = False) -> dict:
 
     # Measure wavelength across available frames and average
     wavelengths = []
+    bpr_wavelengths = []
     for frame in frames:
-        v = first_array(frame, "v", "concentration_v", "field_v",
-                        "activator", "concentration")
+        # Field B is the autocatalyst (activator) in The Well's Gray-Scott
+        v = first_array(frame, "B", "v", "concentration_v", "activator")
+        # Use actual F, k from this file's scalars for BPR prediction
+        frame_params = GrayScottParams(
+            F=float(frame.get("F", params.F)),
+            k=float(frame.get("k", params.k)),
+            D_u=params.D_u,
+            D_v=params.D_v,
+            domain_size=params.domain_size,
+        )
+        lam_bpr = bpr_turing_wavelength(frame_params)
         lam = measure_turing_wavelength(v, domain_size=params.domain_size)
-        if math.isfinite(lam):
+        if math.isfinite(lam) and math.isfinite(lam_bpr) and lam_bpr > 0:
             wavelengths.append(lam)
+            bpr_wavelengths.append(lam_bpr)
+            if verbose:
+                print(f"  F={frame_params.F:.4f} k={frame_params.k:.4f}"
+                      f"  λ_obs={lam:.3f}  λ_BPR={lam_bpr:.3f}")
 
     if not wavelengths:
         return _skip("Could not extract wavelength from loaded frames", predicted=lambda_bpr)
 
     lambda_obs = float(np.mean(wavelengths))
-    lambda_std = float(np.std(wavelengths)) if len(wavelengths) > 1 else lambda_bpr * 0.10
+    lambda_bpr_mean = float(np.mean(bpr_wavelengths))
+    lambda_std = float(np.std(wavelengths)) if len(wavelengths) > 1 else lambda_bpr_mean * 0.10
 
-    theory_uncertainty = max(lambda_std, lambda_bpr * 0.10)  # 10% theory precision floor
-    sigma = abs(lambda_obs - lambda_bpr) / theory_uncertainty
-    rel_err = abs(lambda_obs - lambda_bpr) / abs(lambda_obs) if lambda_obs != 0 else None
+    theory_uncertainty = max(lambda_std, lambda_bpr_mean * 0.10)
+    sigma = abs(lambda_obs - lambda_bpr_mean) / theory_uncertainty
+    rel_err = abs(lambda_obs - lambda_bpr_mean) / abs(lambda_obs) if lambda_obs != 0 else None
 
     if verbose:
-        print(f"  Gray-Scott frames analysed : {len(wavelengths)}")
-        print(f"  λ_obs (mean ± std)         : {lambda_obs:.4f} ± {lambda_std:.4f}")
-        print(f"  λ_BPR                      : {lambda_bpr:.4f}")
-        print(f"  Relative error             : {rel_err:.1%}")
+        print(f"  Gray-Scott frames : {len(wavelengths)}")
+        print(f"  λ_obs (mean±std)  : {lambda_obs:.4f} ± {lambda_std:.4f}")
+        print(f"  λ_BPR (mean)      : {lambda_bpr_mean:.4f}")
+        print(f"  Relative error    : {rel_err:.1%}")
 
     return {**result_base,
             "skipped": False, "skip_reason": None,
-            "predicted": lambda_bpr, "observed": lambda_obs,
+            "predicted": lambda_bpr_mean, "observed": lambda_obs,
             "uncertainty": theory_uncertainty, "sigma": sigma, "rel_err": rel_err}

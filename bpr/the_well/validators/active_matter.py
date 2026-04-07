@@ -109,22 +109,17 @@ def validate(verbose: bool = False) -> dict:
     order_params = []
     for frame in frames:
         try:
-            vx = first_array(frame, "velocity_x", "vx", "u", "vel_x")
-            vy = first_array(frame, "velocity_y", "vy", "v", "vel_y")
+            # The Well active_matter: velocity shape (S, t, x, y, 2)
+            vel = np.asarray(frame["velocity"], dtype=float)
+            vx = vel[..., 0].ravel()
+            vy = vel[..., 1].ravel()
             r = vicsek_order_parameter(vx, vy)
             order_params.append(r)
+            if verbose:
+                print(f"  alpha={frame.get('alpha','?')}  zeta={frame.get('zeta','?')}"
+                      f"  r={r:.3f}")
         except Exception:
-            # Try to get a single combined velocity field
-            try:
-                vel = first_array(frame, "velocity", "v_field", "data")
-                # Assume last axis is components
-                if vel.ndim >= 2 and vel.shape[-1] >= 2:
-                    vx = vel[..., 0].ravel()
-                    vy = vel[..., 1].ravel()
-                    r = vicsek_order_parameter(vx, vy)
-                    order_params.append(r)
-            except Exception:
-                pass
+            pass
 
     if not order_params:
         return _skip("Could not extract velocity fields from frames")
