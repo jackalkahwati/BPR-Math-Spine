@@ -84,7 +84,7 @@ class ColorConfinement:
 def derive_l_modes(z: int = 6, n_gen: int = 3) -> dict:
     """Derive boundary mode integers from BPR substrate parameters.
 
-    DERIVATION STATUS (v0.9.6):
+    DERIVATION STATUS (v0.9.8):
     ───────────────────────────────────────────────────────────────────
 
     DOWN-TYPE (SU(2)_L / isospin sector) — FULLY DERIVED from z:
@@ -101,18 +101,44 @@ def derive_l_modes(z: int = 6, n_gen: int = 3) -> dict:
     For z=6: (1, 4, 30) ✓
 
     UP-TYPE (SU(3)_c / color sector) — l_u, l_c DERIVED; l_t CONJECTURAL:
-        l_u = 1             (trivial ground state)
-        l_c = z(z−2)        (ordered non-color-conjugate neighbor pairs)
-        l_t = C(l_c,2)+(z+1) [CONJECTURAL: formula works, motivation unclear]
+        l_u = 1
+        l_c = z(z−2)                       (ordered non-color-conjugate pairs)
+        l_t = (z²−1)(z+n_gen−1) + n_gen    (CONJECTURAL — see below)
 
     Physical interpretation for l_c: In SU(3)_c with z=6 and 3 color
     axes (±R, ±G, ±B), there are z(z−1)=30 ordered pairs of distinct
     neighbors, minus z=6 "color-conjugate" pairs (one per axis direction)
     = z(z−1)−z = z(z−2) = 24 ✓
 
-    For l_t: C(l_c,2) + (z+1) = C(24,2) + 7 = 276 + 7 = 283.
-    Equivalent form: z²(z+2) − (z−1) = 36×8 − 5 = 283.
-    STATUS: CONJECTURAL — formula verified, no clean physical derivation yet.
+    STRUCTURAL DERIVATION FOR l_t (v0.9.8):
+    The heaviest fermion modes follow a parallel structure:
+
+        l_τ + 1   = z         × (z + n_gen + 1)   [lepton sector]
+        l_t - n_gen = (z²−1)  × (z + n_gen − 1)   [quark sector]
+
+    Two differences: base multiplier and generation extension.
+
+    (1) Base multiplier: z → (z²−1) = dim(su(z)) — quarks couple through
+    the SU(z) adjoint boundary structure (all z²−1 gauge generators),
+    while leptons couple only through the z bare coordination neighbors.
+
+    (2) Generation extension: (n_gen+1) for leptons vs (n_gen−1) for quarks.
+    The reduction of 2 = N_c−1 corresponds to the 2 non-trivial Cartan
+    generators of SU(3)_c (where N_c = z/2 = 3). Color-charged boundary
+    modes occupy (N_c−1) = 2 generation-extension slots, leaving n_gen−1
+    for the quark mode's reach.
+
+    (3) Offset: −1 for leptons, +n_gen for quarks. The +n_gen restores
+    full generation degeneracy that was absorbed into the adjoint structure.
+
+    For z=6, n_gen=3: l_t = 35 × 8 + 3 = 283 ✓
+    NOTE: at z=6 this coincides with C(l_c,2)+(z+1) = C(24,2)+7 = 283,
+    but they differ for z≠6. The (z²−1)(z+n_gen−1)+n_gen form is primary
+    because it uses n_gen explicitly and reveals the lepton/quark parallel.
+
+    STATUS: CONJECTURAL — the structural parallel is clear, but the
+    N_c−1 "Cartan cost" argument is inferred, not rigorously derived
+    from the BPR path integral.
 
     CHARGED LEPTONS — FULLY DERIVED from (z, n_gen):
         l_e  = 1                        (trivial ground state)
@@ -140,7 +166,9 @@ def derive_l_modes(z: int = 6, n_gen: int = 3) -> dict:
     """
     l_u = 1
     l_c = z * (z - 2)
-    l_t_conjectural = l_c * (l_c - 1) // 2 + (z + 1)  # C(l_c,2) + (z+1)
+    # (z²-1)(z+n_gen-1)+n_gen — structural parallel with l_τ; see docstring
+    # At z=6,n_gen=3 this equals C(l_c,2)+(z+1)=283; they differ for z≠6
+    l_t_conjectural = (z**2 - 1) * (z + n_gen - 1) + n_gen
 
     l_d = 1
     l_s = z - 2
@@ -180,9 +208,12 @@ class QuarkMassSpectrum:
         m_k ∝ l_k²
 
     Mode derivation (see derive_l_modes()):
-        l_u = 1         (trivial)         — DERIVED
-        l_c = z(z-2)    = 24 (z=6)        — DERIVED
-        l_t = C(l_c,2)+(z+1) = 283        — CONJECTURAL
+        l_u = 1                                  — DERIVED (trivial)
+        l_c = z(z-2)    = 24 (z=6)               — DERIVED
+        l_t = (z²-1)(z+n_gen-1)+n_gen = 283      — CONJECTURAL
+            [structural parallel with l_τ = z(z+n_gen+1)-1;
+             quark uses (z²-1) adjoint base, leptons use z bare base;
+             generation extension reduced by N_c-1=2 Cartan slots]
 
     When v_EW_GeV is provided: m_t = v_EW/√2 (DERIVED from boundary).
     Otherwise anchored to m_t = 172760 MeV (1 experimental input).

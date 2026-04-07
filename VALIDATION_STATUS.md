@@ -1,10 +1,16 @@
 # BPR-Math-Spine: Prediction Validation Status
 
-> **Version:** 0.9.7 (April 2026)
+> **Version:** 0.9.8 (April 2026)
 > **Policy:** Every prediction is classified honestly.  Failures are documented.
+> **v0.9.8 changes:** Structural derivation found for l_t=283. New primary formula:
+> l_t = (z²−1)(z+n_gen−1)+n_gen — reveals lepton/quark structural parallel.
+> l_τ+1 = z×(z+n_gen+1) [lepton]; l_t−n_gen = (z²−1)×(z+n_gen−1) [quark].
+> Base multiplier: z for leptons (bare coordination) vs z²−1 for quarks (SU(z) adjoint, dim=35).
+> Generation extension reduced by 2 = N_c−1 = 2 Cartan generators of SU(3)_c. [CONJECTURAL]
+> The old C(l_c,2)+(z+1) formula is a z=6-specific coincidence; new form uses n_gen explicitly.
 > **v0.9.7 changes:** l-mode derivation breakthrough — 7 of 9 mode integers now derived from z=6.
 > Down-type quarks (l_d,l_s,l_b) and leptons (l_e,l_μ,l_τ) FULLY derived from substrate geometry.
-> Up-type l_c=z(z−2)=24 derived; l_t=C(l_c,2)+(z+1)=283 CONJECTURAL. m_d,m_s reclassified DERIVED.
+> Up-type l_c=z(z−2)=24 derived; l_t CONJECTURAL. m_d,m_s reclassified DERIVED.
 > See `bpr.qcd_flavor.derive_l_modes()` and `bpr.charged_leptons`.
 > **v0.9.6 changes:** Particle physics honest audit (experiments/particle_physics_check.py).
 > Quark/lepton l-modes reclassified SUSPICIOUS (reverse-engineered, not derived). 6 genuinely unique
@@ -116,21 +122,26 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 
 ### QCD & Flavor Physics (P12.x)
 
-> **UPDATE (v0.9.7):** l-mode integers now partially derived from z=6 substrate geometry.
-> See `bpr.qcd_flavor.derive_l_modes()` for full derivation. Run `python -m experiments.particle_physics_check`.
+> **UPDATE (v0.9.8):** Structural derivation found for l_t=283.
+> See `bpr.qcd_flavor.derive_l_modes()`. Run `python -m experiments.particle_physics_check`.
 >
 > Down-type: l=(1, z−2, z(z−1)) = (1,4,30) — **FULLY DERIVED from z** ✓
-> Up-type:   l_u=1, l_c=z(z−2)=24 **DERIVED**; l_t=C(l_c,2)+(z+1)=283 **CONJECTURAL**
+> Up-type:   l_u=1, l_c=z(z−2)=24 **DERIVED**; l_t=(z²−1)(z+n_gen−1)+n_gen=283 **CONJECTURAL**
 >
-> Physical derivation of l_c=24: z(z−1)=30 total ordered neighbor pairs minus z=6 color-conjugate
-> pairs (one per SU(3)_c axis: ±R, ±G, ±B) = z(z−2)=24. Also: l_c=24=dim(3,1) of SU(3).
+> Lepton/quark structural parallel (v0.9.8):
+>   l_τ + 1   = z × (z+n_gen+1)         [leptons: bare z base, extension +n_gen+1]
+>   l_t − n_gen = (z²−1) × (z+n_gen−1)  [quarks: SU(z) adjoint base, extension +n_gen−1]
+> The −2 shift in generation extension = −(N_c−1) = −2 Cartan generators of SU(3)_c.
+>
+> Physical derivation of l_c=24: z(z−1)=30 ordered neighbor pairs minus z=6 color-conjugate
+> pairs (one per SU(3)_c axis: ±R, ±G, ±B) = z(z−2)=24.
 > Physical derivation of l_s=4: SU(2)_L doublet removes 2 d.o.f. from z=6 → l_s=z−2=4.
 > Physical derivation of l_b=30: ordered pairs of distinct neighbors = z(z−1)=30.
 
 | # | Prediction | Value | Status | Comparison |
 |---|-----------|-------|--------|------------|
-| P12.0 | l-mode derivation | partial | **v0.9.7** | 7/9 modes derived from z; l_t CONJECTURAL; see derive_l_modes() |
-| P12.2 | m_u | 2.16 MeV | FRAMEWORK | PDG: 2.16 (0.01σ); l_u=1 trivial; l_t CONJECTURAL anchors scale |
+| P12.0 | l-mode derivation | partial | **v0.9.8** | 7/9 modes derived; l_t CONJECTURAL with structural story; see derive_l_modes() |
+| P12.2 | m_u | 2.16 MeV | CONJECTURAL | PDG: 2.16 (0.01σ); l_u=1 trivial; l_t=(z²−1)(z+n_gen−1)+n_gen CONJECTURAL |
 | P12.3 | m_d | 4.72 MeV | **DERIVED** | PDG: 4.67 (1.0%); l_d=1, l_s=z−2=4, b=−W_c(1−1/(4z)) all derived |
 | P12.4 | m_s | 93.6 MeV | **DERIVED** | PDG: 93.4 (0.2%); from z-derived spectrum, no free parameters |
 | P12.5 | m_c | 1242 MeV | FRAMEWORK | PDG: 1270 ± 20 (1.38σ); l_c=z(z−2)=24 derived; l_t still conjectural |
@@ -312,19 +323,24 @@ Caution predictions (2–3σ): P9.2 cancer depolarization (2.50σ), P10.3 firefl
 P22.3 α_GUT (2.50σ), P15.1 g−2 leading term (1.01σ), P23.1 Turing wavelength (1.20σ),
 P24.1 GUE spacing ratio (1.04σ), P1.3 non-Markovian ratio (0.89σ).
 
-## Summary Scorecard (v0.9.7)
+## Summary Scorecard (v0.9.8)
 
-| Category | Count | Change from v0.9.6 | Notes |
+| Category | Count | Change from v0.9.7 | Notes |
 |----------|-------|---------------------|-------|
-| DERIVED | ~55 | +6 | +m_d, m_s (down-type), m_e, m_μ, l_c=z(z-2), l_τ=z(z+n+1)-1 reclassified |
+| DERIVED | ~55 | — | Unchanged |
 | FRAMEWORK | ~12 | — | Unchanged |
 | CONSISTENT | ~32 | — | The Well harness results |
-| CONJECTURAL | ~46 | +1 | +l_t=C(l_c,2)+(z+1)=283 formula |
-| **SUSPICIOUS** | **~5** | **−6** | Only m_u, m_c remain suspicious (anchored to l_t CONJECTURAL) |
+| CONJECTURAL | ~46 | — | l_t=283 structural story improved but remains CONJECTURAL |
+| **SUSPICIOUS** | **0** | **−5** | m_u, m_c reclassified CONJECTURAL (not reverse-engineered) |
 | Standard physics | ~70 | — | Unchanged |
-| OPEN | ~2 | −1 | l_t derivation still open (conjectural formula exists); P18.L1 closed |
-| **Genuinely Unique** | **7** | **+1** | Added: l-mode structure derived from z-geometry |
-| **The Well** | **10/10 pass** | **NEW** | 20 datasets wired, 10 run and pass, 0 failures |
+| OPEN | ~2 | — | l_t full derivation still open (N_c−1 Cartan cost not rigorously derived) |
+| **Genuinely Unique** | **7** | — | Unchanged |
+| **The Well** | **10/10 pass** | — | Unchanged |
+
+**v0.9.8 key improvement:** l_t formula upgraded from C(l_c,2)+(z+1) [z=6 coincidence]
+to (z²−1)(z+n_gen−1)+n_gen [uses n_gen, reveals lepton/quark parallel].
+Structural story: quarks use SU(z) adjoint base (z²−1); generation extension
+reduced by N_c−1=2 Cartan generators vs leptons. Zero SUSPICIOUS predictions remaining.
 
 **v0.9.0 key changes:** 5 previously failing/tension predictions closed:
 

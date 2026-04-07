@@ -128,9 +128,9 @@ def check_quark_masses() -> list[Result]:
         m_obs, unc = PDG_QUARKS[q]
         sig = _sigma(m_pred, m_obs, unc)
         status = "CONJECTURAL" if q in ("u", "c") else "FRAMEWORK"  # m_t is the anchor
-        note = ("l_u=1 trivial; l_c=z(z−2)=24 DERIVED; l_t=C(24,2)+(z+1)=283 CONJECTURAL"
+        note = ("l_u=1 trivial; l_c=z(z−2)=24 DERIVED; l_t=(z²−1)(z+n_gen−1)+n_gen=283 CONJECTURAL"
                 if q == "u" else
-                "l_c=z(z−2)=24 DERIVED from SU(3) geometry; l_t=283 CONJECTURAL"
+                "l_c=z(z−2)=24 DERIVED; l_t=(z²−1)(z+n_gen−1)+n_gen=283 structural parallel with l_τ"
                 if q == "c" else
                 "anchor (1 experimental input)")
         results.append(Result(f"P12.{2 + ['u','c','t'].index(q)}",
@@ -365,11 +365,14 @@ def check_unique_predictions() -> list[Result]:
 # ─────────────────────────────────────────────────────
 def list_open_problems() -> list[str]:
     return [
-        "OPEN P12.L1: Fully derive l_up=(1,24,283) from BPR substrate (p=104729, z=6)",
+        "OPEN P12.L1: Fully derive l_t=283 from BPR first principles (p=104729, z=6)",
         "             Status: l_u=1 trivial [DERIVED]; l_c=z(z−2)=24 [DERIVED]",
-        "             Remaining: l_t=C(24,2)+(z+1)=283 [CONJECTURAL] — formula matches",
-        "             but physical motivation for the C(l_c,2) combinatorial term is unclear.",
-        "             Required: geometric/topological argument giving l_t=283 from (z,n_gen)",
+        "             Best formula: l_t = (z²−1)(z+n_gen−1)+n_gen = 35×8+3 = 283 [CONJECTURAL]",
+        "             Structural parallel established (v0.9.8):",
+        "               l_τ + 1   = z×(z+n_gen+1)         [lepton, bare z base]",
+        "               l_t−n_gen = (z²−1)×(z+n_gen−1)    [quark, SU(z) adjoint base]",
+        "             Generation extension reduced by 2 = N_c−1 (Cartan generators of SU(3)).",
+        "             Remaining gap: rigorous derivation of N_c−1 Cartan cost from BPR path integral.",
         "",
         "SOLVED P18.L1: l_lep=(1,√210,59) now DERIVED from (z=6, n_gen=3) [v0.9.7]",
         "             l_e=1 trivial; l_μ=√(z(z²−1))=√210 (geometric mean, 3 shells);",
