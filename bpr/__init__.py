@@ -48,7 +48,7 @@ Contact: jack@thestardrive.com
 License: MIT
 """
 
-__version__ = "0.8.0"
+__version__ = "1.0.0"
 __author__ = "Jack Al-Kahwati / StarDrive Research Group"
 
 from .geometry import make_boundary
