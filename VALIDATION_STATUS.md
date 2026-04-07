@@ -289,7 +289,7 @@ different values and experiment can distinguish them. "Consistent with both" is 
 | **Normal neutrino hierarchy** | Orientable substrate → normal ordering; same p≡1 mod 4 argument as θ_QCD | Normal | Agnostic — both orderings allowed | T2K+NOvA prefer normal; JUNO resolving | — | JUNO ~2028 to >3σ; inverted falsifies BPR |
 | **Linear LIV ξ₁ = 0 exactly** | Discrete substrate is Lorentz-covariant at boundary; no linear dispersion | 0 | QG models (LQG, string) predict LIV at M_Pl | LHAASO GRB 221009A: E_QG,1 > 10 M_Pl (arXiv:2402.06009) | — | BPR predicts strictly zero (not just >M_Pl suppressed); quadratic signal |δc/c\|=3.4×10⁻²¹ is next target |
 | **CKM δ_CP = π/2−1/√(z+1)** | z=6 substrate coordination number — pure geometry | 68.3° | No formula; free parameter fitted from unitarity triangle | PDG: 68.5°±5.7°; Belle II ϕ₃=75.2°±7.6° (arXiv:2509.25765) | 0.03σ | Belle II Run 2 + LHCb Run 3 → ~1° precision; formula directly testable |
-| **PMNS θ₁₃ = 8.63°** | WKB from l=(0,1,3); l=2 graviton mode decouples | 8.63° | Free parameter; tribimaximal predicted 0° before 2012 | Daya Bay 2012: 8.54°±0.15° | **0.58σ** | Pre-measurement prediction while dominant framework said 0° — strongest historical discriminator |
+| **PMNS θ₁₃ = 8.63°** | WKB from l=(0,1,3); l=2 graviton mode decouples | 8.63° | Free parameter; tribimaximal predicted 0° before 2012 | Daya Bay 2012: 8.54°±0.15° | **0.58σ** | Pre-measurement prediction while tribimaximal said 0°. NOTE: other discrete symmetry models (T₇, A₄) also predicted non-zero θ₁₃ before 2012 (arXiv:1108.0570) — BPR was not uniquely right here |
 
 ### Tier 2 — Supporting (BPR explains something SM leaves unexplained)
 
@@ -309,6 +309,35 @@ different values and experiment can distinguish them. "Consistent with both" is 
 | Magic nuclear numbers | Standard shell model already explains these |
 
 *After pole-to-MS-bar conversion (~1.3 GeV correction), top mass discrepancy is ~0.5–0.9σ.
+
+## ArXiv Evidence Survey (April 2026)
+
+### What supports BPR specifically
+
+| Finding | Paper | What it means for BPR |
+|---------|-------|----------------------|
+| ADMX excludes KSVZ axions at 4.54–5.41 μeV, null signal | [arXiv:2504.07279](https://arxiv.org/abs/2504.07279) | Closing the axion window. BPR uniquely predicts no axion exists. Each null result accumulates evidence. |
+| ADMX excludes DFSZ axions at 3.27–3.34 μeV, null signal | [arXiv:2408.15227](https://arxiv.org/abs/2408.15227) | Same — DFSZ null now documented. Window narrowing on both benchmark models. |
+| Extended haloscope near 1.036 GHz, null, approaching DFSZ | [arXiv:2602.05388](https://arxiv.org/html/2602.05388) | Third independent null. No axion detected across progressively larger mass range. |
+| LHAASO: E_QG,1 > 10 M_Pl — linear LIV squeezed past Planck scale | [arXiv:2402.06009](https://arxiv.org/abs/2402.06009) | BPR predicts ξ₁=0 exactly. LQG/string LIV models that predict E_QG,1~M_Pl now in tension. |
+| JUNO: sin²θ₁₂ = 0.3092±0.0087 | [arXiv:2511.14593](https://arxiv.org/abs/2511.14593) | BPR formula 1/3−1/(3.5 ln p)=0.3083 — 0.03σ. Tribimaximal (1/3) now 2.8σ excluded. |
+
+### What weakens BPR claims (honest accounting)
+
+| Finding | Paper | What it means |
+|---------|-------|---------------|
+| Multiple discrete symmetry models (T₇, A₄) also predicted non-zero θ₁₃ before Daya Bay | [arXiv:1108.0570](https://arxiv.org/abs/1108.0570) | BPR's θ₁₃ prediction was NOT uniquely discriminating — it shared the prediction with other frameworks |
+| Independent formula sin²θ₁₂=(1−2tan²θ₁₃)/3 also consistent with JUNO+Daya Bay at ~1σ | [arXiv:2510.17583](https://arxiv.org/abs/2510.17583) | BPR's sin²θ₁₂ formula competes with other motivated predictions; not yet uniquely BPR |
+| LHCb γ = 53.9°+9.5−8.9° — below BPR's δ_CP = 68.3° | [arXiv:2504.00354](https://arxiv.org/abs/2504.00354) | Single LHCb channel sits ~1.5σ below BPR prediction; PDG global fit still matches |
+| ADMX cannot yet reach DFSZ sensitivity across full mass range | [arXiv:2504.07279](https://arxiv.org/abs/2504.07279) | Axion window not fully closed — BPR's no-axion prediction not yet confirmed |
+
+### Summary verdict
+
+BPR is **not validated** but is **accumulating consistent null results** in its favor:
+- The strongest discriminating signal is the **axion null results** — BPR is the only framework that predicts no axion as a *structural consequence*, not just a model choice.
+- The **JUNO sin²θ₁₂** result is consistent but not uniquely BPR.
+- The **θ₁₃ pre-Daya Bay claim** is weaker than stated — other discrete symmetry models also predicted non-zero θ₁₃.
+- Real validation requires: JUNO hierarchy resolution, axion window closure, Belle II δ_CP at ±1°.
 
 ## Live Experimental Cross-Check (April 2026)
 
