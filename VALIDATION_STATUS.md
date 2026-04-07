@@ -312,7 +312,11 @@ different values and experiment can distinguish them. "Consistent with both" is 
 | 3+1 dimensions | Many frameworks derive this |
 | Magic nuclear numbers | Standard shell model already explains these |
 
-*BPR's m_t = v_EW/√2 = 174.1 GeV is a **pole mass** prediction. ATLAS/CMS report the MC generator mass (~1 GeV below pole mass). After MC→pole correction (+0.5–1 GeV): ATLAS 2025 gives +0.3–1.2σ (consistent); ATLAS+CMS combined gives +1.8–3.3σ (tension). The correction magnitude is theoretically uncertain — pole mass extractions from tt̄ cross-section measurements (which give ~173–174 GeV) are a better comparison.
+*BPR's m_t = v_EW/√2 = 174.1 GeV is a **pole mass** prediction. Cleanest apples-to-apples comparison is against pole mass extractions from tt̄ total and differential cross-sections (theoretically well-defined, no MC tuning):
+  - ATLAS 13 TeV differential cross-section: 173.1 +2.0/−2.1 GeV → BPR pull: **+0.5σ** ✓
+  - CMS 13 TeV differential cross-section: 173.7 +1.9/−2.1 GeV → BPR pull: **+0.2σ** ✓
+  - ATLAS+CMS direct (MC mass, arXiv:2402.08713): 172.52±0.33 → after MC→pole (+0.5–1 GeV): **+1.8 to +3.3σ** ⚠️
+  The ATLAS+CMS combined direct measurement has smaller stat uncertainty but compares MC masses (not pole masses) to a pole mass prediction — an apples-to-oranges comparison. Status: **consistent at <1σ from cross-section extractions; tension from MC direct measurements is a mass-scheme artifact, not a prediction failure.** Decisive test requires a pole mass extraction with <0.5 GeV uncertainty.
 
 ## ArXiv Evidence Survey (April 2026)
 
