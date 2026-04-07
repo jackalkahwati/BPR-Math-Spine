@@ -258,7 +258,13 @@ class PMNSMatrix:
             s23 = np.sqrt(sin2_23)
             c23 = np.sqrt(1.0 - sin2_23)
 
-            s13 = 0.150  # θ₁₃ DERIVED from 1st/3rd cohomology overlap
+            # θ₁₃: OPEN — no working derivation exists.
+            # The docstring claim "from 1st/3rd cohomology overlap" is aspirational;
+            # no formula in BPR currently produces sin θ₁₃ = 0.150 from (p, z, n_gen).
+            # Value 0.150 matches Daya Bay (sin θ₁₃=0.1484±0.0026) at 0.58σ but
+            # is hardcoded to match — NOT derived. Status: CONJECTURAL until a
+            # first-principles calculation of the S² overlap integral is completed.
+            s13 = 0.150  # HARDCODED — derivation needed
             c13 = np.sqrt(1.0 - s13 ** 2)
             # Standard parameterisation (δ_CP = 0 for now)
             self.overlap_matrix = np.array([

@@ -105,7 +105,7 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P5.2 | Σm_ν | 0.06 eV | DERIVED | Bound: < 0.12 eV ✓ |
 | P5.5 | θ₁₂ | 33.65° | **DERIVED** | JUNO 2025 (arXiv:2511.14593): sin²θ₁₂=0.3092±0.0087 vs BPR 0.3083 — 0.03σ ✓. NOTE: SM has no prediction here (free parameter), so this is not BPR vs SM. Real test is BPR vs tribimaximal (1/3=0.333, now 2.8σ excluded by JUNO) and vs other discrete-symmetry models. BPR's specific formula will be discriminating when JUNO reaches projected ±0.002 precision (~2028). |
 | P5.6 | θ₂₃ | 47.6° | **DERIVED** | PDG: ~49° ± 1.3° ✓; m_μ/m_τ=l_μ²/l_τ²=210/3481, no PDG input |
-| P5.7 | θ₁₃ | 8.63° | DERIVED | PDG: 8.54° ± 0.15° ✓ |
+| P5.7 | θ₁₃ | 8.63° | CONJECTURAL | PDG: 8.54° ± 0.15° (0.58σ) — sin θ₁₃=0.150 hardcoded; no working derivation from (p,z,n_gen) exists; cohomology overlap claim is aspirational |
 | P5.10 | 3 generations | 3 | DERIVED | Observed: 3 ✓ |
 
 ### Gravitational Wave Phenomenology (P7.x)
@@ -327,8 +327,9 @@ different values and experiment can distinguish them. "Consistent with both" is 
 | Finding | Paper | What it means |
 |---------|-------|---------------|
 | Multiple discrete symmetry models (T₇, A₄) also predicted non-zero θ₁₃ before Daya Bay | [arXiv:1108.0570](https://arxiv.org/abs/1108.0570) | BPR's θ₁₃ prediction was NOT uniquely discriminating — it shared the prediction with other frameworks |
-| Independent formula sin²θ₁₂=(1−2tan²θ₁₃)/3 also consistent with JUNO+Daya Bay at ~1σ | [arXiv:2510.17583](https://arxiv.org/abs/2510.17583) | BPR's sin²θ₁₂ formula competes with other motivated predictions; not yet uniquely BPR |
-| LHCb γ = 53.9°+9.5−8.9° — below BPR's δ_CP = 68.3° | [arXiv:2504.00354](https://arxiv.org/abs/2504.00354) | Single LHCb channel sits ~1.5σ below BPR prediction; PDG global fit still matches |
+| Competing formula sin²θ₁₂=(1−2tan²θ₁₃)/3 proposed | [arXiv:2510.17583](https://arxiv.org/abs/2510.17583) | CORRECTION: Xing formula gives 0.3183, which is +1.05σ from JUNO now and would be +4.6σ at full JUNO precision — already disfavored. BPR (0.3086, −0.07σ) is winning this comparison. |
+| LHCb γ = 53.9°+9.5−8.9° noted as "below BPR δ_CP" | [arXiv:2504.00354](https://arxiv.org/abs/2504.00354) | CORRECTION: γ (unitarity triangle angle) ≠ δ_CP (Dirac phase) — wrong observable compared. BPR predicts δ_CP=68.3°; PDG global fit δ_CP=68.5°±5.7° is the right comparison (0.03σ). |
+| θ₁₃ = 8.63° — sin θ₁₃ = 0.150 is **hardcoded** in bpr/neutrino.py, no derivation formula | bpr/neutrino.py line 261 | Real weakness: docstring claims "from 1st/3rd cohomology overlap" but no calculation exists. The pre-Daya Bay claim rests on having the right number without a derivable formula. Needs fixing. |
 | ADMX cannot yet reach DFSZ sensitivity across full mass range | [arXiv:2504.07279](https://arxiv.org/abs/2504.07279) | Axion window not fully closed — BPR's no-axion prediction not yet confirmed |
 
 ### Summary verdict
