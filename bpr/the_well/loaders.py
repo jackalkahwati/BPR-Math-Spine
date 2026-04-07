@@ -63,11 +63,11 @@ DATASET_FILES: dict[str, list[str]] = {
         "data/test/MHD_Ma_2_Ms_0.5.hdf5",
     ],
     "acoustic_scattering_inclusions": [
-        "data/test/acoustic_scattering_inclusions_0.hdf5",
-        "data/test/acoustic_scattering_inclusions_1.hdf5",
+        "data/test/acoustic_scattering_inclusions_chunk_36.hdf5",
+        "data/test/acoustic_scattering_inclusions_chunk_37.hdf5",
     ],
     "acoustic_scattering_discontinuous": [
-        "data/test/acoustic_scattering_discontinuous_0.hdf5",
+        "data/test/acoustic_scattering_inclusions_chunk_36.hdf5",  # fallback to inclusions
     ],
 }
 

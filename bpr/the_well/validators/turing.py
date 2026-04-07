@@ -1,25 +1,27 @@
 """
-Turing pattern wavelength validator
-=====================================
+Turing / Gray-Scott pattern wavelength validator
+=================================================
 
 Well dataset : ``gray_scott_reaction_diffusion``
 BPR prediction: P23.1 — Turing pattern wavelength scales as
-                λ_T = 2π √(D_u / |f_u|) where f_u is the activator
-                self-inhibition rate at steady state.
+                λ_T = 2π / k_c   where  k_c² = √(|det(J)| / (D_u D_v))
 
-BPR reproduces standard Turing instability theory via the morphogenetic
-field equation (§11.2). This is a CONSISTENT prediction — BPR gives the
-correct Turing wavelength; The Well lets us verify against PDE simulation
-instead of only the CIMA experiment.
+IMPORTANT scientific finding (from live The Well run, 2026-04-06):
+BPR's simplified formula λ = 2π√(D_u/F) overestimates Gray-Scott spot
+wavelengths by ~60×.  Root cause: Gray-Scott SPOTS are not classical
+Turing-unstable patterns from the homogeneous trivial state (det(J)>0
+at u*=1, v*=0).  They are self-replicating structures maintained by a
+different dynamical mechanism (Pearson 1993 "Complex Patterns in a
+Simple System").  BPR's morphogenetic field formula applies to classical
+2-component RD Turing instabilities (e.g. CIMA), not to GS spots.
 
-Method
-------
-1. Load one frame of the v-field (autocatalyst) from gray_scott.
-2. 2-D FFT → radially-averaged power spectrum → peak wavenumber k̂.
-3. Observed wavelength: λ_obs = 2π / k̂  (in grid units × domain size).
-4. BPR prediction: λ_BPR = 2π √(D_u / (2 u* (v*)²))
-   using numerical steady-state (u*, v*) for the dataset's (F, k, D_u, D_v).
-5. Σ deviation = |λ_obs − λ_BPR| / (0.10 × λ_BPR)  [theory precision 10%].
+This validator now tests the PROPER Turing critical wavelength using the
+full 2-component stability analysis:
+  k_c² = (1/2) × (|f_u|/D_u + |g_v|/D_v)   (onset wavenumber)
+  λ_BPR = 2π / k_c  (domain units)
+
+This is still expected to fail for Gray-Scott spots (they are not Turing
+patterns), but the formula is now correct.  Status: CONJECTURAL.
 """
 
 from __future__ import annotations
@@ -70,15 +72,26 @@ def _gray_scott_steady_state(p: GrayScottParams) -> tuple[float, float]:
 def bpr_turing_wavelength(params: Optional[GrayScottParams] = None) -> float:
     """BPR prediction for Turing pattern wavelength (in domain units).
 
-    λ_T = 2π √(D_u / |f_u|)
+    Uses the proper 2-component Turing onset wavenumber:
+      k_c² = (1/2) × (|f_u|/D_u + |g_v|/D_v)
 
-    where f_u = ∂(du/dt)/∂u|* = −v*² − F  (linearised Gray-Scott Jacobian).
+    where (f_u, g_v) are diagonal Jacobian elements at steady state.
+
+    Note: for Gray-Scott trivial state (u*=1, v*=0):
+      f_u = -F,  g_v = -(F+k)
+    giving k_c = √((F/D_u + (F+k)/D_v) / 2).
     """
     p = params or GrayScottParams()
     u_star, v_star = _gray_scott_steady_state(p)
-    f_u = -(v_star ** 2) - p.F   # always negative at steady state
-    lambda_bpr = 2.0 * math.pi * math.sqrt(p.D_u / abs(f_u))
-    return lambda_bpr
+    # Use trivial state values as fallback (non-trivial often doesn't exist)
+    f_u = -(v_star ** 2) - p.F
+    g_v = 2.0 * u_star * v_star - (p.F + p.k)
+    # Proper 2-component onset wavenumber
+    k_c_sq = 0.5 * (abs(f_u) / p.D_u + abs(g_v) / p.D_v)
+    if k_c_sq <= 0:
+        return float("nan")
+    k_c = math.sqrt(k_c_sq)
+    return 2.0 * math.pi / k_c
 
 
 def _radial_power_spectrum(field_2d: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -152,7 +165,7 @@ def validate(verbose: bool = False) -> dict:
         name="Gray-Scott Turing pattern wavelength",
         theory="Morphogenetic Field / Meta-Boundary Dynamics",
         unit="domain units",
-        status="CONSISTENT",
+        status="CONJECTURAL",
         satisfies=None,
     )
 
