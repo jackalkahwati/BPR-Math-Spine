@@ -1,0 +1,13 @@
+{
+  "baseline_alpha_s_err_pct": 82.79853005496207,
+  "baseline_sin2_tw_err_pct": 18.475240565863935,
+  "best_alpha_s_prime": 103951,
+  "best_alpha_s_err_pct": 82.7194839745515,
+  "best_sin2_tw_prime": 103951,
+  "best_sin2_tw_err_pct": 18.37331354824462,
+  "SM_spread_at_BPR_gut": 14.024540018339806,
+  "inv_alpha_gut_BPR": 90.02373551443853,
+  "inv_a3_SM_at_gut": 49.1971311107112,
+  "ratio_BPR_over_SM": 1.8298574222113242,
+  "alpha_s_corridor_variation_pct": 0.644180203483764
+}

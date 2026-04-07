@@ -1,0 +1,42 @@
+{
+  "corridor_primes_tested": 580,
+  "gut_problems": [
+    "M_GUT = M_Pl/p^{1/4} is not a coupling unification scale in the SM (SM coupling spread = 14 units at BPR's M_GUT, vs 0 needed)",
+    "alpha_GUT = pi/(p^{1/3}*z) gives 1/alpha_GUT=90 but SM predicts 1/alpha_3=49.2 at BPR's M_GUT (factor 1.83x off)",
+    "alpha_s(M_Z) from BPR top-down running = 0.0203 (exp 0.1179, factor 5.8x off)",
+    "sin2_theta_W from BPR top-down = 0.274 (exp 0.231, 18% off)",
+    "The NOTE in the code admits: 'requires S2 cohomology charges for boundary mode representations (eta_i values)' \u2014 a placeholder for absent derivation"
+  ],
+  "corridor_sensitivity": {
+    "alpha_s_varies_by": "0.6442% across corridor",
+    "interpretation": "GUT predictions vary by ~2% across corridor \u2014 same order as corridor variation in other observables, but all values are ~580% wrong, so variation is irrelevant"
+  },
+  "number_theory": {
+    "p_104729_rank": 10000,
+    "p_104743_rank": 10001,
+    "p_107251_rank": 10219,
+    "p_107713_rank": 10249,
+    "interpretation": "p=104729 is the 10,000th prime \u2014 likely the selection criterion",
+    "alpha_optimal_rank": "10,001st prime (104743)",
+    "gap": "Baseline is 1 prime before the best alpha match"
+  },
+  "provenance": {
+    "M_GUT_formula": {
+      "formula": "M_GUT = M_Pl / p^{1/4}",
+      "status": "ANSATZ",
+      "evidence": "Root commit 61fc581; one-line definition, no derivation. M_Pl/p^{1/4} is not a unification scale in the SM (SM spread = 14 coupling units at this scale).",
+      "note": "The code acknowledges this with 'NOTE: bare coupling without threshold corrections'"
+    },
+    "alpha_GUT_formula": {
+      "formula": "alpha_GUT = pi / (p^{1/3} * z)",
+      "status": "ANSATZ",
+      "evidence": "Root commit 61fc581; the 'derivation' is N_eff = p^{1/3}*z/(2pi), alpha_GUT = 1/(2*N_eff). The N_eff formula counts boundary modes but is asserted without a path-integral calculation.",
+      "note": "BPR value 1/alpha_GUT=90 vs SM value at same scale 1/alpha_3=49.2 (factor 1.83x discrepancy)."
+    }
+  },
+  "attractor_impact": {
+    "question": "Would fixing GUT sector shift the attractors?",
+    "answer": "The two attractors (alpha at 104749, vEW at 107709) are determined by the LOW-ENERGY formulas (1/alpha_0 and v_EW), not by the GUT sector. Fixing the GUT sector would not shift either attractor unless the corrected GUT coupling feeds back into a corrected 1/alpha_0 formula. Currently there is no such feedback path.",
+    "consequence": "The attractor gap is independent of the GUT sector problem."
+  }
+}
