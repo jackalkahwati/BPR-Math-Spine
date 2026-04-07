@@ -258,13 +258,24 @@ class PMNSMatrix:
             s23 = np.sqrt(sin2_23)
             c23 = np.sqrt(1.0 - sin2_23)
 
-            # θ₁₃: OPEN — no working derivation exists.
-            # The docstring claim "from 1st/3rd cohomology overlap" is aspirational;
-            # no formula in BPR currently produces sin θ₁₃ = 0.150 from (p, z, n_gen).
-            # Value 0.150 matches Daya Bay (sin θ₁₃=0.1484±0.0026) at 0.58σ but
-            # is hardcoded to match — NOT derived. Status: CONJECTURAL until a
-            # first-principles calculation of the S² overlap integral is completed.
-            s13 = 0.150  # HARDCODED — derivation needed
+            # θ₁₃: OPEN — no working first-principles derivation exists.
+            #
+            # Best candidate formulas explored (none are clean derivations):
+            #   (A) c₁/c₃ = (l₁+½)/(l₃+½) = 0.5/3.5 = 1/7 = 0.1429 → 8.21° (-2.2σ)
+            #       Motivated as "first-to-third Langer eigenvalue ratio" (Cabibbo analogue).
+            #   (B) W_c/(c₃²−c₁²) = √3/12 = 0.1443 → 8.30° (-1.6σ)
+            #       Motivated as winding-mediated mixing across the Langer eigenvalue gap.
+            #   (C) 1/(ln p − (z−1)) = 1/6.559 = 0.1525 → 8.77° (+1.5σ)
+            #       Numerically closest; (z−1) = rank(SU(z)) but justification is ad hoc.
+            #
+            # None reproduces the hardcoded 0.150 from first principles.
+            # The value 0.150 matches Daya Bay (8.54°±0.15°) at 0.58σ but was set
+            # to match, not derived. OPEN problem: compute the S² cohomology overlap
+            # integral <ψ_e|ψ_3> from boundary geometry to close this gap.
+            #
+            # Using best candidate (B) as a physically-motivated placeholder:
+            s13 = W_c / (c[2]**2 - c[0]**2)  # = sqrt(3)/12 = 0.1443, 8.30 deg (-1.6sigma)
+            # CONJECTURAL — replace with derived formula when S² integral is computed
             c13 = np.sqrt(1.0 - s13 ** 2)
             # Standard parameterisation (δ_CP = 0 for now)
             self.overlap_matrix = np.array([
