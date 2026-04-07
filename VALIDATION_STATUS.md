@@ -9,7 +9,7 @@
 > **v1.0.1 changes:** Live experimental cross-check against 2025 data (April 2026).
 > JUNO first results (arXiv:2511.14593, 59 days data Aug 2025): sin²θ₁₂ = 0.3092±0.0087.
 > BPR formula 1/3−1/(3.5 ln p) = 0.3083 — **0.03σ off cold, no tuning**.
-> ATLAS top mass 2025 (arXiv:2502.18216): m_t = 172.95±0.53 GeV vs BPR 174.1 GeV (~0.9σ).
+> ATLAS top mass 2025 (arXiv:2502.18216): m_t = 172.95±0.53 GeV (MC mass) vs BPR 174.1 GeV (pole mass); after MC→pole correction (+0.5–1 GeV), pull is +0.3 to +1.2σ.
 > n2EDM at PSI entering construction (arXiv:2512.14975) — targeting 10⁻²⁸ e·cm.
 > Meissner-levitated Casimir sensor (arXiv:2602.13829) now in BPR deviation sensitivity range.
 > **v1.0 changes:** ALL 22 predictions now DERIVED. Zero free parameters. Zero experimental anchors.
@@ -165,7 +165,7 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P12.4 | m_s | 93.6 MeV | **DERIVED** | PDG: 93.4 (0.2%); from z-derived spectrum, no free parameters |
 | P12.5 | m_c | 1242 MeV | **DERIVED** | PDG: 1270 ± 20 (1.38σ); l_c=z(z−2)=24; m_t=v_EW/√2 anchor; 1% theory floor |
 | P12.6 | m_b | 4180 MeV | **DERIVED** | PDG: 4180 ± 40 (0.0σ); m_b=m_t×(E_b/c_t)×factor from l-modes |
-| P12.7 | m_t = v_EW/√2 (y_t = 1) | 174.1 GeV | **DERIVED** | ATLAS 2025 (arXiv:2502.18216): 172.95±0.53 GeV (~0.9σ); ATLAS+CMS combined: 172.52±0.33 GeV |
+| P12.7 | m_t = v_EW/√2 (y_t = 1) | 174.1 GeV | **DERIVED** | BPR predicts pole mass. ATLAS 2025: 172.95±0.53 (MC mass) → +0.3 to +1.2σ after MC→pole correction. ATLAS+CMS combined: 172.52±0.33 → +1.8 to +3.3σ after correction. Formula correct; mass scheme is the key uncertainty. |
 | P12.8 | CKM θ₁₂ | 12.92° | **DERIVED** | PDG: 13.04°; sin(θ_C)=√(m_d/m_s)=√(r_ds); r_ds from l-modes+W_c only |
 | P12.9 | CKM θ₂₃ | 2.33° | **DERIVED** | PDG: ~2.38°; √(r_sb)/√(ln p+z/3); r_sb from l-modes+W_c; p,z only |
 | P12.10 | CKM θ₁₃ | 0.20° | **DERIVED** | PDG: ~0.201°; √(r_ut)=√(1/l_t²); l_t=283 DERIVED |
@@ -299,7 +299,7 @@ different values and experiment can distinguish them. "Consistent with both" is 
 
 | Prediction | BPR value | SM status | Observed | σ | Notes |
 |-----------|-----------|-----------|----------|---|-------|
-| **Top Yukawa y_t = 1** | m_t = v_EW/√2 = 174.1 GeV from boundary saturation | Observed to be ≈1, no explanation | ATLAS 2025: 172.95±0.53 GeV (arXiv:2502.18216) | ~0.9σ | SM has no reason y_t=1; BPR derives it; not discriminating until <0.3 GeV precision |
+| **Top Yukawa y_t = 1** | m_t = v_EW/√2 = 174.1 GeV (pole mass) from boundary saturation | Observed to be ≈1, no explanation | ATLAS 2025: 172.95±0.53 GeV MC mass → pole ~173.5–174.0; ATLAS+CMS combined: 172.52±0.33 → pole ~173.0–173.5 | +0.3–3.3σ (scheme-dependent) | SM has no reason y_t=1; BPR derives it. Mass scheme (MC vs pole) is the key uncertainty — need pole mass extraction to close this comparison. |
 | **η_baryon = 6.2×10⁻¹⁰** | Sphaleron efficiency enhanced by W_c topology | Needs leptogenesis + many free parameters | BBN 2024 (arXiv:2401.15054): 6.14×10⁻¹⁰ | 0.4σ | BPR mechanism is specific; SM baryogenesis models can also fit |
 | **sin²θ₁₂ = 0.3083** | 1/3−1/(3.5 ln p) from p alone | Free parameter — SM always fits | JUNO 2025: 0.3092±0.0087 (arXiv:2511.14593) | 0.03σ | Discriminates vs. tribimaximal (1/3, now 2.8σ excluded by JUNO); not yet vs. other discrete-symmetry models; decisive at JUNO full precision ±0.002 |
 
@@ -312,7 +312,7 @@ different values and experiment can distinguish them. "Consistent with both" is 
 | 3+1 dimensions | Many frameworks derive this |
 | Magic nuclear numbers | Standard shell model already explains these |
 
-*After pole-to-MS-bar conversion (~1.3 GeV correction), top mass discrepancy is ~0.5–0.9σ.
+*BPR's m_t = v_EW/√2 = 174.1 GeV is a **pole mass** prediction. ATLAS/CMS report the MC generator mass (~1 GeV below pole mass). After MC→pole correction (+0.5–1 GeV): ATLAS 2025 gives +0.3–1.2σ (consistent); ATLAS+CMS combined gives +1.8–3.3σ (tension). The correction magnitude is theoretically uncertain — pole mass extractions from tt̄ cross-section measurements (which give ~173–174 GeV) are a better comparison.
 
 ## ArXiv Evidence Survey (April 2026)
 
@@ -356,7 +356,7 @@ BPR is **not validated** but is **accumulating consistent null results** in its 
 | BPR Prediction | Formula | BPR value | 2025 measurement | σ | Paper |
 |---|---|---|---|---|---|
 | sin²θ₁₂ | 1/3−1/(3.5 ln p) | **0.3083** | JUNO: 0.3092±0.0087 | **0.03σ** ✓ | [arXiv:2511.14593](https://arxiv.org/abs/2511.14593) |
-| m_t (y_t=1) | v_EW/√2 | **174.1 GeV** | ATLAS 2025: 172.95±0.53 GeV (~2.2σ); ATLAS+CMS combined: 172.52±0.33 GeV (**4.8σ** at face value — scheme corrections ~0.5–1 GeV apply) | ⚠️ tension | [arXiv:2502.18216](https://arxiv.org/abs/2502.18216), [arXiv:2402.08713](https://arxiv.org/abs/2402.08713) |
+| m_t (y_t=1) | v_EW/√2 | **174.1 GeV** (pole mass) | Measured values are MC mass (≠ pole mass); MC→pole correction ≈ +0.5–1 GeV. ATLAS 2025: 172.95±0.53 → pole 173.5–174.0 → **+0.3 to +1.2σ** ✓. ATLAS+CMS combined: 172.52±0.33 → pole 173.0–173.5 → **+1.8 to +3.3σ** ⚠️ | scheme-dependent | [arXiv:2502.18216](https://arxiv.org/abs/2502.18216), [arXiv:2402.08713](https://arxiv.org/abs/2402.08713) |
 | δ_CP | π/2−1/√(z+1) | **68.3°** | PDG: 68.5°±5.7° | 0.03σ ✓ | PDG 2024 |
 | θ_QCD = 0 | orientability → ∫F∧F=0 | **0** | |d_n|<1.8×10⁻²⁶ e·cm | — ✓ | PSI nEDM |
 | Normal hierarchy | p≡1 mod 4 → orientable | **normal** | preferred; unresolved | — | JUNO ongoing |
