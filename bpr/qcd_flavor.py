@@ -133,6 +133,36 @@ class QuarkMassSpectrum:
         m_s = 93.5 MeV  (exp: 93.4, 0.1% off) -- DERIVED
         m_b = m_t×(E_b/c_t)×2 or anchor -- DERIVED when v_EW given
 
+    HONEST DERIVATION STATUS (v0.9.6):
+    ─────────────────────────────────────────────────────────────────────
+    The S² mode STRUCTURE (integer l, mass ∝ l²) is BPR-motivated.
+    The specific integers l=(1,24,283) and l=(1,4,30) are NOT currently
+    derived from BPR first principles — they were chosen so that:
+        l_t = 1 / sqrt(m_u_PDG / m_t_PDG) = 282.8 ≈ 283
+        l_c = l_t * sqrt(m_c_PDG / m_t_PDG) = 24.2 ≈ 24
+
+    Until a derivation of these integers from (p=104729, z=6) exists,
+    these predictions are SUSPICIOUS — they pass because the modes were
+    chosen to make them pass, not derived independently.
+
+    OPEN PROBLEM P12.L1: Derive l-mode integers from BPR substrate.
+
+    PARTIAL LEAD (SU(3) representation dimensions):
+    - l_u = 1  = dim(0,0) of SU(3) [trivial rep] ✓
+    - l_c = 24 = dim(3,1) = dim(1,3) of SU(3) ✓
+    - l_t = 283 is NOT a dimension of any SU(3) rep ✗ (breaks the pattern)
+
+    If the up-type quarks couple to SU(3) color through representations
+    of increasing complexity (trivial → (3,1)/24-plet → ???), the charm
+    assignment works but the top assignment doesn't fit naturally.
+
+    Other approaches that don't work:
+    - l_k = round(p^(k/(2*n_gen))): gives {1, 10, 323} for p=104729, n_gen=3
+    - l_k from prime factors of p: p=104729 is prime, no factor structure
+    - l_k from SU(3) Casimir C₂(p,q) = (p+2)²/3 for (p,1) reps: not compatible
+
+    Until a derivation exists, these are SUSPICIOUS predictions.
+
     Parameters
     ----------
     l_modes_up : tuple of int
