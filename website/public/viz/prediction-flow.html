@@ -214,7 +214,7 @@ const rawNodes = [
   { id: 'pred_inflation',label: 'Inflation n_s \u2248 0.965', col: 3, color: predColor(0.3) },
   { id: 'pred_baryo',    label: '\u03b7_B \u2248 6\u00d710\u207b\u00b9\u2070', col: 3, color: predColor(1.5) },
   { id: 'pred_Tc',       label: 'T_c Landau crossover',     col: 3, color: predColor(null) },
-  { id: 'pred_newtonG',  label: "Newton's G derivation",    col: 3, color: predColor(null) },
+  { id: 'pred_newtonG',  label: "G = 6.59\u00d710\u207b\u00b9\u00b9 (1.2%)",    col: 3, color: predColor(1.2) },
   { id: 'pred_holo',     label: 'Holographic S = A/4',      col: 3, color: predColor(null) },
   { id: 'pred_gup',      label: 'GUP: \u0394x_min',        col: 3, color: predColor(null) },
   { id: 'pred_bond',     label: 'Bond coherence lengths',   col: 3, color: predColor(null) },
@@ -247,7 +247,7 @@ const rawNodes = [
   { id: 'pred_bigfreeze',label: 'Big Freeze 14.5 Gyr',          col: 3, color: '#60a5fa' },
 
   // Baryon asymmetry (refined)
-  { id: 'pred_etaB',    label: '\u03b7_B = 6.83\u00d710\u207b\u00b9\u2070', col: 3, color: '#fbbf24' },
+  { id: 'pred_etaB',    label: '\u03b7_B = 6.3\u00d710\u207b\u00b9\u2070 (2.6%)', col: 3, color: predColor(2.6) },
 
   // Atomic precision
   { id: 'pred_h1s2s',   label: 'H 1S-2S: +66.8 Hz',            col: 3, color: '#f87171' },
@@ -343,7 +343,7 @@ const rawLinks = [
   ['nuclear', 'pred_dt',    12, 'D+T \u2192 \u2074He + n: E = 17.57 MeV from BPR binding', 'Predicted: 17.57 MeV | Expt: 17.59 MeV | Error: 0.06%'],
 
   // spacetime
-  ['spacetime', 'pred_newtonG', 12, 'G = \u0127c / (Z_0 \u00b7 l_P\u00b2) emergent', "Newton's G from impedance-based metric"],
+  ['spacetime', 'pred_newtonG', 12, 'G = \u0127c / (Z_0 \u00b7 l_P\u00b2) emergent', "G derived: M_Pl/v_EW = p^(10/3) \u00d7 ln(p)/(ln(p)+1) | G = 6.59\u00d710\u207b\u00b9\u00b9 | Obs: 6.674\u00d710\u207b\u00b9\u00b9 | Error: 1.2%"],
   ['spacetime', 'pred_holo',    10, 'S = A/(4l_P\u00b2) from BPR boundary modes', 'Holographic entropy from boundary impedance'],
 
   // quantum gravity
@@ -388,7 +388,7 @@ const rawLinks = [
   ['cosmology', 'pred_bigfreeze', 8, 'Big Freeze from BPR cosmological fate', 'Predicted: 14.5 Gyr remaining'],
 
   // Baryon asymmetry (refined)
-  ['gauge', 'pred_etaB',     10, '\u03b7_B from BPR CP phase + sphaleron', 'Predicted: 6.83\u00d710\u207b\u00b9\u2070 | Expt: 6.1\u00d710\u207b\u00b9\u2070 | Error: ~11%'],
+  ['gauge', 'pred_etaB',     10, '\u03b7_B from BPR CP phase + sphaleron', 'Predicted: 6.3\u00d710\u207b\u00b9\u2070 | Expt: 6.1\u00d710\u207b\u00b9\u2070 | Error: 2.6% | Fully derived: \u03ba_sph \u00d7 J \u00d7 \u221a\u03ba'],
 
   // Atomic precision links
   ['alpha', 'atomic_prec',   12, '\u03b1_EM seeds atomic precision module', ''],
@@ -642,7 +642,7 @@ function getPredTooltip(id) {
     pred_inflation: { name: 'Spectral index n_s', pred: '0.965', expt: '0.9649 \u00b1 0.0042', err: '0.3%' },
     pred_baryo:     { name: 'Baryon asymmetry \u03b7_B', pred: '~6\u00d710\u207b\u00b9\u2070', expt: '6.1\u00d710\u207b\u00b9\u2070', err: '~1.5%' },
     pred_Tc:        { name: 'Landau crossover T_c', pred: 'Predicted from BPR coherence', expt: 'Material-dependent', err: 'structural' },
-    pred_newtonG:   { name: "Newton's G", pred: 'Emergent from Z(W)', expt: '6.674\u00d710\u207b\u00b9\u00b9', err: 'structural' },
+    pred_newtonG:   { name: "Newton's G (derived)", pred: '6.59\u00d710\u207b\u00b9\u00b9', expt: '6.674\u00d710\u207b\u00b9\u00b9', err: '1.2%' },
     pred_holo:      { name: 'Holographic entropy', pred: 'S = A / 4l_P\u00b2', expt: 'Bekenstein-Hawking', err: 'exact' },
     pred_gup:       { name: 'GUP parameter \u03b2', pred: 'From BPR Planck impedance', expt: 'Not yet measured', err: 'prediction' },
     pred_bond:      { name: 'Bond coherence', pred: 'Z(W) molecular scale', expt: 'Covalent bond lengths', err: 'structural' },
@@ -671,7 +671,7 @@ function getPredTooltip(id) {
     pred_sumnu:     { name: '\u03a3m_\u03bd', pred: '0.060 eV', expt: '< 0.12 eV (cosmological)', err: 'consistent' },
     pred_w0:        { name: 'Dark energy EOS w\u2080', pred: '-0.934', expt: 'DESI hint: -0.93', err: '~0.4%' },
     pred_bigfreeze: { name: 'Cosmological fate', pred: 'Big Freeze in 14.5 Gyr', expt: 'Theoretical', err: 'structural' },
-    pred_etaB:      { name: 'Baryon asymmetry \u03b7_B (refined)', pred: '6.83\u00d710\u207b\u00b9\u2070', expt: '6.1\u00d710\u207b\u00b9\u2070', err: '~11%' },
+    pred_etaB:      { name: 'Baryon asymmetry \u03b7_B (fully derived)', pred: '6.3\u00d710\u207b\u00b9\u2070', expt: '6.1\u00d710\u207b\u00b9\u2070', err: '2.6%' },
     pred_h1s2s:     { name: 'H 1S\u21922S shift', pred: '+66.8 Hz', expt: 'Falsifiable NOW', err: 'prediction' },
     pred_muong2v2:  { name: 'Muon g\u22122 (full)', pred: 'Full anomaly explained', expt: 'FNAL: 4.2\u03c3 anomaly', err: 'consistent' },
     pred_rp:        { name: 'Proton charge radius', pred: '0.8412 fm', expt: '0.8414 \u00b1 0.0019 fm', err: '0.02%' },
