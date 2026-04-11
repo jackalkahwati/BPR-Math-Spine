@@ -41,11 +41,14 @@ class TestGaugeCoupling:
 
 
 class TestHierarchy:
-    def test_hierarchy_open(self):
+    def test_hierarchy_derived(self):
+        """Hierarchy derived April 2026: M_Pl/v_EW = p^(z/2 + 1/3)."""
         from bpr.gauge_unification import HierarchyProblem
         h = HierarchyProblem(p=104729, N=10000)
-        assert h.hierarchy_derived is False  # honest: open problem
+        assert h.hierarchy_derived is True  # April 2026: p^(10/3) formula
         assert h.observed_ratio > 1e15
+        comp = h.hierarchy_comparison
+        assert comp["error_pct"] < 15, f"Hierarchy error {comp['error_pct']:.1f}%"
 
     def test_higgs_protected(self):
         from bpr.gauge_unification import HierarchyProblem
