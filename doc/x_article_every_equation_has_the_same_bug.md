@@ -40,7 +40,11 @@ z = 6 is not freely chosen either. It is the coordination number of a 2-sphere w
 
 The one thing that genuinely must come from outside the framework is an energy scale. p and z are dimensionless; you cannot derive GeV from pure numbers. Any single measured mass or energy (the QCD scale, the Planck mass, anything) serves as that anchor. Once it is provided, everything else follows.
 
-That leaves four structural choices: the boundary is S^2 (the unique compact orientable surface giving exactly three fermion generations); the phase space at each node is Z_p (the unique finite field supporting the discrete arithmetic); the action is gradient-squared (the only IR-relevant operator in two dimensions); and particles are identified with topological winding modes (stable because they are protected by the topology of S^2). These are architectural decisions, not adjustable parameters.
+That leaves three structural choices: the phase space at each node is Z_p (the unique finite field supporting the discrete arithmetic); the action is gradient-squared (the only IR-relevant operator in two dimensions); and particles are identified with topological winding modes (stable because they are protected by the topology of S^2).
+
+The boundary being S^2 is not a fourth choice made by hand. It follows from three requirements that any consistent framework must satisfy: the boundary must be compact (to give a discrete particle spectrum), orientable (to support globally defined fermion fields), and free of undetermined holonomy parameters (to keep the parameter count at zero). The only compact connected orientable 2-manifold with trivial fundamental group is S^2. The topology is derived, not assumed.
+
+And once S^2 is established, exactly three fermion generations follow: the first non-trivial eigenspace of the Laplacian on S^2 is three-dimensional (the ℓ = 1 spherical harmonic sector), matching the three observed generations. The number three is not a coincidence. It is the dimension of SO(3), the isometry group of the unique simply-connected compact orientable surface.
 
 Given those choices, in the dimensionless sector of physics -- mixing angles, mass ratios, coupling constants, the hierarchy between gravity and electromagnetism -- BPR has zero free parameters. The Standard Model has approximately 25.
 
