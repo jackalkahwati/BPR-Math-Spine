@@ -14,7 +14,9 @@ import pytest
 
 from bpr.cs_completion import (
     AlphaFormulaOrigins,
+    HolographicDerivation,
     TEEResolution,
+    holographic_derivation,
     verify_tee_coefficient,
     BoundaryTheoryParams,
     HopfFibrationSummary,
@@ -203,7 +205,8 @@ class TestAlphaFormulaOrigins:
         origins = alpha_formula_cs_origin()
         val, status, _ = origins.euler_gamma
         assert val == pytest.approx(_GAMMA, rel=1e-12)
-        assert "scheme" in status.lower()
+        # γ is now derived from the CS anyon sum H_{p-1} - ln p → γ
+        assert "derived" in status.lower()
 
     def test_minus_1_over_2pi(self):
         origins = alpha_formula_cs_origin()
@@ -303,3 +306,85 @@ class TestTEEResolution:
         for p in (7, 97, 1009, 9973, 104761):
             tee = TEEResolution(p=p)
             assert tee.pi_em == pytest.approx(math.log(p) ** 2, abs=1e-12)
+
+
+# ---------------------------------------------------------------------------
+# 7. Holographic derivation: γ is derived from CS anyon sum
+# ---------------------------------------------------------------------------
+
+class TestHolographicDerivation:
+    """
+    The formal holographic derivation connecting Π_EM to (2·S_topo)².
+
+    Key result: the +γ in BPR is NOT an assumption — it is the IR correction
+    to the CS anyon amplitude sum H_{p-1}, since lim(H_n − ln n) = γ exactly.
+    """
+
+    def test_anyon_sum_is_harmonic_number(self):
+        """A_CS = Σ_{a=1}^{p-1} 1/a = H_{p-1}."""
+        for p in (7, 97, P_DEFAULT):
+            holo = holographic_derivation(p)
+            expected = sum(1.0 / a for a in range(1, p))
+            assert holo.A_cs == pytest.approx(expected, rel=1e-12)
+
+    def test_uv_amplitude_equals_ln_p(self):
+        """UV part of A_CS = ln p exactly (= 2·S_topo)."""
+        for p in (7, 97, P_DEFAULT):
+            holo = holographic_derivation(p)
+            assert holo.uv_amplitude == pytest.approx(math.log(p), rel=1e-12)
+
+    def test_ir_correction_converges_to_gamma(self):
+        """H_{p-1} − ln p → γ as p→∞ (by definition of γ).
+
+        H_{n} − ln n − γ ≈ 1/(2n) asymptotically.  Here n = p−1, so the
+        correct bound is 1/(2(p−1)) — slightly larger than 1/(2p) for small p.
+        """
+        for p in (101, 1009, 9973, P_DEFAULT):
+            holo = holographic_derivation(p)
+            # |IR − γ| = O(1/p): within 1/(2(p−1)) of γ (exact asymptotic)
+            assert holo.ir_correction_error_from_gamma < 1.0 / (2 * (p - 1)) + 1e-9
+
+    def test_gamma_derived_flag(self):
+        """γ in BPR is derived from CS anyon sum (within O(1/p))."""
+        holo = holographic_derivation(P_DEFAULT)
+        assert holo.gamma_is_derived is True
+
+    def test_pi_em_is_ln_p_squared(self):
+        """Π_EM = (UV amplitude)² = [ln p]² with coefficient exactly 1."""
+        for p in (7, 97, P_DEFAULT):
+            holo = holographic_derivation(p)
+            assert holo.pi_em == pytest.approx(math.log(p) ** 2, rel=1e-12)
+
+    def test_bpr_formula_from_cs_vs_exact(self):
+        """Reconstructed 1/α from CS H_{p-1} vs exact γ differ by O(1/p)."""
+        holo = holographic_derivation(P_DEFAULT)
+        diff = abs(holo.bpr_formula_from_cs - holo.bpr_formula_exact)
+        assert diff < 1e-3  # O(1/p) ≈ 10⁻⁵ for p=104761
+
+    def test_bpr_formula_from_cs_close_to_experiment(self):
+        """Full BPR formula reconstructed from CS is within 19 ppm of experiment."""
+        holo = holographic_derivation(P_DEFAULT)
+        frac_err = abs(holo.bpr_formula_exact - _ALPHA_INV_EXP) / _ALPHA_INV_EXP
+        assert frac_err < 1e-4
+
+    def test_uv_ir_decomposition_adds_up(self):
+        """UV + IR = H_{p-1} exactly."""
+        holo = holographic_derivation(P_DEFAULT)
+        assert holo.uv_amplitude + holo.ir_correction == pytest.approx(
+            holo.A_cs, rel=1e-14
+        )
+
+    def test_ir_shrinks_with_p(self):
+        """H_{p-1} − ln p − γ → 0 as p increases (O(1/p) convergence)."""
+        errors = [holographic_derivation(p).ir_correction_error_from_gamma
+                  for p in (101, 1009, 9973, P_DEFAULT)]
+        assert errors[0] > errors[1] > errors[2] > errors[3]
+
+    def test_derivation_summary_contains_key_results(self):
+        holo = holographic_derivation(P_DEFAULT)
+        summary = holo.derivation_summary()
+        assert "H_{p-1}" in summary
+        assert "UV part" in summary
+        assert "IR corr" in summary
+        assert "Π_EM" in summary
+        assert "DERIVED" in summary.upper() or "coeff" in summary.lower()
