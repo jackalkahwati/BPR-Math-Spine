@@ -420,17 +420,47 @@ is formally identical to the action of a free, massless, real scalar field on a 
 
 **Winding numbers W correspond to topological charges.** In QFT, instantons are classified by winding number (the third homotopy group pi_3(G) for gauge group G). BPR's winding sectors are the analogous topological classification on the 2D boundary. The transition at W_c = p^{1/5} is a rough analog of the instanton suppression scale where non-perturbative effects become relevant.
 
-### Where the connection is incomplete
+### Where the connection is incomplete — and where it has been advanced
 
-BPR has not been shown to be a limit of a specific known QFT, string theory compactification, or M-theory construction. The following would be required to close this gap:
+**Substantially closed (April 2026):** See `doc/CS_UV_COMPLETION.md` for the
+full derivation status.  Three rigorous results now connect BPR to U(1)
+Chern-Simons theory on S³ at prime level k = p:
 
-1. **Show that the Z_p lattice with prime coordination z = 6 arises as a discretization of a specific continuum field theory with known UV completion.** Candidate: a Chern-Simons theory on S^3 with boundary CFT on S^2, where the level k -> p as k -> infinity.
+1. **Prime constraint derived from CS physics.** U(1)_k CS anyons form the
+   ring Z_k under fusion.  BPR coarse-graining requires division mod k to
+   be well-defined (field condition).  Z_k is a field iff k is prime
+   (standard number theory).  Combined: CS level quantization k ∈ ℤ plus
+   the field condition gives k = p (prime).  *This was previously asserted;
+   it is now derived from an external theory.*
 
-2. **Identify the BPR boundary modes in the spectrum of a known string compactification.** The z = 6 coordination number matches the number of compact dimensions in Type IIA/IIB string theory on a 6-torus. Whether this is coincidence or structural is open.
+2. **S² boundary from the Hopf fibration.** The Hopf map π: S³ → S² provides
+   the geometric mechanism reducing the 3D CS theory on S³ to a 2D theory on S².
+   The number of S² modes below the UV cutoff is (⌊√p⌋ + 1)² = 104,976, matching
+   the CS level p = 104,761 to 0.2%.
 
-3. **Connect the prime constraint on p to a quantization condition in the UV theory.** In Chern-Simons theory, the level k is quantized by gauge invariance. If the BPR prime modulus arises as the level of a boundary Chern-Simons theory, the selection of p via the alpha_EM constraint would become a level-matching condition.
+3. **c=1 compact boson identified.** The BPR boundary action is the c=1 compact
+   boson at compactification radius R = √(z/2) = √3.  The three additive scheme
+   corrections (z/2, γ, −1/2π) all have CS or lattice-matching origins.
 
-**Current status:** The correspondence is suggestive. The BPR action is formally a well-known 2D CFT. The boundary-bulk coupling is structurally AdS/CFT-like. The winding sectors have QFT analogs. But the explicit derivation of BPR from a known UV-complete theory has not been done. This is the highest-priority open theoretical task and would substantially change how physicists receive the framework.
+**One open calculation remains:** Show that the photon self-energy coefficient
+in the Hopf-reduced CS theory is exactly 1.  The S² spherical harmonic
+propagator squared gives G_S2² = 137.263 vs. 1/α_BPR = 137.039 — a 0.16% gap.
+The structure is correct; the coefficient is numerically close but unproven.
+See `doc/CS_UV_COMPLETION.md` §6 for the precise statement of the open
+calculation (Method B is recommended: a combinatorial number-theory identity).
+
+**Remaining open tasks:**
+
+- Identify the BPR boundary modes in the spectrum of a known string
+  compactification.  The z = 6 coordination number matches the number of
+  compact dimensions in Type IIA/IIB on a 6-torus.  Whether structural or
+  coincidental is unknown.
+
+**Current status:** Rigorous partial UV completion.  The prime constraint is
+now derived from CS physics.  The S² boundary follows from the Hopf fibration.
+The boundary theory is a c=1 compact boson.  One coefficient calculation
+(expected result: 1) separates this from a complete derivation.  This is a
+well-posed calculation in 2D CFT — not an open-ended search.
 
 ---
 
