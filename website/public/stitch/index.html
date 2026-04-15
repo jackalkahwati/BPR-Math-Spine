@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Boundary Phase Resonance | Open Research Framework</title>
-<meta name="description" content="BPR derives 87 physical constants from one equation, two structural inputs, and one energy scale — zero adjustable parameters in the dimensionless sector. Open-source research framework by StarDrive Inc."/>
+<meta name="description" content="BPR derives 87 physical constants from one equation, two structural inputs, and one energy scale — zero adjustable parameters in the dimensionless sector. The boundary topology S² is derived, not assumed. Open-source research framework by StarDrive Inc."/>
 <meta property="og:title" content="Boundary Phase Resonance"/>
 <meta property="og:description" content="87 physical constants, zero adjustable dimensionless parameters. One energy anchor required by dimensional analysis. Open-source physics research framework."/>
 <meta property="og:url" content="https://bpr.thestardrive.com"/>
@@ -991,6 +991,13 @@ S = S_bulk + S_bndy + S_int + S_info + S_bio<br/>
                         <span class="material-symbols-outlined group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
 </summary>
 <p class="mt-4 text-on-surface-variant text-sm leading-relaxed">p = 104,761 is derived from the fine-structure constant formula: inverting 1/α = [ln p]² + z/2 + γ − 1/(2π) gives p_exact = 104,749, and the nearest prime satisfying the orientability condition (p ≡ 1 mod 4) is p = 104,761. This gives 1/α = 137.039, matching experiment to 19 parts per million. z = 6 is fixed by the boundary topology (S² with cubic coordination), not freely chosen. Both are determined by physics, not selected to fit data.</p>
+</details>
+<details class="group bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<summary class="list-none flex justify-between items-center cursor-pointer font-headline text-lg text-on-surface">
+                        Why a 2-sphere? Isn't that just assumed?
+                        <span class="material-symbols-outlined group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant text-sm leading-relaxed">No — the 2-sphere is derived, not assumed. Any consistent boundary must be (1) compact, so that particle masses are discrete rather than continuous; (2) orientable, so that fermion fields can be globally defined; and (3) simply connected (π₁ = 0), so that no undetermined gauge holonomy parameters appear along non-contractible loops. By the classification of compact surfaces, the <em>unique</em> compact connected orientable 2-manifold satisfying all three is S². The torus T² fails condition 3 — it has π₁ = ℤ×ℤ, introducing two free holonomy angles not determined by p and z. Higher-genus surfaces fail the same way. Once S² follows from these requirements, z = 6 follows from its cubic tiling, and exactly three fermion generations follow from the three-dimensional ℓ=1 eigenspace of the Laplacian on S². The topology is a theorem, not a choice.</p>
 </details>
 <details class="group bg-surface-container p-6 rounded-lg border border-outline-variant/10">
 <summary class="list-none flex justify-between items-center cursor-pointer font-headline text-lg text-on-surface">
