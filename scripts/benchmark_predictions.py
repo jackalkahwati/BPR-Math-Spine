@@ -157,7 +157,7 @@ def grade_result(bpr_val: Optional[float], meas: Measurement) -> BenchmarkResult
 
 
 def run_benchmark(
-    p: int = 104729,
+    p: int = 104761,
     N: int = 10000,
     J_eV: float = 1.0,
     radius: float = 0.01,
@@ -416,7 +416,7 @@ def main():
                         help="Output markdown path")
     parser.add_argument("--csv", default=None,
                         help="Also write CSV results")
-    parser.add_argument("--p", type=int, default=104729)
+    parser.add_argument("--p", type=int, default=104761)
     parser.add_argument("--N", type=int, default=10000)
     parser.add_argument("--J", type=float, default=1.0)
     parser.add_argument("--radius", type=float, default=0.01)

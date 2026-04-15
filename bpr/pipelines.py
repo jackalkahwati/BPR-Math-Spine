@@ -159,7 +159,7 @@ except Exception:
 # ===================================================================
 
 def pipeline_impedance_to_lepton_masses(
-    p: int = 104729,
+    p: int = 104761,
     z: int = 6,
 ) -> dict:
     """Chain: gauge_unification -> impedance -> charged_leptons.
@@ -249,7 +249,7 @@ def pipeline_impedance_to_decoherence(
     T: float = 300.0,
     A_eff: float = 1e-14,
     lambda_dB: float = 1e-10,
-    p: int = 104729,
+    p: int = 104761,
 ) -> dict:
     """Chain: impedance -> decoherence -> coherence_transitions -> quantum_foundations.
 
@@ -1002,7 +1002,7 @@ except Exception:
 # ===================================================================
 
 def pipeline_substrate_to_spacetime(
-    p: int = 104729,
+    p: int = 104761,
     n_sites: int = 32,
     n_steps: int = 500,
 ) -> dict:
@@ -1118,7 +1118,7 @@ def pipeline_substrate_to_spacetime(
 # ===================================================================
 
 def pipeline_e8_to_particle_table(
-    p: int = 104729,
+    p: int = 104761,
     z: int = 6,
 ) -> dict:
     """Chain: clifford_bpr (E8) -> gauge_unification -> charged_leptons + neutrino + qcd_flavor.
@@ -1254,7 +1254,7 @@ def pipeline_e8_to_particle_table(
 # ===================================================================
 
 def pipeline_boundary_action_to_observations(
-    p: int = 104729,
+    p: int = 104761,
     z: int = 6,
 ) -> dict:
     """Chain: boundary_action -> impedance -> multiple endpoints.

@@ -168,7 +168,7 @@ class TestFullDerivation:
     def test_derive_alpha_returns_result(self):
         from bpr.alpha_derivation import derive_alpha
         result = derive_alpha()
-        assert result.p == 104729
+        assert result.p == 104761
         assert result.z == 6
         assert 136 < result.inv_alpha_0 < 138
         assert 127 < result.inv_alpha_MZ < 129

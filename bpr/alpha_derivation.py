@@ -9,7 +9,7 @@ substrate parameters (p, z) using zero experimental coupling inputs.
 
     1/α = [ln(p)]² + z/2 + γ − 1/(2π)
 
-For p = 104729, z = 6:
+For p = 104761, z = 6:
 
     1/α = 133.613 + 3.000 + 0.577 − 0.159 = 137.031
     Experimental: 1/α = 137.035999084(21)
@@ -96,7 +96,7 @@ _M_Z_GEV = 91.1876        # Z-boson mass [GeV]
 # §22.1  Core formula:  1/α  from substrate
 # =====================================================================
 
-def inverse_alpha_from_substrate(p: int = 104729, z: int = 6) -> float:
+def inverse_alpha_from_substrate(p: int = 104761, z: int = 6) -> float:
     """Derive 1/α_EM(q² = 0) from substrate parameters.
 
     FORMULA
@@ -131,7 +131,7 @@ def inverse_alpha_from_substrate(p: int = 104729, z: int = 6) -> float:
     return screening + bare + lattice + scheme
 
 
-def alpha_em_from_substrate(p: int = 104729, z: int = 6) -> float:
+def alpha_em_from_substrate(p: int = 104761, z: int = 6) -> float:
     """Derive α_EM(q² = 0) from substrate parameters.
 
     Returns
@@ -146,7 +146,7 @@ def alpha_em_from_substrate(p: int = 104729, z: int = 6) -> float:
 # §22.2  Running to M_Z
 # =====================================================================
 
-def inverse_alpha_at_MZ(p: int = 104729, z: int = 6) -> float:
+def inverse_alpha_at_MZ(p: int = 104761, z: int = 6) -> float:
     """Derive 1/α_EM(M_Z) from substrate + standard QED running.
 
     1/α(M_Z)  =  1/α(0)  −  Δ(1/α)_QED
@@ -163,7 +163,7 @@ def inverse_alpha_at_MZ(p: int = 104729, z: int = 6) -> float:
     return inverse_alpha_from_substrate(p, z) - _DELTA_INV_ALPHA_QED
 
 
-def alpha_em_at_MZ(p: int = 104729, z: int = 6) -> float:
+def alpha_em_at_MZ(p: int = 104761, z: int = 6) -> float:
     """Derive α_EM(M_Z) from substrate + QED running."""
     return 1.0 / inverse_alpha_at_MZ(p, z)
 
@@ -172,7 +172,7 @@ def alpha_em_at_MZ(p: int = 104729, z: int = 6) -> float:
 # §22.3  Individual gauge couplings at M_Z (top-down)
 # =====================================================================
 
-def alpha_gut_from_lattice(p: int = 104729, z: int = 6) -> float:
+def alpha_gut_from_lattice(p: int = 104761, z: int = 6) -> float:
     """Derive the unified gauge coupling at M_GUT from substrate.
 
     DERIVATION (BPR §22.3)
@@ -208,7 +208,7 @@ def alpha_gut_from_lattice(p: int = 104729, z: int = 6) -> float:
     return np.pi / (n_modes * z)
 
 
-def gut_scale_GeV(p: int = 104729) -> float:
+def gut_scale_GeV(p: int = 104761) -> float:
     """M_GUT = M_Pl / p^{1/4}  [GeV]."""
     return _M_PL_GEV / p ** 0.25
 
@@ -284,7 +284,7 @@ class AlphaBreakdown:
         return "\n".join(lines)
 
 
-def alpha_breakdown(p: int = 104729, z: int = 6) -> AlphaBreakdown:
+def alpha_breakdown(p: int = 104761, z: int = 6) -> AlphaBreakdown:
     """Compute full term-by-term breakdown of the α derivation.
 
     Parameters
@@ -356,7 +356,7 @@ class AlphaDerivationResult:
             self.inv_alpha_MZ_exp * 100.0
 
 
-def derive_alpha(p: int = 104729, z: int = 6) -> AlphaDerivationResult:
+def derive_alpha(p: int = 104761, z: int = 6) -> AlphaDerivationResult:
     """End-to-end derivation of α from substrate parameters.
 
     Chain:
@@ -419,7 +419,7 @@ def prime_for_exact_alpha(z: int = 6, target_inv_alpha: float = _INV_ALPHA_0_EXP
     return np.exp(ln_p)
 
 
-def sensitivity_to_prime(p: int = 104729, z: int = 6) -> dict:
+def sensitivity_to_prime(p: int = 104761, z: int = 6) -> dict:
     """How sensitive is α to small changes in p?
 
     Returns
@@ -448,7 +448,7 @@ def sensitivity_to_prime(p: int = 104729, z: int = 6) -> dict:
 # §22.7  Consistency check: α from GUT running
 # =====================================================================
 
-def alpha_em_from_gut_running(p: int = 104729, z: int = 6) -> dict:
+def alpha_em_from_gut_running(p: int = 104761, z: int = 6) -> dict:
     """Cross-check: derive α_EM via GUT running (top-down).
 
     This is independent of §22.1 and uses:
@@ -505,7 +505,7 @@ def alpha_em_from_gut_running(p: int = 104729, z: int = 6) -> dict:
 # §22.8  Module-level convenience
 # =====================================================================
 
-def summary(p: int = 104729, z: int = 6) -> str:
+def summary(p: int = 104761, z: int = 6) -> str:
     """Print a comprehensive summary of the α derivation."""
     bd = alpha_breakdown(p, z)
     result = derive_alpha(p, z)

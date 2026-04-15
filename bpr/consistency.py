@@ -476,7 +476,7 @@ def _check_e8() -> Dict[str, Any]:
 # ===================================================================
 
 def run_all_consistency_checks(
-    p: int = 104729,
+    p: int = 104761,
     z: int = 6,
 ) -> Dict[str, Any]:
     """Run every consistency check and return pass/fail report.
@@ -546,7 +546,7 @@ def prediction_dependency_graph() -> Dict[str, Any]:
     """
     nodes = [
         # Substrate parameters
-        {"id": "p", "label": "p = 104729", "domain": "substrate",
+        {"id": "p", "label": "p = 104761", "domain": "substrate",
          "module": "alpha_derivation"},
         {"id": "z", "label": "z = 6", "domain": "substrate",
          "module": "alpha_derivation"},
@@ -706,7 +706,7 @@ def prediction_dependency_graph() -> Dict[str, Any]:
 # CLI-friendly summary
 # ===================================================================
 
-def print_consistency_report(p: int = 104729, z: int = 6) -> None:
+def print_consistency_report(p: int = 104761, z: int = 6) -> None:
     """Print a human-readable consistency report to stdout."""
     report = run_all_consistency_checks(p, z)
     print("=" * 60)

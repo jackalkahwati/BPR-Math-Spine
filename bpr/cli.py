@@ -587,7 +587,7 @@ def build_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""\
             examples:
-              bpr predict                     Full cosmological chain (default p=104729, z=6)
+              bpr predict                     Full cosmological chain (default p=104761, z=6)
               bpr predict --p 7 --z 3         Chain with custom substrate
               bpr pipeline lepton-masses      Run the lepton mass pipeline
               bpr pipeline --list             List all pipelines
@@ -607,7 +607,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     # predict
     p_pred = sub.add_parser("predict", help="Run full cosmological chain from (p, z)")
-    p_pred.add_argument("--p", type=int, default=104729, help="Substrate prime (default: 104729)")
+    p_pred.add_argument("--p", type=int, default=104761, help="Substrate prime (default: 104761)")
     p_pred.add_argument("--z", type=int, default=6, help="Substrate z (default: 6)")
 
     # pipeline

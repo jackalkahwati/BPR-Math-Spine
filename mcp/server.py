@@ -404,16 +404,16 @@ def _fmt_dict(d: dict, indent: int = 0) -> str:
 # ── Tool 1: predict ──────────────────────────────────────────────────────────
 
 @mcp.tool()
-def predict(p: int = 104729, z: int = 6) -> str:
+def predict(p: int = 104761, z: int = 6) -> str:
     """Run the full BPR cosmological prediction chain from substrate parameters (p, z).
 
     Returns alpha_EM, sin^2(theta_W), v_EW, lepton masses, Omega_Lambda
     with comparison to experiment.
 
-    Default: p=104729, z=6 (zero free parameters).
+    Default: p=104761, z=6 (zero free parameters).
 
     Args:
-        p: Substrate prime (default 104729)
+        p: Substrate prime (default 104761)
         z: Substrate parameter (default 6)
     """
     if not _HAS_CROSS:
@@ -488,7 +488,7 @@ def predict(p: int = 104729, z: int = 6) -> str:
 # ── Tool 2: run_pipeline ─────────────────────────────────────────────────────
 
 @mcp.tool()
-def run_pipeline(name: str, p: int = 104729, z: int = 6) -> str:
+def run_pipeline(name: str, p: int = 104761, z: int = 6) -> str:
     """Run a BPR prediction pipeline by name.
 
     Available pipelines: lepton-masses, decoherence, casimir, tdgl,
@@ -496,7 +496,7 @@ def run_pipeline(name: str, p: int = 104729, z: int = 6) -> str:
 
     Args:
         name: Pipeline name (use list_pipelines to see all)
-        p: Substrate prime (default 104729)
+        p: Substrate prime (default 104761)
         z: Substrate parameter (default 6)
     """
     if not _HAS_PIPELINES:

@@ -397,7 +397,7 @@ class QuarkMassSpectrum:
         if self.v_EW_GeV is not None:
             c_t = self.c_norms_up[-1]
             E_b = self.c_norms_down[-1]
-            p = self.p if self.p is not None else 104729
+            p = self.p if self.p is not None else 104761
             factor = 2.0 + 1.0 / (3.0 * np.log(p))
             return self._m_t_MeV * (E_b / c_t) * factor
         return self.anchor_mass_down_MeV
@@ -461,7 +461,7 @@ class CKMMatrix:
     θ₂₃ (|V_cb|): DERIVED from Fritzsch + boundary overlap suppression.
         Fritzsch gives √(m_s/m_b) ≈ 0.15 (3.7× too large).  The 2–3
         generation overlap is suppressed by the boundary correlation
-        length: |V_cb| = √(m_s/m_b) / √(ln(p) + z/3).  For p=104729,
+        length: |V_cb| = √(m_s/m_b) / √(ln(p) + z/3).  For p=104761,
         z=6: |V_cb| ≈ 0.0406 (exp: 0.0405, 0.2% off).
 
     θ₁₃ (|V_ub|): DERIVED from mass hierarchy.
@@ -691,7 +691,7 @@ def pion_mass(m_u_MeV: float = 2.16, m_d_MeV: float = 4.67,
     where z = 6 (coordination number) accounts for boundary mode
     multiplicity and ln(p)^{1/2} is the coarse-graining factor.
 
-    For p = 104729: ln(p)^{1/2} = 3.40, z = 6:
+    For p = 104761: ln(p)^{1/2} = 3.40, z = 6:
         B_0_BPR = 332^2 * 6 / (2 * 92.1 * 3.40) = 661344 / 626.3 = 1056 MeV
 
     This gives a closer but not exact result.  Use the direct GMOR

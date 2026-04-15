@@ -77,7 +77,7 @@ R_NUCLEAR = 1.25                   # Nuclear radius constant r₀ [fm]
 # ---------------------------------------------------------------------------
 
 # Default substrate prime
-P_DEFAULT = 104729
+P_DEFAULT = 104761
 Z_DEFAULT = 6
 
 # Golden ratio

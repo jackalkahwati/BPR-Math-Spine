@@ -124,7 +124,7 @@ except Exception:
 # 1. Dark energy density end-to-end from impedance
 # ===================================================================
 
-def dark_energy_from_impedance(p: int = 104729) -> Dict[str, Any]:
+def dark_energy_from_impedance(p: int = 104761) -> Dict[str, Any]:
     """Compute Omega_Lambda end-to-end from BPR impedance framework.
 
     Combines impedance.DarkEnergyDensity (rho_DE) with standard
@@ -167,7 +167,7 @@ def dark_energy_from_impedance(p: int = 104729) -> Dict[str, Any]:
 # ===================================================================
 
 def weinberg_angle_three_routes(
-    p: int = 104729,
+    p: int = 104761,
     z: int = 6,
 ) -> Dict[str, Any]:
     """Compute sin^2(theta_W) via three independent BPR routes.
@@ -442,7 +442,7 @@ def bioelectric_aging_timescale(
 
 def black_hole_remnant_from_gup(
     M_solar: float = 1.0,
-    p: int = 104729,
+    p: int = 104761,
 ) -> Dict[str, Any]:
     """Combine black_hole entropy + quantum gravity GUP corrections.
 
@@ -523,7 +523,7 @@ def black_hole_remnant_from_gup(
 # ===================================================================
 
 def full_cosmological_chain(
-    p: int = 104729,
+    p: int = 104761,
     z: int = 6,
 ) -> Dict[str, Any]:
     """The grand unified prediction: derive all SM observables from (p, z).

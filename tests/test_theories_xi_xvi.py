@@ -696,7 +696,7 @@ class TestBPRCosmologyV5:
         from bpr.impedance import derived_critical_winding
         v5 = BPRCosmologyV5()
         assert abs(v5._W_c - derived_critical_winding(v5.p)) < 1e-10
-        assert abs(v5._W_c - 104729 ** (1.0 / 5.0)) < 1e-6
+        assert abs(v5._W_c - 104761 ** (1.0 / 5.0)) < 1e-6
 
 
 # =====================================================================

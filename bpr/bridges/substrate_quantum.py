@@ -37,7 +37,7 @@ def impedance_modulated_metric(
     phi_field,
     W: float,
     coupling_lambda: float,
-    p: int = 104729,
+    p: int = 104761,
 ) -> Dict[str, Any]:
     r"""Impedance-modulated metric perturbation.
 
@@ -104,7 +104,7 @@ def winding_decoherence_rate(
     T: float,
     A_eff: float,
     lambda_dB: float,
-    p: int = 104729,
+    p: int = 104761,
 ) -> Dict[str, Any]:
     r"""Decoherence rate from winding-number mismatch.
 
@@ -807,7 +807,7 @@ def riemann_zeros_to_mass_ratios(n_zeros: int = 20) -> Dict[str, Any]:
 # Bridge 10: Hilbert Operator Spectrum to Born Rule Corrections
 # ===================================================================
 
-def hilbert_born_rule(dim: int = 4, p: int = 104729) -> Dict[str, Any]:
+def hilbert_born_rule(dim: int = 4, p: int = 104761) -> Dict[str, Any]:
     r"""Hilbert operator spectrum -> Born rule corrections.
 
     Bridge equation
@@ -898,7 +898,7 @@ def hilbert_born_rule(dim: int = 4, p: int = 104729) -> Dict[str, Any]:
 # Bridge 11: RPST Discrete Lattice to Continuum Spacetime
 # ===================================================================
 
-def rpst_to_continuum(p: int = 104729, n_sites: int = 32) -> Dict[str, Any]:
+def rpst_to_continuum(p: int = 104761, n_sites: int = 32) -> Dict[str, Any]:
     r"""RPST discrete lattice -> continuum spacetime limit.
 
     Bridge equation
@@ -990,7 +990,7 @@ def rpst_to_continuum(p: int = 104729, n_sites: int = 32) -> Dict[str, Any]:
 # Bridge 12: Prime Number Spectrum to CMB Power Spectrum
 # ===================================================================
 
-def prime_spectrum_to_cmb(p: int = 104729, l_max: int = 20) -> Dict[str, Any]:
+def prime_spectrum_to_cmb(p: int = 104761, l_max: int = 20) -> Dict[str, Any]:
     r"""Prime number spectrum -> CMB power spectrum modulation.
 
     Bridge equation
@@ -1092,7 +1092,7 @@ def universal_decoherence_time(
     mass_kg: float = 1.2e-25,
     size_m: float = 7e-10,
     T: float = 300.0,
-    p: int = 104729,
+    p: int = 104761,
 ) -> Dict[str, Any]:
     r"""Universal decoherence time from BPR boundary action.
 
@@ -1210,7 +1210,7 @@ def double_slit_visibility(
     slit_separation_m: float = 1e-6,
     particle_mass_kg: float = 1.2e-25,
     T: float = 300.0,
-    p: int = 104729,
+    p: int = 104761,
     beam_velocity: Optional[float] = None,
 ) -> Dict[str, Any]:
     r"""Decoherence-modified double-slit visibility.
@@ -1266,7 +1266,7 @@ def double_slit_visibility(
     #   L_coh_BPR = lambda_dB * p^(1/3)
     #
     # The cube-root of p (rather than sqrt) gives the correct scaling:
-    #   p^(1/3) ~ 47 for p = 104729
+    #   p^(1/3) ~ 47 for p = 104761
     #
     # V_BPR = V_QM * exp(- (d / L_coh_BPR)^2 / 2)
     #

@@ -257,7 +257,7 @@ def born_rule_from_substrate(p, N_modes=10, n_samples=10000, seed=None):
     emergent probability P(α,x) = |ψ_α(x)|²/Σ|ψ(x')|².
 
     Deviation from standard Born rule scales as 1/p.
-    For p=104729: deviation ~ 10⁻⁵.
+    For p=104761: deviation ~ 10⁻⁵.
 
     Returns dict with probabilities, born_correction, deviation."""
     rng = np.random.default_rng(seed)

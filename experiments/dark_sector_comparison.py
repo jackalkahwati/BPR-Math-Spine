@@ -2,7 +2,7 @@
 BPR Dark Sector: Derived Parameters & Comparisons
 ===================================================
 
-Displays four dark sector results derived purely from p=104729:
+Displays four dark sector results derived purely from p=104761:
   1. Derived W_c, m_defect, and relic abundance
   2. p hierarchy: p_local vs p_cosmo (open problem)
   3. Dark energy EoS w(z) vs DESI 2024
@@ -51,7 +51,7 @@ def _tension_color(sigma: float) -> str:
 
 
 def run(args: argparse.Namespace) -> None:
-    p = 104729
+    p = 104761
     dsp = DarkSectorParameters(p=p)
     eos = BPRDarkEnergyEOS(p=p, z_PT=5.09)
     dm_profile_corrected = DarkMatterProfile()  # uses γ_n/2 RPST zeros

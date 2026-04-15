@@ -549,7 +549,7 @@ def collective_to_meta_coherence(
 
 def complexity_information_bridge(
     phi_field: Optional[np.ndarray] = None,
-    p: int = 104729,
+    p: int = 104761,
     n_samples: int = 200,
     seed: int = 42,
 ) -> Dict[str, Any]:

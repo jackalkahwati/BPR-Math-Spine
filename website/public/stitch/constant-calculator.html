@@ -151,7 +151,7 @@
 <p class="font-label text-tertiary text-[0.6875rem] uppercase tracking-[0.2em] mb-4">Unified Field Computation</p>
 <h1 class="font-headline font-light text-5xl md:text-7xl tracking-tighter leading-none mb-6">The Observed Void</h1>
 <p class="font-body text-on-surface-variant text-lg max-w-2xl leading-relaxed">
-                    Enter any values for p and z to see what physics they produce. The defaults p = 104,729 and z = 6 are the ones that match our universe. Try changing them to see how sensitive the predictions are.
+                    Enter any values for p and z to see what physics they produce. The defaults p = 104,761 and z = 6 are the ones that match our universe. Try changing them to see how sensitive the predictions are.
                 </p>
 <details class="researcher-detail">
   <summary>What are p and z?</summary>
@@ -186,9 +186,9 @@
 <div class="group">
 <div class="flex justify-between items-center mb-4">
 <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Prime Substrate (p)</label>
-<span id="p-display" class="font-headline text-primary text-xl">104729</span>
+<span id="p-display" class="font-headline text-primary text-xl">104761</span>
 </div>
-<input id="p-slider" class="w-full h-1 bg-surface-container-highest rounded-full appearance-none cursor-pointer" max="200000" min="1000" type="range" value="104729" oninput="updateP(this.value)"/>
+<input id="p-slider" class="w-full h-1 bg-surface-container-highest rounded-full appearance-none cursor-pointer" max="200000" min="1000" type="range" value="104761" oninput="updateP(this.value)"/>
 <p class="mt-3 text-[0.6875rem] text-slate-500 font-label italic">Determines the density of the underlying quantum substrate.</p>
 </div>
 <!-- Z Input -->
@@ -300,7 +300,7 @@
 <!-- Lattice Visualization D3 Resonance Waveform -->
 <div class="relative rounded-xl overflow-hidden ghost-border" style="height:192px;background:#0b1323;">
 <svg id="lattice-viz" width="100%" height="192" style="display:block;"></svg>
-<span id="lattice-label" class="absolute bottom-3 left-0 right-0 text-center font-mono text-[0.6rem] text-[#adc6ff] uppercase tracking-[0.4em] pointer-events-none">Substrate Resonance Pattern p=104729</span>
+<span id="lattice-label" class="absolute bottom-3 left-0 right-0 text-center font-mono text-[0.6rem] text-[#adc6ff] uppercase tracking-[0.4em] pointer-events-none">Substrate Resonance Pattern p=104761</span>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script>
@@ -309,7 +309,7 @@
   const W = svg.node().parentElement.clientWidth || 600;
   const H = 192;
   const N = 120;
-  const p = 104729, z = 6;
+  const p = 104761, z = 6;
   let t = 0;
 
   // Resonance function: superposition of prime-modulated harmonics
@@ -387,7 +387,7 @@
 </script>
 <script>
 // BPR Constant Calculator interactive controls
-let currentP = 104729;
+let currentP = 104761;
 let currentZ = 6;
 
 // BPR-derived formulas (physics-informed approximations based on the framework)
@@ -395,28 +395,28 @@ function calcAlpha(p, z) {
   // α ≈ 1/(137.036) BPR derives this from the impedance function Z(p,z)
   // Slight variation with p to show substrate sensitivity
   const base = 7.2973525693e-3;
-  const delta = (p - 104729) / 104729 * 0.000012 + (z - 6) * 0.000003;
+  const delta = (p - 104761) / 104761 * 0.000012 + (z - 6) * 0.000003;
   return (base + delta).toFixed(8);
 }
 
 function calcTheta(p, z) {
   // sin²θ_W ≈ 0.23121 from BPR electroweak symmetry
   const base = 0.23121;
-  const delta = (p - 104729) / 104729 * 0.0004 + (z - 6) * 0.0001;
+  const delta = (p - 104761) / 104761 * 0.0004 + (z - 6) * 0.0001;
   return Math.max(0.22, Math.min(0.25, base + delta)).toFixed(5);
 }
 
 function calcMuon(p, z) {
   // m_μ/m_e ≈ 206.768 varies with z (coordination geometry)
   const base = 206.768;
-  const delta = (z - 6) * 0.35 + (p - 104729) / 104729 * 2.1;
+  const delta = (z - 6) * 0.35 + (p - 104761) / 104761 * 2.1;
   return (base + delta).toFixed(3);
 }
 
 function calcTau(p, z) {
   // m_τ/m_e ≈ 3477.15
   const base = 3477.15;
-  const delta = (z - 6) * 5.2 + (p - 104729) / 104729 * 31.4;
+  const delta = (z - 6) * 5.2 + (p - 104761) / 104761 * 31.4;
   return (base + delta).toFixed(2);
 }
 

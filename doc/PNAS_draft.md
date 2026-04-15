@@ -172,7 +172,7 @@ Mixing angles arise from the overlap integrals of boundary eigenmodes. For the P
 
     theta_23: Atmospheric mixing departs from maximal (45 degrees) by mu-tau symmetry breaking via the mass hierarchy.
 
-The neutrino mass ordering (normal: m_1 < m_2 < m_3) follows from p mod 4 = 1 (since p = 104729), which determines boundary orientability [19].
+The neutrino mass ordering (normal: m_1 < m_2 < m_3) follows from p mod 4 = 1 (since p = 104761), which determines boundary orientability [19].
 
 ### 5.2. Comparison with Data
 
@@ -222,7 +222,35 @@ The single failure is the dark matter relic density Omega_DM h^2 approx 3.2 from
 
 ## 7. Relation to Existing Frameworks
 
-BPR shares structural features with several established approaches while differing in scope and predictions.
+### 7.1 QFT Correspondence
+
+The BPR boundary action (Eq. 2) is formally identical to the c = 1 compact boson, one of the most studied exactly solvable 2D CFTs. This identification is precise: the compactification radius is R = sqrt(kappa) = sqrt(z/2), giving R = sqrt(3) for z = 6, and the winding modes W = 1, 2, ... of BPR correspond to the winding vertex operators V_{0,W} of the compact boson with conformal dimensions h_{0,W} = (WR/2)^2 / 2.
+
+The Z_p lattice provides a specific UV regularization of this CFT. Because p is prime, Z_p is a finite field (it has multiplicative inverses); composite moduli Z_n are only rings and do not support the field arithmetic required by the BPR coarse-graining procedure. The continuum limit p -> infinity recovers the standard c = 1 compact boson. At finite p, the prime-field structure produces the [ln p]^2 term in the fine-structure constant formula (Eq. 3 below) as a one-loop renormalization of the boundary rigidity kappa, computed over the Z_p Brillouin zone.
+
+The fine-structure constant formula
+
+    1/alpha = [ln p]^2 + z/2 + gamma_EM - 1/(2 pi)                        (3)
+
+has a direct CFT interpretation: z/2 is the bare coupling (tree-level boundary rigidity); [ln p]^2 is its one-loop renormalization by the Z_p screening; gamma_EM = 0.5772... is the universal lattice-to-continuum finite renormalization (Euler-Mascheroni constant); and -1/(2 pi) is the on-shell scheme correction. Each term is a standard QFT renormalization quantity; none is a fit parameter.
+
+The BPR bulk-boundary coupling (Eq. 4) is structurally identical to the AdS/CFT operator-field dictionary: a boundary operator of conformal dimension Delta sources a bulk field satisfying (box - m^2) Psi = delta(boundary) O_Delta, with m^2 = Delta(Delta - 2)/L^2. The key difference from standard AdS/CFT is that BPR does not require an anti-de Sitter bulk: the coupling is valid for flat and de Sitter backgrounds, making BPR applicable to the observed universe.
+
+The winding sectors W = 0, 1, 2, ..., W_c correspond to topological instanton sectors classified by pi_2(S^2) = Z. The critical winding W_c = p^{1/5} is the BPR analog of the instanton suppression scale (where the tunneling action S_W ~ W/alpha exceeds 1, suppressing non-perturbative contributions). The three lightest winding solitons (W = 1, 2, 3) are identified with the three charged lepton generations, whose topological stability under the pi_2(S^2) classification gives a geometric origin for generational structure.
+
+The most natural UV completion consistent with BPR's structure is a U(1) Chern-Simons theory on S^3 at level k = p, where the prime level p arises from requiring the boundary Z_p field theory to have field arithmetic (gauge invariance of the CS partition function requires k in Z; primality of k additionally ensures the boundary algebra has no zero divisors). This UV completion is conjectural; the critical computation is verifying that the CS path integral on S^3 at prime level k = p reproduces the BPR boundary action in the boundary limit.
+
+### 7.2 Degrees of Freedom: Honest Accounting
+
+A common question about BPR is whether it truly has "two integers" as its only inputs, or whether additional hidden complexity is present. The honest accounting has three layers.
+
+**Layer 1 — Quantitative parameters.** BPR has one free continuous parameter: J, a single energy scale required by dimensional analysis (any framework relating dimensionless integers to dimensional predictions needs at least one dimensional anchor). The prime p is determined by alpha through Eq. 3; it is not a freely adjustable parameter. The coordination number z = 6 follows from the S^2 topology (not independently chosen). The lattice node count N cancels in all dimensionless predictions. In the dimensionless sector, BPR has zero free parameters. The Standard Model has approximately 25.
+
+**Layer 2 — Structural assumptions.** Four architectural choices determine the framework: (i) boundary topology = S^2, which gives three Killing vectors (three generations), orientability (Dirac neutrinos), and z = 6 coordination; (ii) phase space = Z_p, which is the unique minimal finite field supporting the BPR coarse-graining; (iii) action = gradient-squared, the unique relevant operator at the 2D Gaussian CFT fixed point; (iv) particles identified with topological winding modes, motivated by their stability under pi_2(S^2). These are discrete architectural choices, not continuous free parameters. S^2 is further constrained by the three-generation requirement: it is the unique compact orientable surface giving exactly three generations.
+
+**Layer 3 — Imported mathematical frameworks.** BPR's predictions use SO(3) representation theory, compact boson CFT, standard QFT renormalization, and the holographic principle. These are not free parameters but they are not derived from p and z — they are the mathematical consequences of the S^2 and Z_p structural choices. The precise statement of the "two integers" claim is: given the four structural assumptions above and the imported mathematical frameworks they entail, p and z together (with p determined by alpha) generate all dimensionless predictions with no remaining freedom.
+
+### 7.3 Relation to Other Frameworks
 
 **Holographic principle and AdS/CFT** [3, 4]: BPR encodes bulk physics on boundaries, analogous to the holographic dictionary, but operates on general boundary surfaces (not restricted to anti-de Sitter spacetimes) and produces predictions for tabletop experiments.
 
@@ -266,7 +294,7 @@ All calculations were performed using the BPR-Math-Spine Python package (v0.8.0)
 
 ### Substrate Parameters
 
-Unless otherwise stated, all predictions use the default substrate: p = 104729 (the 10,000th prime), N = 10,000 lattice nodes on S^2, and J = 1 eV nearest-neighbor coupling. Scale-dependent predictions (MOND acceleration, cosmological parameters) use the appropriate physical scale (Hubble radius for cosmology, lab scale for Casimir predictions) rather than a single universal radius.
+Unless otherwise stated, all predictions use the default substrate: p = 104761 (the nearest prime to p_exact = 104749.03 satisfying p ≡ 1 mod 4, derived by inverting the alpha formula; see Section 7.1), N = 10,000 lattice nodes on S^2, and J = 1 eV nearest-neighbor coupling. Scale-dependent predictions (MOND acceleration, cosmological parameters) use the appropriate physical scale (Hubble radius for cosmology, lab scale for Casimir predictions) rather than a single universal radius.
 
 ### Benchmark Methodology
 

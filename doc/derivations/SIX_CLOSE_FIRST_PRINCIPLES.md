@@ -16,7 +16,7 @@ The boundary has `l_boundary = p^(1/4)` angular modes (CMB context). At freeze-o
 
 where √e ≈ 1.649 arises from the Boltzmann-weighted phase coherence integral.
 
-For p = 104729: √e/p^(1/4) ≈ 0.0916 → f_decoh ≈ 0.908. This yields Ω_DM h² ≈ 0.120.
+For p = 104761: √e/p^(1/4) ≈ 0.0916 → f_decoh ≈ 0.908. This yields Ω_DM h² ≈ 0.120.
 
 **Status:** Implemented.
 

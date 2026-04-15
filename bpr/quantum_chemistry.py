@@ -214,7 +214,7 @@ class MolecularChirality:
     """
     W_molecular: int = 1
     Z_heaviest: int = 6
-    p: int = 104729
+    p: int = 104761
 
     @property
     def is_chiral(self) -> bool:

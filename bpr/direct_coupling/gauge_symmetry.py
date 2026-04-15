@@ -412,7 +412,7 @@ if __name__ == "__main__":
     print("=" * 60)
 
     # Test parameters
-    p = 104729  # Large prime
+    p = 104761  # Large prime
     N = 100     # Ring of 100 sites
     J = 1.0     # Coupling
 

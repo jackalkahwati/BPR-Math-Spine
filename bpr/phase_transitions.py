@@ -324,7 +324,7 @@ def superconductor_tc(N0V: float, T_debye: float = 300.0) -> float:
 
 
 def superconductor_tc_bpr(E_fermi_eV: float, T_debye: float,
-                          p: int = 104729, z: int = 6) -> float:
+                          p: int = 104761, z: int = 6) -> float:
     """BPR-derived superconductor Tc from boundary mode density (DERIVED).
 
     BPR predicts N(0)V from the boundary mode density of the phonon
@@ -352,7 +352,7 @@ def superconductor_tc_bpr(E_fermi_eV: float, T_debye: float,
     T_debye : float
         Debye temperature in K.
     p : int
-        Substrate prime modulus (default: 104729).
+        Substrate prime modulus (default: 104761).
     z : int
         Lattice coordination number (default: 6 for sphere).
 
@@ -383,7 +383,7 @@ def superconductor_tc_bpr(E_fermi_eV: float, T_debye: float,
 
 
 def superconductor_n0v_derived(E_fermi_eV: float, T_debye: float,
-                               p: int = 104729, z: int = 6) -> float:
+                               p: int = 104761, z: int = 6) -> float:
     """BPR-derived N(0)V for single-band conventional superconductors.
 
     Combines the weak-coupling BPR formula with coordination enhancement

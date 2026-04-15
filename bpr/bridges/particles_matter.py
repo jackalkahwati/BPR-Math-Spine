@@ -150,7 +150,7 @@ _LAMBDA_QCD_GEV = 0.332          # GeV
 # ===================================================================
 
 def impedance_weinberg_angle(
-    p: int = 104729,
+    p: int = 104761,
     W_B: float = 1.0,
     W_W: float = 2.0,
 ) -> Dict[str, Any]:
@@ -539,7 +539,7 @@ def universal_polarization_law(
 # ===================================================================
 
 def qcd_nuclear_chain(
-    p: int = 104729,
+    p: int = 104761,
     z: int = 6,
 ) -> Dict[str, Any]:
     """Full chain: (p, z) -> Lambda_QCD -> quark masses -> hadron masses
@@ -1159,7 +1159,7 @@ def nuclear_shell_optimization(A: int = 56, Z: int = 26) -> Dict[str, Any]:
 # Bridge 10: Complete alpha_EM Derivation Chain
 # ===================================================================
 
-def alpha_em_full_chain(p: int = 104729, z: int = 6) -> Dict[str, Any]:
+def alpha_em_full_chain(p: int = 104761, z: int = 6) -> Dict[str, Any]:
     r"""Complete alpha_EM derivation chain: p,z -> alpha(0) -> alpha(M_Z) -> running.
 
     Bridge equation
@@ -1260,7 +1260,7 @@ def alpha_em_full_chain(p: int = 104729, z: int = 6) -> Dict[str, Any]:
 # Bridge 11: Gauge-Gravity Duality from BPR Boundary Action
 # ===================================================================
 
-def gauge_gravity_duality(p: int = 104729) -> Dict[str, Any]:
+def gauge_gravity_duality(p: int = 104761) -> Dict[str, Any]:
     r"""Gauge-gravity duality from BPR boundary action.
 
     Bridge equation
@@ -1561,7 +1561,7 @@ def riemann_prime_gap_prediction(
 # ===================================================================
 
 def neutrino_lepton_mass_relation(
-    p: int = 104729,
+    p: int = 104761,
     z: int = 6,
 ) -> Dict[str, Any]:
     r"""Predict lightest neutrino mass from charged lepton mass pattern.
@@ -1579,8 +1579,8 @@ def neutrino_lepton_mass_relation(
     This links the neutrino mass hierarchy to the charged lepton
     spectrum through a single parameter p.
 
-    For p = 104729, v_EW = 246 GeV:
-        M_seesaw = 104729 * 246 GeV = 2.576e7 GeV
+    For p = 104761, v_EW = 246 GeV:
+        M_seesaw = 104761 * 246 GeV = 2.576e7 GeV
         m_nu_1 ~ m_e^2 / M_seesaw = (0.511 MeV)^2 / (2.576e7 GeV)
                = 1.013e-11 GeV = 0.0101 eV
 
@@ -1689,7 +1689,7 @@ def neutrino_lepton_mass_relation(
 def topological_phase_boundary(
     n_sites: int = 100,
     filling: float = 1.0 / 3.0,
-    p: int = 104729,
+    p: int = 104761,
 ) -> Dict[str, Any]:
     r"""Topological invariants at BPR phase boundaries.
 
@@ -1802,7 +1802,7 @@ def topological_phase_boundary(
 # ===================================================================
 
 def baryon_asymmetry(
-    p: int = 104729,
+    p: int = 104761,
     z: int = 6,
 ) -> Dict[str, Any]:
     r"""Baryon asymmetry eta_B from QCD boundary winding + BPR.
@@ -1829,7 +1829,7 @@ def baryon_asymmetry(
 
     BPR prediction chain:
         epsilon_CP^SM ~ 10^{-20} (Jarlskog invariant)
-        BPR amplification ~ z * ln(p) / (4 pi) ~ 2.75 for p=104729, z=6
+        BPR amplification ~ z * ln(p) / (4 pi) ~ 2.75 for p=104761, z=6
         Sphaleron rate at EW scale ~ T_EW^4 * exp(-E_sph/T_EW)
         Out-of-equilibrium factor from Kibble-Zurek ~ (tau_Q/tau_0)^{-1}
 

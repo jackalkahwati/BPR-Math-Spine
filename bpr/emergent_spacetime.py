@@ -108,7 +108,7 @@ class HolographicEntropy:
     p : int – substrate prime modulus
     """
     boundary_area: float = 1.0
-    p: int = 104729
+    p: int = 104761
 
     @property
     def n_planck_cells(self) -> float:
@@ -214,7 +214,7 @@ def newtons_constant_from_substrate(p: int, N: int, J: float,
 # §13.5  Planck length from substrate
 # ---------------------------------------------------------------------------
 
-def planck_length_from_substrate(xi: float = None, p: int = 104729) -> float:
+def planck_length_from_substrate(xi: float = None, p: int = 104761) -> float:
     """Planck length as the fundamental substrate lattice spacing.
 
     CORRECTED: The Planck length l_P = √(ℏG/c³) ≈ 1.616×10⁻³⁵ m

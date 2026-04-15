@@ -337,7 +337,7 @@ if __name__ == "__main__":
 
     # Create substrate parameters
     params = SubstrateParameters(
-        p=104729,  # Large prime
+        p=104761,  # Large prime
         N=10000,
         J=1.602e-19,  # 1 eV
         geometry=LatticeGeometry.SPHERE,

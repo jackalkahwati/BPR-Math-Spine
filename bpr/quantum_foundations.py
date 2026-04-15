@@ -53,7 +53,7 @@ class BornRule:
     p : int – substrate prime (controls accuracy of Born rule)
     d : int – system dimension
     """
-    p: int = 104729
+    p: int = 104761
     d: int = 2
 
     @property
@@ -115,7 +115,7 @@ class ArrowOfTime:
     p : int – substrate prime
     J : float – coupling [J]
     """
-    p: int = 104729
+    p: int = 104761
     J: float = 1.602e-19
 
     @property
@@ -172,7 +172,7 @@ class BellInequality:
     ----------
     p : int – substrate prime
     """
-    p: int = 104729
+    p: int = 104761
 
     @property
     def classical_bound(self) -> float:
@@ -274,7 +274,7 @@ class BoltzmannBrainSuppression:
     ----------
     p : int – substrate prime
     """
-    p: int = 104729
+    p: int = 104761
 
     @property
     def suppression_factor(self) -> float:

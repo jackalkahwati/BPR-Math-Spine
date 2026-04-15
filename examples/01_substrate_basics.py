@@ -29,7 +29,7 @@ print("TUTORIAL 1: RPST SUBSTRATE BASICS")
 print("=" * 60)
 
 # RPST uses a prime modular lattice
-p = 104729  # A large prime
+p = 104761  # A large prime
 N = 100     # Number of nodes
 
 print(f"\nSubstrate parameters:")

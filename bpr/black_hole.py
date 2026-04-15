@@ -57,7 +57,7 @@ class BlackHoleEntropy:
         Substrate prime modulus (cancels in final answer).
     """
     M_solar: float = 1.0
-    p: int = 104729
+    p: int = 104761
 
     _M_SUN: float = 1.989e30  # kg
 
@@ -114,6 +114,6 @@ class BlackHoleEntropy:
         return self.entropy_bpr / np.log(2)
 
 
-def black_hole_entropy(M_solar: float, p: int = 104729) -> float:
+def black_hole_entropy(M_solar: float, p: int = 104761) -> float:
     """Convenience: return S_BH = A/(4 l_P²) for a black hole of mass M."""
     return BlackHoleEntropy(M_solar=M_solar, p=p).entropy_bpr

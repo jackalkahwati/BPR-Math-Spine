@@ -120,7 +120,7 @@ def superconductor_Tc(
 
     Z_ratio = Z_ep / Z_0_ref
     # BPR: impedance match enhances coupling
-    delta_Z = np.log(p) / (2.0 * np.pi * p)  # ~ 0.0182 for p=104729
+    delta_Z = np.log(p) / (2.0 * np.pi * p)  # ~ 0.0182 for p=104761
     lambda_eff = lambda_ep * Z_ratio * (1.0 + delta_Z)
 
     denom_bpr = lambda_eff - mu_star * (1.0 + 0.62 * lambda_eff)

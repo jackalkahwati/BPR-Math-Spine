@@ -30,7 +30,7 @@ _ALPHA_S_MZ = 0.1179         # strong coupling at M_Z
 _SIN2_TW = 0.23122           # sin²θ_W at M_Z (MS-bar)
 
 
-def electroweak_scale_GeV(p: int = 104729, z: int = 6,
+def electroweak_scale_GeV(p: int = 104761, z: int = 6,
                           Lambda_QCD_GeV: float = _LAMBDA_QCD_GEV) -> float:
     """Electroweak scale (Higgs VEV) from boundary confinement hierarchy.
 
@@ -44,7 +44,7 @@ def electroweak_scale_GeV(p: int = 104729, z: int = 6,
     Physical interpretation:
     - p^(1/3) ≈ 47 boundary modes between M_GUT and M_Pl
     - ln(p) + (z−2) combines boundary entropy with coordination
-    - For p=104729, z=6: v ≈ 243 GeV (exp 246 GeV, 1.2% off)
+    - For p=104761, z=6: v ≈ 243 GeV (exp 246 GeV, 1.2% off)
 
     Parameters
     ----------
@@ -163,7 +163,7 @@ def lambda_qcd_with_thresholds(alpha_s_MZ: float = _ALPHA_S_MZ,
     }
 
 
-def electroweak_scale_self_consistent(p: int = 104729, z: int = 6) -> dict:
+def electroweak_scale_self_consistent(p: int = 104761, z: int = 6) -> dict:
     """Self-consistent v_EW derivation: (p,z) → α_s → Λ_QCD → v_EW.
 
     DERIVATION CHAIN:
@@ -282,7 +282,7 @@ class GaugeCouplingRunning:
     ----------
     p : int – substrate prime modulus
     """
-    p: int = 104729
+    p: int = 104761
 
     # SM one-loop beta coefficients (with standard normalisation)
     b1: float = 41.0 / 10.0   # U(1)_Y
@@ -327,7 +327,7 @@ class GaugeCouplingRunning:
     def unification_scale_GeV(self) -> float:
         """GUT scale: M_GUT = M_Pl / p^{1/4}.
 
-        For p = 104729: M_GUT ≈ 6.8 × 10¹⁷ GeV.
+        For p = 104761: M_GUT ≈ 6.8 × 10¹⁷ GeV.
 
         Derivation: the GUT scale is set by the boundary mode
         condensation threshold.  The lowest boundary mode has
@@ -380,7 +380,7 @@ class GaugeCouplingRunning:
                              = N_B × kappa/5 × L_above/(2pi)
                              = p^(1/3) × z × ln(p) / (80 pi)
 
-        For p = 104729, z = 6:
+        For p = 104761, z = 6:
             delta = 47.14 × 3/5 × 2.89/(2pi) = 13.01
             Gap = 13.43
             Fraction closed: 96.9%
@@ -688,7 +688,7 @@ class HierarchyProblem:
     p : int – substrate prime
     N : int – lattice sites
     """
-    p: int = 104729
+    p: int = 104761
     N: int = 10000
 
     @property
@@ -746,7 +746,7 @@ class HierarchyProblem:
 
             M_Pl / v_EW = p^(z/2 + 1/3) × ln(p) / (ln(p) + 1)
 
-        For p = 104729, z = 6:
+        For p = 104761, z = 6:
             Bare: p^(10/3) = 5.41 × 10¹⁶ (9.1% off)
             Corrected: 4.98 × 10¹⁶ (0.4% off)
             Observed: 4.96 × 10¹⁶
@@ -837,7 +837,7 @@ class HiggsMass:
     The Higgs mass follows from:
         m_H = v * sqrt(2 * lambda_H)
 
-    For p = 104729, z = 6, sin^2(theta_W) = 0.2312:
+    For p = 104761, z = 6, sin^2(theta_W) = 0.2312:
         lambda_H = 6/47.136 * (1 + 0.0338 * 0.5376) = 0.12960
         m_H = 246 * sqrt(0.2592) = 125.24 GeV
 
@@ -852,7 +852,7 @@ class HiggsMass:
     z : int
         Lattice coordination number (6 for sphere).
     """
-    p: int = 104729
+    p: int = 104761
     z: int = 6
 
     @property
@@ -936,7 +936,7 @@ class ProtonDecay:
     p : int – substrate prime
     M_GUT_GeV : float – GUT scale [GeV]
     """
-    p: int = 104729
+    p: int = 104761
     M_GUT_GeV: float = None
 
     def __post_init__(self):

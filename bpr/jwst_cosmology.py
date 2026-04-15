@@ -47,7 +47,7 @@ _N_EFF_STD   = 3.044         # standard Neff
 _K_PIVOT     = 0.05          # Mpc⁻¹ (CMB pivot scale)
 
 # ── BPR substrate ──────────────────────────────────────────────────────────
-_P    = 104729
+_P    = 104761
 _N_EF = _P ** (1.0 / 3.0) * (1.0 + 1.0 / 3.0)   # ≈ 62.85
 
 # ── Pre-JWST ΛCDM Schechter parameters ─────────────────────────────────────
@@ -364,7 +364,7 @@ class BPRCosmology:
         The 2π is not a free parameter — it is the Gibbons-Hawking period of
         the de Sitter Euclidean solution.  Step 3 is BPR-specific and testable.
 
-        Parameters: z_coord = 6 (lattice coordination), p = 104729 (substrate).
+        Parameters: z_coord = 6 (lattice coordination), p = 104761 (substrate).
         Result: 1.178×10⁻¹⁰ m/s²  (observed: 1.2×10⁻¹⁰ m/s², 1.8% residual).
         """
         H0_si = _H0_PLANCK * 1000.0 / 3.086e22   # s⁻¹
@@ -582,7 +582,7 @@ class BPRCosmologyV3(BPRCosmologyV2):
 
     DERIVATION OF k_★
     ------------------
-    The prime substrate p=104729 has two characteristic mode numbers:
+    The prime substrate p=104761 has two characteristic mode numbers:
         n₁ = p^{1/3} ≈ 47.1  →  N_efolds ≈ 62.9  (already used in V1/V2)
         n₂ = p^{2/3} ≈ 2223  →  zone-boundary wavenumber  (this theory)
 
@@ -624,7 +624,7 @@ class BPRCosmologyV3(BPRCosmologyV2):
     def k_star(self) -> float:
         """Zone-boundary wavenumber k_★ = 2π p^{2/3} H₀/c [Mpc⁻¹].
 
-        For p=104729: p^{2/3} ≈ 2223, k_H ≈ 2.247×10⁻⁴ Mpc⁻¹
+        For p=104761: p^{2/3} ≈ 2223, k_H ≈ 2.247×10⁻⁴ Mpc⁻¹
         → k_★ ≈ 3.14 Mpc⁻¹  (galaxy-formation band).
         """
         k_H = _H0_PLANCK / 3e5     # H₀/c in Mpc⁻¹

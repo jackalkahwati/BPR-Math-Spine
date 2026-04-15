@@ -114,11 +114,11 @@ def check_quark_masses() -> list[Result]:
     - With 1 anchor + 2 free integers per sector = 3 parameters for 3 masses
       → this is NOT a parameter-free prediction
 
-    OPEN: Derive l-mode integers from BPR topology (p=104729, z=6)
+    OPEN: Derive l-mode integers from BPR topology (p=104761, z=6)
     """
     from bpr.qcd_flavor import QuarkMassSpectrum
     # v_EW_GeV and p enable fully derived m_t=v_EW/√2 and m_b from boundary ratio
-    spec = QuarkMassSpectrum(v_EW_GeV=246.0, p=104729)
+    spec = QuarkMassSpectrum(v_EW_GeV=246.0, p=104761)
     up   = spec.masses_up_MeV    # (m_u, m_c, m_t)
     down = spec.masses_down_MeV  # (m_d, m_s, m_b)
 
@@ -217,7 +217,7 @@ def check_ckm() -> list[Result]:
     - Jarlskog: follows from above angles, useful cross-check
     """
     from bpr.qcd_flavor import CKMMatrix
-    ckm = CKMMatrix(p=104729, z=6.0)
+    ckm = CKMMatrix(p=104761, z=6.0)
     angles = ckm.mixing_angles()
 
     # δ_CP direct calculation (BPR-specific formula)
@@ -273,7 +273,7 @@ def check_neutrinos() -> list[Result]:
     - Mass splittings: FRAMEWORK
     """
     from bpr.neutrino import PMNSMatrix, neutrino_nature
-    pmns = PMNSMatrix(p=104729)
+    pmns = PMNSMatrix(p=104761)
     ang = pmns.mixing_angles()
 
     results = [
@@ -320,7 +320,7 @@ def check_unique_predictions() -> list[Result]:
     """
     from bpr.qcd_flavor import strong_cp_theta
 
-    p = 104729
+    p = 104761
     z = 6.0
 
     # Strong CP = 0
@@ -409,7 +409,7 @@ Hard falsifications (any one of these rules out BPR as stated):
 
 3. Inverted neutrino mass hierarchy confirmed at >5σ
    [BPR predicts normal hierarchy from orientability; inverted hierarchy
-    requires p≡3 mod 4 boundary, but p=104729≡1 mod 4]
+    requires p≡3 mod 4 boundary, but p=104761≡1 mod 4]
 
 4. CKM CP phase δ confirmed outside [55°, 80°] at >5σ
    [BPR predicts δ=π/2−1/√7=68.3°; current PDG=68.5°±5.7°]
@@ -476,7 +476,7 @@ def run_all(verbose: bool = True) -> dict:
 
         print()
         print("KEY FINDING (v1.0): ALL 22 predictions now DERIVED from BPR substrate parameters.")
-        print("  Input set: (v_EW=246 GeV, p=104729, z=6, N_c=z/2=3, n_gen=3, α=1/137)")
+        print("  Input set: (v_EW=246 GeV, p=104761, z=6, N_c=z/2=3, n_gen=3, α=1/137)")
         print("  Zero experimental anchors. Zero free parameters.")
         print()
         print("  Derivation chain:")

@@ -5,7 +5,7 @@ BPR Master Prediction Table
 
 Runs all 7 prediction pipelines + standalone module predictions
 to generate a comprehensive table of falsifiable BPR predictions
-from (p=104729, z=6) with zero free parameters.
+from (p=104761, z=6) with zero free parameters.
 """
 
 import sys
@@ -38,12 +38,12 @@ def fmt(val, unit=""):
 def run_all():
     print("=" * 90)
     print("BPR MASTER PREDICTION TABLE")
-    print("Substrate: p = 104729, z = 6 | Zero free parameters")
+    print("Substrate: p = 104761, z = 6 | Zero free parameters")
     print("=" * 90)
 
     # ── Pipeline 1: Lepton Masses ──
     print("\n┌─ PIPELINE 1: Impedance → Gauge Unification → Lepton Masses")
-    r1 = pipeline_impedance_to_lepton_masses(p=104729, z=6)
+    r1 = pipeline_impedance_to_lepton_masses(p=104761, z=6)
     experimental = {
         "sin2_theta_W": (0.23122, "PDG 2024"),
         "m_e_MeV": (0.51100, "PDG"),
@@ -67,7 +67,7 @@ def run_all():
     print("\n┌─ PIPELINE 2: Impedance → Decoherence → Quantum-Classical Crossover")
     r2 = pipeline_impedance_to_decoherence(
         W_system=1.0, W_environment=100.0, T=300.0,
-        A_eff=1e-14, lambda_dB=1e-10, p=104729
+        A_eff=1e-14, lambda_dB=1e-10, p=104761
     )
     print(f"│  Decoherence rate:       {fmt(r2['gamma_dec_Hz'], 'Hz')}")
     print(f"│  Decoherence time:       {fmt(r2['decoherence_time_s'], 's')}")
@@ -80,7 +80,7 @@ def run_all():
     # ── Pipeline 3: Casimir ──
     print("\n┌─ PIPELINE 3: RPST Substrate → Dynamics → Resonance → Casimir Force")
     r3 = pipeline_substrate_to_casimir(
-        p=104729, n_sites=32, n_steps=500,
+        p=104761, n_sites=32, n_steps=500,
         boundary_radius=1e-6, coupling_lambda=1e-3
     )
     print(f"│  δ (fractal exponent):   {fmt(r3['delta_derived'])} (derived from Z_p dynamics)")
@@ -152,8 +152,8 @@ def run_all():
     print(f"│  Gravity dev at 1μm:     δG/G = {fmt(mesoscopic_gravity_deviation(1e-6))}")
 
     from bpr.decoherence import born_rule_from_substrate
-    born = born_rule_from_substrate(p=104729, n_samples=50000, seed=42)
-    print(f"│  Born rule deviation:    {fmt(born['mean_deviation'])} (expected: ~1/p = {fmt(1/104729)})")
+    born = born_rule_from_substrate(p=104761, n_samples=50000, seed=42)
+    print(f"│  Born rule deviation:    {fmt(born['mean_deviation'])} (expected: ~1/p = {fmt(1/104761)})")
 
     from bpr.multiscale import MultiscaleLagrangian
     ml = MultiscaleLagrangian()
@@ -171,7 +171,7 @@ def run_all():
     print("END OF PREDICTION TABLE")
     print(f"Total pipelines run: 7")
     print(f"Total predictions: ~40+")
-    print(f"Free parameters: 0 (all from p=104729, z=6)")
+    print(f"Free parameters: 0 (all from p=104761, z=6)")
     print("=" * 90)
 
 

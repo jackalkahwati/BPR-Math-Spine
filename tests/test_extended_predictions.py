@@ -421,8 +421,8 @@ class TestDarkSectorParameters:
         """W_c = p^{1/5} matches substrate-derived scale."""
         from bpr.impedance import DarkSectorParameters, derived_critical_winding
         dsp = DarkSectorParameters()
-        assert dsp.W_c == derived_critical_winding(104729)
-        # For p=104729: W_c ≈ 10.37
+        assert dsp.W_c == derived_critical_winding(104761)
+        # For p=104761: W_c ≈ 10.094
         assert 10.0 < dsp.W_c < 11.0
 
     def test_m_defect_tev_scale(self):

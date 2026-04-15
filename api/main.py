@@ -177,12 +177,12 @@ PIPELINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "lepton-masses": {
         "function": "pipeline_impedance_to_lepton_masses",
         "description": "Gauge unification -> impedance -> charged lepton masses (m_e, m_mu, m_tau) + Koide parameter",
-        "default_params": {"p": 104729, "z": 6},
+        "default_params": {"p": 104761, "z": 6},
     },
     "decoherence": {
         "function": "pipeline_impedance_to_decoherence",
         "description": "Impedance mismatch -> decoherence rate -> coherence dynamics -> quantum foundations",
-        "default_params": {"W_system": 1.0, "W_environment": 10.0, "T": 300.0, "A_eff": 1e-14, "lambda_dB": 1e-10, "p": 104729},
+        "default_params": {"W_system": 1.0, "W_environment": 10.0, "T": 300.0, "A_eff": 1e-14, "lambda_dB": 1e-10, "p": 104761},
     },
     "casimir": {
         "function": "pipeline_substrate_to_casimir",
@@ -245,7 +245,7 @@ DERIVATION_REGISTRY: Dict[str, Dict[str, Any]] = {
 # ---------------------------------------------------------------------------
 
 class PredictRequest(BaseModel):
-    p: int = Field(default=104729, description="Substrate prime modulus")
+    p: int = Field(default=104761, description="Substrate prime modulus")
     z: int = Field(default=6, description="Coordination number")
 
 

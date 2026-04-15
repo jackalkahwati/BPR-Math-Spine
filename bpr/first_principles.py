@@ -9,7 +9,7 @@ a **parameter-free** prediction set.
 Usage
 -----
 >>> from bpr.first_principles import SubstrateDerivedTheories
->>> sdt = SubstrateDerivedTheories.from_substrate(p=104729, N=10000,
+>>> sdt = SubstrateDerivedTheories.from_substrate(p=104761, N=10000,
 ...         J_eV=1.0, radius=0.01)
 >>> print(sdt.summary())
 >>> predictions = sdt.predictions()
@@ -106,7 +106,7 @@ class SubstrateDerivedTheories:
     @classmethod
     def from_substrate(
         cls,
-        p: int = 104729,
+        p: int = 104761,
         N: int = 10000,
         J_eV: float = 1.0,
         geometry: str = "sphere",

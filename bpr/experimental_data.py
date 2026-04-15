@@ -577,7 +577,7 @@ _REGISTRY: list[Measurement] = [
     ),
 
     # ─── Substrate Complexity ────────────────────────────────────────────────
-    # BPR: N_parallel = p^W; eff. qubits = W log₂(p). For p=104729,W=1: 17 eff. qubits
+    # BPR: N_parallel = p^W; eff. qubits = W log₂(p). For p=104761,W=1: 17 eff. qubits
     # Google Sycamore 53-qubit supremacy: ~20 effective logical qubits
     Measurement(
         prediction_id="P8.4_sycamore_effective_qubits",
@@ -736,7 +736,7 @@ _REGISTRY: list[Measurement] = [
     ),
 
     # ─── Fine Structure Constant from Substrate ──────────────────────────────
-    # BPR: 1/α = [ln p]² + z/2 + γ_EM - 1/(2π) for p=104729, z=6 → 137.031
+    # BPR: 1/α = [ln p]² + z/2 + γ_EM - 1/(2π) for p=104761, z=6 → 137.031
     # BPR lattice precision is ~55 ppm (δ(1/α) ≈ 0.0075); the CODATA measurement
     # uncertainty (2.1e-8) is irrelevant at this theory precision level.
     # Comparison uncertainty set to BPR theory precision ≈ 0.075.

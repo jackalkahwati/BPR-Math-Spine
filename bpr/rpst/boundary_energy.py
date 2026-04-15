@@ -444,7 +444,7 @@ def verify_dimensional_consistency(params: SubstrateParameters) -> dict:
 def casimir_substrate_params(
     plate_radius: float = 0.01,  # 1 cm
     N: int = 10000,
-    p: int = 104729,  # 10000th prime
+    p: int = 104761,  # 10000th prime
     J_eV: float = 1.0  # Coupling in eV
 ) -> SubstrateParameters:
     """

@@ -26,8 +26,8 @@ def main():
     parser = argparse.ArgumentParser(description="Generate BPR predictions table")
     parser.add_argument("--output", "-o", default=None,
                         help="Output CSV path (default: print to stdout)")
-    parser.add_argument("--p", type=int, default=104729,
-                        help="Substrate prime modulus (default: 104729)")
+    parser.add_argument("--p", type=int, default=104761,
+                        help="Substrate prime modulus (default: 104761)")
     parser.add_argument("--N", type=int, default=10000,
                         help="Lattice nodes (default: 10000)")
     parser.add_argument("--J", type=float, default=1.0,

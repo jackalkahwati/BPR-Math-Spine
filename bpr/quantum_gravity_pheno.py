@@ -53,7 +53,7 @@ class ModifiedDispersion:
     ----------
     p : int – substrate prime (controls correction magnitude)
     """
-    p: int = 104729
+    p: int = 104761
 
     @property
     def xi_1(self) -> float:
@@ -116,7 +116,7 @@ class GeneralizedUncertainty:
     ----------
     p : int – substrate prime
     """
-    p: int = 104729
+    p: int = 104761
 
     @property
     def beta(self) -> float:
@@ -176,7 +176,7 @@ class LorentzInvariance:
     ----------
     p : int – substrate prime
     """
-    p: int = 104729
+    p: int = 104761
 
     @property
     def fractional_speed_variation(self) -> float:
@@ -229,7 +229,7 @@ def hydrogen_gravity_shift(n: int = 1) -> float:
     return (m_e_MeV / E_Pl_MeV) ** 2 / n ** 2
 
 
-def deformed_commutator(p: int = 104729) -> str:
+def deformed_commutator(p: int = 104761) -> str:
     """Modified commutation relation from BPR substrate.
 
     [x̂, p̂] = iℏ(1 + β p̂²/M_Pl²c²)

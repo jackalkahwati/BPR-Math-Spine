@@ -29,7 +29,7 @@
 # Run BPR predictions for comparison
 python -c "
 from bpr.first_principles import SubstrateDerivedTheories
-sdt = SubstrateDerivedTheories.from_substrate(p=104729, N=10000, J_eV=1.0)
+sdt = SubstrateDerivedTheories.from_substrate(p=104761, N=10000, J_eV=1.0)
 preds = sdt.predictions()
 for k in ['P2.2_MOND_a0', 'P11.7_baryon_asymmetry_eta', 'P4.9_Tc_MgB2_K']:
     print(f'{k}: {preds[k]}')

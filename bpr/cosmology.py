@@ -64,7 +64,7 @@ class InflationaryParameters:
     p : int  – substrate prime modulus
     d : int  – spatial dimensions (default 3)
     """
-    p: int = 104729
+    p: int = 104761
     d: int = 3
 
     @property
@@ -149,7 +149,7 @@ class Baryogenesis:
     N : int – substrate lattice sites
     z : int – coordination number
     """
-    p: int = 104729
+    p: int = 104761
     N: int = 10000
     z: int = 6
 
@@ -180,7 +180,7 @@ class Baryogenesis:
 
             kappa_sph = p^(1/3) x z x alpha_W^5
 
-        For p=104729, z=6: kappa = 47.1 x 6 x (0.0338)^5 = 1.25e-5
+        For p=104761, z=6: kappa = 47.1 x 6 x (0.0338)^5 = 1.25e-5
 
         Matches SM kappa ~ 10^-5 without borrowing it.
         STATUS: DERIVED from (p, z, alpha_W).
@@ -270,7 +270,7 @@ class CMBAnomaly:
     ----------
     p : int – substrate prime modulus
     """
-    p: int = 104729
+    p: int = 104761
 
     @property
     def l_boundary(self) -> float:
@@ -305,7 +305,7 @@ class CMBAnomaly:
 
 def primordial_power_spectrum(
     k: np.ndarray,
-    p: int = 104729,
+    p: int = 104761,
     A_s: float = 2.1e-9,
     k_pivot: float = 0.05,
 ) -> np.ndarray:
@@ -337,7 +337,7 @@ def primordial_power_spectrum(
     return P_std * correction
 
 
-def cmb_Cl_low_l(l_max: int = 30, p: int = 104729,
+def cmb_Cl_low_l(l_max: int = 30, p: int = 104761,
                   A_s: float = 2.1e-9) -> dict:
     """CMB angular power spectrum C_l at low multipoles (DERIVED).
 
@@ -346,7 +346,7 @@ def cmb_Cl_low_l(l_max: int = 30, p: int = 104729,
 
         C_l^BPR = C_l^standard * (1 - exp(-l^2 / l_boundary^2))
 
-    where l_boundary = p^{1/4} = 18.0 for p = 104729.
+    where l_boundary = p^{1/4} = 18.0 for p = 104761.
 
     Additionally, BPR predicts an oscillatory modulation at:
         l_substrate = pi * p^{1/3} = pi * 47.1 = 148
@@ -449,7 +449,7 @@ class DarkMatterRelic:
     kappa_dim : float – dimensional rigidity [J]
     """
     W_c: float = 1.0
-    p: int = 104729
+    p: int = 104761
     kappa_dim: float = 1e-19
 
     @property
@@ -520,7 +520,7 @@ class DarkMatterRelic:
         coherence integral (Gaussian thermal fluctuations of boundary phase).
         The scale p^(1/4) = l_boundary is the boundary angular mode count.
 
-        For p=104729, z=6, v_rel=0.2:
+        For p=104761, z=6, v_rel=0.2:
             N_coh = 6 * 0.2 * 47.1 * 0.91 ≈ 51.4
         """
         z = 6  # sphere coordination number
@@ -653,7 +653,7 @@ class BPRDarkEnergyEOS:
     p : int    – substrate prime modulus
     z_PT : float – phase-transition redshift (default from BPRCosmologyV2)
     """
-    p: int = 104729
+    p: int = 104761
     z_PT: float = 5.09   # Universal Phase Transition Taxonomy (BPRCosmologyV2)
 
     @property
@@ -712,7 +712,7 @@ class BPRDarkEnergyEOS:
 # §11.6  Reheating and N_eff corrections
 # ---------------------------------------------------------------------------
 
-def reheating_temperature(p: int = 104729) -> float:
+def reheating_temperature(p: int = 104761) -> float:
     """Reheating temperature T_reh [GeV] from boundary energy release.
 
     T_reh ~ M_Pl / p^{1/3}  (boundary releases energy ~ inflaton scale).
@@ -720,7 +720,7 @@ def reheating_temperature(p: int = 104729) -> float:
     return _M_PL_GEV / p ** (1.0 / 3.0)
 
 
-def delta_neff(p: int = 104729) -> float:
+def delta_neff(p: int = 104761) -> float:
     """Correction to effective number of relativistic species (heuristic).
 
     Standard: N_eff = 3.044.
@@ -828,9 +828,9 @@ class BPRBoundaryPhonon:
 
     Parameters
     ----------
-    p : int – substrate prime (default 104729)
+    p : int – substrate prime (default 104761)
     """
-    p: int = 104729
+    p: int = 104761
 
     @property
     def rho_de_GeV4(self) -> float:
@@ -871,7 +871,7 @@ class BPRBoundaryPhonon:
         From Γ_φ = g_φ² T = T/p^{2/3} crossing H = T²/M_Pl:
             T_dec = M_Pl / p^{2/3}
 
-        For p = 104729: T_dec ≈ 5.5 × 10^{15} GeV  (GUT scale).
+        For p = 104761: T_dec ≈ 5.5 × 10^{15} GeV  (GUT scale).
         """
         return _M_PL_GEV / self.p ** (2.0 / 3.0)
 

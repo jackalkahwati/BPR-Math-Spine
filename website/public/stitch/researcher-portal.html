@@ -705,14 +705,14 @@ function setDocView(mode) {
 <span class="text-secondary">from</span> bpr <span class="text-secondary">import</span> pipelines
 
 <span class="text-outline"># Derive the fine-structure constant from substrate integers</span>
-result = derive_alpha(p=<span class="text-tertiary">104729</span>, z=<span class="text-tertiary">6</span>)
+result = derive_alpha(p=<span class="text-tertiary">104761</span>, z=<span class="text-tertiary">6</span>)
 <span class="text-primary">print</span>(result[<span class="text-tertiary">"alpha"</span>], result[<span class="text-tertiary">"inv_alpha_percent_error"</span>])
 
 <span class="text-outline"># Run 200+ predictions from (p, z)</span>
-chain = full_cosmological_chain(p=<span class="text-tertiary">104729</span>, z=<span class="text-tertiary">6</span>)
+chain = full_cosmological_chain(p=<span class="text-tertiary">104761</span>, z=<span class="text-tertiary">6</span>)
 
 <span class="text-outline"># Run a named prediction pipeline</span>
-casimir = pipelines.pipeline_substrate_to_casimir(p=<span class="text-tertiary">104729</span>, z=<span class="text-tertiary">6</span>)</code></pre>
+casimir = pipelines.pipeline_substrate_to_casimir(p=<span class="text-tertiary">104761</span>, z=<span class="text-tertiary">6</span>)</code></pre>
   </div>
 
   <!-- CLI section -->

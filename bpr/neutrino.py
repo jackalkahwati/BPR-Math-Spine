@@ -135,7 +135,7 @@ class NeutrinoMassSpectrum:
         This is still tiny.  The key insight in BPR is that the
         boundary scale is NOT the seesaw scale -- it is set by
         p^(1/3) * M_Planck / p = M_Pl / p^(2/3), which for
-        p = 104729 gives Lambda ~ 5.5e13 GeV.
+        p = 104761 gives Lambda ~ 5.5e13 GeV.
 
         The PHYSICAL effect that reduces Delta_m21_sq is the
         threshold correction at the boundary: the l=1 and l=0
@@ -225,7 +225,7 @@ class PMNSMatrix:
         Substrate prime modulus (for boundary curvature correction).
     """
     overlap_matrix: Optional[np.ndarray] = None
-    p: int = 104729
+    p: int = 104761
 
     def __post_init__(self):
         if self.overlap_matrix is None:

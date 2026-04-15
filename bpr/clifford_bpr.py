@@ -221,7 +221,7 @@ class CliffordonSpectrum:
     n_max : int – maximum winding to compute
     """
     M0_eV: float = 1e12     # ~TeV scale
-    p: int = 104729
+    p: int = 104761
     n_max: int = 10
 
     @property

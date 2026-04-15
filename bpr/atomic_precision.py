@@ -79,13 +79,13 @@ def hydrogen_lamb_shift(p: int = P_DEFAULT) -> Dict[str, Any]:
 
         delta_nu_BPR = nu_Lamb * alpha^2 / p
 
-    For p = 104729 this gives ~538 Hz, testable with next-generation
+    For p = 104761 this gives ~538 Hz, testable with next-generation
     hydrogen spectroscopy (planned precision ~1 kHz).
 
     Parameters
     ----------
     p : int
-        Substrate prime (default 104729).
+        Substrate prime (default 104761).
 
     Returns
     -------
@@ -136,7 +136,7 @@ def electron_g_minus_2(p: int = P_DEFAULT) -> Dict[str, Any]:
     Parameters
     ----------
     p : int
-        Substrate prime (default 104729).
+        Substrate prime (default 104761).
     """
     alpha = ALPHA_EM
 
@@ -196,7 +196,7 @@ def muon_g_minus_2(p: int = P_DEFAULT) -> Dict[str, Any]:
     Parameters
     ----------
     p : int
-        Substrate prime (default 104729).
+        Substrate prime (default 104761).
     """
     alpha = ALPHA_EM
     mass_ratio = _MUON_ELECTRON_RATIO  # m_mu / m_e
@@ -278,7 +278,7 @@ def hydrogen_1s_2s_transition(p: int = P_DEFAULT) -> Dict[str, Any]:
     Parameters
     ----------
     p : int
-        Substrate prime (default 104729).
+        Substrate prime (default 104761).
     """
     alpha = ALPHA_EM
 
@@ -328,7 +328,7 @@ def rydberg_constant_bpr(p: int = P_DEFAULT) -> Dict[str, Any]:
     Parameters
     ----------
     p : int
-        Substrate prime (default 104729).
+        Substrate prime (default 104761).
     """
     alpha = ALPHA_EM
 
@@ -388,7 +388,7 @@ def proton_charge_radius(p: int = P_DEFAULT) -> Dict[str, Any]:
     Parameters
     ----------
     p : int
-        Substrate prime (default 104729).
+        Substrate prime (default 104761).
     """
     alpha = ALPHA_EM
 
@@ -445,7 +445,7 @@ def positronium_lifetime(p: int = P_DEFAULT) -> Dict[str, Any]:
     Parameters
     ----------
     p : int
-        Substrate prime (default 104729).
+        Substrate prime (default 104761).
 
     Returns
     -------
@@ -530,7 +530,7 @@ def fine_structure_interval(
     n : int
         Principal quantum number (default 2).
     p : int
-        Substrate prime (default 104729).
+        Substrate prime (default 104761).
     """
     alpha = ALPHA_EM
 
@@ -593,7 +593,7 @@ def precision_landscape(p: int = P_DEFAULT) -> Dict[str, Any]:
     Parameters
     ----------
     p : int
-        Substrate prime (default 104729).
+        Substrate prime (default 104761).
 
     Returns
     -------

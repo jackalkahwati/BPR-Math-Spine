@@ -35,7 +35,7 @@ sweep_radius(r_min=0.2e-6, r_max=5e-6, n=40, out='data/casimir.csv')
 
 | | |
 |---|---|
-| **BPR predicts** | Normal ordering (m1 < m2 < m3). Derived from p mod 4 = 1 for p = 104729 (orientable boundary). |
+| **BPR predicts** | Normal ordering (m1 < m2 < m3). Derived from p mod 4 = 1 for p = 104761 (orientable boundary). |
 | **Experiment** | JUNO (Jiangmen Underground Neutrino Observatory), China. Reactor antineutrino oscillations at 53 km baseline. Data collection started 2024. |
 | **Sensitivity** | ~3 sigma determination of mass ordering after 6 years of running. |
 | **FALSIFICATION** | If JUNO determines **inverted ordering**, BPR's boundary topology prediction is wrong. |
@@ -44,7 +44,7 @@ sweep_radius(r_min=0.2e-6, r_max=5e-6, n=40, out='data/casimir.csv')
 **Code reference:**
 ```python
 from bpr.neutrino import neutrino_nature
-print(neutrino_nature(104729))  # → "Dirac" (p ≡ 1 mod 4)
+print(neutrino_nature(104761))  # → "Dirac" (p ≡ 1 mod 4)
 ```
 
 ---
@@ -65,7 +65,7 @@ print(neutrino_nature(104729))  # → "Dirac" (p ≡ 1 mod 4)
 **Code reference:**
 ```python
 from bpr.quantum_gravity_pheno import ModifiedDispersion
-md = ModifiedDispersion(p=104729)
+md = ModifiedDispersion(p=104761)
 print(f"xi_1 = {md.xi_1}")        # 0.0 (CPT protected)
 print(f"xi_2 = {md.xi_2:.2e}")    # 9.55e-06
 print(f"GRB delay (1 TeV, 1 Gpc) = {md.grb_time_delay(1000, 1000):.2e} s")
@@ -81,7 +81,7 @@ print(f"GRB delay (1 TeV, 1 Gpc) = {md.grb_time_delay(1000, 1000):.2e} s")
 |---|---|
 | **BPR predicts** | Dirac neutrinos (p = 1 mod 4 gives orientable boundary, forbidding Majorana mass term). Therefore 0-nu-beta-beta decay does NOT occur. |
 | **Experiments** | LEGEND-200 (running, Gran Sasso), LEGEND-1000 (planned), nEXO. Half-life sensitivity up to ~10^{28} years. |
-| **FALSIFICATION** | If 0-nu-beta-beta decay is observed at any rate, BPR's orientability prediction for p = 104729 is falsified. |
+| **FALSIFICATION** | If 0-nu-beta-beta decay is observed at any rate, BPR's orientability prediction for p = 104761 is falsified. |
 | **Timeline** | LEGEND-200 results in 2025-2026. LEGEND-1000 by ~2030. |
 
 ---
@@ -102,7 +102,7 @@ print(f"GRB delay (1 TeV, 1 Gpc) = {md.grb_time_delay(1000, 1000):.2e} s")
 **Code reference:**
 ```python
 from bpr.quantum_foundations import BornRule
-br = BornRule(p=104729)
+br = BornRule(p=104761)
 print(f"Born rule accuracy: {br.accuracy}")      # 0.999990
 print(f"Deviation amplitude: {br.deviation:.2e}") # 9.55e-06
 ```
@@ -225,7 +225,7 @@ independent experiments would build a strong cumulative case.
 ```python
 from bpr.first_principles import SubstrateDerivedTheories
 
-sdt = SubstrateDerivedTheories.from_substrate(p=104729, N=10000, J_eV=1.0)
+sdt = SubstrateDerivedTheories.from_substrate(p=104761, N=10000, J_eV=1.0)
 preds = sdt.predictions()
 
 # Print all predictions

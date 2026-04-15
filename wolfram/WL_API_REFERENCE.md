@@ -110,7 +110,7 @@ All functions are in the `BPR`` context and prefixed `BPR*`.
 | `BPRSuperconductorTc` | `BPRSuperconductorTc[N0V, TDebye]` | Returns T_c in K via BCS + Eliashberg vertex correction. |
 | `BPRSuperconductorN0VDerived` | `BPRSuperconductorN0VDerived[EFermi, TDebye, p, z]` | Returns N(0)V from BPR boundary coupling, coordination number z^2, and Eliashberg correction. |
 | `BPRPionMass` | `BPRPionMass[opts]` | Returns m_pi in MeV via the Gell-Mann-Oakes-Renner relation with BPR quark condensate. |
-| `BPRInverseAlphaFromSubstrate` | `BPRInverseAlphaFromSubstrate[p, z]` | Returns 1/alpha from substrate winding-sector boundary coupling. Default: p=104729, z=6 -> 137.036. |
+| `BPRInverseAlphaFromSubstrate` | `BPRInverseAlphaFromSubstrate[p, z]` | Returns 1/alpha from substrate winding-sector boundary coupling. Default: p=104761, z=6 -> 137.036. |
 | `BPRElectroweakScaleGeV` | `BPRElectroweakScaleGeV[p, z, LambdaQCD]` | Returns v_EW in GeV from BPR impedance function and QCD scale. |
 | `BPRConstraintPotentialDoubleWell` | `BPRConstraintPotentialDoubleWell[kappa, eta, lambdaK]` | Double-well potential V(kappa) for boundary phase constraint. |
 | `BPRConstraintPotentialDerivative` | `BPRConstraintPotentialDerivative[kappa, eta, lambdaK]` | Derivative dV/dkappa of the double-well constraint potential. |
@@ -136,7 +136,7 @@ BPRLaplacianEigenvaluesSphere[4]
 (* {{0,0},{1,2},{2,6},{3,12},{4,20}} *)
 
 (* Derive 1/alpha from substrate integers *)
-BPRInverseAlphaFromSubstrate[104729, 6]
+BPRInverseAlphaFromSubstrate[104761, 6]
 (* ~137.036 *)
 
 (* Casimir force deviation at 100nm *)

@@ -13,7 +13,7 @@
 > n2EDM at PSI entering construction (arXiv:2512.14975) — targeting 10⁻²⁸ e·cm.
 > Meissner-levitated Casimir sensor (arXiv:2602.13829) now in BPR deviation sensitivity range.
 > **v1.0 changes:** ALL 22 predictions now DERIVED. Zero free parameters. Zero experimental anchors.
-> Input set: (v_EW=246 GeV, p=104729, z=6, N_c=z/2=3, n_gen=3, α=1/137).
+> Input set: (v_EW=246 GeV, p=104761, z=6, N_c=z/2=3, n_gen=3, α=1/137).
 > CKM angles: m_d/m_s, m_s/m_b, m_u/m_t all from l-modes+W_c; no PDG masses.
 > PMNS θ₁₂ from p only; θ₂₃ from m_μ/m_τ=l_μ²/l_τ²=210/3481.
 > m_τ=v_EW×α=1795 MeV (1.0% off PDG); anchored to EW scale, not experiment.
@@ -63,7 +63,7 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 - **Casimir/phonon predictions:** use lab-scale (R ~ cm, N ~ 10⁴)
 - **Galactic/cosmological predictions:** use cosmological boundary (R_Hubble)
 - **Particle physics:** use electroweak/GUT scales
-- **The prime p = 104729** is the universal topological invariant across all scales
+- **The prime p = 104761** is the universal topological invariant across all scales
 
 ### Specific Fixes
 
@@ -289,7 +289,7 @@ different values and experiment can distinguish them. "Consistent with both" is 
 | Prediction | BPR mechanism | BPR value | SM status | Observed | σ | Decisive test |
 |-----------|--------------|-----------|-----------|----------|---|---------------|
 | **θ_QCD = 0 exactly, no axion** | p≡1 mod 4 → orientable substrate → ∫F∧F=0 topologically | 0 | Unsolved (strong CP problem); needs axion or tuning | \|d_n\| < 1.8×10⁻²⁶ e·cm | — | ADMX/CASPEr ruling out KSVZ/DFSZ window with no signal (~2030) |
-| **n_gen = 3 exactly** | \|SU(3) prime winding sectors\| = 3 from p=104729 | 3 | Free parameter — SM takes 3 as unexplained input | Confirmed | 0.0σ | Already confirmed; any 4th generation falsifies BPR |
+| **n_gen = 3 exactly** | \|SU(3) prime winding sectors\| = 3 from p=104761 | 3 | Free parameter — SM takes 3 as unexplained input | Confirmed | 0.0σ | Already confirmed; any 4th generation falsifies BPR |
 | **Normal neutrino hierarchy** | Orientable substrate → normal ordering; same p≡1 mod 4 argument as θ_QCD | Normal | Agnostic — both orderings allowed | T2K+NOvA prefer normal; JUNO resolving | — | JUNO ~2028 to >3σ; inverted falsifies BPR |
 | **Linear LIV ξ₁ = 0 exactly** | Discrete substrate is Lorentz-covariant at boundary; no linear dispersion | 0 | QG models (LQG, string) predict LIV at M_Pl | LHAASO GRB 221009A: E_QG,1 > 10 M_Pl (arXiv:2402.06009) | — | BPR predicts strictly zero (not just >M_Pl suppressed); quadratic signal |δc/c\|=3.4×10⁻²¹ is next target |
 | **CKM δ_CP = π/2−1/√(z+1)** | z=6 substrate coordination number — pure geometry | 68.3° | No formula; free parameter fitted from unitarity triangle | PDG: 68.5°±5.7°; Belle II ϕ₃=75.2°±7.6° (arXiv:2509.25765) | 0.03σ | Belle II Run 2 + LHCb Run 3 → ~1° precision; formula directly testable |
@@ -373,7 +373,7 @@ BPR is **not validated** but is **accumulating consistent null results** in its 
 - **Meissner-levitated Casimir sensor:** first apparatus sensitive to BPR's predicted force-law deviation at submicron separations. ([arXiv:2602.13829](https://arxiv.org/html/2602.13829))
 
 **Most notable result (April 2026):** JUNO's first 59-day dataset measures sin²θ₁₂=0.3092±0.0087.
-BPR's formula (derived from p=104729 alone, no neutrino data) gives 0.3083 — 0.03σ off cold.
+BPR's formula (derived from p=104761 alone, no neutrino data) gives 0.3083 — 0.03σ off cold.
 
 **Most important upcoming test:** Brusselator/reaction-diffusion Turing wavelength (PW6.1, OPEN).
 If BPR predicts λ from (D_u, D_v, reaction rates) via its Turing formula with no free

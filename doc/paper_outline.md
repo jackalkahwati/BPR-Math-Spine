@@ -1,18 +1,24 @@
-# Boundary Phase Resonance: A Computational Framework Deriving 60+ Physical Constants from Two Integers
+# Boundary Phase Resonance: A Computational Framework for a c=1 Compact Boson on S² with Z_p Regularization
 
 ## Abstract
 
 We present BPR-Math-Spine, a 52,000-line computational framework that derives
-60+ falsifiable physical predictions from two substrate parameters (p=104729, z=6)
-with zero free parameters. Key results include the fine structure constant
-alpha_EM to 0.003%, the Weinberg angle sin^2(theta_W) to 0.1%, three charged
-lepton masses to 1.5%, three neutrino mass eigenvalues (Sigma m_nu = 0.060 eV),
-the baryon asymmetry eta_B to 11.6%, and the dark energy equation of state
-w_0 = -0.934. The framework spans particle physics, cosmology, condensed matter,
-nuclear physics, and neuroscience. All derivations are computationally
-reproducible via the `bpr predict` CLI. We detail the internal consistency web --
-10 cross-route checks that verify the same quantity computed through independent
-module chains agrees -- and enumerate specific experiments that would falsify BPR.
+60+ falsifiable physical predictions from one energy scale, two structural
+integers (p=104761, z=6), and four architectural choices (S² boundary topology,
+Z_p phase space, gradient-squared action, particles as winding modes). In the
+dimensionless sector — all mixing angles, mass ratios, and coupling constants —
+the framework has zero free parameters; the Standard Model has approximately 25.
+The prime p=104761 is derived, not chosen: inverting the fine-structure constant
+formula 1/α = [ln p]² + z/2 + γ − 1/(2π) gives p_exact=104749, and the nearest
+prime satisfying the orientability condition p≡1 (mod 4) is p=104761 (alpha error:
+19 ppm). The boundary action is formally the c=1 compact boson on S²; the Z_p
+lattice is a finite-field UV regularization of that CFT; the alpha formula is its
+one-loop renormalization. Key predictions: fine structure constant to 19 ppm,
+Weinberg angle sin²θ_W to 0.1%, three charged lepton masses to 1.5%, neutrino
+mass sum Σmν = 0.060 eV, baryon asymmetry ηB to 2.6%, dark energy w₀ = -0.934,
+and electroweak hierarchy M_Pl/v_EW to 0.57%. All derivations are computationally
+reproducible via the `bpr predict` CLI. We detail internal consistency checks and
+enumerate specific experiments that would falsify BPR.
 
 ## 1. Introduction
 
@@ -26,7 +32,7 @@ module chains agrees -- and enumerate specific experiments that would falsify BP
 ### 1.2 The BPR Thesis
 - All physical constants arise from boundary phase dynamics on a Z_p lattice
   with coordination number z.
-- The two integers (p=104729, z=6) are not fitted; p is the smallest prime
+- The prime p=104761 is derived: inverting 1/α=[ln p]²+z/2+γ−1/(2π) gives p_exact=104,749; nearest valid prime (p≡1 mod 4) is p=104761 (19 ppm error)
   yielding alpha_EM within 0.01% of experiment, and z=6 is the coordination
   number of the sphere S^2 (cubic lattice on the boundary).
 - Physical fields are collective excitations of the boundary; gauge symmetries
@@ -307,7 +313,7 @@ module chains agrees -- and enumerate specific experiments that would falsify BP
 - Computationally reproducible.
 
 ### 10.2 Limitations
-- The choice p = 104729 is the smallest prime matching alpha_EM; whether
+- The choice p = 104761 is the physically derived prime (nearest valid prime to p_exact=104,749); whether
   this constitutes a "prediction" or a "selection" is debatable.
 - Several predictions (Lamb shift, GW dispersion) are below current
   experimental precision.

@@ -228,13 +228,13 @@ def validate_info_geometry() -> list[Result]:
 def validate_substrate_complexity() -> list[Result]:
     results = []
 
-    # P8.4 — effective qubits from BPR for p=104729, W=1
+    # P8.4 — effective qubits from BPR for p=104761, W=1
     try:
         from bpr.complexity import TopologicalParallelism
-        tp = TopologicalParallelism(p=104729, W=1.0)
+        tp = TopologicalParallelism(p=104761, W=1.0)
         eff_qubits = tp.effective_qubits()
     except Exception:
-        eff_qubits = math.log2(104729)   # ≈ 16.7
+        eff_qubits = math.log2(104761)   # ≈ 16.7
     m = get_measurement("P8.4_sycamore_effective_qubits")
     results.append(Result(
         theory="Substrate Complexity", pid=m.prediction_id, name=m.name,

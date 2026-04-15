@@ -145,11 +145,11 @@ class ChargedLeptonSpectrum:
 
         m_tau = y_tau * v_EW / sqrt(2)
 
-        For p=104729, z=6: y_tau = 0.01047, m_tau = 1803 MeV (1.5% off).
+        For p=104761, z=6: y_tau = 0.01047, m_tau = 1803 MeV (1.5% off).
         """
         if self.v_EW_GeV is not None:
             z = 6
-            p = 104729
+            p = 104761
             N_B = p ** (1.0 / 3.0)
             l_tau = float(self.l_modes[-1])
             y_tau = np.sqrt(z**2 / (2.0 * N_B * l_tau**2))
@@ -243,7 +243,7 @@ class LeptonUniversality:
     ----------
     p : int – substrate prime
     """
-    p: int = 104729
+    p: int = 104761
 
     @property
     def universality_violation(self) -> float:

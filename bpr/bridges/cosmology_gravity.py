@@ -117,7 +117,7 @@ except ImportError:
     H_0 = 67.4
     OMEGA_LAMBDA = 0.685
     Z_0 = 376.730313668
-    P_DEFAULT = 104729
+    P_DEFAULT = 104761
     Z_DEFAULT = 6
 
 
@@ -1541,7 +1541,7 @@ def dark_energy_equation_of_state(
     If Z_DE = Z_0 * (1+z)^{n_Z}, then w = -1 + (2/3) n_Z = const.
 
     BPR prediction: n_Z = 1 / p^{1/5}
-        For p = 104729: n_Z ~ 0.099
+        For p = 104761: n_Z ~ 0.099
         -> w_0 = -1 + (2/3)(0.099) = -0.934
         -> w_a = dw/da|_0 ~ -2 n_Z / (3 p^{1/5}) = -0.066
 
@@ -1640,7 +1640,7 @@ def cosmic_attractor_fate(
         alpha = kappa / p  (boundary stiffness / substrate prime)
         epsilon = Lambda_cosmo ~ M_Pl^2 / (p_cosmo * R_H^2)
 
-    For p = 104729, the stability margin alpha - epsilon determines the fate.
+    For p = 104761, the stability margin alpha - epsilon determines the fate.
 
     Timescale: if stable, the de Sitter attractor is reached in
         t_attractor ~ 1 / (H_0 * (alpha - epsilon) / alpha)

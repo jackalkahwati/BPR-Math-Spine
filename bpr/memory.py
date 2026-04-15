@@ -303,7 +303,7 @@ def quantum_error_envelope_period(p: int) -> float:
     T_envelope = p² × τ_Planck
 
     This longer timescale may be detectable in qubit calibration drift.
-    For p = 104729:  T_envelope ≈ 5.9 × 10⁻³⁴ s (still extremely short,
+    For p = 104761:  T_envelope ≈ 5.9 × 10⁻³⁴ s (still extremely short,
     but integrated effects accumulate in repeated measurements).
     """
     return float(p) ** 2 * _PLANCK_TIME
@@ -313,7 +313,7 @@ def quantum_error_envelope_period(p: int) -> float:
 # §3.6  Casimir fine structure from memory kernel  (Prediction 9)
 # ---------------------------------------------------------------------------
 
-def casimir_fine_structure(distances: np.ndarray, p: int = 104729,
+def casimir_fine_structure(distances: np.ndarray, p: int = 104761,
                             n_modes: int = 5,
                             base_amplitude: float = 1e-8) -> np.ndarray:
     """Oscillatory fine structure on the Casimir deviation curve.

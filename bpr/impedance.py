@@ -84,7 +84,7 @@ class DarkEnergyDensity:
 
     The two substrate scales
     ------------------------
-    * p_local = 104729: discrete prime governing UV/local field theory
+    * p_local = 104761: discrete prime governing UV/local field theory
     * p_cosmo = R_H / l_Pl ≈ 2.72×10⁶¹: holographic degree-of-freedom
       count at the Hubble horizon
 
@@ -197,7 +197,7 @@ class MONDInterpolation:
 
             a₀ = c H₀ / (2π) × (1 + z/(4 ln p))
 
-        For H₀ = 67.4 km/s/Mpc, p = 104729, z = 6:
+        For H₀ = 67.4 km/s/Mpc, p = 104761, z = 6:
             a₀ = 1.178 × 10⁻¹⁰ m/s²  (1.8% below observed 1.2 × 10⁻¹⁰)
 
         STATUS: Step 4 gives the correct 1.8%-level agreement.  The factor-4
@@ -211,7 +211,7 @@ class MONDInterpolation:
 
         H(z_PT) = p^{1/3} × a₀ / c = p^{1/3} H₀ / (2π) × (1 + z/(4 ln p))
 
-    For p = 104729, z = 6: z_PT ≈ 5.1.  This is derived, not fitted.
+    For p = 104761, z = 6: z_PT ≈ 5.1.  This is derived, not fitted.
 
     HONEST ASSESSMENT
     -----------------
@@ -230,7 +230,7 @@ class MONDInterpolation:
     In the Newtonian limit  (x >> 1):  μ ≈ 1  →  F ∝ 1/r²
     """
     H0_km_s_Mpc: float = 67.4   # Hubble constant
-    p: int = 104729
+    p: int = 104761
     z: int = 6
 
     @property
@@ -459,14 +459,14 @@ def proton_lifetime(p: int, delta_W: int = 1,
 # §4.11  Derived dark-sector parameters from substrate prime p
 # ---------------------------------------------------------------------------
 
-def derived_critical_winding(p: int = 104729) -> float:
+def derived_critical_winding(p: int = 104761) -> float:
     """Critical winding number W_c = p^{1/5} derived from substrate structure.
 
     Physical argument: the BPR substrate has p^{1/5} independent winding
     modes per spatial dimension.  The impedance mismatch becomes O(1)
     at this scale, making W_c = p^{1/5} the natural topological crossover.
 
-    For p = 104729:  W_c = 104729^{0.2} ≈ 10.37
+    For p = 104761:  W_c = 104761^{0.2} ≈ 10.37
     (matches TopologicalImpedance default W_c = 10 to within 4%).
 
     Parameters
@@ -489,9 +489,9 @@ class DarkSectorParameters:
 
     Parameters
     ----------
-    p : int   – substrate prime modulus (default: 104729)
+    p : int   – substrate prime modulus (default: 104761)
     """
-    p: int = 104729
+    p: int = 104761
 
     @property
     def W_c(self) -> float:
@@ -502,7 +502,7 @@ class DarkSectorParameters:
     def m_defect_GeV(self) -> float:
         """DM soliton mass (GeV): m = W_c × v_EW × p^{1/5} = p^{2/5} × v_EW.
 
-        For p = 104729:  m_defect ≈ 104729^{0.4} × 246 ≈ 26,450 GeV = 26.5 TeV
+        For p = 104761:  m_defect ≈ 104761^{0.4} × 246 ≈ 26,450 GeV = 26.5 TeV
         """
         return self.W_c * _V_HIGGS_GEV * float(self.p) ** (1.0 / 5.0)
 
