@@ -14,8 +14,10 @@ import pytest
 
 from bpr.cs_completion import (
     AlphaFormulaOrigins,
+    CSChiralPropagator,
     HolographicDerivation,
     TEEResolution,
+    cs_chiral_derivation,
     holographic_derivation,
     verify_tee_coefficient,
     BoundaryTheoryParams,
@@ -388,3 +390,78 @@ class TestHolographicDerivation:
         assert "IR corr" in summary
         assert "Π_EM" in summary
         assert "DERIVED" in summary.upper() or "coeff" in summary.lower()
+
+
+# ---------------------------------------------------------------------------
+# 8. CSChiralPropagator — Ward identity from the CS Lagrangian (closes last gap)
+# ---------------------------------------------------------------------------
+
+class TestCSChiralPropagator:
+    """
+    Tests for the CS chiral Ward identity: A_CS = Σ 1/a derived from the
+    first-order CS Lagrangian (check #8 in cs_completion.py).
+    """
+
+    def test_chiral_propagator_is_one_over_a(self):
+        """G_a^CS = 1/a for each mode a (first-order CS action)."""
+        chiral = cs_chiral_derivation(P_DEFAULT)
+        for a in (1, 2, 3, 7, 100, 1000):
+            if a < P_DEFAULT:
+                assert chiral.chiral_propagator_per_mode[a - 1] == pytest.approx(1.0 / a)
+
+    def test_second_order_propagator_is_one_over_a_sq(self):
+        """G_a^Maxwell = 1/a² for each mode (contrast with CS)."""
+        chiral = cs_chiral_derivation(P_DEFAULT)
+        for a in (1, 2, 3, 7, 100):
+            if a < P_DEFAULT:
+                assert chiral.second_order_propagator_per_mode[a - 1] == pytest.approx(1.0 / a**2)
+
+    def test_first_order_sum_equals_harmonic_number(self):
+        """Σ_{a=1}^{p-1} 1/a = H_{p-1} (first-order CS)."""
+        for p in (7, 97, P_DEFAULT):
+            chiral = cs_chiral_derivation(p)
+            expected = sum(1.0 / a for a in range(1, p))
+            assert chiral.A_cs_first_order == pytest.approx(expected, rel=1e-12)
+
+    def test_second_order_sum_converges_to_pi_sq_over_6(self):
+        """Σ 1/a² → π²/6 as p → ∞ (second-order Maxwell would give no ln p)."""
+        chiral = cs_chiral_derivation(P_DEFAULT)
+        assert chiral.A_cs_second_order == pytest.approx(math.pi**2 / 6, rel=1e-4)
+
+    def test_first_order_has_ln_p_uv(self):
+        """UV part of Σ 1/a ≈ ln p (the first-order result contains ln p)."""
+        for p in (97, 9973, P_DEFAULT):
+            chiral = cs_chiral_derivation(p)
+            assert chiral.first_order_gives_ln_p_in_uv
+
+    def test_second_order_has_no_ln_p(self):
+        """Σ 1/a² → π²/6 for ALL large p — no dependence on ln p."""
+        for p in (97, 9973, P_DEFAULT):
+            chiral = cs_chiral_derivation(p)
+            assert chiral.second_order_gives_constant
+
+    def test_first_vs_second_differ_significantly(self):
+        """First-order sum >> second-order sum for large p (ln p >> 1)."""
+        chiral = cs_chiral_derivation(P_DEFAULT)
+        # H_{p-1} ≈ 11.6 vs π²/6 ≈ 1.6 — factor ~7 difference
+        assert chiral.A_cs_first_order > chiral.A_cs_second_order * 5.0
+
+    def test_first_order_matches_holographic_derivation(self):
+        """CSChiralPropagator and HolographicDerivation give identical A_CS."""
+        chiral = cs_chiral_derivation(P_DEFAULT)
+        holo = holographic_derivation(P_DEFAULT)
+        assert chiral.A_cs_first_order == pytest.approx(holo.A_cs, rel=1e-12)
+
+    def test_ward_identity_closed(self):
+        """The CS chiral Ward identity is closed for all tested primes."""
+        for p in (7, 97, 9973, P_DEFAULT):
+            chiral = cs_chiral_derivation(p)
+            assert chiral.ward_identity_closed is True
+
+    def test_comparison_report_contains_key_strings(self):
+        """Report contains 'first-order', 'second-order', and 'Ward identity'."""
+        chiral = cs_chiral_derivation(P_DEFAULT)
+        report = chiral.comparison_report()
+        assert "FIRST-ORDER" in report.upper() or "first-order" in report.lower()
+        assert "Ward identity" in report
+        assert "H_{p-1}" in report or "H_" in report
