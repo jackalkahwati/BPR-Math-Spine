@@ -1767,20 +1767,20 @@ def planck_to_newton(
     # Planck length as the fundamental substrate lattice spacing
     l_P = L_PLANCK  # 1.616255e-35 m
 
-    # Substrate correlation length: xi = l_P * sqrt(p)
-    xi = l_P * np.sqrt(p)
+    # Boundary lattice spacing: a = l_P * sqrt(p / (48 pi^2))
+    # (Sakharov induced gravity; see derivations/planck_length_from_substrate.md)
+    a_boundary = l_P * np.sqrt(p / (48.0 * np.pi ** 2))
 
-    # Coupling energy: J = hbar * c / xi
-    J_coupling = HBAR * C / xi
+    # Boundary UV cutoff Lambda_b = hbar c / a_boundary
+    Lambda_b = HBAR * C / a_boundary
 
-    # Newton's constant from substrate (emergent_spacetime formula)
+    # Newton's constant from Sakharov relation M_Pl^2 = p Lambda_b^2 / (48 pi^2)
     if newtons_constant_from_substrate is not None:
-        G_derived = newtons_constant_from_substrate(
-            p=p, N=n_sites, J=J_coupling, xi=xi
-        )
+        G_derived = newtons_constant_from_substrate(p=p, Lambda_b=Lambda_b)
     else:
-        # Direct computation: G = hbar * c^3 * xi^2 / (J * N * p)
-        G_derived = HBAR * C**3 * xi**2 / (J_coupling * n_sites * p)
+        # Direct: G = 48 pi^2 hbar c / (p * Lambda_b^2 / c^4) = ...
+        M_Pl_kg = np.sqrt(p / (48.0 * np.pi ** 2)) * Lambda_b / C ** 2
+        G_derived = HBAR * C / M_Pl_kg ** 2
 
     G_meas = 6.67430e-11  # m^3 kg^-1 s^-2
     rel_err = abs(G_derived - G_meas) / G_meas

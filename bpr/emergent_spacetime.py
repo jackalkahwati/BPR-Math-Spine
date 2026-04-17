@@ -182,32 +182,64 @@ class BekensteinBound:
 # §13.4  Emergent Newton's constant from substrate
 # ---------------------------------------------------------------------------
 
-def newtons_constant_from_substrate(p: int, N: int, J: float,
-                                      xi: float) -> float:
-    """Derive Newton's constant G from substrate parameters.
+def planck_mass_from_boundary_cutoff(p: int, Lambda_b: float) -> float:
+    """Planck mass from Sakharov-induced gravity at BPR boundary.
 
-    G = ℏ c / M_Pl²
+    M_Pl² = p × Λ_b² / (48π²)
 
-    In BPR, the Planck mass emerges from the substrate:
-        M_Pl² = (J × N) / (4π l_P²)
+    Derivation: integrating out the p boundary anyon sectors below the
+    boundary UV cutoff Λ_b generates an Einstein-Hilbert term via the
+    standard one-loop induced-gravity mechanism. Each of the p scalar
+    modes contributes Λ_b² / (96π²) to the induced Einstein coefficient.
 
-    And the Planck length:
-        l_P = ξ / √(p)
+    See doc/derivations/planck_length_from_substrate.md.
 
-    So G = ℏ c³ ξ² / (J × N × p)
+    Parameters
+    ----------
+    p : int – substrate prime (= CS level k)
+    Lambda_b : float – boundary lattice UV cutoff [J] or [GeV]
+
+    Returns
+    -------
+    float – Planck mass in the same energy units as Lambda_b
+    """
+    return Lambda_b * np.sqrt(p / (48.0 * np.pi ** 2))
+
+
+def boundary_cutoff_from_planck_mass(p: int, M_Pl: float) -> float:
+    """Inverse of planck_mass_from_boundary_cutoff.
+
+    Given the observed M_Pl and substrate prime p, predict the boundary
+    lattice cutoff Λ_b = M_Pl × √(48π²/p).
+
+    For p = 104761, M_Pl = 1.22×10¹⁹ GeV ⇒ Λ_b ≈ 8.2×10¹⁷ GeV.
+    """
+    return M_Pl * np.sqrt(48.0 * np.pi ** 2 / p)
+
+
+def newtons_constant_from_substrate(p: int, Lambda_b: float) -> float:
+    """Derive Newton's constant G from (p, Λ_b) via Sakharov induced gravity.
+
+    G = ℏ c / M_Pl² = 48π² ℏ c / (p × Λ_b²)
+
+    Note: unlike the earlier signature (p, N, J, ξ), this depends on only
+    one dimensionful scale Λ_b — the boundary lattice cutoff — because the
+    Sakharov relation (3) in planck_length_from_substrate.md fixes
+    M_Pl / Λ_b from p alone. N (lattice size) has been removed as it is a
+    computational grid convention that cancels in dimensionless ratios.
 
     Parameters
     ----------
     p : int – substrate prime
-    N : int – lattice sites
-    J : float – coupling [J]
-    xi : float – correlation length [m]
+    Lambda_b : float – boundary UV cutoff [J]
 
     Returns
     -------
     float – emergent Newton's constant [m³ kg⁻¹ s⁻²]
     """
-    return _HBAR * _C ** 3 * xi ** 2 / (J * N * p)
+    M_Pl_energy = planck_mass_from_boundary_cutoff(p, Lambda_b)  # [J]
+    M_Pl_kg = M_Pl_energy / _C ** 2
+    return _HBAR * _C / M_Pl_kg ** 2
 
 
 # ---------------------------------------------------------------------------
@@ -217,26 +249,38 @@ def newtons_constant_from_substrate(p: int, N: int, J: float,
 def planck_length_from_substrate(xi: float = None, p: int = 104761) -> float:
     """Planck length as the fundamental substrate lattice spacing.
 
-    CORRECTED: The Planck length l_P = √(ℏG/c³) ≈ 1.616×10⁻³⁵ m
-    is the fundamental lattice spacing of the BPR substrate.
+    BPR requires one dimensionful anchor. The absolute value of l_P is
+    that anchor; what BPR *derives* is the hierarchy between l_P and the
+    boundary lattice spacing a:
 
-    The original formula l_P = ξ/√p was wrong because ξ depends on the
-    observation scale (lab ξ ~ mm), not the fundamental scale.
+        a / l_P = √(p / (48π²)) ≈ 14.87   (for p = 104761)
 
-    The correct relationship: ξ_lab = l_P × √p × f(N, geometry)
-    i.e., the lab correlation length is a DERIVED quantity from l_P,
-    not the other way around.
+    via the Sakharov induced-gravity relation
+    M_Pl² = p Λ_b² / (48π²). See
+    doc/derivations/planck_length_from_substrate.md for the derivation.
 
     Parameters
     ----------
     xi : float – (ignored, kept for API compatibility)
-    p : int – substrate prime (enters through number-theoretic structure)
+    p : int – substrate prime
 
     Returns
     -------
-    float – Planck length [m]
+    float – Planck length [m] (physical input; the a/l_P ratio above is
+    the derived quantity).
     """
-    return _L_PLANCK  # 1.616255e-35 m — fundamental input, not derived
+    return _L_PLANCK  # 1.616255e-35 m — the one dimensionful anchor
+
+
+def boundary_lattice_spacing(p: int = 104761) -> float:
+    """Boundary lattice spacing a from Sakharov relation.
+
+    a = l_P × √(p / (48π²))
+
+    For p = 104761, a ≈ 14.87 × l_P ≈ 2.40 × 10⁻³⁴ m,
+    corresponding to J = ℏc/a ≈ 8.2 × 10¹⁷ GeV.
+    """
+    return _L_PLANCK * np.sqrt(p / (48.0 * np.pi ** 2))
 
 
 # ---------------------------------------------------------------------------

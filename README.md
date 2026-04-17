@@ -63,7 +63,7 @@ BPR is a **testable framework** with explicit falsification criteria. See [EXPER
 | Electromagnetic | λ ~ 10⁻⁵⁴ | 50 orders |
 | **Phonon Collective** | **λ ~ 10⁻⁸** | **1-2 orders** |
 
-**All coupling constants derived from substrate properties—zero free parameters.**
+**All dimensionless coupling constants and ratios derived from substrate properties with 1 free continuous parameter (J, an energy anchor) and 1 experimentally anchored integer (p, fixed by α). See [LIMITATIONS_AND_FALSIFICATION.md §9](doc/LIMITATIONS_AND_FALSIFICATION.md) for honest parameter accounting.**
 
 The phonon collective channel (combining mode enhancement, coherent phases, and resonator Q-factor) brings BPR within plausible experimental reach.
 
@@ -426,7 +426,7 @@ Pull requests must:
 
 ### ✅ **First-Principles Pipeline** (v0.3.0 → v0.6.0)
 
-- [x] **Coupling derivation** — `bpr.first_principles.SubstrateDerivedTheories` wires `(J, p, N)` → `boundary_energy.py` → all 21 theories, **zero hand-picked constants**
+- [x] **Coupling derivation** — `bpr.first_principles.SubstrateDerivedTheories` wires `(J, p, N)` → `boundary_energy.py` → all 21 theories. `p` fixed by α; `N` cancels in all dimensionless predictions (computational grid); `J` is the one free energy anchor.
 - [x] **Inter-theory integration tests** — `tests/test_inter_theory.py`: 14 tests chaining Boundary Memory Dynamics↔III, I↔VII, II↔V, III↔IV, VI↔VIII, IV↔X, IX↔(I,III), VIII↔I
 - [x] **Predictions generator** — `scripts/generate_predictions.py` produces **205** falsifiable predictions as CSV
 - [x] **Lyapunov bug fix** — numpy broadcasting bug in regression; all 23 Lyapunov tests now pass

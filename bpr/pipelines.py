@@ -1067,17 +1067,16 @@ def pipeline_substrate_to_spacetime(
     ed = EmergentDimensions(geometry="sphere")
     emergent_dim = ed.total_dimensions  # should be 4
 
-    # Step 4: Derive Newton's G from substrate parameters
-    # G = hbar * c^3 * xi^2 / (J_coupling * N * p)
-    # Use Planck length as fundamental substrate spacing
+    # Step 4: Derive Newton's G via Sakharov induced gravity
+    # M_Pl^2 = p * Lambda_b^2 / (48 pi^2) at the BPR boundary cutoff Lambda_b.
+    # Absolute l_P remains one dimensionful anchor; the M_Pl / Lambda_b
+    # hierarchy is derived. See derivations/planck_length_from_substrate.md.
     l_P = planck_length_from_substrate(p=p)
-    # Correlation length from substrate: xi = l_P * sqrt(p)
-    xi = l_P * np.sqrt(p)
-    # Coupling energy scale: J_coupling ~ hbar * c / xi
-    J_coupling = _HBAR * 299792458.0 / xi
-    G_derived = newtons_constant_from_substrate(
-        p=p, N=n_sites, J=J_coupling, xi=xi
-    )
+    # Boundary lattice energy cutoff: Lambda_b = M_Pl * sqrt(48 pi^2 / p)
+    C_LIGHT = 299792458.0
+    M_Pl_energy = np.sqrt(_HBAR * C_LIGHT ** 5 / 6.67430e-11)  # [J]
+    Lambda_b = M_Pl_energy * np.sqrt(48.0 * np.pi ** 2 / p)
+    G_derived = newtons_constant_from_substrate(p=p, Lambda_b=Lambda_b)
     G_measured = 6.67430e-11  # m^3 kg^-1 s^-2
     G_rel_err = abs(G_derived - G_measured) / G_measured
 

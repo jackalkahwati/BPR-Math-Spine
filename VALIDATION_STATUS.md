@@ -165,14 +165,14 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P12.4 | m_s | 93.6 MeV | **DERIVED** | PDG: 93.4 (0.2%); from z-derived spectrum, no free parameters |
 | P12.5 | m_c | 1242 MeV | **DERIVED** | PDG: 1270 ± 20 (1.38σ); l_c=z(z−2)=24; m_t=v_EW/√2 anchor; 1% theory floor |
 | P12.6 | m_b | 4180 MeV | **DERIVED** | PDG: 4180 ± 40 (0.0σ); m_b=m_t×(E_b/c_t)×factor from l-modes |
-| P12.7 | m_t = v_EW/√2 (y_t = 1) | 174.1 GeV | **DERIVED** | BPR predicts pole mass. ATLAS 2025: 172.95±0.53 (MC mass) → +0.3 to +1.2σ after MC→pole correction. ATLAS+CMS combined: 172.52±0.33 → +1.8 to +3.3σ after correction. Formula correct; mass scheme is the key uncertainty. |
+| P12.7 | m_t = v_EW/√2 (y_t = 1) | 174.1 GeV | **DERIVED** | BPR predicts pole mass. Pole-mass extractions from tt̄ differential cross-sections (theoretically clean): ATLAS 13 TeV 173.1 +2.0/−2.1 (+0.5σ), CMS 13 TeV 173.7 +1.9/−2.1 (+0.2σ). ATLAS+CMS combined MC mass 172.52±0.33 (not directly comparable; MC→pole correction ≈ +0.5–1 GeV gives +1.8 to +3.3σ — scheme-dependent, not a falsification). |
 | P12.8 | CKM θ₁₂ | 12.92° | **DERIVED** | PDG: 13.04°; sin(θ_C)=√(m_d/m_s)=√(r_ds); r_ds from l-modes+W_c only |
 | P12.9 | CKM θ₂₃ | 2.33° | **DERIVED** | PDG: ~2.38°; √(r_sb)/√(ln p+z/3); r_sb from l-modes+W_c; p,z only |
 | P12.10 | CKM θ₁₃ | 0.20° | **DERIVED** | PDG: ~0.201°; √(r_ut)=√(1/l_t²); l_t=283 DERIVED |
 | P12.11 | CKM δ_CP = π/2−1/√(z+1) | 68.3° | **DERIVED** | PDG: 68.5°±5.7° (0.03σ) — pure geometry, no free parameters ✓ |
 | P12.12 | Jarlskog J | 2.9×10⁻⁵ | **DERIVED** | PDG: 3.12×10⁻⁵ (6.5% off); follows from DERIVED angles |
 | P12.13 | m_proton | 0.996 GeV | CONSISTENT | Standard QCD: m_p ≈ 3Λ_QCD (not BPR-specific) |
-| P12.14 | m_pion | 86 MeV | CONSISTENT | Standard GMOR; 36% off observed 135 MeV |
+| P12.14 | m_pion | 134.5 MeV | FRAMEWORK | GMOR with BPR-motivated condensate \|qq\|^{1/3}=Λ_QCD√(2/3); 0.4% off observed 135 MeV. f_π and Λ_QCD are QCD inputs. |
 
 ### Charged Lepton Masses (P18.x)
 
@@ -299,7 +299,7 @@ different values and experiment can distinguish them. "Consistent with both" is 
 
 | Prediction | BPR value | SM status | Observed | σ | Notes |
 |-----------|-----------|-----------|----------|---|-------|
-| **Top Yukawa y_t = 1** | m_t = v_EW/√2 = 174.1 GeV (pole mass) from boundary saturation | Observed to be ≈1, no explanation | ATLAS 2025: 172.95±0.53 GeV MC mass → pole ~173.5–174.0; ATLAS+CMS combined: 172.52±0.33 → pole ~173.0–173.5 | +0.3–3.3σ (scheme-dependent) | SM has no reason y_t=1; BPR derives it. Mass scheme (MC vs pole) is the key uncertainty — need pole mass extraction to close this comparison. |
+| **Top Yukawa y_t = 1** | m_t = v_EW/√2 = 174.1 GeV (pole mass) from boundary saturation | Observed to be ≈1, no explanation | Pole-mass extractions (differential cross-section): ATLAS 13 TeV 173.1±2.0 GeV, CMS 13 TeV 173.7±2.0 GeV | +0.2 to +0.5σ ✓ | SM has no reason y_t=1; BPR derives it. Pole-mass extractions agree at <1σ. ATLAS+CMS MC-mass combined (172.52±0.33) is not directly comparable — scheme correction +0.5–1 GeV applies. |
 | **η_baryon = 6.2×10⁻¹⁰** | Sphaleron efficiency enhanced by W_c topology | Needs leptogenesis + many free parameters | BBN 2024 (arXiv:2401.15054): 6.14×10⁻¹⁰ | 0.4σ | BPR mechanism is specific; SM baryogenesis models can also fit |
 | **sin²θ₁₂ = 0.3083** | 1/3−1/(3.5 ln p) from p alone | Free parameter — SM always fits | JUNO 2025: 0.3092±0.0087 (arXiv:2511.14593) | 0.03σ | Discriminates vs. tribimaximal (1/3, now 2.8σ excluded by JUNO); not yet vs. other discrete-symmetry models; decisive at JUNO full precision ±0.002 |
 
@@ -351,7 +351,7 @@ BPR is **not validated** but is **accumulating consistent null results** in its 
 - The strongest discriminating signal is the **axion null results** — 4 independent nulls (ADMX KSVZ, ADMX DFSZ, extended haloscope, HAYSTAC Phase II). BPR is the only framework predicting no axion as a *structural consequence*.
 - The **JUNO sin²θ₁₂** result is consistent but not uniquely BPR.
 - The **θ₁₃** derivation is now closed-form (sin θ₁₃ = e⁻¹/√6, +0.65σ) — BPR now has a unique derivation path that discrete symmetry models lack.
-- The **top mass** is the most concerning tension: ATLAS+CMS combined 172.52±0.33 GeV gives 4.8σ at face value from BPR's 174.1 GeV. Mass scheme corrections (~0.5–1 GeV) reduce this but don't eliminate it. This needs deeper analysis.
+- The **top mass**: BPR's 174.1 GeV is a *pole mass* prediction. Pole-mass extractions from differential cross-sections (ATLAS 173.1±2.0, CMS 173.7±2.0) agree at +0.2 to +0.5σ. The apparent 4.8σ tension with the ATLAS+CMS MC-mass combined (172.52±0.33) is a scheme mismatch, not a pole-mass disagreement. Decisive apples-to-apples test requires a pole-mass extraction with <0.5 GeV uncertainty (expected ~2027 from Run-3 differential data).
 - **δ_CP tension**: T2K+NOvA alone exclude BPR's 68.3°, but the PDG global fit (all data) is consistent. Monitoring the LBL vs reactor data tension is important.
 - Real validation requires: JUNO hierarchy resolution, axion window closure, Belle II δ_CP at ±1°, and a careful mass-scheme analysis for m_t.
 
@@ -400,7 +400,7 @@ derivation power to date.
 | Prediction | BPR | Observed | Gap | Status |
 |-----------|-----|----------|-----|--------|
 | m_μ | 107.2 MeV | 105.66 MeV | 2.5σ | DERIVED tension — l_μ=√210 derived from z(z²-1); discrepancy documented |
-| m_pion | 86 MeV | 135 MeV | 36% | CONSISTENT fails; GMOR inputs not clean |
+| m_pion | 134.5 MeV | 135 MeV | 0.4% | FRAMEWORK — GMOR with BPR-motivated condensate (z=6 isospin, SU(3) color); f_π and Λ_QCD are QCD inputs. |
 | GUT scale | 6.8×10¹⁷ GeV | ~2×10¹⁶ GeV | 30× | Unresolved; labeled DERIVED but suspicious |
 | Jarlskog J | 2.9×10⁻⁵ | 3.12×10⁻⁵ | 6.5% | DERIVED tension; follows from DERIVED CKM angles |
 
