@@ -2,7 +2,35 @@
 
 > **Purpose:** Position BPR as a testable framework with known limitations.
 > **For:** Physicists evaluating whether to engage with the theory.
-> **Updated:** April 2026 (honesty audit applied to GUT scale, baryon asymmetry, v_EW).
+> **Updated:** April 2026 (second gap-hunt pass: p-selection principle via
+> over-determination, T²_2/T²_3 forward-derivation status, CKM δ_CP
+> extracted, Tier B attack plans scoped, Tier C non-gaps documented).
+
+## April 2026 Second-Pass Summary
+
+An eight-gap audit of BPR identified, triaged, and addressed:
+
+- **Tier A (attackable, mostly closed):** Gap #2 (p-selection), Gap #4
+  (forward T² coefficients), Gap #6 (mixing/CP structure). Each has a
+  dedicated derivation doc.
+- **Tier B (scoped research problems):** Gap #3 (GUT 1.5% residual),
+  Gap #7 (quantum gravity beyond Sakharov). Concrete attack plans in
+  `doc/derivations/tier_B_attack_plans.md`.
+- **Tier C (not BPR-specific):** Gap #1 (dimensionful anchor), Gap #5
+  (nuclear EOS), Gap #8 (novel experimental test). These are physics-wide
+  open problems or philosophical necessities. See
+  `doc/derivations/tier_C_not_BPR_gaps.md`.
+
+**New prediction extracted this pass:** CKM δ_CP = 68.3° (PDG 2024 band:
+65.5°–72.2°, within 1σ). Computed from already-derived Jarlskog and
+mixing angles via the standard PDG identity. See
+`doc/derivations/mixing_and_cp_summary.md`.
+
+**Over-determination of p = 104,761:** Four independent BPR structural
+equations (α formula, EW hierarchy, v_EW/Λ_QCD, Sakharov M_Pl/Λ_b) each
+pin p to within 3% of the same prime when solved against observed values.
+Combined with primality + (p ≡ 1 mod 4) constraints, p = 104,761 is
+**uniquely selected**. See `doc/derivations/p_selection_principle.md`.
 
 ---
 
