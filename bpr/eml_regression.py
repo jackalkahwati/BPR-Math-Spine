@@ -448,8 +448,8 @@ def demo_bpr_recovery(depth: int = 3, n_restarts: int = 10) -> dict:
     result = fit(
         target_fn=target_ln,
         depth=depth,
-        x_range=(0.05, 20.0),
-        n_points=128,
+        x_range=(0.1, 5.0),
+        n_points=64,
         n_steps=4000,
         n_restarts=n_restarts,
         lr=0.05,
