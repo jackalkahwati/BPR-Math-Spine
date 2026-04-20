@@ -19,7 +19,7 @@ requires_torch = pytest.mark.skipif(
 )
 
 from bpr.eml_regression import (
-    target_ln, target_exp, target_bpr_screening, target_bpr_alpha,
+    target_ln, target_exp, target_ln_sq, target_bpr_screening, target_bpr_alpha,
     FitResult,
 )
 from bpr.constants import P_DEFAULT
@@ -38,10 +38,23 @@ class TestTargetFunctions:
         x = np.array([0.0, 1.0, 2.0])
         np.testing.assert_allclose(target_exp(x), np.exp(x))
 
+    def test_target_ln_sq(self):
+        x = np.array([1.0, np.e, 10.0])
+        np.testing.assert_allclose(target_ln_sq(x), np.log(x) ** 2)
+
+    def test_target_ln_sq_at_one(self):
+        # [ln(1)]² = 0; important boundary case
+        result = target_ln_sq(np.array([1.0]))
+        np.testing.assert_allclose(result, [0.0])
+
     def test_target_bpr_screening(self):
         p = np.array([float(P_DEFAULT)])
         result = target_bpr_screening(p)
         np.testing.assert_allclose(result, np.log(P_DEFAULT) ** 2)
+
+    def test_target_bpr_screening_matches_ln_sq(self):
+        x = np.array([2.0, 10.0, 100.0])
+        np.testing.assert_allclose(target_bpr_screening(x), target_ln_sq(x))
 
     def test_target_bpr_alpha_near_137(self):
         p = np.array([float(P_DEFAULT)])
@@ -272,4 +285,31 @@ class TestSlowRecovery:
             f"ln(x) recovery failed at depth 3 after 20 restarts. "
             f"snapped_loss={result.snapped_loss:.6f}, "
             f"recovered={result.recovered_expr!r}"
+        )
+
+    def test_ln_sq_continuous_loss_depth5(self):
+        """[ln(x)]² at depth 5 should at least converge continuously.
+
+        This is the gate benchmark before BPR.  We require the continuous
+        optimizer to reach a small loss (proof that depth 5 has capacity);
+        exact snap recovery is tested separately once minimum depth is known
+        from scripts/benchmark_ln2.py.
+        """
+        from bpr.eml_regression import fit
+        result = fit(
+            target_fn=target_ln_sq,
+            depth=5,
+            x_range=(0.5, 5.0),
+            n_points=64,
+            n_steps=5000,
+            n_restarts=20,
+            lr=0.02,
+            seed=42,
+            normalize_y=True,
+        )
+        # Continuous loss < 0.01 in original units means the model found a
+        # good approximation of [ln(x)]²; snap quality is tracked separately.
+        assert result.final_loss < 0.01, (
+            f"[ln(x)]² continuous loss too high at depth 5: {result.final_loss:.4e}. "
+            f"Optimizer may be diverging — check overflow or lr."
         )

@@ -87,8 +87,13 @@ def target_exp(x: np.ndarray) -> np.ndarray:
     return np.exp(x)
 
 
+def target_ln_sq(x: np.ndarray) -> np.ndarray:
+    """[ln(x)]² — first composed EML benchmark; gate before BPR."""
+    return np.log(x) ** 2
+
+
 def target_bpr_screening(p: np.ndarray) -> np.ndarray:
-    """[ln(p)]² — the dominant BPR fine-structure term."""
+    """[ln(p)]² — the dominant BPR fine-structure term (alias of target_ln_sq)."""
     return np.log(p) ** 2
 
 
