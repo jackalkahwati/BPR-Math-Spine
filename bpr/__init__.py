@@ -204,6 +204,7 @@ __all__.append("PAPER_EXTENSIONS_AVAILABLE")
 # EML–BPR synthesis (Odrzywolek 2026 × Al-Kahwati 2026)
 try:
     from . import eml                   # All physics from one operator          # noqa: F401
+    from . import eml_regression        # EML symbolic regression                # noqa: F401
     EML_AVAILABLE = True
 except Exception:
     EML_AVAILABLE = False
