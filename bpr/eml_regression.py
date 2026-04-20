@@ -317,6 +317,7 @@ def fit(
     n_restarts: int = 5,
     lr: float = 0.05,
     seed: int = 0,
+    normalize_y: bool = False,
 ) -> FitResult:
     """Fit an EML master formula to a target function.
 
@@ -351,6 +352,15 @@ def fit(
     rng = np.random.default_rng(seed)
     x_np = np.exp(rng.uniform(np.log(lo), np.log(hi), n_points))
     y_np = target_fn(x_np).astype(np.float64)
+
+    # Optionally z-score targets so EML outputs stay O(1) during training.
+    # We record scale/shift to convert snapped_loss back to original units.
+    y_mean = 0.0
+    y_std = 1.0
+    if normalize_y:
+        y_mean = float(y_np.mean())
+        y_std = float(y_np.std()) or 1.0
+        y_np = (y_np - y_mean) / y_std
 
     x_t = torch.tensor(x_np, dtype=torch.float64)
     y_t = torch.tensor(y_np, dtype=torch.float64)
@@ -396,20 +406,22 @@ def fit(
             snap_pred = snap_candidate(x_t)
             snap_loss = float(((snap_pred.real - y_t) ** 2).mean().item())
 
-        # Early exit on clean snap
+        # Early exit on clean snap (threshold applied in whatever scale y_t is in)
         if snap_loss < 1e-6:
             recovered: Optional[EMLExpr] = None
             try:
                 recovered = snap_candidate.to_symbolic()
             except Exception:
                 pass
+            orig_snap_loss = snap_loss * y_std ** 2 if normalize_y else snap_loss
+            orig_last_loss = last_loss * y_std ** 2 if normalize_y else last_loss
             return FitResult(
                 depth=depth,
                 n_steps=n_steps,
-                final_loss=last_loss,
-                snapped_loss=snap_loss,
+                final_loss=orig_last_loss,
+                snapped_loss=orig_snap_loss,
                 recovered_expr=recovered,
-                success=True,
+                success=orig_snap_loss < 1e-6,
                 n_restarts_tried=restart + 1,
             )
 
@@ -437,6 +449,11 @@ def fit(
             snapped_pred = snapped(x_t)
             snapped_loss = float(((snapped_pred.real - y_t) ** 2).mean().item())
         final_snap = snapped
+
+    # Convert losses back to original-scale units if we normalised
+    if normalize_y:
+        best_loss = best_loss * y_std ** 2
+        snapped_loss = snapped_loss * y_std ** 2
 
     recovered_expr: Optional[EMLExpr] = None
     try:

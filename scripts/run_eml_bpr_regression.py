@@ -61,19 +61,22 @@ _report("ln(x) — depth 3, 20 restarts", r1, time.time() - t0)
 # ── Target 2: [ln(p)]²  ──────────────────────────────────────────────────────
 # The dominant BPR fine-structure term.  Function of p, not x.
 # Direct search EML K≈35 (x² needs K≈19, composed with ln depth-3 tree).
-# Attempt at depth 4 (74 params) and depth 5 (154 params).
+# Previous attempt used x_range up to P_DEFAULT*2 ≈ 209k which caused exp()
+# saturation inside EML (loss ~2.5e43 = e^50 squared).  Fix: narrow range so
+# ln(x) stays ≤ ln(100) ≈ 4.6, and z-score targets so outputs are O(1).
 print("\n\nTarget 2: [ln(p)]²  [dominant BPR 1/α term, ~97% of value]")
-for depth, restarts, steps in [(4, 10, 5000), (5, 5, 6000)]:
+for depth, restarts, steps, lr_ in [(4, 20, 6000, 0.02), (5, 10, 8000, 0.01)]:
     t0 = time.time()
     r = fit(
         target_fn=target_bpr_screening,
         depth=depth,
-        x_range=(2.0, float(P_DEFAULT) * 2),
+        x_range=(2.0, 100.0),        # ln(100)²≈21; keeps EML inputs finite
         n_points=64,
         n_steps=steps,
         n_restarts=restarts,
-        lr=0.03,
+        lr=lr_,
         seed=7,
+        normalize_y=True,            # z-score targets → O(1) outputs during training
     )
     _report(f"[ln(p)]²  — depth {depth}, {restarts} restarts", r, time.time() - t0)
     if r.success:
@@ -89,12 +92,13 @@ t0 = time.time()
 r3 = fit(
     target_fn=target_bpr_alpha,
     depth=4,
-    x_range=(1000.0, float(P_DEFAULT) * 3),
+    x_range=(100.0, 1000.0),        # narrowed from (1000, 3*P_DEFAULT) to avoid overflow
     n_points=64,
     n_steps=5000,
     n_restarts=5,
-    lr=0.03,
+    lr=0.02,
     seed=13,
+    normalize_y=True,
 )
 _report("1/α(p) — depth 4, 5 restarts", r3, time.time() - t0)
 print(f"\n  BPR value at p={P_DEFAULT}: {target_bpr_alpha(np.array([float(P_DEFAULT)]))[0]:.6f}")
