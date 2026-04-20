@@ -357,6 +357,8 @@ def fit(
 
     best_model: Optional[EMLMasterFormula] = None
     best_loss = float("inf")
+    best_snap_loss = float("inf")
+    best_snap_model: Optional[EMLMasterFormula] = None
 
     for restart in range(n_restarts):
         torch.manual_seed(seed + restart)
@@ -388,6 +390,33 @@ def fit(
             optimizer.step()
             last_loss = float(loss.item())
 
+        # Check snap quality for this restart
+        snap_candidate = model.snap()
+        with torch.no_grad():
+            snap_pred = snap_candidate(x_t)
+            snap_loss = float(((snap_pred.real - y_t) ** 2).mean().item())
+
+        # Early exit on clean snap
+        if snap_loss < 1e-6:
+            recovered: Optional[EMLExpr] = None
+            try:
+                recovered = snap_candidate.to_symbolic()
+            except Exception:
+                pass
+            return FitResult(
+                depth=depth,
+                n_steps=n_steps,
+                final_loss=last_loss,
+                snapped_loss=snap_loss,
+                recovered_expr=recovered,
+                success=True,
+                n_restarts_tried=restart + 1,
+            )
+
+        if snap_loss < best_snap_loss:
+            best_snap_loss = snap_loss
+            best_snap_model = snap_candidate
+
         if last_loss < best_loss:
             best_loss = last_loss
             # Deep-copy by re-instantiating and copying state
@@ -398,15 +427,20 @@ def fit(
 
     assert best_model is not None
 
-    # ── Snap and evaluate ────────────────────────────────────────────────────
-    snapped = best_model.snap()
-    with torch.no_grad():
-        snapped_pred = snapped(x_t)
-        snapped_loss = float(((snapped_pred.real - y_t) ** 2).mean().item())
+    # ── Use best snap model if it beat best continuous model's snap ──────────
+    final_snap = best_snap_model if best_snap_model is not None else best_model.snap()
+    snapped_loss = best_snap_loss if best_snap_model is not None else float("inf")
 
-    recovered: Optional[EMLExpr] = None
+    if best_snap_model is None or best_snap_loss >= float("inf"):
+        snapped = best_model.snap()
+        with torch.no_grad():
+            snapped_pred = snapped(x_t)
+            snapped_loss = float(((snapped_pred.real - y_t) ** 2).mean().item())
+        final_snap = snapped
+
+    recovered_expr: Optional[EMLExpr] = None
     try:
-        recovered = snapped.to_symbolic()
+        recovered_expr = final_snap.to_symbolic()
     except Exception:
         pass
 
@@ -415,7 +449,7 @@ def fit(
         n_steps=n_steps,
         final_loss=best_loss,
         snapped_loss=snapped_loss,
-        recovered_expr=recovered,
+        recovered_expr=recovered_expr,
         success=snapped_loss < 1e-6,
         n_restarts_tried=n_restarts,
     )
