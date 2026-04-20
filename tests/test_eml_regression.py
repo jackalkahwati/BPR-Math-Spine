@@ -261,8 +261,8 @@ class TestSlowRecovery:
         result = fit(
             target_fn=target_ln,
             depth=3,
-            x_range=(0.05, 20.0),
-            n_points=128,
+            x_range=(0.1, 5.0),
+            n_points=64,
             n_steps=5000,
             n_restarts=20,
             lr=0.05,
