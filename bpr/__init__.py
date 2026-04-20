@@ -201,6 +201,15 @@ except Exception:
 
 __all__.append("PAPER_EXTENSIONS_AVAILABLE")
 
+# EML–BPR synthesis (Odrzywolek 2026 × Al-Kahwati 2026)
+try:
+    from . import eml                   # All physics from one operator          # noqa: F401
+    EML_AVAILABLE = True
+except Exception:
+    EML_AVAILABLE = False
+
+__all__.append("EML_AVAILABLE")
+
 # ──────────────────────────────────────────────────────────────────────────
 # Cross-Theory Interpolation Layer (April 2026)
 # ──────────────────────────────────────────────────────────────────────────
