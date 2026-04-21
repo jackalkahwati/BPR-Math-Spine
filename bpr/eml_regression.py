@@ -144,7 +144,8 @@ class EMLMasterFormula(_ModuleBase):
 
     # ── forward ──────────────────────────────────────────────────────────────
 
-    def forward(self, x: torch.Tensor, temperature: float = 1.0) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, temperature: float = 1.0,
+                use_ste: bool = False) -> torch.Tensor:
         """Evaluate master formula at x.
 
         Parameters
@@ -154,6 +155,11 @@ class EMLMasterFormula(_ModuleBase):
         temperature : float
             Softmax temperature.  1.0 = normal training.  Values < 1 sharpen
             the distribution toward one-hot (used during hardening phase).
+        use_ste : bool
+            If True, use straight-through estimator: forward pass uses the
+            hard one-hot (argmax) weights so the model directly trains the
+            discrete symbolic function, while backward pass propagates
+            gradients through the soft softmax.
 
         Returns
         -------
@@ -172,8 +178,21 @@ class EMLMasterFormula(_ModuleBase):
             logits = self.node_params[i]   # (2, n_logits)
 
             scaled = logits / temperature
-            left_weights = torch.softmax(scaled[0], dim=0)   # (n_logits,)
-            right_weights = torch.softmax(scaled[1], dim=0)  # (n_logits,)
+            left_soft = torch.softmax(scaled[0], dim=0)   # (n_logits,)
+            right_soft = torch.softmax(scaled[1], dim=0)  # (n_logits,)
+
+            if use_ste:
+                # Straight-through: hard one-hot in forward, soft gradient in backward
+                left_hard = torch.zeros_like(left_soft)
+                left_hard[left_soft.argmax()] = 1.0
+                left_weights = left_soft + (left_hard - left_soft).detach()
+
+                right_hard = torch.zeros_like(right_soft)
+                right_hard[right_soft.argmax()] = 1.0
+                right_weights = right_soft + (right_hard - right_soft).detach()
+            else:
+                left_weights = left_soft
+                right_weights = right_soft
 
             if is_leaf:
                 # mix2: {1, x}
@@ -330,6 +349,7 @@ def fit(
     harden_frac: float = 0.0,
     min_temp: float = 0.05,
     entropy_coeff: float = 0.1,
+    use_ste: bool = False,
 ) -> FitResult:
     """Fit an EML master formula to a target function.
 
@@ -360,6 +380,11 @@ def fit(
         Final softmax temperature at end of hardening phase.
     entropy_coeff : float
         Weight of the entropy penalty during hardening.
+    use_ste : bool
+        If True, use straight-through estimator for the entire training run.
+        Forward pass evaluates the hard discrete (snapped) function; backward
+        pass propagates gradients through the soft softmax.  This directly
+        trains the discrete symbolic structure rather than its relaxation.
 
     Returns
     -------
@@ -422,7 +447,7 @@ def fit(
                 temperature = 1.0
 
             optimizer.zero_grad()
-            pred = model(x_t, temperature=temperature)
+            pred = model(x_t, temperature=temperature, use_ste=use_ste)
             mse = ((pred.real - y_t) ** 2).mean()
 
             # Entropy penalty during hardening: minimise ambiguity in logits

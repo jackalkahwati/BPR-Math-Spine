@@ -46,12 +46,18 @@ BENCHMARK = dict(
     depth        = 6,
 )
 
-# Hardening configurations to compare (last param = label)
+# Configurations to compare.
+# Temperature annealing + entropy penalty both failed: they reinforce whichever
+# argmax is already winning ({1} everywhere due to init bias) without ever
+# teaching the model that {x} or {child} would be better.
+# STE (straight-through estimator) directly trains the hard discrete function:
+# forward pass uses the argmax one-hot, so the model experiences the same snap
+# it will get at eval time, and gradients push logits to change argmax choices.
 HARDEN_CONFIGS = [
-    dict(harden_frac=0.0,  min_temp=1.0,  entropy_coeff=0.0,  label="no hardening (baseline)"),
-    dict(harden_frac=0.3,  min_temp=0.1,  entropy_coeff=0.0,  label="temp anneal only"),
-    dict(harden_frac=0.3,  min_temp=0.1,  entropy_coeff=0.1,  label="temp anneal + entropy"),
-    dict(harden_frac=0.3,  min_temp=0.05, entropy_coeff=0.2,  label="aggressive hardening"),
+    dict(use_ste=False, harden_frac=0.0, label="soft baseline (known failing)"),
+    dict(use_ste=True,  harden_frac=0.0, label="STE full training"),
+    dict(use_ste=False, harden_frac=0.4, min_temp=0.05, entropy_coeff=0.0,
+         label="soft then STE-hardening"),
 ]
 
 # Success thresholds (fixed before seeing results)
