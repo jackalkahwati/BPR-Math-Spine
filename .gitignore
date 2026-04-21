@@ -125,3 +125,27 @@ instant/
 doc/pnas-submission/
 doc/prd-submission/mcp/.venv/
 website/node_modules/
+
+# Papers — kept local, not in version control
+papers/
+doc/bpr_mega_paper.*
+doc/bpr_paper.tex
+doc/bpr_paper_expanded.tex
+doc/bpr_paper_expanded.pdf
+doc/BPR_clifford_embedding.tex
+doc/BPR_one_pager.tex
+doc/BPR_posterior_confidence.tex
+doc/bpr_textbook/
+doc/PNAS_draft.md
+doc/paper_outline.md
+doc/paper-style.css
+doc/*Notes.bib
+# LaTeX build artifacts
+doc/*.aux
+doc/*.bbl
+doc/*.blg
+doc/*.out
+doc/*.log
+doc/*.toc
+doc/*.fls
+doc/*.fdb_latexmk
