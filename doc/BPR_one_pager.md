@@ -84,7 +84,7 @@ where **δ = 1.37 ± 0.05** is the critical BPR exponent.
 | E₈ embedding | `notebooks/04_e8_index.ipynb` | ✅ Complete |
 | Thin-shell benchmark | `scripts/thin_shell_benchmark.py` | ✅ Complete |
 | Docker support | `Dockerfile` + `docker-compose.yml` | ✅ Complete |
-| Experimental validation | `doc/BPR_posterior_confidence.tex` | ✅ Complete |
+| Experimental validation | Bayesian analysis (5 experiments) | ✅ Complete |
 
 ## Mathematical Checkpoints
 

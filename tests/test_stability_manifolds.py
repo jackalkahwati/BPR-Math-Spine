@@ -249,7 +249,7 @@ class TestSpectralStabilityDeligne:
         from bpr.stability_manifolds import SpectralStabilityDeligne
         theta = np.linspace(0, np.pi, 10000)
         density = SpectralStabilityDeligne.katz_sarnak_density(theta)
-        _trapz = getattr(np, "trapezoid", np.trapz)
+        _trapz = np.trapezoid if hasattr(np, "trapezoid") else np.trapz
         integral = _trapz(density, theta)
         assert integral == pytest.approx(1.0, abs=0.01)
 

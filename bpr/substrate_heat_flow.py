@@ -425,7 +425,8 @@ def heat_current_landauer(
         # Trapezoidal fallback
         omegas = np.linspace(1e6, omega_max, n_points)
         vals = np.array([integrand(w) for w in omegas])
-        return float(np.trapz(vals, omegas))
+        _trapz = np.trapezoid if hasattr(np, "trapezoid") else np.trapz
+        return float(_trapz(vals, omegas))
 
 
 def heat_current_ohmic_kubo(

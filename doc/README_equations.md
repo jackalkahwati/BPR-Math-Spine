@@ -77,8 +77,8 @@ CASIMIR_PREFACTOR = pi**2 * hbar * c / 240
 
 ## Advanced Formulation: Clifford Algebra Embedding
 
-### Reference Document
-- **File**: `doc/BPR_clifford_embedding.tex`
+### Reference Module
+- **File**: `bpr/clifford_bpr.py`
 - **Description**: Full geometric algebra formulation of BPR theory
 
 ### Key Extensions

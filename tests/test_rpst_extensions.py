@@ -1084,7 +1084,7 @@ class TestKatzSarnakChain:
         from bpr.rpst_extensions import KatzSarnakChain
         theta = np.linspace(0, np.pi, 10000)
         density = KatzSarnakChain.usp2_haar_density(theta)
-        _trapz = getattr(np, "trapezoid", np.trapz)
+        _trapz = np.trapezoid if hasattr(np, "trapezoid") else np.trapz
         integral = float(_trapz(density, theta))
         assert integral == pytest.approx(1.0, abs=1e-3)
 

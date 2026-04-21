@@ -690,7 +690,8 @@ def memory_coherence_chain(
 
     # Integrated memory strength
     dt_mem = t_window[1] - t_window[0] if len(t_window) > 1 else 1.0
-    memory_strength = float(np.trapz(np.abs(M_values), dx=dt_mem))
+    _trapz = np.trapezoid if hasattr(np, "trapezoid") else np.trapz
+    memory_strength = float(_trapz(np.abs(M_values), dx=dt_mem))
 
     # 2. Map memory strength to noise level
     #    Stronger memory -> less decoherence noise

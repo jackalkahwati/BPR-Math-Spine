@@ -22,7 +22,7 @@
 >
 > **DERIVATION ROADMAP** → [`doc/derivations/DERIVATION_ROADMAP.md`](doc/derivations/DERIVATION_ROADMAP.md) *(41 DERIVED, 5 FRAMEWORK)*
 >
-> One‑pager → [`doc/BPR_one_pager.md`](doc/BPR_one_pager.md) | LaTeX source → [`doc/BPR_one_pager.tex`](doc/BPR_one_pager.tex)
+> One‑pager → [`doc/BPR_one_pager.md`](doc/BPR_one_pager.md)
 
 ---
 
@@ -307,11 +307,16 @@ BPR-math-spine/
 │   ├── test_lyapunov.py              # 23 Lyapunov stability tests
 │   └── test_fenics_integration.py    # ★  FEniCS tests (auto-skip w/o FEniCS)
 ├── doc/
-│   ├── BPR_one_pager.tex             # concise mathematical synopsis  
-│   ├── BPR_posterior_confidence.tex  # Bayesian experimental validation
-│   ├── BPR_clifford_embedding.tex    # advanced Clifford algebra formulation
-│   ├── README_equations.md           # implementation reference guide
-│   └── derivations.nb                # optional Mathematica notebook
+│   ├── BPR_Complete_Framework.md     # 80-page unified document
+│   ├── CONSISTENCY_AUDIT.md          # 58 internal math consistency tests
+│   ├── BENCHMARK_SCORECARD.md        # 51 predictions vs PDG/Planck/CODATA
+│   ├── EXPERIMENTAL_ROADMAP.md       # 10 falsification tests
+│   ├── FOR_REVIEWERS.md              # one-page reviewer summary
+│   ├── LIMITATIONS_AND_FALSIFICATION.md
+│   ├── conjectures/                  # open conjectures
+│   ├── derivations/                  # 41 DERIVED, 5 FRAMEWORK
+│   ├── experiments/                  # evidence pipeline + paper audits
+│   └── README_equations.md           # implementation reference guide
 ├── environment.yml                   # conda spec (<120 MB)
 ├── environment-minimal.yml           # without FEniCS
 ├── environment-fenicsx.yml           # with FEniCSX (newer)
@@ -408,8 +413,8 @@ Pull requests must:
 - [x] **Mathematical checkpoints**: All 3 verification tests implemented
 - [x] **Jupyter notebooks**: 4 complete interactive demonstrations  
 - [x] **Unit testing**: Comprehensive test suite with `pytest`
-- [x] **Experimental validation**: Bayesian analysis of 5 experimental results (`doc/BPR_posterior_confidence.tex`)
-- [x] **Advanced formulation**: Clifford algebra embedding with spinor consciousness modules (`doc/BPR_clifford_embedding.tex`)
+- [x] **Experimental validation**: Bayesian analysis of 5 experimental results
+- [x] **Advanced formulation**: Clifford algebra embedding with spinor consciousness modules (`bpr/clifford_bpr.py`)
 
 ### ✅ **Ten Adjacent Theories** (Feb 2026 — 10 modules, 56 new tests)
 
@@ -458,14 +463,15 @@ The BPR-Math-Spine framework is **feature-complete** and ready for:
 * **Publication** — Complete mathematical spine for papers
 * **Docker CI** — `docker-compose run --rm --profile testing bpr-test` runs all tests with FEniCS
 
-### 📊 **Project Statistics**  
-* **~17,000+** total lines of code
-* **~12,000** core mathematical LoC  
+### 📊 **Project Statistics**
+* **~84,000** total lines of Python
+* **~60,000** core mathematical LoC (`bpr/`)
+* **~14,000** test LoC (`tests/`, 32 test modules)
 * **248** E₈ generators implemented
 * **7/7** BPR equations complete
 * **21 theories** — 10 adjacent + 6 extended + 5 frontier (Gauge, Leptons, Nuclear, QG, Chemistry)
 * **205** falsifiable predictions (from 3 substrate numbers: J, p, N)
-* **488** tests passing, 21 skipped (FEniCS auto-skip)
+* **1,294** tests passing (+ ~21 FEniCS tests that auto-skip without FEniCS)
 * **58** mathematical consistency tests (no experiments needed)
 * **29** benchmark regression tests (predictions vs experiment)
 * **51** predictions benchmarked (41 DERIVED, 5 FRAMEWORK; 50 PASS, 1 CLOSE)

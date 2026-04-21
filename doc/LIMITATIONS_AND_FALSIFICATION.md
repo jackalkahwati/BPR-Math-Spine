@@ -268,7 +268,7 @@ p was **selected**, not derived. The fine structure constant formula:
 
 is derived from the boundary action (`bpr/alpha_derivation.py`). For p = 104,729, z = 6, it gives 1/alpha = 137.032 versus the experimental 137.036, a 0.003% error.
 
-**The actual selection criterion is that 104,729 is the 10,000th prime.** This is documented in the PNAS draft. The claim appearing in `doc/paper_outline.md` that it is the "smallest prime satisfying the formula within 0.01%" was asserted without verification and is **computationally false**.
+**The actual selection criterion is that 104,729 is the 10,000th prime.** An earlier internal draft claimed it was the "smallest prime satisfying the formula within 0.01%"; that claim was asserted without verification and is **computationally false**.
 
 ### The alpha formula (documented here for the first time)
 
