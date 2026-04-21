@@ -379,24 +379,37 @@ def fit(
         torch.manual_seed(seed + restart)
         model = EMLMasterFormula(depth)
 
-        # Random initialisation with small perturbation so restarts differ
+        # Initialise logits so each node strongly prefers {1} over {x} or child.
+        # This keeps initial exp() arguments near 1, preventing the cascade
+        # saturation that occurs at depth ≥ 4 when x-leaves dominate.
+        # Small noise (0.1) still differentiates restarts.
         with torch.no_grad():
             for p in model.node_params:
-                p.copy_(torch.randn_like(p) * 0.5)
+                noise = torch.randn_like(p) * 0.1
+                # Strongly penalise the x-logit (col 1) and child-logit (col 2)
+                # so softmax starts ~[0.98, 0.01] or ~[0.97, 0.01, 0.01]
+                penalty = torch.zeros_like(p)
+                penalty[:, 1:] = -5.0   # penalise x and child at init
+                p.copy_(noise + penalty)
 
         optimizer = torch.optim.Adam(model.parameters(), lr=lr)
         last_loss = float("inf")
+        stuck_count = 0
+        prev_loss = float("inf")
 
         for step in range(n_steps):
             optimizer.zero_grad()
             pred = model(x_t)
             loss = ((pred.real - y_t) ** 2).mean()
 
-            if torch.isnan(loss):
-                # Reinitialise this restart from scratch
+            if torch.isnan(loss) or torch.isinf(loss):
+                # Reinitialise this restart from scratch with same seed offset
                 with torch.no_grad():
                     for p in model.node_params:
-                        p.copy_(torch.randn_like(p) * 0.5)
+                        noise = torch.randn_like(p) * 0.1
+                        penalty = torch.zeros_like(p)
+                        penalty[:, 1:] = -5.0
+                        p.copy_(noise + penalty)
                 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
                 continue
 
@@ -404,6 +417,16 @@ def fit(
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optimizer.step()
             last_loss = float(loss.item())
+
+            # Stuck-restart detection: abandon if no improvement after 500 steps
+            if step % 500 == 499:
+                if last_loss > prev_loss * 0.99 and last_loss > 1.0:
+                    stuck_count += 1
+                    if stuck_count >= 2:  # stuck for 1000 consecutive steps
+                        break
+                else:
+                    stuck_count = 0
+                prev_loss = last_loss
 
         # Check snap quality for this restart
         snap_candidate = model.snap()
