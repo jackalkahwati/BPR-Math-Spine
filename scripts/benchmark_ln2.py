@@ -36,10 +36,10 @@ from bpr.eml_regression import fit, FitResult, target_ln_sq, target_ln, target_e
 # ─────────────────────────────────────────────────────────────────────────────
 BENCHMARK = dict(
     target_fn    = target_ln_sq,
-    x_range      = (0.5, 5.0),   # ln(x)∈[-0.69, 1.61], [ln(x)]²∈[0, 2.59]
+    x_range      = (0.5, 5.0),
     n_points     = 64,
-    n_steps      = 5000,
-    n_restarts   = 20,
+    n_steps      = 3000,   # reduced from 5000 to keep each config under 10 min
+    n_restarts   = 5,      # reduced from 20; accept more variance per config
     lr           = 0.02,
     seed         = 42,
     normalize_y  = True,
