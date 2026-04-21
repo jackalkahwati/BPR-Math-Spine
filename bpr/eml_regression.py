@@ -144,13 +144,16 @@ class EMLMasterFormula(_ModuleBase):
 
     # ── forward ──────────────────────────────────────────────────────────────
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, temperature: float = 1.0) -> torch.Tensor:
         """Evaluate master formula at x.
 
         Parameters
         ----------
         x : torch.Tensor
             Input values, shape (n,).  Cast to complex128 internally.
+        temperature : float
+            Softmax temperature.  1.0 = normal training.  Values < 1 sharpen
+            the distribution toward one-hot (used during hardening phase).
 
         Returns
         -------
@@ -168,8 +171,9 @@ class EMLMasterFormula(_ModuleBase):
             is_leaf = self._first_leaf <= i <= self._last_leaf
             logits = self.node_params[i]   # (2, n_logits)
 
-            left_weights = torch.softmax(logits[0], dim=0)   # (n_logits,)
-            right_weights = torch.softmax(logits[1], dim=0)  # (n_logits,)
+            scaled = logits / temperature
+            left_weights = torch.softmax(scaled[0], dim=0)   # (n_logits,)
+            right_weights = torch.softmax(scaled[1], dim=0)  # (n_logits,)
 
             if is_leaf:
                 # mix2: {1, x}
@@ -323,6 +327,9 @@ def fit(
     lr: float = 0.05,
     seed: int = 0,
     normalize_y: bool = False,
+    harden_frac: float = 0.0,
+    min_temp: float = 0.05,
+    entropy_coeff: float = 0.1,
 ) -> FitResult:
     """Fit an EML master formula to a target function.
 
@@ -345,6 +352,14 @@ def fit(
         Adam learning rate.
     seed : int
         Base random seed (each restart uses seed + restart_index).
+    harden_frac : float
+        Fraction of n_steps to use as a hardening phase (0 = disabled).
+        During hardening, softmax temperature anneals from 1.0 → min_temp
+        and an entropy penalty pushes logits toward one-hot.
+    min_temp : float
+        Final softmax temperature at end of hardening phase.
+    entropy_coeff : float
+        Weight of the entropy penalty during hardening.
 
     Returns
     -------
@@ -396,11 +411,30 @@ def fit(
         last_loss = float("inf")
         stuck_count = 0
         prev_loss = float("inf")
+        harden_start = int(n_steps * (1.0 - harden_frac)) if harden_frac > 0 else n_steps
 
         for step in range(n_steps):
+            # ── Hardening phase: anneal temperature + entropy penalty ────────
+            if step >= harden_start:
+                frac = (step - harden_start) / max(n_steps - harden_start, 1)
+                temperature = 1.0 - frac * (1.0 - min_temp)  # 1.0 → min_temp
+            else:
+                temperature = 1.0
+
             optimizer.zero_grad()
-            pred = model(x_t)
-            loss = ((pred.real - y_t) ** 2).mean()
+            pred = model(x_t, temperature=temperature)
+            mse = ((pred.real - y_t) ** 2).mean()
+
+            # Entropy penalty during hardening: minimise ambiguity in logits
+            if step >= harden_start and entropy_coeff > 0:
+                ent = torch.tensor(0.0, dtype=torch.float64)
+                for param in model.node_params:
+                    for row in range(param.shape[0]):
+                        p_row = torch.softmax(param[row] / temperature, dim=0)
+                        ent = ent - (p_row * torch.log(p_row + 1e-10)).sum()
+                loss = mse + entropy_coeff * ent / model.n_params
+            else:
+                loss = mse
 
             if torch.isnan(loss) or torch.isinf(loss):
                 # Reinitialise this restart from scratch with same seed offset
@@ -416,7 +450,7 @@ def fit(
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optimizer.step()
-            last_loss = float(loss.item())
+            last_loss = float(mse.item())  # track MSE, not loss+penalty
 
             # Stuck-restart detection: abandon if no improvement after 500 steps
             if step % 500 == 499:

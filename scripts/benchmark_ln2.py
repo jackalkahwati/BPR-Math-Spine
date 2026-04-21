@@ -30,20 +30,29 @@ import numpy as np
 from bpr.eml_regression import fit, FitResult, target_ln_sq, target_ln, target_exp
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Locked benchmark parameters — do not change between depth runs
+# Locked benchmark parameters
+# Depth is fixed at 6: continuous loss 4.6e-07 at depth 6 confirms
+# representational capacity; snap quality is now the only bottleneck.
 # ─────────────────────────────────────────────────────────────────────────────
 BENCHMARK = dict(
-    target_fn   = target_ln_sq,
-    x_range     = (0.5, 5.0),   # ln(x)∈[-0.69, 1.61], [ln(x)]²∈[0, 2.59]
-    n_points    = 64,
-    n_steps     = 5000,
-    n_restarts  = 20,
-    lr          = 0.02,
-    seed        = 42,
-    normalize_y = True,
+    target_fn    = target_ln_sq,
+    x_range      = (0.5, 5.0),   # ln(x)∈[-0.69, 1.61], [ln(x)]²∈[0, 2.59]
+    n_points     = 64,
+    n_steps      = 5000,
+    n_restarts   = 20,
+    lr           = 0.02,
+    seed         = 42,
+    normalize_y  = True,
+    depth        = 6,
 )
 
-DEPTH_LADDER = [4, 5, 6, 7]
+# Hardening configurations to compare (last param = label)
+HARDEN_CONFIGS = [
+    dict(harden_frac=0.0,  min_temp=1.0,  entropy_coeff=0.0,  label="no hardening (baseline)"),
+    dict(harden_frac=0.3,  min_temp=0.1,  entropy_coeff=0.0,  label="temp anneal only"),
+    dict(harden_frac=0.3,  min_temp=0.1,  entropy_coeff=0.1,  label="temp anneal + entropy"),
+    dict(harden_frac=0.3,  min_temp=0.05, entropy_coeff=0.2,  label="aggressive hardening"),
+]
 
 # Success thresholds (fixed before seeing results)
 EXACT_THRESHOLD  = 1e-6
@@ -102,33 +111,39 @@ print(f"  snapped_loss = {ctrl.snapped_loss:.4e}  |  {'PASS' if ctrl_ok else 'FA
 print(f"  recovered    = {ctrl.recovered_expr!r}")
 print(f"  elapsed      = {elapsed_ctrl:.1f}s")
 if not ctrl_ok:
-    print("\n  *** CONTROL FAILED — do not interpret depth-ladder results ***")
+    print("\n  *** CONTROL FAILED — do not interpret hardening results ***")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Depth ladder for [ln(x)]²
+# Snap hardening comparison at depth 6
+# Depth is fixed: continuous loss 4.6e-07 at depth 6 confirms capacity.
+# The only question now: which hardening config produces clean snap?
 # ─────────────────────────────────────────────────────────────────────────────
+
+depth = BENCHMARK.pop("depth")  # remove from BENCHMARK so we can pass explicitly
+n_params = 5 * 2**depth - 6
 
 print(f"\n\n{'═'*64}")
-print("  DEPTH LADDER: [ln(x)]²")
+print(f"  SNAP HARDENING COMPARISON  [ln(x)]²  depth={depth}  n_params={n_params}")
 print(f"  x_range={BENCHMARK['x_range']}  n_points={BENCHMARK['n_points']}")
 print(f"  n_steps={BENCHMARK['n_steps']}  n_restarts={BENCHMARK['n_restarts']}")
-print(f"  lr={BENCHMARK['lr']}  seed={BENCHMARK['seed']}  normalize_y={BENCHMARK['normalize_y']}")
 print(f"  success if snapped_loss < {EXACT_THRESHOLD:.0e}")
 print("═"*64)
 
-results: dict[int, tuple[FitResult, float]] = {}
+results: dict[str, tuple[FitResult, float]] = {}
 
-for depth in DEPTH_LADDER:
-    print(f"\n  → depth={depth}  n_params={5*2**depth-6}  starting...", flush=True)
+for cfg in HARDEN_CONFIGS:
+    label = cfg.pop("label")
+    print(f"\n  → {label}  starting...", flush=True)
     t0 = time.time()
-    r = fit(depth=depth, **BENCHMARK)
+    r = fit(depth=depth, **BENCHMARK, **cfg)
     elapsed = time.time() - t0
-    results[depth] = (r, elapsed)
+    results[label] = (r, elapsed)
     print(report(depth, r, elapsed), flush=True)
+    cfg["label"] = label  # restore for summary
 
     if r.success:
-        print(f"\n  *** EXACT RECOVERY at depth={depth} ***  stopping ladder.")
+        print(f"\n  *** EXACT RECOVERY with '{label}' ***")
         break
 
 
@@ -139,36 +154,35 @@ for depth in DEPTH_LADDER:
 print(f"\n\n{'═'*64}")
 print("  SUMMARY")
 print(f"{'─'*64}")
-print(f"  {'depth':>5}  {'n_params':>8}  {'cont_loss':>10}  {'snap_loss':>10}  {'outcome':<16}  {'expr'}")
+print(f"  {'config':<28}  {'cont_loss':>10}  {'snap_loss':>10}  {'outcome':<16}  {'expr'}")
 print(f"{'─'*64}")
-for depth, (r, _) in results.items():
-    n_params = 5 * 2**depth - 6
+for label, (r, _) in results.items():
     cat = classify(r.snapped_loss)
     expr_str = repr(r.recovered_expr) if r.recovered_expr else "None"
     print(
-        f"  {depth:>5}  {n_params:>8}  {r.final_loss:>10.3e}"
+        f"  {label:<28}  {r.final_loss:>10.3e}"
         f"  {r.snapped_loss:>10.3e}  {cat:<16}  {expr_str}"
     )
 print(f"{'═'*64}")
 
 # Diagnosis
-first_exact = next((d for d, (r, _) in results.items() if r.snapped_loss < EXACT_THRESHOLD), None)
-first_close = next((d for d, (r, _) in results.items() if r.snapped_loss < CLOSE_THRESHOLD), None)
+first_exact = next((l for l, (r, _) in results.items() if r.snapped_loss < EXACT_THRESHOLD), None)
+first_close = next((l for l, (r, _) in results.items() if r.snapped_loss < CLOSE_THRESHOLD), None)
 all_diverged = all(r.snapped_loss >= CLOSE_THRESHOLD for r, _ in results.values())
 
 print("\n  DIAGNOSIS")
 print(f"{'─'*64}")
 if first_exact is not None:
-    print(f"  Exact recovery achieved at depth={first_exact}.")
-    print(f"  [ln(x)]² is representable and recoverable at depth {first_exact}.")
-    print(f"  Next step: BPR subterm regression.")
+    print(f"  Exact recovery with: '{first_exact}'")
+    print(f"  [ln(x)]² snap quality solved. Next: promote to permanent benchmark,")
+    print(f"  then move to smallest BPR subterm.")
 elif first_close is not None:
-    print(f"  Close approximation (not exact) first seen at depth={first_close}.")
-    print(f"  Optimizer converges continuously but snap does not hit exact tree.")
-    print(f"  Possible causes: depth insufficient, more restarts needed,")
-    print(f"    or logits not sharp enough at snap time.")
+    print(f"  Best config '{first_close}' gets close but not exact snap.")
+    print(f"  Hardening helps but logits still ambiguous at snap time.")
+    print(f"  Try: more restarts, stronger entropy_coeff, or two-stage lr.")
 elif all_diverged:
-    print(f"  All depths DIVERGED (snapped_loss ≥ {CLOSE_THRESHOLD:.0e}).")
-    print(f"  Causes: depth too shallow, overflow, or target outside EML reach.")
-    print(f"  Check: continuous_loss trend across depths for capacity signal.")
+    print(f"  All hardening configs still diverge at snap.")
+    print(f"  Continuous loss is fine — problem is purely snap sharpness.")
+    print(f"  Consider: staged training (freeze lower layers), Gumbel-softmax,")
+    print(f"  or iterative snap-and-finetune.")
 print(f"{'═'*64}")
