@@ -20,6 +20,17 @@ import os
 import sys
 import argparse
 import numpy as np
+import matplotlib
+
+# On Linux without DISPLAY (headless servers, CI, Docker), matplotlib's default
+# backend hangs. Pin Agg unless the user already set MPLBACKEND.
+if (
+    sys.platform.startswith("linux")
+    and not os.environ.get("DISPLAY")
+    and not os.environ.get("MPLBACKEND")
+):
+    matplotlib.use("Agg")
+
 import matplotlib.pyplot as plt
 from pathlib import Path
 
