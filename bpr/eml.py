@@ -32,8 +32,9 @@ K = RPN program length = 2*leaves − 1 for a full binary EML tree.
 
 EML complexity of BPR fine-structure terms
 ------------------------------------------
-  ln(p)        K=7    exact tree provided
-  [ln(p)]²    ~K=35   x² needs K≈19, composed with ln(p)
+  ln(p)        K=7    exact tree provided (Odrzywolek 2026 eq. 5)
+  x²           K=17   exact tree found by exhaustive enumeration
+  [ln(p)]²    K=29   exact tree by composition: X_SQ ∘ LN_P
   z/2 (= 3)   ~K=29   integer 3 derivable in EML
   γ            ~K=50+  transcendental, large tree
   −1/(2π)     ~K=80+  π has K>53, then reciprocal
@@ -199,6 +200,46 @@ LN_X: EMLExpr = EMLNode(_ONE, EMLNode(EMLNode(_ONE, _X), _ONE))
 
 # ln(p) — same structure, variable named 'p'   [depth 3, K=7]
 LN_P: EMLExpr = EMLNode(_ONE, EMLNode(EMLNode(_ONE, _P), _ONE))
+
+# x² = eml(eml(1, eml(eml(eml(1, eml(eml(1, eml(1,x)),1)),x),1)),1)
+#                                                                [depth 8, K=17]
+# Found by exhaustive enumeration (find_x_sq_eml.py).  The algebraic chain:
+#   G = e − ln(x)
+#   F = e − ln(e − ln(x))
+#   E = e^e / (e − ln(x))
+#   D = ln(e − ln(x))          ← recovers inner ln from inverted form
+#   C = e − 2·ln(x)            ← the doubling step
+#   B = e^e / x²
+#   A = 2·ln(x)
+#   x² = exp(2·ln(x))
+_G = EMLNode(_ONE, _X)                           # e − ln(x)
+_F = EMLNode(_ONE, _G)                           # e − ln(e − ln(x))
+_E = EMLNode(_F, _ONE)                           # e^e / (e − ln(x))
+_D = EMLNode(_ONE, _E)                           # ln(e − ln(x))
+_C = EMLNode(_D, _X)                             # e − 2·ln(x)
+_B = EMLNode(_C, _ONE)                           # e^e / x²
+_A = EMLNode(_ONE, _B)                           # 2·ln(x)
+X_SQ: EMLExpr = EMLNode(_A, _ONE)               # x²   [depth 8, K=17]
+
+# [ln(x)]² = X_SQ ∘ LN_X — substitute x → ln(x) in the x² tree   [K=29]
+# LN_X has 2 x-occurrences at depths 5 and 8; each replaced by the
+# full LN_X subtree (K=7, depth 3) → composed depth = 8+3 = 11, K=17+2×6=29.
+# Two independent fresh LN_X-equivalent subtrees to keep a proper tree.
+def _make_ln_x() -> EMLExpr:
+    """Fresh ln(x) subtree instance (avoids DAG aliasing in K/depth counts)."""
+    o, v = Const(1), Var("x")
+    return EMLNode(o, EMLNode(EMLNode(o, v), o))
+
+_LX1 = _make_ln_x()   # replaces first x-occurrence  (inner: eml(1, x))
+_LX2 = _make_ln_x()   # replaces second x-occurrence (middle: eml(D, x))
+_G2 = EMLNode(_ONE, _LX1)
+_F2 = EMLNode(_ONE, _G2)
+_E2 = EMLNode(_F2, _ONE)
+_D2 = EMLNode(_ONE, _E2)
+_C2 = EMLNode(_D2, _LX2)
+_B2 = EMLNode(_C2, _ONE)
+_A2 = EMLNode(_ONE, _B2)
+LN_X_SQ: EMLExpr = EMLNode(_A2, _ONE)          # [ln(x)]²  [depth 11, K=29]
 
 
 # ─────────────────────────────────────────────────────────────────────────────

@@ -11,6 +11,7 @@ from bpr.eml import (
     eml,
     Const, Var, EMLNode,
     E_CONST, EXP_X, ZERO, LN_X, LN_P,
+    X_SQ, LN_X_SQ,
     ln_p_via_eml,
     bpr_alpha_via_eml,
     verify_eml_identities,
@@ -183,3 +184,58 @@ class TestVerifyIdentities:
         assert result["exp_max_error"] < 1e-13
         assert result["zero_error"] < 1e-13
         assert result["ln_max_error"] < 1e-12
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# §7  X_SQ — exact EML tree for x²  (K=17, found by exhaustive enumeration)
+# ─────────────────────────────────────────────────────────────────────────────
+
+class TestXSqTree:
+    def test_depth(self):
+        assert X_SQ.depth() == 8
+
+    def test_K(self):
+        assert X_SQ.rpn_length() == 17
+
+    def test_values_machine_precision(self):
+        for x in [0.5, 1.0, 2.0, 3.0, np.e]:
+            result = X_SQ.eval(x=x)
+            assert abs(result.real - x ** 2) < 1e-12, (
+                f"X_SQ({x}) = {result.real}, expected {x**2}"
+            )
+
+    def test_one_is_fixed_point(self):
+        # x=1: x²=1
+        assert abs(X_SQ.eval(x=1.0).real - 1.0) < 1e-12
+
+    def test_leaf_count(self):
+        # K = 2*leaves − 1  →  17 = 2*9 − 1
+        assert X_SQ.leaf_count() == 9
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# §8  LN_X_SQ — exact EML tree for [ln(x)]²  (K=29, composed X_SQ ∘ LN_X)
+# ─────────────────────────────────────────────────────────────────────────────
+
+class TestLnXSqTree:
+    def test_depth(self):
+        assert LN_X_SQ.depth() == 11
+
+    def test_K(self):
+        assert LN_X_SQ.rpn_length() == 29
+
+    def test_values_machine_precision(self):
+        for x in [0.5, 1.5, 2.0, 3.0, np.e, np.pi]:
+            result = LN_X_SQ.eval(x=x)
+            expected = np.log(x) ** 2
+            assert abs(result.real - expected) < 1e-12, (
+                f"LN_X_SQ({x}) = {result.real}, expected {expected}"
+            )
+
+    def test_at_one_is_zero(self):
+        # x=1: ln(1)=0, [ln(1)]²=0
+        assert abs(LN_X_SQ.eval(x=1.0).real) < 1e-12
+
+    def test_leaf_count(self):
+        # K = 2*leaves − 1  →  29 = 2*15 − 1
+        assert LN_X_SQ.leaf_count() == 15
