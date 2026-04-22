@@ -92,6 +92,11 @@ def target_ln_sq(x: np.ndarray) -> np.ndarray:
     return np.log(x) ** 2
 
 
+def target_x_sq(x: np.ndarray) -> np.ndarray:
+    """x² — intermediate: if recoverable, its tree warm-starts [ln(x)]² search."""
+    return x ** 2
+
+
 def target_bpr_screening(p: np.ndarray) -> np.ndarray:
     """[ln(p)]² — the dominant BPR fine-structure term (alias of target_ln_sq)."""
     return np.log(p) ** 2
