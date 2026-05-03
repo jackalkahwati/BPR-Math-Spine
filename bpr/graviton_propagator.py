@@ -16,7 +16,8 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from typing import Optional
+from types import MappingProxyType
+from typing import Mapping, Optional
 
 import numpy as np
 
@@ -224,6 +225,126 @@ class ScalaronNormalizationDiagnostic:
 
 
 @dataclass(frozen=True)
+class CompactBosonModeNormalizationDiagnostic:
+    """Audit compact-boson winding/momentum mode counts against alpha gap."""
+
+    p: int
+    z: int
+    L_max: int
+    radius_squared: float
+    required_alpha_gap: float
+    square_lattice_mode_count: int
+    elliptic_cutoff_mode_count: int
+    elliptic_log_sum: float
+    elliptic_inverse_dimension_sum: float
+
+    @property
+    def square_log_weighted_factor(self) -> float:
+        """Full square-lattice mode count weighted by the topological log."""
+        return self.square_lattice_mode_count * np.log(self.p)
+
+    @property
+    def elliptic_log_weighted_factor(self) -> float:
+        """Elliptic cutoff mode count weighted by the topological log."""
+        return self.elliptic_cutoff_mode_count * np.log(self.p)
+
+    @property
+    def square_log_gap_ratio(self) -> float:
+        """Square-lattice log-weighted factor divided by required alpha gap."""
+        return self.square_log_weighted_factor / self.required_alpha_gap
+
+    @property
+    def elliptic_log_gap_ratio(self) -> float:
+        """Elliptic log-weighted factor divided by required alpha gap."""
+        return self.elliptic_log_weighted_factor / self.required_alpha_gap
+
+    @property
+    def status(self) -> str:
+        """Current coefficient-level status of these candidate mode counts."""
+        if abs(self.square_log_gap_ratio - 1.0) <= 0.1:
+            return "candidate"
+        if abs(self.elliptic_log_gap_ratio - 1.0) <= 0.1:
+            return "candidate"
+        return "open"
+
+
+@dataclass(frozen=True)
+class CompactBosonResidualLoopWeightDiagnostic:
+    """Audit residual loop weights after compact-boson mode counting."""
+
+    mode_diagnostic: CompactBosonModeNormalizationDiagnostic
+    candidate_weights: Mapping[str, float]
+    close_threshold: float = 0.02
+
+    def __post_init__(self) -> None:
+        if not np.isfinite(self.mode_diagnostic.square_log_weighted_factor):
+            raise ValueError("square_log_weighted_factor must be finite")
+        if self.mode_diagnostic.square_log_weighted_factor <= 0.0:
+            raise ValueError("square_log_weighted_factor must be positive")
+        if not np.isfinite(self.mode_diagnostic.required_alpha_gap):
+            raise ValueError("required_alpha_gap must be finite")
+        if self.mode_diagnostic.required_alpha_gap <= 0.0:
+            raise ValueError("required_alpha_gap must be positive")
+        if not np.isfinite(self.close_threshold) or self.close_threshold < 0.0:
+            raise ValueError("close_threshold must be finite and non-negative")
+
+        immutable_weights = {}
+        for name, value in self.candidate_weights.items():
+            weight = float(value)
+            if not np.isfinite(weight):
+                raise ValueError(f"candidate weight {name!r} must be finite")
+            if weight <= 0.0:
+                raise ValueError(f"candidate weight {name!r} must be positive")
+            immutable_weights[name] = weight
+        if not immutable_weights:
+            raise ValueError("candidate_weights must not be empty")
+        object.__setattr__(
+            self,
+            "candidate_weights",
+            MappingProxyType(immutable_weights),
+        )
+
+    @property
+    def required_residual_weight(self) -> float:
+        """Extra factor needed after square-lattice log weighting."""
+        return (
+            self.mode_diagnostic.required_alpha_gap
+            / self.mode_diagnostic.square_log_weighted_factor
+        )
+
+    @property
+    def best_candidate_name(self) -> str:
+        """Candidate residual weight closest to the required value."""
+        return min(
+            self.candidate_weights,
+            key=lambda name: abs(
+                self.candidate_weights[name] / self.required_residual_weight - 1.0
+            ),
+        )
+
+    @property
+    def best_candidate_relative_error(self) -> float:
+        """Relative error of the closest residual-weight candidate."""
+        best = self.candidate_weights[self.best_candidate_name]
+        return abs(best / self.required_residual_weight - 1.0)
+
+    @property
+    def combined_factor_for_best_candidate(self) -> float:
+        """Square-log factor multiplied by the closest residual weight."""
+        return (
+            self.mode_diagnostic.square_log_weighted_factor
+            * self.candidate_weights[self.best_candidate_name]
+        )
+
+    @property
+    def status(self) -> str:
+        """Near match is useful but remains unproven without loop derivation."""
+        if self.best_candidate_relative_error <= self.close_threshold:
+            return "near_match_unproven"
+        return "open"
+
+
+@dataclass(frozen=True)
 class Spin2CurvatureSquaredCorrection:
     """Universal Weyl/Ricci-squared correction to the TT spin-2 sector."""
 
@@ -396,6 +517,111 @@ def scalaron_sector_from_boundary_r2(
     )
 
 
+def _compact_boson_mode_sums(p: int, z: int) -> tuple[int, int, float, float]:
+    """Return square and elliptic compact-boson mode-count diagnostics."""
+    L_max = math.isqrt(p)
+    radius_squared = z / 2.0
+    square_lattice_mode_count = (2 * L_max + 1) ** 2 - 1
+    elliptic_cutoff_mode_count = 0
+    elliptic_log_sum = 0.0
+    elliptic_inverse_dimension_sum = 0.0
+
+    for momentum in range(-L_max, L_max + 1):
+        for winding in range(-L_max, L_max + 1):
+            if momentum == 0 and winding == 0:
+                continue
+            conformal_dimension = (
+                momentum ** 2 / radius_squared
+                + winding ** 2 * radius_squared
+            )
+            if conformal_dimension <= L_max:
+                elliptic_cutoff_mode_count += 1
+                elliptic_log_sum += np.log1p(L_max / conformal_dimension)
+                elliptic_inverse_dimension_sum += 1.0 / conformal_dimension
+
+    return (
+        square_lattice_mode_count,
+        elliptic_cutoff_mode_count,
+        float(elliptic_log_sum),
+        float(elliptic_inverse_dimension_sum),
+    )
+
+
+def compact_boson_mode_normalization_diagnostic(
+    p: int = P_DEFAULT,
+    z: int = 6,
+    spatial_dimensions: int = 3,
+    observed_scalar_amplitude: float = 2.1e-9,
+) -> CompactBosonModeNormalizationDiagnostic:
+    """Enumerate compact-boson mode-count candidates for the scalar alpha gap.
+
+    The diagnostic uses the c=1 compact boson dimensions
+    ``h = m^2/R^2 + n^2 R^2`` with ``R^2 = z/2`` and UV index
+    ``L_max = floor(sqrt(p))``.  These counts are candidate structures only;
+    they are not coefficient-level loop derivations.
+    """
+    sector = scalaron_sector_from_boundary_r2(
+        p=p,
+        z=z,
+        spatial_dimensions=spatial_dimensions,
+        observed_scalar_amplitude=observed_scalar_amplitude,
+    )
+    (
+        square_lattice_mode_count,
+        elliptic_cutoff_mode_count,
+        elliptic_log_sum,
+        elliptic_inverse_dimension_sum,
+    ) = _compact_boson_mode_sums(p, z)
+    return CompactBosonModeNormalizationDiagnostic(
+        p=p,
+        z=z,
+        L_max=math.isqrt(p),
+        radius_squared=z / 2.0,
+        required_alpha_gap=sector.alpha_gap_factor,
+        square_lattice_mode_count=square_lattice_mode_count,
+        elliptic_cutoff_mode_count=elliptic_cutoff_mode_count,
+        elliptic_log_sum=elliptic_log_sum,
+        elliptic_inverse_dimension_sum=elliptic_inverse_dimension_sum,
+    )
+
+
+def compact_boson_residual_loop_weight_diagnostic(
+    p: int = P_DEFAULT,
+    z: int = 6,
+    spatial_dimensions: int = 3,
+    observed_scalar_amplitude: float = 2.1e-9,
+) -> CompactBosonResidualLoopWeightDiagnostic:
+    """Compare natural compact-boson residual weights after mode counting.
+
+    The full finite ``(m,n)`` lattice weighted by ``log(p)`` gets close to the
+    scalar amplitude gap but does not close it.  This helper reports the
+    remaining factor and simple radius/chirality candidates without treating
+    any of them as a derivation.
+    """
+    if p <= 1:
+        raise ValueError("p must be greater than 1 for logarithmic diagnostics")
+    mode_diagnostic = compact_boson_mode_normalization_diagnostic(
+        p=p,
+        z=z,
+        spatial_dimensions=spatial_dimensions,
+        observed_scalar_amplitude=observed_scalar_amplitude,
+    )
+    radius_squared = mode_diagnostic.radius_squared
+    radius = np.sqrt(radius_squared)
+    candidate_weights = {
+        "radius_curvature_factor": 1.0 + 2.0 / radius_squared,
+        "radius_stiffness_factor": 1.0 + 1.0 / radius_squared,
+        "radius": float(radius),
+        "chiral_pair": 2.0,
+        "self_dual_average": 0.5 * (radius + 1.0 / radius),
+        "previous_winding_factor": 1.0 + radius / np.sqrt(np.log(p)),
+    }
+    return CompactBosonResidualLoopWeightDiagnostic(
+        mode_diagnostic=mode_diagnostic,
+        candidate_weights=candidate_weights,
+    )
+
+
 def scalaron_normalization_diagnostic(
     p: int = P_DEFAULT,
     z: int = 6,
@@ -417,9 +643,17 @@ def scalaron_normalization_diagnostic(
     ln_p = np.log(p)
     winding_critical = np.sqrt(z / 2.0)
     winding_bare = np.sqrt(ln_p)
+    (
+        square_lattice_mode_count,
+        elliptic_cutoff_mode_count,
+        _elliptic_log_sum,
+        _elliptic_inverse_dimension_sum,
+    ) = _compact_boson_mode_sums(p, z)
     alpha_inv_like = ln_p ** 2 + z / 2.0 + 0.5772156649015329 - 1.0 / (2.0 * np.pi)
     candidate_factors = {
         "previous_winding_factor": 1.0 + winding_critical / winding_bare,
+        "compact_boson_square_log": float(square_lattice_mode_count * ln_p),
+        "compact_boson_elliptic_log": float(elliptic_cutoff_mode_count * ln_p),
         "p": float(p),
         "p_log_p": float(p * ln_p),
         "p_log_p_squared": float(p * ln_p ** 2),

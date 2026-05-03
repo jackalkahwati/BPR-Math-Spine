@@ -123,7 +123,14 @@ Closing the scalar sector therefore requires deriving the winding/anyon-loop
 normalization of `alpha_R2`, not just the one-loop heat-kernel term. The old
 `1 + W_c/W_bare` estimate gives only `~1.51`, while the observed scalar
 amplitude requires `~7.98e6`; `scalaron_normalization_diagnostic(...)` now
-records this as an open coefficient-level gap.
+records this as an open coefficient-level gap. A compact-boson mode-count
+diagnostic gives `418608 log(p) ~= 4.84e6`, about `61%` of the required
+factor, while the stricter `h <= L_max` ellipse gives only `~1.17e4`.
+The residual after square-lattice counting is now only `~1.649`; the simple
+radius factor `1 + 2/R² = 5/3` is a percent-level near match, but it remains
+an unproven loop-weight candidate. The next calculation is therefore a
+coefficient-level anyon/heat-kernel derivation of whether that radius factor
+actually appears over the finite `(m,n)` lattice.
 
 **The target.** The effective graviton h_{μν} is the induced fluctuation
 of the metric from boundary modes. Its propagator is set by the
@@ -148,6 +155,10 @@ the holographic dictionary and compute the leading graviton propagator.
   still open at the `~8e6` coefficient level
 - Winding/anyon normalization diagnostic showing the old `1 + W_c/W_bare`
   factor is insufficient
+- Compact-boson `(m,n)` mode-count diagnostic narrowing the missing scalar
+  amplitude factor to a finite-lattice loop-weight problem
+- Residual loop-weight diagnostic showing `1 + 2/R² = 5/3` as a near match,
+  explicitly marked unproven until derived from the finite-lattice loop sum
 - Remaining search for near-cutoff systems where the spin-2 correction is not
   crushed by `(E_probe/Lambda_b)^2`
 

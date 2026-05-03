@@ -77,6 +77,10 @@ order-one effect; it is a large coefficient that still has to be derived from
 the finite-p winding/anyon sector. The old estimate
 `1 + sqrt(z/2)/sqrt(log p) ≈ 1.51` is far too small; matching the observed
 amplitude requires an effective enhancement of `≈ 7.98 × 10⁶`.
+The compact-boson square-lattice diagnostic gives
+`((2 floor(sqrt(p)) + 1)^2 - 1) log(p) ≈ 4.84 × 10⁶`, about `61%` of the
+required factor, but this is still a mode-count diagnostic rather than a
+derived loop coefficient.
 
 ### Result
 
@@ -106,7 +110,11 @@ p: N = p^(1/3)(1 + 1/d) ≈ 63. So:
 1. The winding/anyon-loop contribution in equation (8) is motivated but not
    computed from first principles. The scalaron-sector audit in
    `scalaron_sector_from_boundary_r2.md` shows that the missing normalization
-   is large: α_full / α_min ≈ 8 × 10⁶ for the default BPR parameters.
+   is large: α_full / α_min ≈ 8 × 10⁶ for the default BPR parameters. The
+   finite compact-boson lattice gives `418608 log(p) ≈ 4.84e6`, leaving a
+   residual factor `≈ 1.649`. The simple radius weight `1 + 2/R² = 5/3`
+   is a percent-level near match, but remains an unproven loop-weight
+   candidate.
 
 2. Step 1 uses the one-loop induced-gravity approximation. Higher-loop
    corrections in the boundary theory could modify α by O(1) factors.

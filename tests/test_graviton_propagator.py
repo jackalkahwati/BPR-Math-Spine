@@ -224,6 +224,100 @@ def test_scalaron_normalization_diagnostic_effective_sector_count():
     assert diagnostic.effective_boundary_sector_count > 1.0e11
 
 
+def test_compact_boson_mode_diagnostic_enumerates_winding_momentum_lattice():
+    from bpr.graviton_propagator import compact_boson_mode_normalization_diagnostic
+
+    diagnostic = compact_boson_mode_normalization_diagnostic(p=104761, z=6)
+
+    assert diagnostic.L_max == 323
+    assert diagnostic.radius_squared == pytest.approx(3.0)
+    assert diagnostic.square_lattice_mode_count == (2 * diagnostic.L_max + 1) ** 2 - 1
+    assert diagnostic.elliptic_cutoff_mode_count == 1014
+    assert diagnostic.square_log_weighted_factor == pytest.approx(
+        diagnostic.square_lattice_mode_count * np.log(104761)
+    )
+    assert diagnostic.elliptic_log_weighted_factor == pytest.approx(
+        diagnostic.elliptic_cutoff_mode_count * np.log(104761)
+    )
+
+
+def test_compact_boson_mode_diagnostic_does_not_close_alpha_gap():
+    from bpr.graviton_propagator import compact_boson_mode_normalization_diagnostic
+
+    diagnostic = compact_boson_mode_normalization_diagnostic(p=104761, z=6)
+
+    assert diagnostic.required_alpha_gap > 1.0e6
+    assert diagnostic.square_log_gap_ratio == pytest.approx(
+        diagnostic.square_log_weighted_factor / diagnostic.required_alpha_gap
+    )
+    assert 0.5 < diagnostic.square_log_gap_ratio < 0.7
+    assert diagnostic.elliptic_log_gap_ratio < 0.01
+    assert diagnostic.status == "open"
+
+
+def test_scalaron_normalization_diagnostic_includes_compact_boson_candidates():
+    from bpr.graviton_propagator import scalaron_normalization_diagnostic
+
+    diagnostic = scalaron_normalization_diagnostic(p=104761, z=6)
+
+    assert "compact_boson_square_log" in diagnostic.candidate_factors
+    assert "compact_boson_elliptic_log" in diagnostic.candidate_factors
+    assert diagnostic.candidate_factors["compact_boson_square_log"] == pytest.approx(
+        ((2 * 323 + 1) ** 2 - 1) * np.log(104761)
+    )
+    assert diagnostic.status == "open"
+
+
+def test_compact_boson_residual_loop_weight_identifies_near_match():
+    from bpr.graviton_propagator import compact_boson_residual_loop_weight_diagnostic
+
+    diagnostic = compact_boson_residual_loop_weight_diagnostic(p=104761, z=6)
+
+    assert diagnostic.required_residual_weight == pytest.approx(
+        diagnostic.mode_diagnostic.required_alpha_gap
+        / diagnostic.mode_diagnostic.square_log_weighted_factor
+    )
+    assert 1.6 < diagnostic.required_residual_weight < 1.7
+    assert diagnostic.candidate_weights["radius_curvature_factor"] == pytest.approx(
+        1.0 + 2.0 / diagnostic.mode_diagnostic.radius_squared
+    )
+    assert diagnostic.best_candidate_name == "radius_curvature_factor"
+    assert diagnostic.best_candidate_relative_error < 0.02
+    assert diagnostic.status == "near_match_unproven"
+
+
+def test_compact_boson_residual_loop_weight_combined_factor_tracks_gap():
+    from bpr.graviton_propagator import compact_boson_residual_loop_weight_diagnostic
+
+    diagnostic = compact_boson_residual_loop_weight_diagnostic(p=104761, z=6)
+    combined = diagnostic.combined_factor_for_best_candidate
+
+    assert combined == pytest.approx(
+        diagnostic.mode_diagnostic.square_log_weighted_factor
+        * diagnostic.candidate_weights[diagnostic.best_candidate_name]
+    )
+    assert combined / diagnostic.mode_diagnostic.required_alpha_gap == pytest.approx(
+        1.0,
+        rel=0.02,
+    )
+
+
+def test_compact_boson_residual_loop_weight_rejects_zero_log_domain():
+    from bpr.graviton_propagator import compact_boson_residual_loop_weight_diagnostic
+
+    with pytest.raises(ValueError):
+        compact_boson_residual_loop_weight_diagnostic(p=1, z=6)
+
+
+def test_compact_boson_residual_loop_weight_candidates_are_immutable():
+    from bpr.graviton_propagator import compact_boson_residual_loop_weight_diagnostic
+
+    diagnostic = compact_boson_residual_loop_weight_diagnostic(p=104761, z=6)
+
+    with pytest.raises(TypeError):
+        diagnostic.candidate_weights["radius_curvature_factor"] = 0.0
+
+
 def test_scalaron_sector_rejects_invalid_inputs():
     from bpr.graviton_propagator import scalaron_sector_from_boundary_r2
 

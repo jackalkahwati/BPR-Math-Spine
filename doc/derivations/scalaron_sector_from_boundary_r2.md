@@ -115,6 +115,63 @@ The code implementation `scalaron_normalization_diagnostic(...)` records this
 status as `open` unless an existing candidate lands within 10% of the required
 gap.
 
+## Compact-Boson Mode Count
+
+Using the `c = 1` compact boson spectrum,
+
+    h(m,n) = m^2/R^2 + n^2 R^2
+    R^2 = z/2 = 3
+
+and the finite-p cutoff:
+
+    L_max = floor(sqrt(p)) = 323
+
+there are two useful diagnostic counts:
+
+    full square lattice:      (2 L_max + 1)^2 - 1 = 418608
+    h <= L_max ellipse:      1014
+
+If the full square-lattice count is weighted by the topological log, it gives:
+
+    418608 log(p) ~= 4.84e6
+
+which is about:
+
+    0.606 * F_required
+
+The stricter conformal-dimension ellipse gives:
+
+    1014 log(p) ~= 1.17e4
+
+which is far too small. This is useful because it narrows the next calculation:
+the missing coefficient would have to come from a loop weight or degeneracy
+that is closer to the full finite `(m,n)` lattice than to the low-dimension
+ellipse, but with an additional factor of about `1.65`.
+
+The helper `compact_boson_mode_normalization_diagnostic(...)` records these
+counts. It still reports `open`, because mode counting is not yet the same as a
+coefficient-level heat-kernel/anyon-loop calculation.
+
+## Residual Loop-Weight Diagnostic
+
+After the full finite lattice count, the remaining factor is no longer huge:
+
+    F_residual = F_required / (418608 log(p)) ~= 1.649
+
+The closest simple compact-boson radius factor currently identified is:
+
+    F_R = 1 + 2/R^2 = 5/3 ~= 1.667
+
+For `R^2 = 3`, this gives:
+
+    (418608 log(p)) * (5/3) ~= 1.010 * F_required
+
+That is a near match at the percent level, but it is not yet a derivation. The
+factor could be physically meaningful only if it falls out of the actual
+anyon/heat-kernel loop weight over the finite `(m,n)` lattice. The code records
+this with `compact_boson_residual_loop_weight_diagnostic(...)`, whose status is
+`near_match_unproven` rather than `closed`.
+
 ## Interpretation
 
 This closes one question and opens a sharper one:
