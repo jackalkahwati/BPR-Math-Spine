@@ -1,19 +1,21 @@
 """
-Black Hole Entropy from Boundary Winding Configurations
-=========================================================
+Black Hole Entropy from the BPR Boundary
+========================================
 
-Derives the Bekenstein–Hawking entropy S = A/(4 l_P²) as the logarithm
-of the number of distinct winding configurations on a boundary of area A.
+The robust BPR route to the Bekenstein-Hawking coefficient is induced
+gravity, not raw ``p``-state counting.  Integrating out the ``p`` boundary
+sectors generates an Einstein-Hilbert term:
 
-This provides a microscopic explanation for black hole entropy within BPR:
-the black hole horizon *is* the boundary, and each Planck-area cell can
-carry winding numbers in ℤ_p.
+    M_Pl^2 = p Lambda_b^2 / (48 pi^2)
 
-Key result (Prediction 19):
-    S_BH = (A / l_P²) × ln(p) / (4 ln(p))  =  A / (4 l_P²)
+The Wald/replica entropy of that induced term is then:
 
-    — the ln(p) factors cancel, recovering Bekenstein–Hawking exactly,
-      independent of p.
+    S_BH = A M_Pl^2 / 4 = A / (4 l_P^2)
+
+in the unreduced Planck-mass convention used by this codebase.  The older
+``Omega = p^(A/l_P^2)`` winding picture is still useful as a heuristic for
+finite boundary information, but it is not the coefficient-level derivation
+once the Sakharov boundary cutoff ``a/l_P = sqrt(p/(48 pi^2))`` is imposed.
 
 References: Al-Kahwati (2026), *Ten Adjacent Theories*, §§4, 9
 """
@@ -22,6 +24,7 @@ from __future__ import annotations
 
 import numpy as np
 from dataclasses import dataclass
+from typing import Optional
 
 # Physical constants
 _G = 6.67430e-11        # m³ kg⁻¹ s⁻²
@@ -34,20 +37,16 @@ _L_PLANCK_SQ = _L_PLANCK ** 2
 
 @dataclass
 class BlackHoleEntropy:
-    """Bekenstein–Hawking entropy from boundary winding counting.
+    """Bekenstein-Hawking entropy from induced boundary gravity.
 
-    Each Planck-area cell on the horizon carries a winding number
-    in ℤ_p.  The total number of microstates:
+    The BPR boundary sectors induce the Einstein-Hilbert term through the
+    Sakharov relation:
 
-        Ω = p^{A / l_P²}
+        M_Pl^2 = p Lambda_b^2 / (48 pi^2)
 
-    The entropy:
-        S = ln(Ω) = (A / l_P²) ln(p)
+    The horizon entropy is the Wald entropy of that induced term:
 
-    Normalising by 4 ln(p) (the boundary–bulk map involves 4 copies
-    of the fundamental domain):
-
-        S_BH = A / (4 l_P²)   ← Bekenstein–Hawking recovered
+        S_BH = A / (4 l_P^2)
 
     Parameters
     ----------
@@ -81,8 +80,24 @@ class BlackHoleEntropy:
         return self.horizon_area / _L_PLANCK_SQ
 
     @property
+    def n_boundary_cutoff_cells(self) -> float:
+        """Number of Sakharov boundary-cutoff cells on the horizon."""
+        a_boundary = _L_PLANCK * np.sqrt(self.p / (48.0 * np.pi ** 2))
+        return self.horizon_area / a_boundary ** 2
+
+    @property
     def microstates_log(self) -> float:
-        """ln(Ω) = (A/l_P²) ln(p)."""
+        """Naive raw winding count: ln(Ω_raw) = (A/a_boundary²) ln(p).
+
+        This is a diagnostic, not the coefficient-level Bekenstein-Hawking
+        entropy.  The physical coefficient comes from the induced
+        Einstein-Hilbert/Wald entropy.
+        """
+        return self.n_boundary_cutoff_cells * np.log(self.p)
+
+    @property
+    def legacy_planck_cell_microstates_log(self) -> float:
+        """Legacy Planck-cell winding heuristic kept for auditability."""
         return self.n_planck_cells * np.log(self.p)
 
     @property
@@ -112,6 +127,53 @@ class BlackHoleEntropy:
     def information_bits(self) -> float:
         """Number of classical bits on the horizon: S / ln(2)."""
         return self.entropy_bpr / np.log(2)
+
+
+def induced_horizon_entropy(
+    horizon_area_m2: float,
+    p: int = 104761,
+    Lambda_b_J: Optional[float] = None,
+) -> float:
+    """Horizon entropy from BPR's Sakharov-induced Einstein-Hilbert term.
+
+    In the codebase's unreduced Planck-mass convention:
+
+        M_Pl = Lambda_b * sqrt(p / (48 pi^2))
+        S    = A M_Pl^2 / (4 (hbar c)^2)
+
+    If ``Lambda_b_J`` is omitted, the observed Planck length is used as the
+    remaining dimensionful anchor and the Sakharov relation fixes
+    ``Lambda_b = hbar c / a_boundary``.
+    """
+    if Lambda_b_J is None:
+        a_boundary = _L_PLANCK * np.sqrt(p / (48.0 * np.pi ** 2))
+        Lambda_b_J = _HBAR * _C / a_boundary
+
+    return (
+        horizon_area_m2
+        * p
+        * Lambda_b_J ** 2
+        / (192.0 * np.pi ** 2 * (_HBAR * _C) ** 2)
+    )
+
+
+def raw_winding_entropy(
+    horizon_area_m2: float,
+    p: int = 104761,
+    Lambda_b_J: Optional[float] = None,
+) -> float:
+    """Naive entropy from ``p`` labels per boundary cutoff cell.
+
+    This diagnostic intentionally does *not* include the induced-gravity
+    normalization.  With the Sakharov boundary spacing it scales with area
+    but does not reproduce the Bekenstein-Hawking coefficient.
+    """
+    if Lambda_b_J is None:
+        a_boundary = _L_PLANCK * np.sqrt(p / (48.0 * np.pi ** 2))
+    else:
+        a_boundary = _HBAR * _C / Lambda_b_J
+
+    return (horizon_area_m2 / a_boundary ** 2) * np.log(p)
 
 
 def black_hole_entropy(M_solar: float, p: int = 104761) -> float:

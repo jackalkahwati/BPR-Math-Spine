@@ -351,6 +351,23 @@ class TestBlackHoleEntropy:
         # S ∝ A ∝ M² → S(2M) = 4 S(M)
         assert bh2.entropy_bpr == pytest.approx(4 * bh1.entropy_bpr, rel=1e-6)
 
+    def test_induced_entropy_matches_bekenstein_hawking(self):
+        from bpr.black_hole import BlackHoleEntropy, induced_horizon_entropy
+        bh = BlackHoleEntropy(M_solar=1.0)
+        assert induced_horizon_entropy(bh.horizon_area, p=bh.p) == pytest.approx(
+            bh.entropy_bekenstein_hawking,
+            rel=1e-12,
+        )
+
+    def test_raw_winding_count_is_not_coefficient_derivation(self):
+        from bpr.black_hole import BlackHoleEntropy, raw_winding_entropy
+        bh = BlackHoleEntropy(M_solar=1.0)
+        raw_entropy = raw_winding_entropy(bh.horizon_area, p=bh.p)
+        raw_ratio = raw_entropy / bh.entropy_bekenstein_hawking
+        assert bh.microstates_log == pytest.approx(raw_entropy)
+        assert raw_ratio == pytest.approx(192.0 * np.pi**2 * np.log(bh.p) / bh.p)
+        assert raw_ratio < 1.0
+
     def test_hawking_temperature_positive(self):
         from bpr.black_hole import BlackHoleEntropy
         bh = BlackHoleEntropy(M_solar=1.0)

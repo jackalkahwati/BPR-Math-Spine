@@ -90,17 +90,19 @@ class EmergentDimensions:
 
 @dataclass
 class HolographicEntropy:
-    """Entanglement entropy from boundary winding configurations.
+    """Entanglement entropy from the induced BPR Einstein-Hilbert term.
 
     The Ryu-Takayanagi formula:
         S_EE(A) = |∂A| / (4 G_N)
 
-    In BPR, this follows from counting boundary winding microstates
-    on the minimal surface ∂A.  Each Planck-area cell carries
-    winding in ℤ_p, so:
+    In BPR, the coefficient-level route is Sakharov induced gravity:
 
-        Ω = p^{|∂A| / l_P²}
-        S = ln Ω / (4 ln p) = |∂A| / (4 l_P²)
+        M_Pl^2 = p Lambda_b^2 / (48 pi^2)
+        S      = |∂A| M_Pl^2 / 4 = |∂A| / (4 l_P²)
+
+    Raw p-state winding counts remain useful as a microscopic heuristic,
+    but the induced Einstein-Hilbert normalization is what fixes the
+    Bekenstein-Hawking coefficient.
 
     Parameters
     ----------

@@ -50,7 +50,7 @@ with
 
 This is exactly the Starobinsky potential (1) with M² = M_Pl² / (4α).
 
-### Step 3 — Scalar amplitude anchoring
+### Step 3 — Scalar amplitude audit
 
 The normalization of the scalar power spectrum A_s ≈ 2.1 × 10⁻⁹ fixes α
 via the standard Starobinsky relation:
@@ -60,26 +60,30 @@ via the standard Starobinsky relation:
 With N ≈ 63 from step 2 of the original BPR derivation and α from (3):
 
     M/M_Pl = √(1/(4α)) = 1/(2√249) = 0.0317
-    A_s = (63² / 24π²) × (0.0317)² = 16.76 × 10⁻³ × 10⁻³ ≈ 1.68 × 10⁻⁵
+    A_s = (63² / 24π²) × (0.0317)² ≈ 1.68 × 10⁻²
 
-which is 4 orders of magnitude too large. The remaining suppression
-comes from the winding sector: each non-trivial winding in the boundary
-theory contributes a factor (1/p) to the effective R² coefficient from
-anyon-loop cancellations. The full induced coefficient is
+which is about 8 × 10⁶ too large. The observed value requires:
 
-    α_full = (p / 384π²) × κ² × (1 + W_c / W_bare)                        (7)
+    α_required = N² / (96π² A_s) ≈ 2.0 × 10⁹                              (7)
 
-with W_c = √(z/2) and W_bare = √(ln p). This raises α to ≈ 1.1 × 10⁸,
-giving A_s ≈ 2.1 × 10⁻⁹ — the observed value (matches to factor ~2; the
-exact matching depends on the anyon-loop normalization which is not
-fully computed here).
+relative to α_min ≈ 249. So the remaining suppression must come from a large
+winding/anyon-loop normalization:
+
+    α_full / α_min ≈ 8.0 × 10⁶                                            (8)
+
+The earlier qualitative claim remains: an additional boundary-sector
+normalization is needed. The sharper May 2026 audit is that this is not an
+order-one effect; it is a large coefficient that still has to be derived from
+the finite-p winding/anyon sector. The old estimate
+`1 + sqrt(z/2)/sqrt(log p) ≈ 1.51` is far too small; matching the observed
+amplitude requires an effective enhancement of `≈ 7.98 × 10⁶`.
 
 ### Result
 
 With α derived from the boundary mode count, the Starobinsky potential
 (1) is an *output* of BPR, not an *input*. The predictions
 
-    n_s = 1 − 2/N,        r = 12/N²                                       (8)
+    n_s = 1 − 2/N,        r = 12/N²                                       (9)
 
 follow from the potential shape at slow-roll. N itself is derived from
 p: N = p^(1/3)(1 + 1/d) ≈ 63. So:
@@ -99,19 +103,19 @@ p: N = p^(1/3)(1 + 1/d) ≈ 63. So:
 
 ## Honest caveats
 
-1. The anyon-loop contribution in equation (7) is motivated but not
-   computed from first principles; it sets α to within a factor of ~2,
-   which is enough for the potential *shape* but not for the absolute
-   normalization A_s.
+1. The winding/anyon-loop contribution in equation (8) is motivated but not
+   computed from first principles. The scalaron-sector audit in
+   `scalaron_sector_from_boundary_r2.md` shows that the missing normalization
+   is large: α_full / α_min ≈ 8 × 10⁶ for the default BPR parameters.
 
 2. Step 1 uses the one-loop induced-gravity approximation. Higher-loop
    corrections in the boundary theory could modify α by O(1) factors.
 
-3. The potential (5) is the minimal R² result. Additional boundary-mode
-   contributions (e.g. R_μν R^μν, Weyl-squared) would generalize the
-   potential but cannot change the plateau structure that gives n_s and
-   r their observed values — those are generic features of the R² +
-   matter class, not specific to the exact coefficient.
+3. The potential (5) is the minimal pure-R² result. Within that sector,
+   changing α rescales the amplitude but leaves the leading `n_s` and `r`
+   shape predictions unchanged. Additional boundary-mode contributions
+   (e.g. R_μν R^μν, Weyl-squared) would need their own suppression or
+   decoupling argument before claiming the same single-field plateau.
 
 With these caveats, the Starobinsky form (1) is the leading-order
 prediction of BPR, and n_s, r are DERIVED in the same sense that mixing

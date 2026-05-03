@@ -1735,14 +1735,13 @@ def planck_to_newton(
     r"""Derive Newton's G from Planck-scale substrate parameters.
 
     Bridge chain:
-        l_P = sqrt(hbar G / c^3)          fundamental substrate spacing
-        xi  = l_P * sqrt(p)               correlation length from substrate
-        J   = hbar * c / xi               coupling energy scale
-        G   = hbar * c^3 * xi^2 / (J * N * p)  from emergent_spacetime
+        l_P        = sqrt(hbar G / c^3)             one dimensionful anchor
+        a_boundary = l_P * sqrt(p / (48 pi^2))      Sakharov boundary spacing
+        Lambda_b   = hbar c / a_boundary            boundary UV cutoff
+        M_Pl^2     = p Lambda_b^2 / (48 pi^2)       induced gravity
 
     BPR derivation:
-        M_Pl^2 = hbar * c * p / l_substrate^2
-        If l_substrate = l_P / sqrt(p):  M_Pl^2 = hbar * c / l_P^2 (standard)
+        M_Pl^2 = p Lambda_b^2 / (48 pi^2)
         G = hbar * c / M_Pl^2 = l_P^2 * c^3 / hbar
 
     Cross-check: G_derived vs G_measured = 6.674e-11 m^3 kg^-1 s^-2
@@ -1800,15 +1799,16 @@ def planck_to_newton(
         "M_Pl_derived_kg": float(M_Pl_derived),
         "M_Pl_measured_kg": float(M_PLANCK),
         "l_P_m": float(l_P),
-        "xi_correlation_m": float(xi),
-        "J_coupling_J": float(J_coupling),
+        "a_boundary_m": float(a_boundary),
+        "Lambda_b_J": float(Lambda_b),
         "p": p,
         "n_sites": n_sites,
         "description": (
             f"Newton's G derived from BPR substrate: "
-            f"G = hbar c^3 xi^2 / (J N p). "
-            f"With l_P = {l_P:.4e} m, xi = l_P sqrt(p) = {xi:.4e} m, "
-            f"J = hbar c / xi = {J_coupling:.4e} J, N = {n_sites}, p = {p}: "
+            f"M_Pl^2 = p Lambda_b^2 / (48 pi^2). "
+            f"With l_P = {l_P:.4e} m, "
+            f"a_boundary = l_P sqrt(p/(48 pi^2)) = {a_boundary:.4e} m, "
+            f"Lambda_b = hbar c / a_boundary = {Lambda_b:.4e} J, p = {p}: "
             f"G_derived = {G_derived:.4e} vs G_measured = {G_meas:.4e} "
             f"(relative error = {rel_err:.2e}). "
             f"Cross-check: G = l_P^2 c^3 / hbar = {G_from_lP:.4e} (exact)."

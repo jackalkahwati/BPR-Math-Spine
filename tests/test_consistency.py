@@ -508,10 +508,11 @@ class TestMathematicalClosure:
     def test_entropy_area_law_independent_of_p(self):
         """BH entropy S = A/(4l_P²) must be independent of substrate prime p.
 
-        BPR derives this as: Ω = p^(A/l_P²), so
-            S = ln(Ω)/4 = (A/l_P²) × ln(p) / 4
-        But ln(p) cancels with the normalization of k_B in substrate units.
-        The final result must be the SAME number regardless of p.
+        BPR's coefficient-level route is the induced Einstein-Hilbert term:
+            M_Pl² = p Λ_b²/(48π²), with Λ_b fixed by the Sakharov boundary
+            cutoff.  The Wald entropy of that induced term is A/(4l_P²).
+        The final result must be the SAME number regardless of p once the
+        boundary cutoff shifts with p.
         """
         from bpr.black_hole import BlackHoleEntropy
         S_p1 = BlackHoleEntropy(M_solar=1.0, p=104729).entropy_bpr

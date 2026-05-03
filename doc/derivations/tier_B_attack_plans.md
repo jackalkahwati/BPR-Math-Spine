@@ -93,6 +93,38 @@ doesn't directly address:
 
 ### Attack A: Compute graviton propagator from boundary 2-point function
 
+**May 2026 MVP status.** A leading effective-field-theory scaffold now
+exists in `bpr/graviton_propagator.py`, with the derivation note
+`doc/derivations/graviton_propagator_from_boundary_tt.md`. It implements
+the physical spatial transverse-traceless propagator
+`D_ij,kl(k) = P^TT_ij,kl/(M_Pl^2 |k|^2)` using the Sakharov normalization
+`M_Pl^2 = p Lambda_b^2/(48π²)`. The first finite-`p` stress-tensor
+normalization is now derived from the Hopf/S² mode count:
+`D_p/D_GR = p/(floor(sqrt(p))+1)^2`. The known induced `R²` term has also
+been checked: it creates the scalaron/Starobinsky scalar sector and gives
+zero correction to the physical transverse-traceless spin-2 propagator. The
+universal Weyl/Ricci-squared heat-kernel coefficient now gives a spin-2
+cutoff coefficient per RG log:
+`eta_TT = -[N_S2(p)/(20p)] log(Lambda/mu)`, which is `-0.05010 log(Lambda/mu)`
+for `p = 104761`. The RG window is now made concrete by setting
+`mu = E_probe` and `Lambda = Lambda_b`; the probe-specific shift is
+`delta_TT(E) = eta_TT(E) (E_probe/Lambda_b)^2`.
+For gravitational waves and ringdown, `E_probe = hbar 2πf`; a 100 Hz signal
+gives `|delta_TT| ~ 1e-78`, so detector-band gravitational waves are not a
+realistic observable for this specific curvature-squared correction. The
+correction has a hard EFT-envelope maximum at
+`E_probe/Lambda_b = exp(-1/2) = 0.6065`, where
+`delta_TT,max = -N_S2/(40ep) = -0.00922` for `p = 104761`.
+The scalar sector is now separately audited in
+`doc/derivations/scalaron_sector_from_boundary_r2.md`: the minimal induced
+`R²` coefficient derives the Starobinsky potential shape and keeps
+`n_s ≈ 0.968`, `r ≈ 0.003`, but its amplitude is too large by about `8e6`.
+Closing the scalar sector therefore requires deriving the winding/anyon-loop
+normalization of `alpha_R2`, not just the one-loop heat-kernel term. The old
+`1 + W_c/W_bare` estimate gives only `~1.51`, while the observed scalar
+amplitude requires `~7.98e6`; `scalaron_normalization_diagnostic(...)` now
+records this as an open coefficient-level gap.
+
 **The target.** The effective graviton h_{μν} is the induced fluctuation
 of the metric from boundary modes. Its propagator is set by the
 2-point function of the boundary energy-momentum tensor:
@@ -106,11 +138,22 @@ the holographic dictionary and compute the leading graviton propagator.
 **Deliverable.** A closed-form graviton propagator with:
 - Correct tensor structure (spin-2)
 - Correct Newton's constant G_N = 48π²/(pΛ_b²)
-- Leading (1/p) corrections to GR — these are the TESTABLE quantum
-  gravity predictions
+- Leading finite-`p` stress-tensor normalization from the S² cutoff mode
+  count
+- Weyl/Ricci-squared spin-2 coefficient per RG log
+- Probe-energy RG window helper
+- Gravitational-wave frequency map `E_probe = hbar 2πf`
+- Near-cutoff maximum `|delta_TT| < 1%` for the derived curvature-squared term
+- Scalaron-sector audit: Starobinsky shape derived, amplitude normalization
+  still open at the `~8e6` coefficient level
+- Winding/anyon normalization diagnostic showing the old `1 + W_c/W_bare`
+  factor is insufficient
+- Remaining search for near-cutoff systems where the spin-2 correction is not
+  crushed by `(E_probe/Lambda_b)^2`
 
-**Effort:** 6–12 months. The c=1 CFT part is standard; the holographic
-dictionary at finite p is the hard part.
+**Remaining effort:** 6–12 months for the exact finite-`p` dictionary. The
+c=1 CFT part is standard; mapping real observables to the correct probe scale
+and bulk observable from the CS/WZW correlator remains the hard part.
 
 ### Attack B: Black hole information via boundary unitarity
 
