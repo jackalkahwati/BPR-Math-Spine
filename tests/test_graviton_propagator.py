@@ -318,6 +318,87 @@ def test_compact_boson_residual_loop_weight_candidates_are_immutable():
         diagnostic.candidate_weights["radius_curvature_factor"] = 0.0
 
 
+def test_compact_boson_heat_kernel_loop_weight_derives_radius_factor():
+    from bpr.graviton_propagator import compact_boson_heat_kernel_loop_weight
+
+    diagnostic = compact_boson_heat_kernel_loop_weight(p=104761, z=6)
+
+    assert diagnostic.radius_squared == pytest.approx(3.0)
+    assert diagnostic.identity_heat_kernel_weight == pytest.approx(1.0)
+    assert diagnostic.chiral_current_count == 2
+    assert diagnostic.current_pair_weight == pytest.approx(2.0 / 3.0)
+    assert diagnostic.radius_loop_weight == pytest.approx(5.0 / 3.0)
+    assert diagnostic.radius_loop_weight == pytest.approx(
+        diagnostic.identity_heat_kernel_weight
+        + diagnostic.chiral_current_count / diagnostic.radius_squared
+    )
+
+
+def test_compact_boson_heat_kernel_loop_weight_matches_scalar_gap_under_ansatz():
+    from bpr.graviton_propagator import compact_boson_heat_kernel_loop_weight
+
+    diagnostic = compact_boson_heat_kernel_loop_weight(p=104761, z=6)
+
+    assert diagnostic.combined_alpha_factor == pytest.approx(
+        diagnostic.mode_diagnostic.square_log_weighted_factor
+        * diagnostic.radius_loop_weight
+    )
+    assert diagnostic.combined_gap_ratio == pytest.approx(1.0104554440237012)
+    assert diagnostic.relative_error < 0.02
+    assert diagnostic.status == "candidate_under_current_ansatz"
+    assert diagnostic.dictionary_status == "cs_dictionary_open"
+
+
+def test_compact_boson_heat_kernel_loop_weight_rejects_log_domain():
+    from bpr.graviton_propagator import compact_boson_heat_kernel_loop_weight
+
+    with pytest.raises(ValueError):
+        compact_boson_heat_kernel_loop_weight(p=1, z=6)
+
+
+def test_compact_boson_heat_kernel_loop_weight_rejects_invalid_current_count():
+    from bpr.graviton_propagator import (
+        CompactBosonHeatKernelLoopWeight,
+        compact_boson_residual_loop_weight_diagnostic,
+    )
+
+    residual = compact_boson_residual_loop_weight_diagnostic(p=104761, z=6)
+
+    for current_count in (-1, 1.5, np.nan, True):
+        with pytest.raises(ValueError):
+            CompactBosonHeatKernelLoopWeight(
+                residual_diagnostic=residual,
+                chiral_current_count=current_count,
+            )
+
+
+def test_compact_boson_heat_kernel_loop_weight_validates_nested_radius():
+    from bpr.graviton_propagator import (
+        CompactBosonHeatKernelLoopWeight,
+        CompactBosonModeNormalizationDiagnostic,
+        CompactBosonResidualLoopWeightDiagnostic,
+    )
+
+    bad_mode = CompactBosonModeNormalizationDiagnostic(
+        p=104761,
+        z=6,
+        L_max=323,
+        radius_squared=0.0,
+        required_alpha_gap=1.0,
+        square_lattice_mode_count=1,
+        elliptic_cutoff_mode_count=1,
+        elliptic_log_sum=1.0,
+        elliptic_inverse_dimension_sum=1.0,
+    )
+    residual = CompactBosonResidualLoopWeightDiagnostic(
+        mode_diagnostic=bad_mode,
+        candidate_weights={"radius_curvature_factor": 1.0},
+    )
+
+    with pytest.raises(ValueError):
+        CompactBosonHeatKernelLoopWeight(residual_diagnostic=residual)
+
+
 def test_scalaron_sector_rejects_invalid_inputs():
     from bpr.graviton_propagator import scalaron_sector_from_boundary_r2
 

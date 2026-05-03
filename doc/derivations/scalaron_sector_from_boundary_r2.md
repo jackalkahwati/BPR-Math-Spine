@@ -172,6 +172,39 @@ anyon/heat-kernel loop weight over the finite `(m,n)` lattice. The code records
 this with `compact_boson_residual_loop_weight_diagnostic(...)`, whose status is
 `near_match_unproven` rather than `closed`.
 
+## Radius-Current Heat-Kernel Weight
+
+The first coefficient-level ansatz is now explicit. Treat the scalar `R2`
+coefficient as:
+
+    alpha_full ~= alpha_min * N_lattice * log(p) * F_R
+
+where `N_lattice = 418608` and the local compact-boson heat-kernel insertion is
+the identity trace plus the two chiral current contractions:
+
+    F_R = 1 + J_L weight + J_R weight
+        = 1 + G^{theta theta} + G^{theta theta}
+        = 1 + 2/R^2
+
+For the BPR radius `R^2 = z/2 = 3`:
+
+    F_R = 1 + 2/3 = 5/3 ~= 1.667
+
+so:
+
+    418608 log(p) * (5/3) ~= 8.06e6
+    [418608 log(p) * (5/3)] / F_required ~= 1.010
+
+This is a candidate closure of the numerical gap at the percent level under
+the compact-boson current-insertion ansatz. It still does **not** close the
+full derivation, because the remaining open task is proving that this is
+exactly the insertion selected by the finite-`p` Chern-Simons/WZW holographic
+dictionary.
+
+The helper `compact_boson_heat_kernel_loop_weight(...)` therefore reports
+`candidate_under_current_ansatz` while keeping `dictionary_status =
+cs_dictionary_open`.
+
 ## Interpretation
 
 This closes one question and opens a sharper one:

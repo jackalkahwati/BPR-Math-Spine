@@ -112,9 +112,11 @@ p: N = p^(1/3)(1 + 1/d) ≈ 63. So:
    `scalaron_sector_from_boundary_r2.md` shows that the missing normalization
    is large: α_full / α_min ≈ 8 × 10⁶ for the default BPR parameters. The
    finite compact-boson lattice gives `418608 log(p) ≈ 4.84e6`, leaving a
-   residual factor `≈ 1.649`. The simple radius weight `1 + 2/R² = 5/3`
-   is a percent-level near match, but remains an unproven loop-weight
-   candidate.
+   residual factor `≈ 1.649`. A compact-boson heat-kernel current insertion
+   gives `1 + 2/R² = 5/3`, which brings the amplitude to `1.010` times the
+   observed requirement. This is a candidate coefficient-level closure under
+   the radius-current ansatz, but the CS/WZW dictionary still has to prove that
+   this is the selected finite-`p` insertion.
 
 2. Step 1 uses the one-loop induced-gravity approximation. Higher-loop
    corrections in the boundary theory could modify α by O(1) factors.

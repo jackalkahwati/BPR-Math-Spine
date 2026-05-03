@@ -345,6 +345,83 @@ class CompactBosonResidualLoopWeightDiagnostic:
 
 
 @dataclass(frozen=True)
+class CompactBosonHeatKernelLoopWeight:
+    """Radius-current heat-kernel weight over the compact-boson lattice."""
+
+    residual_diagnostic: CompactBosonResidualLoopWeightDiagnostic
+    identity_heat_kernel_weight: float = 1.0
+    chiral_current_count: int = 2
+    dictionary_status: str = "cs_dictionary_open"
+    close_threshold: float = 0.02
+
+    def __post_init__(self) -> None:
+        if not isinstance(
+            self.residual_diagnostic,
+            CompactBosonResidualLoopWeightDiagnostic,
+        ):
+            raise ValueError(
+                "residual_diagnostic must be a CompactBosonResidualLoopWeightDiagnostic"
+            )
+        if not np.isfinite(self.radius_squared) or self.radius_squared <= 0.0:
+            raise ValueError("radius_squared must be finite and positive")
+        if not np.isfinite(self.identity_heat_kernel_weight):
+            raise ValueError("identity_heat_kernel_weight must be finite")
+        if self.identity_heat_kernel_weight <= 0.0:
+            raise ValueError("identity_heat_kernel_weight must be positive")
+        if isinstance(self.chiral_current_count, bool) or not isinstance(
+            self.chiral_current_count,
+            int,
+        ):
+            raise ValueError("chiral_current_count must be a non-negative integer")
+        if self.chiral_current_count < 0:
+            raise ValueError("chiral_current_count must be a non-negative integer")
+        if not np.isfinite(self.close_threshold) or self.close_threshold < 0.0:
+            raise ValueError("close_threshold must be finite and non-negative")
+
+    @property
+    def mode_diagnostic(self) -> CompactBosonModeNormalizationDiagnostic:
+        """Underlying finite-lattice mode-count diagnostic."""
+        return self.residual_diagnostic.mode_diagnostic
+
+    @property
+    def radius_squared(self) -> float:
+        """Compact-boson radius squared, ``R² = z/2``."""
+        return self.mode_diagnostic.radius_squared
+
+    @property
+    def current_pair_weight(self) -> float:
+        """Two chiral current contractions weighted by the inverse radius metric."""
+        return self.chiral_current_count / self.radius_squared
+
+    @property
+    def radius_loop_weight(self) -> float:
+        """Heat-kernel identity trace plus radius-current insertion."""
+        return self.identity_heat_kernel_weight + self.current_pair_weight
+
+    @property
+    def combined_alpha_factor(self) -> float:
+        """Finite lattice log factor multiplied by the radius loop weight."""
+        return self.mode_diagnostic.square_log_weighted_factor * self.radius_loop_weight
+
+    @property
+    def combined_gap_ratio(self) -> float:
+        """Combined factor divided by the required scalar-amplitude gap."""
+        return self.combined_alpha_factor / self.mode_diagnostic.required_alpha_gap
+
+    @property
+    def relative_error(self) -> float:
+        """Relative mismatch to the observed scalar-amplitude normalization."""
+        return abs(self.combined_gap_ratio - 1.0)
+
+    @property
+    def status(self) -> str:
+        """Whether the current ansatz closes the scalar-amplitude gap."""
+        if self.relative_error <= self.close_threshold:
+            return "candidate_under_current_ansatz"
+        return "open"
+
+
+@dataclass(frozen=True)
 class Spin2CurvatureSquaredCorrection:
     """Universal Weyl/Ricci-squared correction to the TT spin-2 sector."""
 
@@ -619,6 +696,35 @@ def compact_boson_residual_loop_weight_diagnostic(
     return CompactBosonResidualLoopWeightDiagnostic(
         mode_diagnostic=mode_diagnostic,
         candidate_weights=candidate_weights,
+    )
+
+
+def compact_boson_heat_kernel_loop_weight(
+    p: int = P_DEFAULT,
+    z: int = 6,
+    spatial_dimensions: int = 3,
+    observed_scalar_amplitude: float = 2.1e-9,
+) -> CompactBosonHeatKernelLoopWeight:
+    """Evaluate the compact-boson radius-current heat-kernel ansatz.
+
+    The ansatz treats the scalar ``R²`` loop coefficient as a finite
+    square-lattice trace times a local heat-kernel insertion.  For one compact
+    boson, that insertion has an identity trace plus two chiral current
+    contractions, each weighted by the inverse compactification metric
+    ``G^{theta theta} = 1/R²``.  Thus ``F_R = 1 + 2/R²``.
+
+    This evaluates the percent-level ``5/3`` candidate within the stated
+    current ansatz; the full CS/WZW holographic dictionary is still marked
+    open.
+    """
+    residual_diagnostic = compact_boson_residual_loop_weight_diagnostic(
+        p=p,
+        z=z,
+        spatial_dimensions=spatial_dimensions,
+        observed_scalar_amplitude=observed_scalar_amplitude,
+    )
+    return CompactBosonHeatKernelLoopWeight(
+        residual_diagnostic=residual_diagnostic,
     )
 
 
