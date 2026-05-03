@@ -24,6 +24,13 @@
 >
 > One‑pager → [`doc/BPR_one_pager.md`](doc/BPR_one_pager.md)
 
+## Repository Branches
+
+This repository now carries two related development lines:
+
+- `starfire`: primary Starfire branch.
+- `lunarfire`: Helionis/LunarFire D-He3 reactor architecture branch, including geometry downselect, mirror/nozzle power balance, Modulus Fusion control, CAD envelope, and collector/nozzle thermal screening.
+
 ---
 
 ## Interactive Website

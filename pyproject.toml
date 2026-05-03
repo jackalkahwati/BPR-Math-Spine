@@ -51,7 +51,7 @@ bpr = "bpr.cli:main"
 bpr-demo = "scripts.run_casimir_demo:main"
 
 [tool.setuptools.packages.find]
-include = ["bpr*"]
+include = ["bpr*", "helionis*"]
 
 [tool.black]
 line-length = 88
