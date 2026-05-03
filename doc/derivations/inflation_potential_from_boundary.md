@@ -114,9 +114,12 @@ p: N = p^(1/3)(1 + 1/d) ≈ 63. So:
    finite compact-boson lattice gives `418608 log(p) ≈ 4.84e6`, leaving a
    residual factor `≈ 1.649`. A compact-boson heat-kernel current insertion
    gives `1 + 2/R² = 5/3`, which brings the amplitude to `1.010` times the
-   observed requirement. This is a candidate coefficient-level closure under
-   the radius-current ansatz, but the CS/WZW dictionary still has to prove that
-   this is the selected finite-`p` insertion.
+   observed requirement. The abelian CS/WZW boundary symmetry makes this
+   operator family compatible but not yet proven: neutral scalar curvature
+   insertions exclude charged vertex operators, one-sided chiral currents, and
+   higher descendants. The remaining open steps are the doubled/non-chiral
+   completion that justifies a `J_L`, `J_R` pair, and the absolute finite-`p`
+   bulk normalization of that boundary insertion.
 
 2. Step 1 uses the one-loop induced-gravity approximation. Higher-loop
    corrections in the boundary theory could modify α by O(1) factors.

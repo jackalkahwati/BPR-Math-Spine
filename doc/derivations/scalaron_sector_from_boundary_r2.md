@@ -197,13 +197,69 @@ so:
 
 This is a candidate closure of the numerical gap at the percent level under
 the compact-boson current-insertion ansatz. It still does **not** close the
-full derivation, because the remaining open task is proving that this is
-exactly the insertion selected by the finite-`p` Chern-Simons/WZW holographic
-dictionary.
+full derivation, because a single `U(1)_p` Chern-Simons edge theory is chiral.
+The two-current `J_L`, `J_R` factor requires either a doubled/non-chiral
+boundary completion or an explicit derivation of how the bulk scalar loop pairs
+the chiral edge with its conjugate.
 
 The helper `compact_boson_heat_kernel_loop_weight(...)` therefore reports
 `candidate_under_current_ansatz` while keeping `dictionary_status =
 cs_dictionary_open`.
+
+## CS/WZW Compatibility Rule
+
+The next step is to ask whether the boundary theory permits this insertion in
+a constrained way, or whether it was merely chosen because it fits. Under the
+abelian CS/WZW dictionary:
+
+    U(1)_p Chern-Simons  ->  chiral U(1)_p WZW edge
+    doubled/non-chiral completion  ->  c = 1 compact boson with J_L, J_R
+
+the boundary operator content has:
+
+    identity operator:       neutral, spinless
+    chiral currents:         J_L, J_R after non-chiral completion
+    vertex operators:        V_{m,n}, generally charged under momentum/winding
+    descendants:             higher-dimension derivative insertions
+
+The scalar `R2` loop insertion must be:
+
+    neutral under the compact U(1)
+    spinless on the boundary
+    parity-even between left and right movers
+    local and marginal at leading order
+
+Those conditions exclude charged vertex operators, one-sided chiral currents,
+and higher descendants. In the doubled/non-chiral compact-boson ansatz, the
+surviving compatible leading insertion is:
+
+    identity + radius-current pair
+
+with the two allowed current contractions:
+
+    J_L contribution:  G^{theta theta} = 1/R^2
+    J_R contribution:  G^{theta theta} = 1/R^2
+
+Therefore the compatibility rule motivates:
+
+    F_R = 1 + 1/R^2 + 1/R^2 = 1 + 2/R^2
+
+and for `R^2 = 3`:
+
+    F_R = 5/3
+
+This moves the result from "numerical near-match" to "compatible with the
+neutral scalar operator filters of the abelian CS/WZW boundary theory." It does
+not yet prove the coefficient. Two things remain open:
+
+    1. chirality completion: why the scalar loop pairs the chiral CS edge with
+       a conjugate edge or equivalent non-chiral completion;
+    2. local and bulk normalization: why the identity/current mixing enters
+       the induced 4D `R2` coefficient with exactly this unit normalization.
+
+The helper `compact_boson_cs_wzw_selection_rule(...)` reports
+`compatible_with_cs_wzw_symmetry` with
+`dictionary_status = chirality_and_bulk_normalization_open`.
 
 ## Interpretation
 

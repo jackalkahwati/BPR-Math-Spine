@@ -132,9 +132,13 @@ an unproven loop-weight candidate. A first heat-kernel current-insertion
 calculation now evaluates that same `5/3` candidate as `1 + G^{theta theta} +
 G^{theta theta}` for the two chiral compact-boson currents at `R² = 3`. This
 brings the scalar normalization to `~1.010` of the observed requirement under
-the current ansatz. The next calculation is therefore narrower: prove from the
-finite-`p` CS/WZW dictionary that this is the selected anyon-loop insertion,
-not just a compact-boson heat-kernel candidate.
+the current ansatz. The abelian CS/WZW compatibility filter is now explicit:
+neutral, spinless, parity-even scalar curvature insertions exclude charged
+vertex operators, one-sided chiral currents, and higher descendants. This
+supports the identity plus `J_L`, `J_R` radius-current pair only after a
+doubled/non-chiral completion of the chiral CS edge. The next calculation is
+therefore narrower: prove that chirality completion and then derive the
+absolute finite-`p` bulk normalization of the compatible boundary insertion.
 
 **The target.** The effective graviton h_{μν} is the induced fluctuation
 of the metric from boundary modes. Its propagator is set by the
@@ -165,6 +169,9 @@ the holographic dictionary and compute the leading graviton propagator.
   explicitly marked unproven until derived from the finite-lattice loop sum
 - Heat-kernel current-insertion helper evaluating the same `5/3` factor under
   the compact-boson radius ansatz, with the CS/WZW dictionary still open
+- CS/WZW compatibility helper showing the `5/3` operator family passes the
+  neutral scalar boundary filters, while chirality completion and absolute
+  bulk normalization remain open
 - Remaining search for near-cutoff systems where the spin-2 correction is not
   crushed by `(E_probe/Lambda_b)^2`
 

@@ -180,6 +180,41 @@ does not depend on p. The CS level k = p enters only as the UV cutoff
 consistent: the radius is a tree-level geometric quantity (from z), while
 the level sets the UV completion.
 
+### 4.1 Operator compatibility for scalar curvature loops
+
+The inflation/scalaron sector needs a local boundary insertion that corrects
+the induced `R2` coefficient. The abelian CS/WZW boundary data strongly
+restricts this insertion.
+
+For a single `U(1)_p` CS theory, the edge theory is chiral. The non-chiral
+compact-boson current pair used in the scalaron diagnostic therefore requires
+either a doubled edge, a conjugate edge, or an explicit bulk pairing of the
+chiral edge with its parity conjugate:
+
+    J_L = i partial phi_L
+    J_R = i partial phi_R
+
+A scalar curvature insertion must be neutral, spinless, parity-even, local,
+and marginal at leading order. These requirements exclude:
+
+- charged vertex operators `V_{m,n}`;
+- one-sided chiral currents `J_L` or `J_R` alone;
+- higher descendants, which are subleading in the local heat-kernel expansion.
+
+The leading surviving operator family is therefore:
+
+    identity + radius-current pair
+
+The radius metric weights each allowed chiral current contraction by
+`G^{theta theta} = 1/R2`, so the compatible local factor is:
+
+    F_R = 1 + 1/R2 + 1/R2 = 1 + 2/R2
+
+For the BPR boundary radius `R2 = z/2 = 3`, this gives `F_R = 5/3`. This
+passes the neutral scalar operator filters used in the scalaron-amplitude
+diagnostic. Two items remain open: the doubled/non-chiral chirality completion
+and the absolute finite-`p` bulk normalization of this boundary insertion.
+
 ---
 
 ## 5. The alpha formula: what is derived and what is open

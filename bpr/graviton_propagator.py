@@ -422,6 +422,91 @@ class CompactBosonHeatKernelLoopWeight:
 
 
 @dataclass(frozen=True)
+class CompactBosonCSWZWSelectionRule:
+    """CS/WZW compatibility diagnostic for the compact-boson radius insertion."""
+
+    heat_kernel_weight: CompactBosonHeatKernelLoopWeight
+    boundary_theory: str = "U(1)_p CS boundary compatible c=1 compact boson"
+    candidate_operator: str = "identity_plus_radius_current_pair"
+    allowed_chiral_currents: tuple[str, str] = ("J_L", "J_R")
+    excluded_operator_families: tuple[str, str, str] = (
+        "charged_vertex_operators",
+        "single_chiral_currents",
+        "higher_descendants",
+    )
+    dictionary_status: str = "chirality_and_bulk_normalization_open"
+    cs_chirality_status: str = "doubled_or_nonchiral_completion_required"
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.heat_kernel_weight, CompactBosonHeatKernelLoopWeight):
+            raise ValueError(
+                "heat_kernel_weight must be a CompactBosonHeatKernelLoopWeight"
+            )
+        if self.heat_kernel_weight.identity_heat_kernel_weight != 1.0:
+            raise ValueError("selection diagnostic requires identity weight 1")
+        if self.heat_kernel_weight.chiral_current_count != 2:
+            raise ValueError("selection diagnostic requires two chiral currents")
+        if self.heat_kernel_weight.close_threshold != 0.02:
+            raise ValueError("selection diagnostic requires canonical close_threshold")
+        if self.heat_kernel_weight.dictionary_status != "cs_dictionary_open":
+            raise ValueError("selection diagnostic requires open CS dictionary status")
+        if self.boundary_theory != "U(1)_p CS boundary compatible c=1 compact boson":
+            raise ValueError("diagnostic requires the abelian CS/WZW boundary theory")
+        if self.allowed_chiral_currents != ("J_L", "J_R"):
+            raise ValueError("non-chiral compact-boson ansatz needs J_L and J_R")
+        if self.candidate_operator != "identity_plus_radius_current_pair":
+            raise ValueError(
+                "candidate_operator must be the neutral radius-current pair"
+            )
+        if self.excluded_operator_families != (
+            "charged_vertex_operators",
+            "single_chiral_currents",
+            "higher_descendants",
+        ):
+            raise ValueError(
+                "excluded_operator_families must match the symmetry filters"
+            )
+        if self.dictionary_status != "chirality_and_bulk_normalization_open":
+            raise ValueError(
+                "dictionary_status must keep chirality and normalization open"
+            )
+        if self.cs_chirality_status != "doubled_or_nonchiral_completion_required":
+            raise ValueError("single CS chirality requires an explicit completion")
+
+    @property
+    def radius_squared(self) -> float:
+        """Compact-boson radius squared selected by the Hopf boundary action."""
+        return self.heat_kernel_weight.radius_squared
+
+    @property
+    def current_pair_weight(self) -> float:
+        """Selected left/right current-pair contribution to the local trace."""
+        return self.heat_kernel_weight.current_pair_weight
+
+    @property
+    def radius_loop_weight(self) -> float:
+        """Selected identity plus radius-current heat-kernel factor."""
+        return self.heat_kernel_weight.radius_loop_weight
+
+    @property
+    def combined_alpha_factor(self) -> float:
+        """Selected scalar-amplitude enhancement factor."""
+        return self.heat_kernel_weight.combined_alpha_factor
+
+    @property
+    def combined_gap_ratio(self) -> float:
+        """Selected factor divided by the observed scalar-amplitude requirement."""
+        return self.heat_kernel_weight.combined_gap_ratio
+
+    @property
+    def status(self) -> str:
+        """Boundary symmetry is compatible, but does not prove the coefficient."""
+        if self.heat_kernel_weight.status == "candidate_under_current_ansatz":
+            return "compatible_with_cs_wzw_symmetry"
+        return "open"
+
+
+@dataclass(frozen=True)
 class Spin2CurvatureSquaredCorrection:
     """Universal Weyl/Ricci-squared correction to the TT spin-2 sector."""
 
@@ -726,6 +811,33 @@ def compact_boson_heat_kernel_loop_weight(
     return CompactBosonHeatKernelLoopWeight(
         residual_diagnostic=residual_diagnostic,
     )
+
+
+def compact_boson_cs_wzw_selection_rule(
+    p: int = P_DEFAULT,
+    z: int = 6,
+    spatial_dimensions: int = 3,
+    observed_scalar_amplitude: float = 2.1e-9,
+) -> CompactBosonCSWZWSelectionRule:
+    """Check CS/WZW compatibility of the radius-current scalar-loop ansatz.
+
+    U(1)_p Chern-Simons induces a chiral compact-boson edge theory.  The
+    non-chiral ``J_L``/``J_R`` pair used by the heat-kernel ansatz therefore
+    requires an explicit doubled or non-chiral boundary completion.  Given that
+    completion, a neutral, parity-even, spinless scalar curvature insertion is
+    compatible with the identity plus radius-current pair and excludes charged
+    vertex operators, one-sided chiral currents, and higher descendants.
+
+    This does not prove the ``1 + 2/R²`` coefficient from the CS path integral;
+    it records the remaining open items explicitly.
+    """
+    heat_kernel_weight = compact_boson_heat_kernel_loop_weight(
+        p=p,
+        z=z,
+        spatial_dimensions=spatial_dimensions,
+        observed_scalar_amplitude=observed_scalar_amplitude,
+    )
+    return CompactBosonCSWZWSelectionRule(heat_kernel_weight=heat_kernel_weight)
 
 
 def scalaron_normalization_diagnostic(

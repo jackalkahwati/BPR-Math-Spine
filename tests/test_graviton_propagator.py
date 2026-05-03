@@ -399,6 +399,99 @@ def test_compact_boson_heat_kernel_loop_weight_validates_nested_radius():
         CompactBosonHeatKernelLoopWeight(residual_diagnostic=residual)
 
 
+def test_cs_wzw_selection_rule_marks_radius_pair_as_compatible_not_proven():
+    from bpr.graviton_propagator import compact_boson_cs_wzw_selection_rule
+
+    selection = compact_boson_cs_wzw_selection_rule(p=104761, z=6)
+
+    expected_boundary = "U(1)_p CS boundary compatible c=1 compact boson"
+    assert selection.boundary_theory == expected_boundary
+    assert selection.candidate_operator == "identity_plus_radius_current_pair"
+    assert selection.allowed_chiral_currents == ("J_L", "J_R")
+    assert selection.excluded_operator_families == (
+        "charged_vertex_operators",
+        "single_chiral_currents",
+        "higher_descendants",
+    )
+    assert selection.radius_loop_weight == pytest.approx(5.0 / 3.0)
+    assert selection.cs_chirality_status == "doubled_or_nonchiral_completion_required"
+    assert selection.status == "compatible_with_cs_wzw_symmetry"
+
+
+def test_cs_wzw_selection_rule_matches_heat_kernel_weight():
+    from bpr.graviton_propagator import compact_boson_cs_wzw_selection_rule
+
+    selection = compact_boson_cs_wzw_selection_rule(p=104761, z=6)
+
+    assert selection.current_pair_weight == pytest.approx(
+        selection.heat_kernel_weight.current_pair_weight
+    )
+    assert selection.combined_alpha_factor == pytest.approx(
+        selection.heat_kernel_weight.combined_alpha_factor
+    )
+    assert selection.combined_gap_ratio == pytest.approx(1.0104554440237012)
+    assert selection.dictionary_status == "chirality_and_bulk_normalization_open"
+
+
+def test_cs_wzw_selection_rule_can_report_open_for_nonmatching_parameters():
+    from bpr.graviton_propagator import compact_boson_cs_wzw_selection_rule
+
+    selection = compact_boson_cs_wzw_selection_rule(p=101, z=6)
+
+    assert selection.heat_kernel_weight.status == "open"
+    assert selection.status == "open"
+    assert selection.dictionary_status == "chirality_and_bulk_normalization_open"
+
+
+def test_cs_wzw_selection_rule_rejects_invalid_boundary_data():
+    from bpr.graviton_propagator import (
+        CompactBosonCSWZWSelectionRule,
+        compact_boson_heat_kernel_loop_weight,
+    )
+
+    heat_kernel_weight = compact_boson_heat_kernel_loop_weight(p=104761, z=6)
+
+    with pytest.raises(ValueError):
+        CompactBosonCSWZWSelectionRule(
+            heat_kernel_weight="not-a-heat-kernel-weight",
+        )
+    for kwargs in (
+        {"boundary_theory": "SU(2)_p CS"},
+        {"candidate_operator": "charged_vertex_operator"},
+        {"allowed_chiral_currents": ("J_L",)},
+        {"excluded_operator_families": ("charged_vertex_operators",)},
+        {"dictionary_status": "closed"},
+        {"cs_chirality_status": "closed"},
+    ):
+        with pytest.raises(ValueError):
+            CompactBosonCSWZWSelectionRule(
+                heat_kernel_weight=heat_kernel_weight,
+                **kwargs,
+            )
+
+
+def test_cs_wzw_selection_rule_rejects_inconsistent_heat_kernel_weight():
+    from bpr.graviton_propagator import (
+        CompactBosonCSWZWSelectionRule,
+        CompactBosonHeatKernelLoopWeight,
+        compact_boson_residual_loop_weight_diagnostic,
+    )
+
+    residual = compact_boson_residual_loop_weight_diagnostic(p=104761, z=6)
+    altered_weight = CompactBosonHeatKernelLoopWeight(
+        residual_diagnostic=residual,
+        chiral_current_count=1,
+    )
+    altered_threshold = CompactBosonHeatKernelLoopWeight(
+        residual_diagnostic=residual,
+        close_threshold=10.0,
+    )
+
+    for heat_kernel_weight in (altered_weight, altered_threshold):
+        with pytest.raises(ValueError):
+            CompactBosonCSWZWSelectionRule(heat_kernel_weight=heat_kernel_weight)
+
+
 def test_scalaron_sector_rejects_invalid_inputs():
     from bpr.graviton_propagator import scalaron_sector_from_boundary_r2
 
