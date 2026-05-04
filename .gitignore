@@ -92,6 +92,9 @@ data/*.json
 data/*.h5
 !data/.gitkeep
 
+# Downloaded datasets (torchvision, etc.)
+data/torchvision/
+
 # Output files
 *.png
 *.pdf
