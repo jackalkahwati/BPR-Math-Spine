@@ -18,23 +18,30 @@ Three condition arms are supported and run as separate sweeps:
 A real HIT in the slope test requires the winning_ticket arm to show
 BPR-shaped variance collapse AND both baselines to *not* show it.
 
-Defaults are sized for a fast first run on CPU/MNIST. For the real
-test crank --dataset cifar10 --seeds 30 --rounds 12 --epochs 10 and
-run on a GPU.
+Defaults are sized for a fast first run on CPU/MNIST. For the faithful
+test, use CIFAR-10 with the ResNet-20 architecture (the OpenLTH /
+Frankle reference) and crank seeds, rounds, and epochs.
+
+Architecture
+------------
+    --arch smallcnn   ~50K-80K param Conv-Conv-FC; default for MNIST
+    --arch resnet20   standard CIFAR ResNet-20 (~270K params, 20 weight
+                      layers); default for CIFAR-10
+If --arch is omitted, the runner picks based on --dataset.
 
 Usage
 -----
-    # Fast smoke run (MNIST, ~10–30 min on CPU):
+    # Fast smoke run (MNIST + SmallCNN, ~25 min on 4-core CPU):
     python experiments/lottery_ticket_imp_runner.py
 
-    # Real run (CIFAR-10, GPU recommended):
+    # Faithful test (CIFAR-10 + ResNet-20, GPU strongly recommended):
     python experiments/lottery_ticket_imp_runner.py \\
-        --dataset cifar10 --seeds 30 --rounds 12 --epochs 10 \\
-        --out data/imp_cifar10.csv
+        --dataset cifar10 --arch resnet20 --seeds 30 --rounds 12 \\
+        --epochs 10 --out data/imp_cifar10_resnet20.csv
 
     # Then feed CSV to the slope test:
-    python experiments/lottery_ticket_variance.py data/imp_cifar10.csv
-    python experiments/lottery_ticket_variance.py data/imp_cifar10.csv --metric loss
+    python experiments/lottery_ticket_variance.py data/imp_cifar10_resnet20.csv
+    python experiments/lottery_ticket_variance.py data/imp_cifar10_resnet20.csv --metric loss
 """
 
 from __future__ import annotations
@@ -74,6 +81,61 @@ class SmallCNN(nn.Module):
         x = F.max_pool2d(F.relu(self.conv2(x)), 2)
         x = F.relu(self.fc1(x.flatten(1)))
         return self.fc2(x)
+
+
+class _BasicBlock(nn.Module):
+    """CIFAR ResNet basic block: two 3x3 convs + BN, with optional 1x1
+    projection shortcut when stride or channel count changes."""
+
+    def __init__(self, in_ch: int, out_ch: int, stride: int = 1):
+        super().__init__()
+        self.conv1 = nn.Conv2d(in_ch, out_ch, 3, stride=stride, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(out_ch)
+        self.conv2 = nn.Conv2d(out_ch, out_ch, 3, stride=1, padding=1, bias=False)
+        self.bn2 = nn.BatchNorm2d(out_ch)
+        if stride != 1 or in_ch != out_ch:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(in_ch, out_ch, 1, stride=stride, bias=False),
+                nn.BatchNorm2d(out_ch),
+            )
+        else:
+            self.shortcut = nn.Identity()
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        out = F.relu(self.bn1(self.conv1(x)))
+        out = self.bn2(self.conv2(out))
+        return F.relu(out + self.shortcut(x))
+
+
+class ResNet20(nn.Module):
+    """Standard CIFAR-10 ResNet-20 (He et al. 2016): 16→32→64 channels,
+    3 BasicBlocks per stage, ~270K parameters, 20 weight layers. The
+    reference architecture for OpenLTH iterative-magnitude-pruning
+    experiments. Expects 32×32 RGB input."""
+
+    def __init__(self, n_classes: int = 10):
+        super().__init__()
+        self.conv1 = nn.Conv2d(3, 16, 3, stride=1, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(16)
+        self.layer1 = self._make_stage(16, 16, 3, stride=1)
+        self.layer2 = self._make_stage(16, 32, 3, stride=2)
+        self.layer3 = self._make_stage(32, 64, 3, stride=2)
+        self.fc = nn.Linear(64, n_classes)
+
+    @staticmethod
+    def _make_stage(in_ch: int, out_ch: int, n_blocks: int, stride: int) -> nn.Sequential:
+        layers = [_BasicBlock(in_ch, out_ch, stride)]
+        for _ in range(n_blocks - 1):
+            layers.append(_BasicBlock(out_ch, out_ch, 1))
+        return nn.Sequential(*layers)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = F.relu(self.bn1(self.conv1(x)))
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = F.adaptive_avg_pool2d(x, 1).flatten(1)
+        return self.fc(x)
 
 
 # ---------------------------------------------------------------------------
@@ -149,9 +211,9 @@ def clone_state(model: nn.Module) -> Dict[str, torch.Tensor]:
 
 
 def reinit_weights(model: nn.Module) -> None:
-    """Re-randomize prunable weights using the layers' default init."""
+    """Re-randomize trainable weights using the layers' default init."""
     for module in model.modules():
-        if isinstance(module, (nn.Linear, nn.Conv2d)):
+        if isinstance(module, (nn.Linear, nn.Conv2d, nn.BatchNorm1d, nn.BatchNorm2d)):
             module.reset_parameters()
 
 
@@ -219,7 +281,10 @@ def run_seed(seed: int, condition: str, args, device, writer) -> None:
     train_loader, test_loader, in_ch, im_size = make_loaders(
         args.dataset, args.batch_size, args.data_root,
     )
-    model = SmallCNN(in_ch=in_ch, im_size=im_size).to(device)
+    if args.arch == "resnet20":
+        model = ResNet20().to(device)
+    else:
+        model = SmallCNN(in_ch=in_ch, im_size=im_size).to(device)
     init_state = clone_state(model)
     masks = init_masks(model)
     rmg = torch.Generator(device="cpu").manual_seed(seed * 31 + 7)
@@ -253,6 +318,9 @@ def run_seed(seed: int, condition: str, args, device, writer) -> None:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--dataset", choices=["mnist", "cifar10"], default="mnist")
+    ap.add_argument("--arch", choices=["smallcnn", "resnet20"], default=None,
+                    help="model architecture; defaults to resnet20 for cifar10, "
+                         "smallcnn otherwise")
     ap.add_argument("--data-root", default="./data/torchvision")
     ap.add_argument("--out", default="data/imp_results.csv")
     ap.add_argument("--seeds", type=int, default=5)
@@ -267,12 +335,17 @@ def main(argv=None) -> int:
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = ap.parse_args(argv)
 
+    if args.arch is None:
+        args.arch = "resnet20" if args.dataset == "cifar10" else "smallcnn"
+    if args.arch == "resnet20" and args.dataset != "cifar10":
+        ap.error("--arch resnet20 requires --dataset cifar10 (32×32 RGB input)")
+
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     fields = ["round", "seed", "accuracy", "loss", "density", "condition"]
     device = torch.device(args.device)
 
-    print(f"# device {device}, dataset {args.dataset}, "
+    print(f"# device {device}, dataset {args.dataset}, arch {args.arch}, "
           f"{args.seeds} seeds × {args.rounds + 1} rounds × {len(args.conditions)} conditions")
     print(f"# writing to {out}")
 
