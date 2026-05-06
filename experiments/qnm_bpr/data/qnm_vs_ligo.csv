@@ -1,0 +1,9 @@
+event,M_solar,bound_df_over_f_90,bound_dtau_over_tau_90,BPR_prediction_df_over_f,BPR_over_bound_ratio,verdict,source
+GW150914,68.0,0.16,0.34,8.78066032713269e-06,5.487912704457931e-05,consistent (BPR << bound),"Abbott et al. (2016) PRL 116, 221101; Brito, Buonanno, Raymond (2018) PRD 98, 084038"
+GW170104,49.0,0.2,0.5,8.78066032713269e-06,4.390330163566345e-05,consistent (BPR << bound),"Carullo et al. (2019) PRD 99, 123029"
+GW190521,142.0,0.24,0.6,8.78066032713269e-06,3.6586084696386215e-05,consistent (BPR << bound),"Abbott et al. (2020) PRL 125, 101102; Abbott et al. (2021) PRD 103, 122002 (TGR-O3a)"
+GWTC-3 combined (TGR-O3 ringdown),,0.04,0.16,8.78066032713269e-06,0.00021951650817831725,consistent (BPR << bound),"Abbott et al. (2021) PRD 103, 122002 (O3a); Abbott et al. (2024) PRD 109, 022001 (O3-final TGR)"
+Cosmic Explorer (loud BBH ~1000 Mpc),,0.001,0.01,8.78066032713269e-06,0.00878066032713269,below sensitivity even at this level,"Berti et al. (2016) PRD 94, 104024; Carullo et al. (2018) PRD 98, 104020"
+Einstein Telescope (loud BBH),,0.001,0.01,8.78066032713269e-06,0.00878066032713269,below sensitivity even at this level,"Maggiore et al. (2020) JCAP 03, 050"
+"LISA SMBHB (10^6 Msun, z=1)",,1e-05,0.0001,8.78066032713269e-06,0.878066032713269,BPR borderline (catalog stack helps),"Berti, Buonanno, Will (2005) PRD 71, 084025; Berti, Sesana et al. (2016) PRL 117, 101102"
+CE+ET stacked catalog (Fisher-forecast 3G),,0.0001,0.001,8.78066032713269e-06,0.0878066032713269,below sensitivity even at this level,"Brito, Buonanno, Raymond (2018) PRD 98, 084038; Maselli et al. (2020) PRD 102, 064056"
