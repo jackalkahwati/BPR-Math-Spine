@@ -1,12 +1,27 @@
 #!/usr/bin/env python3
 """CCR Validation Simulations.
 
-Runs four simulations and reports statistical significance in σ:
+Reports statistical significance with **honest classification**:
 
-* Sim 1 — C_6 selection-rule emergence in hexagonal cavity eigenmodes
-* Sim 2 — Casimir δ universality verification
-* Sim 4 — σ^(-Δ_φ) inner/outer amplitude cascade
-* Sim 5 — Hexagonal vs circular boundary mode distribution
+CATEGORY A — Internal mathematical consistency (necessary, not sufficient):
+* Sim 2 — Casimir δ wires through code
+* Sim 4 — σ-cascade exponent is uniquely Δ_φ = 0.685
+* Sim 8 — Canonical hexagram geometry matches the source image
+
+CATEGORY B — Standard-physics baselines (CIRCULAR; cannot validate
+                                          a substrate-level CCR claim):
+* Sim 1 — Classical Laplacian on hex cavity for C_6 selection
+* Sim 5 — Hex vs circular angular-mode distribution
+* Tight-binding — Standard quantum tight-binding on honeycomb
+  (Standard physics has no substrate; expecting it to reproduce
+   CCR's predictions is asking the question wrong.)
+
+CATEGORY C — Real empirical tests:
+* Sim 7 — CCR-projected predictions vs experiment (small sample)
+* Casimir re-fit — Joint α upper bound from published Casimir
+  force experiments (Lamoreaux, Mohideen, Decca, Bressi, Sushkov)
+* Saturn hexagon — flagged as inapplicable (Saturn lacks the
+                    layered C_6+C_6 structure CCR requires)
 
 Usage:
     python scripts/run_ccr_validation.py
@@ -198,6 +213,7 @@ def sim_1_c6_selection_rule(
     z = (circ_ratios.mean() - hex_ratios.mean()) / np.sqrt(pooled_var * 2 / n)
 
     return {
+        "category": "B — standard-physics baseline (CIRCULAR; not CCR validation)",
         "n_realizations": int(n),
         "hex_forbidden_to_allowed_ratio": {
             "mean": float(hex_ratios.mean()),
@@ -212,9 +228,11 @@ def sim_1_c6_selection_rule(
         "suppression_factor": float(circ_ratios.mean() / max(hex_ratios.mean(), 1e-12)),
         "z_score_hex_vs_circular": float(z),
         "interpretation": (
+            f"[BASELINE — standard Laplacian, no substrate physics] "
             f"Hexagonal cavity suppresses m∉{{0,6,12}} modes by factor "
             f"{circ_ratios.mean() / max(hex_ratios.mean(), 1e-12):.2f} relative "
-            f"to circular control; significance {z:.2f}σ"
+            f"to circular control; significance {z:.2f}σ. "
+            f"Null result expected — classical PDE math does not contain CCR."
         ),
     }
 
@@ -380,6 +398,7 @@ def sim_5_geometry_comparison(
     sigma_equiv = float(np.sqrt(chi2))
 
     return {
+        "category": "B — standard-physics baseline (CIRCULAR; not CCR validation)",
         "hex_mean_amps_m0_to_12": [float(x) for x in hex_mean],
         "circ_mean_amps_m0_to_12": [float(x) for x in circ_mean],
         "ratio_hex_over_circ_m1_to_5": [float(ratio[i]) for i in forbidden_idx],
@@ -387,10 +406,12 @@ def sim_5_geometry_comparison(
         "chi2_forbidden_modes_vs_uniform": float(chi2),
         "sigma_equivalent_significance": sigma_equiv,
         "interpretation": (
+            f"[BASELINE — standard PDE, no substrate physics] "
             f"Mean amplitude ratio (hex/circ) for m∈{{1..5}}: "
             f"{ratio[forbidden_idx].mean():.3f}; for m∈{{6,12}}: "
-            f"{ratio[allowed_idx].mean():.3f}; selection-rule χ² "
-            f"significance ≈ {sigma_equiv:.2f}σ"
+            f"{ratio[allowed_idx].mean():.3f}; χ² ≈ {sigma_equiv:.2f}σ. "
+            f"This baseline cannot validate CCR — it only checks "
+            f"whether classical hex geometry alone gives selection."
         ),
     }
 
@@ -663,6 +684,7 @@ def sim_tight_binding_hex(L: int = 22, n_eigenstates: int = 16) -> dict:
     sigma_significance = (boot.mean() - 1.0) / boot.std() if boot.std() > 0 else 0.0
 
     return {
+        "category": "B — standard-physics baseline (CIRCULAR; not CCR validation)",
         "n_lattice_sites": int(n),
         "n_eigenstates_used": int(n_eigenstates),
         "weights_m0_to_m12": [float(w) for w in weights],
@@ -671,11 +693,13 @@ def sim_tight_binding_hex(L: int = 22, n_eigenstates: int = 16) -> dict:
         "suppression_ratio_allowed_over_forbidden": float(suppression),
         "bootstrap_sigma_vs_unity": float(sigma_significance),
         "interpretation": (
-            f"Tight-binding honeycomb: forbidden m∈{{1..5}} weight = "
-            f"{forbidden.mean():.4f}; allowed m∈{{6,12}} weight = "
-            f"{allowed.mean():.4f}; allowed/forbidden = "
-            f"{suppression:.2f}; bootstrap σ vs unity = "
-            f"{sigma_significance:.2f}σ"
+            f"[BASELINE — standard tight-binding, no substrate physics] "
+            f"forbidden m∈{{1..5}} weight = {forbidden.mean():.4f}; "
+            f"allowed m∈{{6,12}} weight = {allowed.mean():.4f}; "
+            f"allowed/forbidden = {suppression:.2f}; "
+            f"bootstrap σ vs unity = {sigma_significance:.2f}σ. "
+            f"Cannot validate CCR — quantum tight-binding has no "
+            f"substrate-level selection rule."
         ),
     }
 
@@ -812,6 +836,113 @@ def sim_3_kink_growth(
 
 
 # ---------------------------------------------------------------------------
+# Casimir-data re-fit — REAL empirical test against published results
+# ---------------------------------------------------------------------------
+
+def sim_casimir_data_refit() -> dict:
+    """Constrain BPR coupling α from published Casimir-force experiments.
+
+    BPR Eq (7) predicts a fractional deviation
+        ΔF / F = α (R/R_f)^(-δ)
+    with δ = 1.37 (CCR-universal) and R_f = 1 μm.
+
+    For each published experiment we know the separation range and
+    the reported fractional uncertainty on the measured Casimir force.
+    The largest α consistent with that uncertainty at the geometric-
+    mean radius gives a per-experiment upper bound on the BPR coupling.
+    The joint upper bound is the minimum across experiments.
+
+    NOTE: Published values approximate, drawn from the original
+    references.  For a publication-grade re-analysis these should be
+    replaced with author-supplied digital data.
+    """
+    experiments = [
+        {
+            "name": "Lamoreaux 1997 (torsion pendulum)",
+            "R_min_um": 0.6, "R_max_um": 6.0,
+            "frac_uncertainty": 0.05,
+            "ref": "S.K. Lamoreaux, Phys. Rev. Lett. 78, 5 (1997)",
+        },
+        {
+            "name": "Mohideen-Roy 1998 (AFM)",
+            "R_min_um": 0.1, "R_max_um": 0.95,
+            "frac_uncertainty": 0.01,
+            "ref": "U. Mohideen, A. Roy, Phys. Rev. Lett. 81, 4549 (1998)",
+        },
+        {
+            "name": "Bressi et al. 2002 (parallel plates)",
+            "R_min_um": 0.5, "R_max_um": 3.0,
+            "frac_uncertainty": 0.15,
+            "ref": "G. Bressi et al., Phys. Rev. Lett. 88, 041804 (2002)",
+        },
+        {
+            "name": "Decca et al. 2007 (MEMS)",
+            "R_min_um": 0.16, "R_max_um": 0.75,
+            "frac_uncertainty": 0.005,
+            "ref": "R.S. Decca et al., Phys. Rev. D 75, 077101 (2007)",
+        },
+        {
+            "name": "Sushkov et al. 2011",
+            "R_min_um": 0.7, "R_max_um": 7.0,
+            "frac_uncertainty": 0.04,
+            "ref": "A.O. Sushkov et al., Nature Phys. 7, 230 (2011)",
+        },
+    ]
+
+    R_f_um = 1.0
+    delta = 1.37
+    bpr_phonon_target = 1e-8
+    bpr_em_target = 1e-54
+
+    results = []
+    for exp in experiments:
+        R_um = float(np.sqrt(exp["R_min_um"] * exp["R_max_um"]))
+        scale = (R_um / R_f_um) ** (-delta)
+        alpha_max = exp["frac_uncertainty"] / scale
+        results.append({
+            **exp,
+            "R_um_geomean": R_um,
+            "scaling_factor_R_over_Rf": scale,
+            "alpha_max_consistent": alpha_max,
+            "phonon_channel_consistent": alpha_max > bpr_phonon_target,
+            "EM_channel_consistent": alpha_max > bpr_em_target,
+        })
+
+    alpha_joint = float(min(r["alpha_max_consistent"] for r in results))
+
+    # σ-equivalent: how many "experimental σ" of margin do we have
+    # relative to BPR's phonon-channel target value?
+    if bpr_phonon_target > 0:
+        margin_phonon = float(np.log10(alpha_joint / bpr_phonon_target))
+    else:
+        margin_phonon = float("inf")
+
+    return {
+        "category": "C — REAL empirical test (joint constraint from "
+                    "published Casimir data)",
+        "n_experiments": len(experiments),
+        "joint_alpha_upper_bound": alpha_joint,
+        "BPR_phonon_channel_target": bpr_phonon_target,
+        "BPR_EM_channel_target": bpr_em_target,
+        "phonon_channel_consistent_with_data": alpha_joint > bpr_phonon_target,
+        "EM_channel_consistent_with_data": alpha_joint > bpr_em_target,
+        "log10_margin_to_phonon_target": margin_phonon,
+        "experiments": results,
+        "interpretation": (
+            f"Joint α upper bound from {len(experiments)} published Casimir "
+            f"experiments: α < {alpha_joint:.2e}.  "
+            f"BPR-phonon target (α ~ 10⁻⁸): "
+            f"{'CONSISTENT — data does not falsify' if alpha_joint > bpr_phonon_target else 'FALSIFIED'} "
+            f"(margin: {margin_phonon:+.1f} orders of magnitude). "
+            f"BPR-EM target (α ~ 10⁻⁵⁴): CONSISTENT (50+ orders below "
+            f"sensitivity, as expected). Existing data does not "
+            f"detect or rule out BPR; phonon-MEMS at 10⁻⁸ "
+            f"sensitivity needed for actual detection."
+        ),
+    }
+
+
+# ---------------------------------------------------------------------------
 # Sim 8 — corrected geometry consistency (offset=0, recursive nesting)
 # ---------------------------------------------------------------------------
 
@@ -918,6 +1049,11 @@ def main() -> dict:
     s8 = sim_8_geometry_check()
     print("  ", s8["interpretation"])
 
+    print("\nRunning Casimir-data re-fit (REAL empirical test) ...",
+          flush=True)
+    cas = sim_casimir_data_refit()
+    print("  ", cas["interpretation"])
+
     results = {
         "sim_1_c6_selection_rule": s1,
         "sim_2_casimir_universality": s2,
@@ -928,6 +1064,7 @@ def main() -> dict:
         "sim_8_geometry_check": s8,
         "saturn_hexagon": sat,
         "tight_binding_honeycomb": tb,
+        "casimir_data_refit": cas,
     }
 
     out_path = os.path.join(
@@ -938,34 +1075,55 @@ def main() -> dict:
         json.dump(results, f, indent=2)
     print(f"\nResults saved → {out_path}")
 
-    # Top-line summary
+    # Top-line summary — organised by category
     print("\n" + "=" * 78)
-    print("CCR VALIDATION — TOP-LINE SIGNIFICANCES")
+    print("CCR VALIDATION — TOP-LINE SIGNIFICANCES (organised by category)")
     print("=" * 78)
-    print(f"  Sim 1   C₆ selection rule (hex vs circular):     "
-          f"{s1['z_score_hex_vs_circular']:+.2f}σ")
+    print("\nCATEGORY A — Internal mathematical consistency")
+    print("              (necessary, but cannot detect CCR in nature)")
     print(f"  Sim 2   Casimir δ recovery from CCR:             "
           f"{s2['deviation_sigma']:+.2f}σ (0σ = perfect)")
-    s3_sig = s3.get("kink_suppression_sigma")
-    s3_str = f"{s3_sig:+.2f}σ" if isinstance(s3_sig, (int, float)) else "undefined"
-    print(f"  Sim 3   m=1 kink suppression hex vs circular:    {s3_str}")
     print(f"  Sim 4   σ-cascade exponent vs target Δ_φ:        "
           f"{s4['deviation_from_target_sigma']:+.2f}σ (0σ = perfect)")
     print(f"  Sim 4   σ-cascade rejects σ^(-1):                "
           f"{s4['rejection_of_alternatives']['σ^(-1) (Coulomb-like)']}")
     print(f"  Sim 4   σ-cascade rejects σ^(-2):                "
           f"{s4['rejection_of_alternatives']['σ^(-2) (dipole-like)']}")
-    print(f"  Sim 5   Selection-rule χ² (hex vs uniform):      "
-          f"{s5['sigma_equivalent_significance']:+.2f}σ")
-    print(f"  Sim 7   28 CCR-flagged predictions vs experiment: "
-          f"{s7.get('sigma_shift_toward_experiment', 0.0):+.2f}σ")
-    print(f"  Saturn  Hexagon Δ_φ recovery (10% sys err):      "
-          f"{sat['deviation_sigma_with_10pct_sys_err']:+.2f}σ")
-    print(f"  TB      Honeycomb selection rule (bootstrap):    "
-          f"{tb.get('bootstrap_sigma_vs_unity', 0.0):+.2f}σ")
     s8_pass = "PASS" if s8.get("all_geometry_checks_pass") else "FAIL"
     print(f"  Sim 8   Corrected-geometry consistency:           "
           f"{s8_pass}")
+
+    print("\nCATEGORY B — Standard-physics baselines")
+    print("              (CIRCULAR; cannot validate substrate-level CCR)")
+    print(f"  Sim 1   C₆ selection rule (hex vs circular):     "
+          f"{s1['z_score_hex_vs_circular']:+.2f}σ")
+    print(f"  Sim 5   Selection-rule χ² (hex vs uniform):      "
+          f"{s5['sigma_equivalent_significance']:+.2f}σ")
+    print(f"  TB      Honeycomb selection rule (bootstrap):    "
+          f"{tb.get('bootstrap_sigma_vs_unity', 0.0):+.2f}σ")
+    s3_sig = s3.get("kink_suppression_sigma")
+    s3_str = f"{s3_sig:+.2f}σ" if isinstance(s3_sig, (int, float)) else "undefined"
+    print(f"  Sim 3   m=1 kink suppression (hex vs circular):  {s3_str}")
+
+    print("\nCATEGORY C — Real empirical tests")
+    print("              (only these can actually detect CCR in nature)")
+    print(f"  Sim 7   CCR-projected predictions vs experiment: "
+          f"{s7.get('sigma_shift_toward_experiment', 0.0):+.2f}σ "
+          f"(n=7, modest sample)")
+    cas_phonon = cas.get("phonon_channel_consistent_with_data")
+    cas_alpha = cas.get("joint_alpha_upper_bound", float("nan"))
+    cas_margin = cas.get("log10_margin_to_phonon_target", 0.0)
+    print(f"  Casimir Joint α upper bound from 5 experiments:  "
+          f"α < {cas_alpha:.2e}")
+    print(f"          BPR-phonon channel (10⁻⁸) consistency:    "
+          f"{'CONSISTENT' if cas_phonon else 'FALSIFIED'} "
+          f"({cas_margin:+.1f} orders of margin)")
+    print(f"  Saturn  Inapplicable (not a CCR template)         "
+          f"— excluded")
+    print("=" * 78)
+    print("\nDETECTION SIGNIFICANCE FOR CCR IN NATURE: 0σ")
+    print("(Existing data is consistent with CCR but does not detect it.")
+    print(" Phonon-MEMS Casimir at 10⁻⁸ sensitivity required for detection.)")
     print("=" * 78)
     return results
 
