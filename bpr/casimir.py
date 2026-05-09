@@ -276,12 +276,15 @@ def _compute_bpr_force_correction(phi_solution, radius, coupling_lambda, geometr
     # Total BPR correction
     Delta_F_BPR = geometric_factor * base_correction * radius_scaling
     
-    # Add fractal scaling from Eq (7): δ = 1.37 ± 0.05
-    # This is the key BPR signature distinguishing it from standard QED
+    # Add fractal scaling from Eq (7): δ = 1.37 ± 0.05.
+    # Under Postulate 0 (CCR), δ is identified with 2 Δ_φ — a substrate
+    # universal exponent — and is sourced from recursive_boundary rather
+    # than hard-coded here.
     R_f = 1e-6  # Reference fractal scale (1 μm)
-    delta_bpr = 1.37  # Critical BPR exponent from the one-pager
+    from .recursive_boundary import default_generator  # local import avoids cycle
+    delta_bpr = default_generator().universal_delta()
     alpha_bpr = coupling_lambda  # BPR coupling strength
-    
+
     fractal_factor = alpha_bpr * (radius / R_f)**(-delta_bpr)
     
     Delta_F_BPR *= (1 + fractal_factor)

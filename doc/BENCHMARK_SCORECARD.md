@@ -4,6 +4,13 @@
 > 
 > Compares BPR predictions against published experimental data
 > (PDG 2024, Planck 2018, CODATA 2018, dedicated experiments).
+>
+> **Postulate 0 (CCR) addendum (2026-05-08):** δ in Eq (7) is now
+> identified as a **substrate-universal exponent** δ = 2 Δ_φ.  Any
+> CCR-compatible experiment must return the same δ within tolerance.
+> Cross-experiment inconsistency falsifies CCR even if individual
+> experiments pass.  CCR-affected predictions are flagged by
+> `scripts/generate_predictions.py` in the `ccr_affected` column.
 > 
 > **Grading key:**
 > | Grade | Criterion |
@@ -335,4 +342,22 @@
 
 
 ### SUSPICIOUS predictions (likely fitted to data)
+
+
+---
+
+## CCR (Postulate 0) Predictions
+
+These predictions live above the 21 adjacent theories; they apply to
+any CCR-symmetric resonator and are tested by Casimir-class
+experiments and hexagonal-symmetry resonators.
+
+| ID | Quantity | BPR value | Falsifier |
+|----|----------|-----------|-----------|
+| CCR_universal_delta | δ in Eq (7) | 1.37 ± 0.05 | Any value outside 1.32–1.42 in *any* CCR-compatible cavity |
+| CCR_n_rotation | C_n rotation order | 6 | Detection of m ∈ {1,2,3,4,5} angular modes |
+| CCR_recursion_depth | K layers | 2 | Three or more independent ring layers required |
+| CCR_sigma | σ scaling factor | < 2 | Detached outer rings (no overlap) |
+| CCR_Delta_phi | scaling weight Δ_φ | 0.685 ± 0.025 | Inner/outer amplitude ratio ≠ σ^(−0.685) |
+| CCR_outer_overlap | Star-of-David condition | σ < 2 ⇒ overlap | Disjoint outer ring set |
 

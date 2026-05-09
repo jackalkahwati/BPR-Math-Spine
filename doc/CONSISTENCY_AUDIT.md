@@ -1,6 +1,6 @@
 # BPR Mathematical Consistency Audit
 
-> **58 internal consistency tests, all passing.**
+> **73 internal consistency tests, all passing** (58 core + 15 Postulate 0 / CCR).
 > No experiments needed — these verify the math doesn't contradict itself.
 
 ## What This Tests
@@ -204,3 +204,34 @@ If any of these ever fail, BPR has an internal contradiction:
 3. **First law T dS ≠ dM c²** → thermodynamics broken
 4. **Born rule correction > 0 as p → ∞** → standard QM not recovered
 5. **Predictions non-deterministic** → theory not well-defined
+
+---
+
+## Postulate 0 (CCR) Consistency Tests
+
+Added 2026-05-08. Tested in `tests/test_recursive_boundary.py` (21 cases).
+
+| # | Check | Source | Status |
+|---|-------|--------|--------|
+| 59 | δ = 2 Δ_φ (universal Casimir exponent) | `recursive_boundary.universal_delta` | PASS |
+| 60 | C_n selection rule: m mod n == 0 | `HexagramTemplate.angular_mode_allowed` | PASS |
+| 61 | Eigenvalue cascade λ_k = σ^(−2k) λ_0 | `RecursiveBoundary.eigenvalue_cascade` | PASS |
+| 62 | Phase matching φ_{k+1}(s·x) = σ^(−Δ_φ) φ_k(x) | `phase_match_residual` | PASS |
+| 63 | Source cascade J_k = J_0 σ^(−k(2+Δ_φ)) | `central_node_source` | PASS |
+| 64 | Outer ring radius = σ · inner radius | `HexagramTemplate.outer_orbit` | PASS |
+| 65 | Outer-ring offset = π/n (Star-of-David) | `test_outer_ring_offset_is_half_step` | PASS |
+| 66 | C_6 selection allows m ∈ {0,±6,±12,…} only | `allowed_angular_modes` | PASS |
+| 67 | Layer amplitudes φ_k = σ^(−kΔ_φ) φ_0 | `layer_amplitudes` | PASS |
+| 68 | σ < 2 ⇒ Star-of-David overlap holds | `test_overlap_circles_six_fold_arrangement_and_overlap_condition` | PASS |
+| 69 | Casimir δ pinned to published 1.37 ± 0.05 | `test_hexagram_default_pins_universal_delta_to_published_value` | PASS |
+| 70 | CCR rotation residual = 0 on projected fields | `CCRAction.rotation_residual` | PASS |
+| 71 | CCR scale residual = 0 under generator | `CCRAction.scale_residual` | PASS |
+| 72 | Casimir wires δ from CCR (not hard-coded) | `bpr.casimir._compute_bpr_force_correction` | PASS |
+| 73 | first_principles exposes σ, Δ_φ, n, K | `SubstrateDerivedTheories.ccr_*` | PASS |
+
+**What kills CCR:**
+1. Any Casimir-class experiment measuring δ ≠ 1.37 ± 0.05
+2. Detection of an angular mode with m not divisible by 6 in a CCR-symmetric resonator
+3. Inner/outer amplitude ratio ≠ σ^(−Δ_φ)
+4. σ > 2 in any astrophysical hexagram analog (rings detached)
+5. Recursion depth K ≠ 2 in the canonical hexagram template

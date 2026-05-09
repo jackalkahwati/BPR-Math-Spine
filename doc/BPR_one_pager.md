@@ -5,9 +5,32 @@
 
 This document presents the complete mathematical framework implemented in BPR-Math-Spine.
 
+## 0. Postulate 0 — Crop-Circle Recursion (CCR)
+
+The boundary Σ admits
+
+- a **discrete rotation group** C_n (canonical n = 6) with generator
+  r : x ↦ R(2π/n) x, and
+- a **discrete scaling generator** s : Σ → Σ, x ↦ σ x (σ > 1) with
+  scaling weight Δ_φ such that S_bndy[φ] is invariant under
+  (x, φ) ↦ (σ x, σ^(−Δ_φ) φ).
+
+The canonical CCR realization is the **hexagram template** (six-fold
+symmetry, recursion depth K = 2): a central node, an inner C₆ orbit of
+six satellites at radius r₁, and an outer C₆ orbit of six "central+ring"
+units at radius r₂ = σ·r₁ at the vertices of six overlapping circles
+(Star of David / Flower of Life).
+
+CCR pins the Eq (7) Casimir falsifier exponent to **δ = 2 Δ_φ** — a
+universal substrate property, not a cavity-specific number. It also
+imposes the C_n selection rule m ∈ {0, ±n, ±2n, ...} on allowed
+angular modes of φ on Σ. Implementation: `bpr/recursive_boundary.py`,
+exposing `ScaleGenerator`, `RecursiveBoundary`, `HexagramTemplate`,
+and `hexagram_template()`.
+
 ## 1. Holographic Setup
 
-Let M^D be a Lorentzian bulk with smooth (D-1)-boundary Σ = ∂M, endowed with induced metric h_ab and outward normal n^μ. BPR postulates a single real phase field φ: Σ → ℝ whose dynamics encode all bulk excitations via a holographic dictionary.
+Let M^D be a Lorentzian bulk with smooth (D-1)-boundary Σ = ∂M, endowed with induced metric h_ab and outward normal n^μ. BPR postulates a single real phase field φ: Σ → ℝ whose dynamics encode all bulk excitations via a holographic dictionary. CCR (§0) restricts admissible φ-configurations to the C_n-equivariant, scale-covariant sector.
 
 ## 2. Action Functional
 
@@ -65,9 +88,9 @@ For a fractal cylindrical cavity of scale R:
 ```
 F_Cas(R) = -(π² ℏ c)/(240 R⁴) [1 + α (R/R_f)^(-δ)]
 ```
-where **δ = 1.37 ± 0.05** is the critical BPR exponent.
+where **δ = 1.37 ± 0.05** is the critical BPR exponent. Under Postulate 0 (CCR), this exponent is identified with **δ = 2 Δ_φ**, fixing the substrate scaling weight at **Δ_φ = 0.685 ± 0.025**. The same δ is therefore predicted to appear in any CCR-compatible cascade — micron-scale fractal cavity, hexagram boundary template, or larger-scale resonance hierarchy — not just one apparatus.
 
-**Falsification criterion**: A null result at |δ| < 0.05 to 3 picoNewton precision invalidates the boundary-resonant correction.
+**Falsification criterion**: A null result at |δ| < 0.05 to 3 picoNewton precision invalidates the boundary-resonant correction *and* falsifies CCR's universal-exponent claim.
 
 ## 6. Implementation Status
 

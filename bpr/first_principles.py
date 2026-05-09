@@ -99,6 +99,12 @@ class SubstrateDerivedTheories:
     a0_mond: float = 0.0        # MOND acceleration [m/s²]
     W_c: float = 0.0            # critical winding for DM
 
+    # ── CCR (Postulate 0) substrate parameters ──
+    sigma: float = 2.0          # CCR scaling factor (σ > 1)
+    n_rotation: int = 6         # discrete rotation order C_n
+    ccr_depth: int = 2          # canonical recursion depth K
+    delta_phi: float = 0.685    # scaling weight Δ_φ (δ_Casimir = 2 Δ_φ)
+
     # ── derived theory objects (lazy-built) ──
     _memory_params: Optional[th1.MemoryKernelParams] = field(default=None, repr=False)
 
@@ -111,6 +117,10 @@ class SubstrateDerivedTheories:
         J_eV: float = 1.0,
         geometry: str = "sphere",
         radius: float = 0.01,
+        sigma: float = 2.0,
+        n_rotation: int = 6,
+        ccr_depth: int = 2,
+        delta_casimir: float = 1.37,
     ) -> "SubstrateDerivedTheories":
         """Construct everything from substrate primitives.
 
@@ -121,6 +131,10 @@ class SubstrateDerivedTheories:
         J_eV : float – coupling in eV
         geometry : str – "ring", "square", "sphere"
         radius : float – characteristic size [m]
+        sigma : float – CCR scaling factor σ > 1 (Postulate 0)
+        n_rotation : int – discrete rotation order C_n (Postulate 0)
+        ccr_depth : int – recursion depth K (Postulate 0; canonical 2)
+        delta_casimir : float – Casimir falsifier δ; Δ_φ = δ/2
         """
         geo_map = {
             "ring": LatticeGeometry.RING,
@@ -169,8 +183,50 @@ class SubstrateDerivedTheories:
             omega_r=omega_r,
             a0_mond=a0_mond,
             W_c=W_c,
+            sigma=sigma,
+            n_rotation=n_rotation,
+            ccr_depth=ccr_depth,
+            delta_phi=0.5 * delta_casimir,
         )
         return obj
+
+    # ------------------------------------------------------------------
+    # CCR (Postulate 0) accessors
+    # ------------------------------------------------------------------
+    def ccr_generator(self):
+        """Return a ``ScaleGenerator`` from the substrate σ and Δ_φ."""
+        from .recursive_boundary import ScaleGenerator
+        return ScaleGenerator(sigma=self.sigma, scaling_weight=self.delta_phi)
+
+    def hexagram(self, inner_radius: float = 1.0):
+        """Return the canonical hexagram template at this substrate."""
+        from .recursive_boundary import HexagramTemplate
+        return HexagramTemplate(
+            inner_radius=inner_radius,
+            generator=self.ccr_generator(),
+            n_petals=self.n_rotation,
+        )
+
+    def ccr_action(self, mu_rot: float = 1.0, mu_scale: float = 1.0):
+        """Return the CCR constraint action at this substrate."""
+        from .recursive_boundary import CCRAction
+        return CCRAction(
+            generator=self.ccr_generator(),
+            n_rotation=self.n_rotation,
+            mu_rot=mu_rot,
+            mu_scale=mu_scale,
+        )
+
+    def ccr_universal_delta(self) -> float:
+        """δ = 2 Δ_φ — universal Casimir falsifier exponent."""
+        return 2.0 * self.delta_phi
+
+    def ccr_allowed_modes(self, m_max: int = 24) -> np.ndarray:
+        """Angular indices m allowed by C_n selection rule."""
+        return np.array(
+            [m for m in range(-m_max, m_max + 1)
+             if m % self.n_rotation == 0]
+        )
 
     # ------------------------------------------------------------------
     # Boundary Memory Dynamics

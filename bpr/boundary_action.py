@@ -132,6 +132,8 @@ class BoundaryAction:
         grad_field: np.ndarray,
         boundary_data: np.ndarray,
         dx: float,
+        ccr_action: Optional["CCRAction"] = None,
+        ccr_inputs: Optional[dict] = None,
     ) -> float:
         """Compute the boundary action S_d = int sqrt|gamma| * L d^3x.
 
@@ -147,6 +149,12 @@ class BoundaryAction:
             External / boundary source data.
         dx : float
             Grid spacing (uniform cubic lattice assumed).
+        ccr_action : CCRAction, optional
+            Postulate-0 constraint action.  When supplied, S_CCR is added
+            to S_d enforcing C_n equivariance and scale covariance.
+        ccr_inputs : dict, optional
+            Required when ``ccr_action`` is given, with keys:
+            ``mode_amplitudes``, ``m_indices``, ``phi_at_x``, ``phi_at_sx``.
         """
         L_ph = self.lagrangian_phase(field, grad_field)
         L_cpl = self.lagrangian_coupling(field, boundary_data)
@@ -160,7 +168,20 @@ class BoundaryAction:
 
         integrand = sqrt_g * L_total
         dV = dx ** 3
-        return float(np.sum(integrand) * dV)
+        S = float(np.sum(integrand) * dV)
+
+        if ccr_action is not None:
+            if ccr_inputs is None:
+                raise ValueError(
+                    "ccr_inputs required when ccr_action is supplied"
+                )
+            S += ccr_action.lagrangian(
+                ccr_inputs["mode_amplitudes"],
+                ccr_inputs["m_indices"],
+                ccr_inputs["phi_at_x"],
+                ccr_inputs["phi_at_sx"],
+            )
+        return S
 
     # ---- Equations of motion --------------------------------------------
 

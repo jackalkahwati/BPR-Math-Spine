@@ -233,6 +233,80 @@ def solve_eigenvalue_problem(boundary_mesh, n_modes=10):
     return eigenvals, eigenfunctions
 
 
+def solve_eigenvalue_problem_ccr(
+    boundary_mesh,
+    n_modes: int = 10,
+    n_rotation: int = 6,
+    rotation_axis: str = "z",
+):
+    """C_n-equivariant eigensolver (Postulate 0 selection rule).
+
+    Solves the boundary Laplacian and projects onto eigenfunctions
+    whose angular content along ``rotation_axis`` is concentrated on
+    angular modes m ∈ {0, ±n, ±2n, ...}.  Modes failing the C_n
+    selection rule are dropped.
+
+    Parameters
+    ----------
+    boundary_mesh : BoundaryMesh
+        Same input as ``solve_eigenvalue_problem``.
+    n_modes : int
+        Maximum number of CCR-allowed modes to return.
+    n_rotation : int
+        Order of the discrete rotation symmetry (default 6).
+    rotation_axis : {"x", "y", "z"}
+        Axis around which the C_n action is defined (default z).
+
+    Returns
+    -------
+    (eigenvalues, eigenfunctions, m_indices)
+        Filtered eigenvalues, corresponding eigenfunctions, and the
+        dominant angular index m of each.
+    """
+    eigenvals_full, eigfuncs_full = solve_eigenvalue_problem(
+        boundary_mesh, n_modes=max(n_modes * 6, 24)
+    )
+
+    mesh = boundary_mesh.mesh
+    coords = (
+        mesh.coordinates() if hasattr(mesh, "coordinates")
+        else getattr(mesh, "vertices", None)
+    )
+    if coords is None:
+        coords = np.asarray(mesh, dtype=float)
+
+    coords = np.asarray(coords, dtype=float)
+    if coords.ndim != 2 or coords.shape[1] < 2:
+        raise ValueError("rotation-axis projection needs vertex coordinates")
+
+    axis_map = {"x": (1, 2), "y": (0, 2), "z": (0, 1)}
+    i, j = axis_map[rotation_axis]
+    theta = np.arctan2(coords[:, j], coords[:, i])
+
+    keep_eigs, keep_funcs, keep_m = [], [], []
+    for ev, ef in zip(eigenvals_full, eigfuncs_full):
+        amp = np.asarray(
+            ef.vector().get_local() if hasattr(ef, "vector") else ef,
+            dtype=float,
+        )
+        if amp.shape[0] != theta.shape[0]:
+            continue
+        # Discrete angular Fourier amplitudes |<e^{i m θ}, amp>|
+        m_grid = np.arange(-3 * n_rotation, 3 * n_rotation + 1)
+        weights = np.array(
+            [np.abs(np.sum(amp * np.exp(-1j * m * theta))) for m in m_grid]
+        )
+        m_dom = int(m_grid[int(np.argmax(weights))])
+        if (m_dom % n_rotation) == 0:
+            keep_eigs.append(ev)
+            keep_funcs.append(ef)
+            keep_m.append(m_dom)
+            if len(keep_eigs) >= n_modes:
+                break
+
+    return np.asarray(keep_eigs), keep_funcs, np.asarray(keep_m, dtype=int)
+
+
 def _solve_eigenvalue_numpy(np_mesh: NumpyMesh, n_modes):
     """Solve generalised eigenvalue problem K φ = λ M φ (scipy)."""
     K = np_mesh.assemble_stiffness()

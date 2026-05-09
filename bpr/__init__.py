@@ -55,6 +55,13 @@ from .geometry import make_boundary
 from .boundary_field import solve_phase
 from .metric import metric_perturbation
 from .casimir import casimir_force, sweep_radius
+from .recursive_boundary import (
+    POSTULATE_0_CCR,
+    HexagramTemplate,
+    RecursiveBoundary,
+    ScaleGenerator,
+    hexagram_template,
+)
 
 # Import information integration and consciousness coupling
 try:
@@ -69,6 +76,11 @@ __all__ = [
     "metric_perturbation",
     "casimir_force",
     "sweep_radius",
+    "POSTULATE_0_CCR",
+    "ScaleGenerator",
+    "RecursiveBoundary",
+    "HexagramTemplate",
+    "hexagram_template",
 ]
 
 if INFORMATION_AVAILABLE:

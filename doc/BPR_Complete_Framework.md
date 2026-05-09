@@ -2,7 +2,55 @@
 
 **A Computational Substrate Theory with Testable Predictions**
 
-Version 1.0 | January 2025
+Version 1.1 | May 2026 (Postulate 0 / CCR addendum)
+
+---
+
+## Postulate 0 — Crop-Circle Recursion (CCR)
+
+Added 2026-05-08.  Anchored to the hexagram crop-circle template:
+one central node, an inner C₆ orbit of six satellites, and an outer
+C₆ orbit of six "central+ring" units at the vertices of overlapping
+circles (Star of David).
+
+**Statement.** The boundary Σ admits
+
+(a) a discrete rotation group ``C_n`` (canonical n = 6) with
+generator ``r : x ↦ R(2π/n) x``;
+
+(b) a discrete scaling generator ``s : Σ → Σ, x ↦ σ x`` (σ > 1) with
+scaling weight Δ_φ such that ``S_bndy[φ]`` is invariant under
+``(x, φ) ↦ (σ x, σ^(−Δ_φ) φ)``;
+
+(c) finite recursion depth ``K = 2`` — the canonical cascade has two
+layers (inner orbit + outer hexagram), not an infinite tower.
+
+**Consequences.**
+
+1. Allowed angular modes obey ``m ∈ {0, ±n, ±2n, …}``.  Modes failing
+   this selection rule are forbidden on Σ.
+2. Spectrum cascades as ``λ_k(n) = σ^(−2k) λ_0(n)``.
+3. Source amplitudes cascade as ``J_k = J_0 σ^(−k(2 + Δ_φ))``.
+4. The Casimir falsifier exponent in Eq (7) is identified as
+   ``δ = 2 Δ_φ`` — a substrate-universal constant pinned to
+   ``δ = 1.37 ± 0.05``, hence ``Δ_φ = 0.685 ± 0.025``.
+5. The visible Star-of-David ring overlap is the locus where six
+   rotated copies of the inner eigenmode interfere constructively
+   under the C_n action.
+
+**Implementation.** ``bpr/recursive_boundary.py`` (``ScaleGenerator``,
+``RecursiveBoundary``, ``HexagramTemplate``, ``CCRAction``).  The
+constraint ``S_CCR`` is added to the master action in
+``bpr/boundary_action.BoundaryAction.action`` via the ``ccr_action``
+keyword.  ``bpr/casimir.py`` sources δ from
+``recursive_boundary.universal_delta()``.  ``bpr/first_principles.py``
+exposes σ, Δ_φ, n, K as substrate primitives alongside (J, p, N).
+
+**Falsifiers (any one kills CCR):**
+- Casimir-class measurement of δ outside 1.32–1.42.
+- Detection of m ∈ {1, 2, 3, 4, 5} in any CCR-symmetric resonator.
+- Inner/outer amplitude ratio ≠ σ^(−Δ_φ).
+- σ > 2 in any astrophysical hexagram analog.
 
 ---
 
