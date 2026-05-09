@@ -219,10 +219,10 @@ Added 2026-05-08. Tested in `tests/test_recursive_boundary.py` (21 cases).
 | 62 | Phase matching φ_{k+1}(s·x) = σ^(−Δ_φ) φ_k(x) | `phase_match_residual` | PASS |
 | 63 | Source cascade J_k = J_0 σ^(−k(2+Δ_φ)) | `central_node_source` | PASS |
 | 64 | Outer ring radius = σ · inner radius | `HexagramTemplate.outer_orbit` | PASS |
-| 65 | Outer-ring offset = π/n (Star-of-David) | `test_outer_ring_offset_is_half_step` | PASS |
+| 65 | Outer-ring co-aligned with inner orbit (offset = 0) | `test_outer_ring_co_aligned_with_inner_orbit` | PASS |
 | 66 | C_6 selection allows m ∈ {0,±6,±12,…} only | `allowed_angular_modes` | PASS |
 | 67 | Layer amplitudes φ_k = σ^(−kΔ_φ) φ_0 | `layer_amplitudes` | PASS |
-| 68 | σ < 2 ⇒ Star-of-David overlap holds | `test_overlap_circles_six_fold_arrangement_and_overlap_condition` | PASS |
+| 68 | σ < 2 ⇒ Flower-of-Life ring overlap holds | `test_overlap_circles_six_fold_arrangement_and_overlap_condition` | PASS |
 | 69 | Casimir δ pinned to published 1.37 ± 0.05 | `test_hexagram_default_pins_universal_delta_to_published_value` | PASS |
 | 70 | CCR rotation residual = 0 on projected fields | `CCRAction.rotation_residual` | PASS |
 | 71 | CCR scale residual = 0 under generator | `CCRAction.scale_residual` | PASS |

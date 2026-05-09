@@ -359,5 +359,5 @@ experiments and hexagonal-symmetry resonators.
 | CCR_recursion_depth | K layers | 2 | Three or more independent ring layers required |
 | CCR_sigma | σ scaling factor | < 2 | Detached outer rings (no overlap) |
 | CCR_Delta_phi | scaling weight Δ_φ | 0.685 ± 0.025 | Inner/outer amplitude ratio ≠ σ^(−0.685) |
-| CCR_outer_overlap | Star-of-David condition | σ < 2 ⇒ overlap | Disjoint outer ring set |
+| CCR_outer_overlap | Flower-of-Life condition | σ < 2 ⇒ adjacent outer rings overlap | Disjoint outer ring set |
 

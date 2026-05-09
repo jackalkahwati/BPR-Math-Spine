@@ -8,10 +8,13 @@ Version 1.1 | May 2026 (Postulate 0 / CCR addendum)
 
 ## Postulate 0 — Crop-Circle Recursion (CCR)
 
-Added 2026-05-08.  Anchored to the hexagram crop-circle template:
-one central node, an inner C₆ orbit of six satellites, and an outer
-C₆ orbit of six "central+ring" units at the vertices of overlapping
-circles (Star of David).
+Added 2026-05-08; geometry corrected 2026-05-09 from direct image
+inspection.  Anchored to the hexagram crop-circle template: one
+central node, an inner C₆ orbit of six small satellites, and an
+outer C₆ orbit of six self-similar "central+ring" mini-patterns
+**co-aligned** with the inner orbit (offset = 0).  Adjacent outer
+rings overlap pairwise producing a Flower-of-Life appearance; the
+overlap is between outer rings themselves, not between layers.
 
 **Statement.** The boundary Σ admits
 
@@ -34,9 +37,9 @@ layers (inner orbit + outer hexagram), not an infinite tower.
 4. The Casimir falsifier exponent in Eq (7) is identified as
    ``δ = 2 Δ_φ`` — a substrate-universal constant pinned to
    ``δ = 1.37 ± 0.05``, hence ``Δ_φ = 0.685 ± 0.025``.
-5. The visible Star-of-David ring overlap is the locus where six
-   rotated copies of the inner eigenmode interfere constructively
-   under the C_n action.
+5. The visible Flower-of-Life ring overlap is the locus where
+   adjacent outer C₆ rings interfere constructively pairwise; the
+   inner orbit sits radially below them, not staggered between.
 
 **Implementation.** ``bpr/recursive_boundary.py`` (``ScaleGenerator``,
 ``RecursiveBoundary``, ``HexagramTemplate``, ``CCRAction``).  The

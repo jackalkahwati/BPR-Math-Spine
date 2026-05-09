@@ -812,6 +812,72 @@ def sim_3_kink_growth(
 
 
 # ---------------------------------------------------------------------------
+# Sim 8 — corrected geometry consistency (offset=0, recursive nesting)
+# ---------------------------------------------------------------------------
+
+def sim_8_geometry_check() -> dict:
+    """Verify the canonical CCR geometry matches the corrected image read.
+
+    Three independent checks:
+    (a) Inner and outer orbits are co-aligned (offset = 0).
+    (b) Adjacent outer rings overlap (Flower-of-Life condition holds for σ < 2).
+    (c) Recursive nesting produces 1+6+36 nodes at depth K=2.
+    """
+    from bpr.recursive_boundary import (
+        hexagram_template,
+        recursive_hexagram_template,
+    )
+
+    h = hexagram_template(inner_radius=1.0, sigma=1.7)
+    inner = h.inner_orbit()
+    outer = h.outer_orbit()
+    inner_θ = np.arctan2(inner[:, 1], inner[:, 0])
+    outer_θ = np.arctan2(outer[:, 1], outer[:, 0])
+    offsets = np.mod(outer_θ - inner_θ, 2 * np.pi)
+    # Consistency: all six pairs must show offset = 0
+    offset_consistent = bool(np.allclose(offsets, 0.0, atol=1e-9))
+    offset_max_dev = float(offsets.max())
+
+    # Adjacent outer rings overlap: nearest-neighbour distance should be
+    # less than 2 · inner_radius for the rings (each of radius
+    # inner_radius) to overlap.
+    nn = [
+        np.linalg.norm(outer[i] - outer[(i + 1) % 6])
+        for i in range(6)
+    ]
+    nn = np.array(nn)
+    overlap_holds = bool(np.all(nn < 2.0))   # σ = 1.7 < 2
+
+    # Recursive depth = 2 → node counts (1, 6, 36)
+    rt = recursive_hexagram_template(inner_radius=1.0, sigma=1.7, depth=2)
+    levels = rt.all_node_positions()
+    counts = [lvl.shape[0] for lvl in levels]
+    counts_match = counts == [1, 6, 36]
+
+    # Aggregate: this is a binary geometry check, not a stochastic σ.
+    # Express as 1/0 with infinity-σ rejection of mismatches.
+    all_pass = offset_consistent and overlap_holds and counts_match
+
+    return {
+        "offset_inner_to_outer_max_dev_rad": offset_max_dev,
+        "offset_consistent_with_zero": offset_consistent,
+        "outer_ring_nearest_neighbour_distances": [float(x) for x in nn],
+        "outer_rings_overlap": overlap_holds,
+        "recursive_depth2_node_counts": counts,
+        "counts_match_1_6_36": counts_match,
+        "all_geometry_checks_pass": all_pass,
+        "interpretation": (
+            f"Co-alignment offset max dev = {offset_max_dev:.2e} rad "
+            f"({'PASS' if offset_consistent else 'FAIL'}); "
+            f"outer-ring overlap (σ=1.7): {'PASS' if overlap_holds else 'FAIL'}; "
+            f"recursive node counts {counts} "
+            f"({'PASS' if counts_match else 'FAIL'}); "
+            f"overall: {'GEOMETRY MATCHES CORRECTED IMAGE READ' if all_pass else 'MISMATCH'}"
+        ),
+    }
+
+
+# ---------------------------------------------------------------------------
 # Driver
 # ---------------------------------------------------------------------------
 
@@ -848,6 +914,10 @@ def main() -> dict:
     s3 = sim_3_kink_growth()
     print("  ", s3.get("interpretation", s3))
 
+    print("\nRunning Sim 8 (corrected-geometry consistency) ...", flush=True)
+    s8 = sim_8_geometry_check()
+    print("  ", s8["interpretation"])
+
     results = {
         "sim_1_c6_selection_rule": s1,
         "sim_2_casimir_universality": s2,
@@ -855,6 +925,7 @@ def main() -> dict:
         "sim_4_sigma_cascade": s4,
         "sim_5_geometry_comparison": s5,
         "sim_7_predictions_vs_experiment": s7,
+        "sim_8_geometry_check": s8,
         "saturn_hexagon": sat,
         "tight_binding_honeycomb": tb,
     }
@@ -892,6 +963,9 @@ def main() -> dict:
           f"{sat['deviation_sigma_with_10pct_sys_err']:+.2f}σ")
     print(f"  TB      Honeycomb selection rule (bootstrap):    "
           f"{tb.get('bootstrap_sigma_vs_unity', 0.0):+.2f}σ")
+    s8_pass = "PASS" if s8.get("all_geometry_checks_pass") else "FAIL"
+    print(f"  Sim 8   Corrected-geometry consistency:           "
+          f"{s8_pass}")
     print("=" * 78)
     return results
 

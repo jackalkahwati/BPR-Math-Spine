@@ -59,8 +59,10 @@ from .recursive_boundary import (
     POSTULATE_0_CCR,
     HexagramTemplate,
     RecursiveBoundary,
+    RecursiveHexagramTemplate,
     ScaleGenerator,
     hexagram_template,
+    recursive_hexagram_template,
 )
 
 # Import information integration and consciousness coupling
@@ -80,7 +82,9 @@ __all__ = [
     "ScaleGenerator",
     "RecursiveBoundary",
     "HexagramTemplate",
+    "RecursiveHexagramTemplate",
     "hexagram_template",
+    "recursive_hexagram_template",
 ]
 
 if INFORMATION_AVAILABLE:

@@ -16,10 +16,15 @@ The boundary Σ admits
   (x, φ) ↦ (σ x, σ^(−Δ_φ) φ).
 
 The canonical CCR realization is the **hexagram template** (six-fold
-symmetry, recursion depth K = 2): a central node, an inner C₆ orbit of
-six satellites at radius r₁, and an outer C₆ orbit of six "central+ring"
-units at radius r₂ = σ·r₁ at the vertices of six overlapping circles
-(Star of David / Flower of Life).
+symmetry, recursion depth K = 2, corrected from direct image
+inspection 2026-05-09): a central node, an inner C₆ orbit of six small
+satellites at radius r₁, and an outer C₆ orbit of six "central+ring"
+mini-patterns at radius r₂ = σ·r₁ — **co-aligned** with the inner
+orbit (offset = 0, not π/6). Adjacent outer rings overlap pairwise
+producing a Flower-of-Life appearance; the overlap is between outer
+rings, not between layers. Each outer ring is itself a self-similar
+miniature of the whole, so the postulate admits recursion to deeper
+levels (`RecursiveHexagramTemplate`).
 
 CCR pins the Eq (7) Casimir falsifier exponent to **δ = 2 Δ_φ** — a
 universal substrate property, not a cavity-specific number. It also

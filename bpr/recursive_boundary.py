@@ -4,10 +4,13 @@ Postulate 0: Crop-Circle Recursion (CCR)
 
 Strong-form scale-recursion postulate added to the BPR math spine.
 Anchored to the Stonehenge / hexagram crop-circle template
-(reference image, 2026-05-08): one central node, an inner orbit of
-six satellites under C₆ symmetry, and an outer orbit of six
-"central + ring" units at the vertices of six overlapping circles
-(Star of David configuration).
+(reference image, 2026-05-08; geometry corrected 2026-05-09 from
+direct image inspection): one central node, an inner orbit of
+six small satellites under C₆ symmetry, and an outer orbit of
+six self-similar "center + ring" mini-patterns *co-aligned* with
+the inner orbit (offset = 0).  Adjacent outer rings overlap
+pairwise producing a Flower-of-Life appearance; the overlap is
+between outer rings themselves, not between layers.
 
 Statement
 ---------
@@ -60,10 +63,10 @@ Consequences (taken as gospel, not derived):
    energy, and metric perturbations are nested resonance configurations
    constrained by ``Σ`` geometry through Eq (3).
 
-6. The visible "ring overlap" (Star of David / Flower of Life) at
-   layer k = 1 is the locus where six rotated copies of the inner
-   eigenmode interfere constructively — a phase-coupled boundary
-   interaction, not a coincidence of geometry.
+6. The visible Flower-of-Life ring overlap is the locus where
+   adjacent outer C₆ rings interfere constructively pairwise
+   (NOT a Star-of-David offset between layers — inner and outer
+   orbits are co-aligned at the same angular positions).
 
 Implementation
 --------------
@@ -378,13 +381,20 @@ def default_generator(sigma: float = np.e) -> ScaleGenerator:
 class HexagramTemplate:
     """Canonical CCR realization matching the reference crop circle.
 
-    Geometry
-    --------
+    Geometry (corrected 2026-05-09 from direct image inspection)
+    -----------------------------------------------------------
     * Layer 0: central node at the origin.
-    * Layer 1: ``n = 6`` satellite nodes on a circle of radius ``r_1``
-      at angles ``θ_j = 2π j / 6``.
-    * Layer 2: ``n = 6`` "central + ring" units on a circle of radius
-      ``r_2 = σ · r_1`` at angles offset by π/6 (Star of David).
+    * Layer 1: ``n = 6`` small satellite nodes on a circle of
+      radius ``r_1`` at angles ``θ_j = 2π j / 6``.
+    * Layer 2: ``n = 6`` ring features (each a "center + ring"
+      mini-pattern) on a circle of radius ``r_2 = σ · r_1`` at the
+      **same** angles ``θ_j`` (co-aligned with Layer 1, NOT offset).
+
+    The reference image shows the outer rings sitting radially over
+    the inner satellites, not staggered between them.  The visual
+    "Flower of Life" / Vesica Piscis appearance comes from adjacent
+    outer rings overlapping each *other*, not from a rotational
+    offset between layers.
 
     Symmetry
     --------
@@ -397,12 +407,18 @@ class HexagramTemplate:
     The CCR-allowed boundary modes on this template are
     ``Y_{l m}`` with ``m ∈ {0, ±6, ±12, ...}``; all other angular
     modes are forbidden by the C_6 selection rule.
+
+    Recursion
+    ---------
+    Each outer-orbit feature is itself a "center + ring" miniature
+    of the whole — i.e. a self-similar element at scale σ⁻¹.  See
+    ``RecursiveHexagramTemplate`` for the nested realization.
     """
 
     inner_radius: float
     generator: ScaleGenerator
     n_petals: int = HEXAGRAM_VERTEX_COUNT
-    angular_offset: float = np.pi / 6  # outer ring offset by half-step
+    angular_offset: float = 0.0  # outer ring co-aligned with inner orbit
 
     # -- node coordinates ---------------------------------------------
 
@@ -465,14 +481,16 @@ class HexagramTemplate:
 
 def hexagram_template(
     inner_radius: float = 1.0,
-    sigma: float = 2.0,
+    sigma: float = 1.7,
     delta: float = _CASIMIR_DELTA_REF,
 ) -> HexagramTemplate:
     """Build the canonical hexagram-template CCR realization.
 
     Defaults reproduce the reference crop-circle layout:
     * 6-fold rotation
-    * outer ring at 2× the inner radius
+    * outer ring at σ ≈ 1.7× the inner radius (visual estimate from
+      the source image; outer rings overlap pairwise → σ < 2)
+    * outer orbit co-aligned with inner orbit (offset = 0)
     * scaling weight pinned to δ = 1.37  ⇒  Δ_φ = 0.685
     """
     gen = ScaleGenerator(
@@ -480,6 +498,140 @@ def hexagram_template(
         scaling_weight=scaling_weight_from_casimir_delta(delta),
     )
     return HexagramTemplate(inner_radius=inner_radius, generator=gen)
+
+
+# ---------------------------------------------------------------------------
+# Recursive (self-similar) hexagram — captures the rings-with-dots structure
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class RecursiveHexagramTemplate:
+    """Self-similar nested CCR realization.
+
+    Captures the visual "rings with central dots" structure of the
+    reference image: each outer-orbit feature is itself a miniature
+    HexagramTemplate at scale σ⁻¹, with its own central dot and (at
+    finer resolution) its own 6-fold orbit.
+
+    Parameters
+    ----------
+    inner_radius : float
+        Outer radius of the level-0 template.
+    generator : ScaleGenerator
+        Same dilation linking each level to the next.
+    depth : int
+        Recursion depth K.  K = 1: bare HexagramTemplate.  K = 2:
+        each outer node is itself a HexagramTemplate at scale σ⁻¹
+        (matches the reference image).  K → ∞: full self-similar
+        fractal.
+    n_petals : int
+        Discrete rotation order (canonical 6).
+    """
+
+    inner_radius: float
+    generator: ScaleGenerator
+    depth: int = 2
+    n_petals: int = HEXAGRAM_VERTEX_COUNT
+
+    # ---- nested-template builder -------------------------------------
+
+    def level_template(self, level: int) -> "HexagramTemplate":
+        """HexagramTemplate at recursion level k (0 = root)."""
+        if level < 0 or level >= self.depth:
+            raise ValueError(f"level {level} out of [0, {self.depth - 1}]")
+        sigma = self.generator.sigma
+        # At level k the local inner radius shrinks by σ^k
+        local_radius = self.inner_radius * (sigma ** (-level))
+        return HexagramTemplate(
+            inner_radius=local_radius,
+            generator=self.generator,
+            n_petals=self.n_petals,
+            angular_offset=0.0,
+        )
+
+    # ---- node coordinates across all levels --------------------------
+
+    def all_node_positions(self) -> list[np.ndarray]:
+        """Return list of (n_nodes_at_level_k, 2) arrays for k = 0..K-1.
+
+        Level 0: just the root center [0, 0].
+        Level 1: the 6 inner-orbit positions of the root template.
+        Level 2: for each level-1 outer-orbit position, the 6 inner-
+                 orbit positions of the nested template centered on
+                 that point.
+        ...
+        """
+        sigma = self.generator.sigma
+        levels: list[np.ndarray] = []
+        # Level 0: root center
+        levels.append(np.zeros((1, 2)))
+        # Track current parent positions
+        parents = np.zeros((1, 2))
+        local_radius = self.inner_radius
+        for k in range(1, self.depth + 1):
+            children = []
+            θ = 2 * np.pi * np.arange(self.n_petals) / self.n_petals
+            offset_unit = local_radius * np.column_stack(
+                [np.cos(θ), np.sin(θ)]
+            )
+            for parent in parents:
+                children.append(parent[None, :] + offset_unit)
+            children_arr = np.vstack(children)
+            levels.append(children_arr)
+            # Next level uses the *outer* orbit of each parent template,
+            # which is at radius σ·local_radius from each parent.
+            # For deep recursion, the new "parents" are the outer orbits
+            # of this level (not the ones we just built).
+            outer_unit = (sigma * local_radius) * np.column_stack(
+                [np.cos(θ), np.sin(θ)]
+            )
+            new_parents = []
+            for parent in parents:
+                new_parents.append(parent[None, :] + outer_unit)
+            parents = np.vstack(new_parents)
+            local_radius = local_radius / sigma
+        return levels
+
+    # ---- counts ------------------------------------------------------
+
+    def total_node_count(self) -> int:
+        """Sum of node counts across all visible levels."""
+        return 1 + sum(self.n_petals ** k for k in range(1, self.depth + 1))
+
+    # ---- amplitude cascade ------------------------------------------
+
+    def layer_amplitudes(self, phi_0: float) -> np.ndarray:
+        """Amplitude at each recursion level.
+
+        Same σ^(−k Δ_φ) cascade as HexagramTemplate.layer_amplitudes,
+        but extended to ``depth + 1`` entries.
+        """
+        Δ = self.generator.scaling_weight
+        σ = self.generator.sigma
+        return phi_0 * (σ ** (-Δ * np.arange(self.depth + 1)))
+
+
+def recursive_hexagram_template(
+    inner_radius: float = 1.0,
+    sigma: float = 1.7,
+    delta: float = _CASIMIR_DELTA_REF,
+    depth: int = 2,
+) -> RecursiveHexagramTemplate:
+    """Build the canonical recursive (self-similar) hexagram template.
+
+    Default depth = 2 matches the reference image (visible
+    rings-with-central-dots).  Depth = 3+ produces sub-orbits below
+    the resolution of the photo but allowed by the postulate.
+    """
+    gen = ScaleGenerator(
+        sigma=sigma,
+        scaling_weight=scaling_weight_from_casimir_delta(delta),
+    )
+    return RecursiveHexagramTemplate(
+        inner_radius=inner_radius,
+        generator=gen,
+        depth=depth,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -569,6 +721,7 @@ __all__ = [
     "ScaleGenerator",
     "RecursiveBoundary",
     "HexagramTemplate",
+    "RecursiveHexagramTemplate",
     "CCRAction",
     "central_node_source",
     "phase_match_residual",
@@ -576,4 +729,5 @@ __all__ = [
     "scaling_weight_from_casimir_delta",
     "default_generator",
     "hexagram_template",
+    "recursive_hexagram_template",
 ]
