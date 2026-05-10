@@ -38,6 +38,8 @@ The boundary suppression has two factors of 1/p — one from the integer winding
 
 ---
 
+**Figure 1.** Side-by-side comparison of SM, BPR-raw, BPR-natural, and the FNAL+BNL combined experimental value, plus the lepton-universality scaling for electron, muon, and tau g-2 predictions. See `figures/muon_g2_bpr_result.png` (and `.pdf`).
+
 ## 2. The first-principles prediction
 
 ### 2.1 Raw shift
