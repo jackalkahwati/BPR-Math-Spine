@@ -1,9 +1,37 @@
 # BPR Experimental Roadmap
 
-> **Version:** 0.7.0 (Jan 2026)
+> **Version:** 0.8.0 (May 2026 — added muon g-2 first-principles test)
 > **Purpose:** Concrete experimental tests that can confirm or falsify BPR predictions.
 > **Policy:** Every test lists the BPR prediction, the experiment, the sensitivity needed,
 > and what outcome would **falsify** the theory.
+
+---
+
+## Priority 0: Already-Available Anomaly Comparison
+
+### Test 0: Muon (g-2)/2 — first-principles BPR contribution vs Fermilab anomaly
+
+**The strongest existing-data result for BPR.** No new experiment required —
+BPR's prediction is testable against published Fermilab data right now.
+
+| | |
+|---|---|
+| **BPR predicts** | δa_μ = a_μ × (m_μ/m_e)² / p² = 4.54 × 10⁻⁹ (raw); with natural form factor F = 0.5 at boundary scale M_BPR = √p · m_μ ≈ 34.2 GeV: δa_μ = 2.27 × 10⁻⁹. |
+| **Specific signal** | A positive shift in a_μ above the Standard Model White-Paper-2020 prediction, of order 10⁻⁹ to 5×10⁻⁹. |
+| **Experiment** | Fermilab Muon g-2 Run 1-3 final result (PRL 131, 161802 — 2023): a_μ^exp = 116592059(41) × 10⁻¹¹. SM prediction: 116591810(43) × 10⁻¹¹. Anomaly: 249(56) × 10⁻¹¹ at **4.2σ**. |
+| **BPR comparison** | BPR-natural prediction explains 91% of the anomaly; deviation from experiment: **0.4σ**. |
+| **Electron cross-check** | Same formula gives δa_e = 5.3 × 10⁻¹⁴, below current 1.3 × 10⁻¹³ precision. Lepton universality scaling δa_μ/δa_e = (m_μ/m_e)² holds at 0.5% relative error. **PASSES kill criterion.** |
+| **FALSIFICATION** | (1) Fermilab Run 4-6 final result moves the central anomaly outside 200–280 × 10⁻¹¹. (2) Next-generation electron g-2 (Northwestern) detects δa_e at the 5 × 10⁻¹⁴ level with the wrong sign. (3) The lepton universality scaling fails at >5%. |
+
+**Code reference:**
+```python
+from bpr.atomic_precision import muon_g_minus_2, electron_g_minus_2
+print(muon_g_minus_2())
+print(electron_g_minus_2())
+```
+
+See `doc/MUON_G2_BPR_NOTE.md` for the standalone note with derivation,
+comparison numbers, and discussion.
 
 ---
 

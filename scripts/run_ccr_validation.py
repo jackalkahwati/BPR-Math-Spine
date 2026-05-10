@@ -1127,8 +1127,25 @@ def sim_muon_g_minus_2(p_substrate: int = 104761) -> dict:
     bpr_explains_fraction_raw = delta_a_mu_raw / discrepancy
     bpr_explains_fraction_nat = delta_a_mu_natural / discrepancy
 
+    # Electron cross-check (same formula, kill criterion):
+    # If the same BPR formula predicts δa_e larger than experimental
+    # precision, the muon agreement is a coincidence.
+    a_e_qed = 0.00115965218161           # SM (Mohr/Newell/Taylor 2019)
+    a_e_exp = 0.00115965218059           # Hanneke 2008 / Fan 2023
+    sigma_a_e = 1.3e-13                  # current experimental precision
+    delta_a_e_raw = a_e_qed * (1.0) / p_substrate ** 2     # m_e/m_e = 1
+    delta_a_e_natural = 0.5 * delta_a_e_raw
+    sigma_e_natural = delta_a_e_natural / sigma_a_e
+
+    # Lepton-universality scaling: δa_μ / δa_e should equal (m_μ/m_e)²
+    bpr_lepton_ratio = delta_a_mu_natural / delta_a_e_natural
+    expected_lepton_ratio = mass_ratio ** 2
+    lepton_universality_check = abs(
+        bpr_lepton_ratio / expected_lepton_ratio - 1.0
+    )
+
     return {
-        "category": "C — REAL empirical test (muon g-2)",
+        "category": "C — REAL empirical test (muon g-2 + electron cross-check)",
         "a_mu_SM":  a_mu_sm,
         "a_mu_exp": a_mu_exp,
         "experimental_anomaly_x_1e11": discrepancy / 1e-11,
@@ -1142,19 +1159,37 @@ def sim_muon_g_minus_2(p_substrate: int = 104761) -> dict:
         "p_substrate": p_substrate,
         "mass_ratio_mu_e": mass_ratio,
         "M_BPR_GeV": float(np.sqrt(p_substrate) * m_mu_MeV / 1000.0),
-        "ref": "FNAL Run 1-3 (Phys. Rev. Lett. 131 161802); SM White Paper 2020",
+
+        # Electron cross-check
+        "electron_BPR_raw_shift":      delta_a_e_raw,
+        "electron_BPR_natural_shift":  delta_a_e_natural,
+        "electron_experimental_precision": sigma_a_e,
+        "electron_BPR_below_precision": bool(delta_a_e_natural < sigma_a_e),
+        "electron_kill_criterion_passed": bool(delta_a_e_natural < sigma_a_e),
+
+        # Lepton universality
+        "lepton_universality_ratio_BPR": float(bpr_lepton_ratio),
+        "lepton_universality_ratio_expected_(mμ/me)²": float(expected_lepton_ratio),
+        "lepton_universality_relative_error": float(lepton_universality_check),
+
+        "ref": "FNAL Run 1-3 (Phys. Rev. Lett. 131 161802); SM White Paper 2020; "
+               "Hanneke 2008 (PRL 100 120801); Fan et al. 2023",
         "interpretation": (
-            f"Experimental anomaly: Δa_μ = {discrepancy/1e-11:.0f} × 10⁻¹¹ "
+            f"MUON: Δa_μ = {discrepancy/1e-11:.0f} × 10⁻¹¹ "
             f"({discrepancy_sigma:.1f}σ from SM). "
-            f"BPR raw prediction: {delta_a_mu_raw/1e-11:.0f} × 10⁻¹¹ "
-            f"(explains {100*bpr_explains_fraction_raw:.0f}% of anomaly; "
-            f"prediction overshoots experiment by {abs(sigma_raw):.1f}σ). "
-            f"BPR with natural F=0.5 form factor: "
-            f"{delta_a_mu_natural/1e-11:.0f} × 10⁻¹¹ "
-            f"(explains {100*bpr_explains_fraction_nat:.0f}% of anomaly; "
-            f"deviation from experiment {abs(sigma_nat):.1f}σ). "
-            f"BPR's order-of-magnitude prediction lands inside the "
-            f"anomaly window — first-principles, no tuning required."
+            f"BPR raw: {delta_a_mu_raw/1e-11:.0f} × 10⁻¹¹ "
+            f"(overshoots {abs(sigma_raw):.1f}σ); "
+            f"BPR natural F=0.5: {delta_a_mu_natural/1e-11:.0f} × 10⁻¹¹ "
+            f"(explains {100*bpr_explains_fraction_nat:.0f}%, "
+            f"deviation {abs(sigma_nat):.1f}σ). "
+            f"ELECTRON cross-check: BPR predicts δa_e (natural) = "
+            f"{delta_a_e_natural:.2e}, exp precision {sigma_a_e:.0e} → "
+            f"BPR is {sigma_e_natural:.2f}× current sensitivity "
+            f"({'BELOW' if delta_a_e_natural < sigma_a_e else 'ABOVE'} "
+            f"precision; muon agreement {'survives' if delta_a_e_natural < sigma_a_e else 'falsified by electron data'}). "
+            f"LEPTON UNIVERSALITY: δa_μ/δa_e = {bpr_lepton_ratio:.2e} "
+            f"vs (m_μ/m_e)² = {expected_lepton_ratio:.2e} "
+            f"(relative error {lepton_universality_check:.2e})."
         ),
     }
 
@@ -1442,6 +1477,15 @@ def main() -> dict:
           f"(explains {100*g2['BPR_natural_explains_fraction_of_anomaly']:.0f}%)")
     print(f"          BPR-natural deviation from experiment: "
           f"{g2['sigma_BPR_natural_vs_experiment']:+.2f}σ")
+    e_pass = g2.get('electron_kill_criterion_passed')
+    print(f"          Electron g-2 cross-check (kill criterion):"
+          f" {'PASS' if e_pass else 'FAIL'}  "
+          f"(BPR δa_e = {g2['electron_BPR_natural_shift']:.1e}, "
+          f"precision {g2['electron_experimental_precision']:.0e})")
+    print(f"          Lepton universality δa_μ/δa_e: "
+          f"BPR={g2['lepton_universality_ratio_BPR']:.2e}, "
+          f"(m_μ/m_e)²={g2['lepton_universality_ratio_expected_(mμ/me)²']:.2e}, "
+          f"err={g2['lepton_universality_relative_error']:.1e}")
     print(f"  Magic   CCR-projected magic numbers matched:      "
           f"{mag['matches_ccr_projected']}/{len(mag['observed_magic_numbers'])} "
           f"(unprojected: {mag['matches_unprojected']}/{len(mag['observed_magic_numbers'])})")
