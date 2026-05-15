@@ -121,10 +121,20 @@ instant/
 # Local runtime caches
 .mplcache/
 
+# Fusion reactor / aerospace projects (not part of BPR physics framework)
+helionis/
+scripts/helionis_*.py
+scripts/lunarfire_*.py
+
+# Website frontend (separate repo)
+website/
+
+# MCP infrastructure (not physics)
+mcp/
+
 # Private paper submissions (unpublished)
 doc/pnas-submission/
 doc/prd-submission/mcp/.venv/
-website/node_modules/
 
 # Papers — kept local, not in version control
 papers/
