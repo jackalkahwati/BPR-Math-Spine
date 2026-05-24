@@ -175,7 +175,7 @@ rational.
 Boundary Phase Resonance (BPR) proposes that observable physics emerges from a discrete computational substrate called the Resonant Prime Substrate (RPST). This document presents the complete mathematical framework, including:
 
 1. **Axiomatic foundation**: Physical reality represented by phase variables on a prime modular lattice
-2. **Derived coupling constants**: All couplings derived from substrate properties with zero free parameters
+2. **Derived coupling constants**: Couplings derived from substrate properties with one continuous anchor (J); the dimensionless sector adds one fitted exponent (δ ≈ 1.37, Casimir-only; see Postulate 0c for a derived δ = 2)
 3. **Testable predictions**: Phonon-coupled mechanical resonators at 10⁻⁸ precision
 4. **Explicit falsification criteria**: What would prove BPR wrong
 
@@ -888,9 +888,17 @@ The BPR boundary action is not in competition with QFT — it is a specific inst
 | Experimentally anchored integers | 0 | 1 (p, fixed by α) |
 | Structural assumptions | 3 (gauge group, matter, dimension) | 4 (S², Z_p, gradient action, particle ID) |
 | Imported math frameworks | SO(3), QFT renorm, CFT | Same |
-| Free parameters in dimensionless sector | ~24 | **0** |
+| Free parameters in dimensionless sector | ~24 | **1** (δ ≈ 1.37, Casimir exponent, fitted) |
 
-The critical difference: BPR has zero free parameters in the dimensionless sector. All mixing angles, mass ratios, and dimensionless coupling constants follow from the structural assumptions with no fitting.
+The mixing angles, mass ratios, and dimensionless coupling constants follow
+from the structural assumptions with no fitting. The one exception is the
+Casimir/CCR exponent **δ ≈ 1.37** (Eq 7): it is a *fitted/posited* dimensionless
+parameter, not derived from the substrate (`recursive_boundary.universal_delta`
+returns the hand-set anchor). Postulate 0c (Quasicrystalline Projection) derives
+an alternative **δ = 2** from the inflation scaling
+(`recursive_boundary.qcp_universal_delta`); the two values are an experimental
+discriminator. So the honest dimensionless-sector count is **1 fitted parameter
+(δ)**, confined to the Casimir prediction.
 
 **What BPR does not yet have:** an explicit derivation from a UV-complete theory. The most natural candidate is a U(1) Chern-Simons theory on S³ at prime level k = p, where level quantization would explain the prime constraint and make the alpha formula a level-matching condition. This derivation has not been completed.
 

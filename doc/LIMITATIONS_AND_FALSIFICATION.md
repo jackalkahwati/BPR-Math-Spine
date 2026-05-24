@@ -802,13 +802,22 @@ generations follow, and a 4th is blocked by the fusion algebra.
 
 | Category | Previous count | Current count | Change |
 |----------|---------------|---------------|--------|
-| Free continuous parameters | 1 | 1 | unchanged |
+| Free continuous parameters (dimensionful) | 1 | 1 | unchanged (J) |
+| Fitted dimensionless parameters | 0 (claimed) | **1** | δ ≈ 1.37 (Casimir/CCR exponent) is fitted, not derived |
 | Experimentally anchored integers | 1 | 1 | unchanged |
 | Structural assumptions | 4 | **3** | S² promoted to derived result |
 | Derived structural results | — | 1 | S² |
 | Imported mathematical frameworks | 4 | 4 | unchanged |
 
-**The fairest updated single-sentence summary:** BPR has one free parameter (an energy scale), three structural assumptions (Z_p, gradient action, particle identification), and borrows four mathematical frameworks (SO(3), CFT, QFT renormalization, holography); the boundary topology S² is now derived from the requirements that the boundary be compact, orientable, and free of undetermined holonomy parameters.
+**The fairest updated single-sentence summary:** BPR has one free continuous
+parameter (an energy scale J) plus one fitted dimensionless exponent
+(δ ≈ 1.37, the Casimir/CCR exponent, used only in the Casimir-deviation
+prediction and *not* derived from the substrate — Postulate 0c derives an
+alternative δ = 2, the two being an experimental discriminator), three
+structural assumptions (Z_p, gradient action, particle identification), and
+borrows four mathematical frameworks (SO(3), CFT, QFT renormalization,
+holography); the boundary topology S² is derived from the requirements that the
+boundary be compact, orientable, and free of undetermined holonomy parameters.
 
 ---
 

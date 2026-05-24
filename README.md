@@ -70,7 +70,7 @@ BPR is a **testable framework** with explicit falsification criteria. See [EXPER
 | Electromagnetic | λ ~ 10⁻⁵⁴ | 50 orders |
 | **Phonon Collective** | **λ ~ 10⁻⁸** | **1-2 orders** |
 
-**All dimensionless coupling constants and ratios derived from substrate properties with 1 free continuous parameter (J, an energy anchor) and 1 experimentally anchored integer (p, fixed by α). See [LIMITATIONS_AND_FALSIFICATION.md §9](doc/LIMITATIONS_AND_FALSIFICATION.md) for honest parameter accounting.**
+**Mixing angles and mass ratios are derived from substrate properties with 1 free continuous parameter (J, an energy anchor) and 1 experimentally anchored integer (p, fixed by α). One additional dimensionless parameter is fitted, not derived: the Casimir/CCR exponent δ ≈ 1.37 (Eq 7), which enters only the Casimir-deviation prediction. Postulate 0c (Quasicrystalline Projection) derives an alternative δ = 2 from the inflation scaling; the two are an experimental discriminator. See [LIMITATIONS_AND_FALSIFICATION.md §9](doc/LIMITATIONS_AND_FALSIFICATION.md) for honest parameter accounting.**
 
 The phonon collective channel (combining mode enhancement, coherent phases, and resonator Q-factor) brings BPR within plausible experimental reach.
 
