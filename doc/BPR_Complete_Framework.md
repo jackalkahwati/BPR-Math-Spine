@@ -57,6 +57,119 @@ exposes σ, Δ_φ, n, K as substrate primitives alongside (J, p, N).
 
 ---
 
+## Postulate 0c — Quasicrystalline Projection (QCP)
+
+Proposed 2026-05-23. Extends Postulate 0 to admit the rotational
+symmetries that a periodic lattice forbids.
+
+**Motivation.** The crystallographic restriction theorem fixes the
+rotational symmetry of any *periodic* lattice in d ≤ 3 to
+``n ∈ {1, 2, 3, 4, 6}``; orders 5, 7, 8, 9, 10, 12, … are impossible
+for a periodic shadow. Empirically, ordered structures with exactly
+those "forbidden" orders do exist — **quasicrystals** — and they arise
+as **cut-and-project** images of a *periodic* lattice living in a
+higher dimension D. Since BPR is already holographic (a bulk M
+projected onto the boundary Σ = ∂M), the substrate need only be
+periodic in D > d_Σ for the boundary to carry quasiperiodic order.
+
+**Statement.** The RPST substrate is a periodic lattice
+``Λ ⊂ ℝ^D`` with D > d_Σ. Admissible boundary configurations are the
+cut-and-project images
+
+```
+φ_Σ = π_∥ ( Λ ∩ (E_∥ ⊕ W) ),     E_∥ = physical d_Σ-plane,
+                                  W   = acceptance window in E_⊥,
+```
+
+where ``π_∥`` projects onto the physical subspace ``E_∥`` and
+``E_⊥ = E_∥^⊥`` is the internal space of dimension ``D − d_Σ``.
+
+The order-``n`` rotation acts on Λ through the cyclotomic ring
+``ℤ[ζ_n]``, whose rank as a ℤ-module is the Euler totient ``φ(n)``.
+This **fixes the minimal embedding dimension** ``D = φ(n)`` and gives a
+single exact criterion:
+
+- ``φ(n) ≤ 2`` ⟺ no internal space (``E_⊥`` trivial) ⟺ the image is
+  **periodic** ⟺ ``n ∈ {1, 2, 3, 4, 6}`` — exactly the
+  crystallographic restriction. (φ(1)=φ(2)=1; φ(3)=φ(4)=φ(6)=2.)
+- ``φ(n) ≥ 4`` ⟺ internal space of dimension ``φ(n) − 2`` ⟺ the image
+  is **quasiperiodic**, ``n ∈ {5, 7, 8, 9, 10, 11, 12, …}``.
+
+The observable pair ``(n, σ)`` — rotational order and inter-layer scale
+ratio — is therefore a **label for the projection class**: which source
+lattice and which orientation produced the boundary pattern. Postulate 0
+(hexagram CCR) is recovered as the rational-orientation, ``n = 6`` case
+(``φ(6) = 2``, no internal space).
+
+**Consequences.**
+
+1. **Allowed-order spectrum widens.** Each observable order ``n`` fixes
+   the embedding dimension ``D = φ(n)`` and (for quadratic cases) the
+   inflation σ as the Pisot unit of ``ℚ(ζ_n + ζ_n^{-1})``:
+
+   | observed n | D = φ(n) | internal dim | inflation σ | min. poly of σ |
+   |-----------:|---------:|-------------:|------------:|:---------------|
+   | 5, 10      | 4        | 2            | φ = (1+√5)/2 ≈ 1.618 | x² − x − 1 |
+   | 8          | 4        | 2            | 1 + √2 ≈ 2.414 | x² − 2x − 1 |
+   | 12         | 4        | 2            | 2 + √3 ≈ 3.732 | x² − 4x + 1 |
+   | 7, 9, 14   | 6        | 4            | cubic Pisot (no quadratic σ) | — |
+   | 11         | 10       | 8            | quartic Pisot | — |
+
+   The three quadratic (rank-4) inflations are verified to satisfy the
+   polynomials above exactly.
+
+2. **Six is no longer privileged.** ``n = 6`` is merely the rational
+   (periodic) shadow, ``φ(6) = 2``. Generic orientations are irrational,
+   so non-six orders should be *common*, not rare — the opposite of the
+   original CCR expectation.
+
+3. **Scale ratios are quantized.** The inter-layer ratio σ must equal
+   the inflation factor of the projection, not a free constant:
+   ``σ ∈ {φ, 1+√2, 2+√3, …}`` keyed to ``n`` as above. This *removes*
+   the freedom Postulate 0 left in σ. The Casimir exponent
+   ``δ = 2 Δ_φ`` is then no longer a free input either: Δ_φ becomes the
+   scaling dimension of φ under one inflation step of the projection
+   class. Deriving Δ_φ = 0.685 (hence δ = 1.37) from that scaling
+   dimension is **not yet done** — it is the open quantitative task this
+   postulate creates, not a result it delivers.
+
+4. **Rank economy.** Higher ``D = φ(n)`` is "expensive": orders 7, 9
+   (``D = 6``) should be rarer than 5, 8, 10, 12 (``D = 4``), and 11
+   (``D = 10``) rarest of all. The rank-4 set should dominate the
+   quasiperiodic population.
+
+**Empirical status (cropcircle-db, 2026-05-23).** A 470-formation
+image corpus (sibling project; not part of this repo) gives a
+first, detector-limited check:
+- Of confidently-symmetric formations, ~58% sit in the lattice-allowed
+  set {2,3,4,6} and ~42% in the forbidden set — consistent with a mix
+  of rational and irrational projections (Consequence 2).
+- Measured σ (n=139) peaks near φ and 1+√2; ~43% fall within 10% of a
+  predicted inflation constant — **weakly consistent, not yet
+  significant** given segmentation noise (Consequence 3).
+- Forbidden-order counts aggregate by embedding dimension as predicted:
+  rank-4 orders {5,8,10,12} total 25 ≫ rank-6 {7,9} total 5 ≫ rank-10
+  {11} = 0, matching the rank-economy ordering (Consequence 4).
+
+**Implementation (proposed).** A ``CutAndProject`` generator in
+``bpr/recursive_boundary.py`` carrying ``(Λ, E_∥)``; ``HexagramTemplate``
+becomes the rational ``n = 6`` special case. ``first_principles.py``
+would expose ``D`` and the projection orientation as substrate
+primitives, with the periodic CCR recovered when the orientation is
+rational.
+
+**Falsifiers (any one kills QCP):**
+- Cleanly-measured inter-layer σ that does **not** cluster at
+  ``{φ, 1+√2, 2+√3, …}`` once perspective/segmentation noise is removed.
+- A high-order quasiperiodic boundary mode (e.g. genuine 7- or 11-fold)
+  occurring *commonly*, forcing implausibly high source rank.
+- Any boundary rotational order that **no** finite-rank projection of a
+  single ``Λ`` can produce.
+- Demonstration that observed forbidden-order structures are periodic
+  (not quasiperiodic) at the relevant scale — removing the need for D > d_Σ.
+
+---
+
 ## Abstract
 
 Boundary Phase Resonance (BPR) proposes that observable physics emerges from a discrete computational substrate called the Resonant Prime Substrate (RPST). This document presents the complete mathematical framework, including:
