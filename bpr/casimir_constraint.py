@@ -15,9 +15,16 @@ compares it to the ε needed for levitation (from ``phason_sector``), and
 states exactly how wide the open window is and what sensitivity would close it.
 
 NOTE: it makes NO claim of evidence for δ=2. It quantifies what current data
-*rules out* and what it *leaves open*. Precision figures are representative
-values from the literature (Lamoreaux 1997; Mohideen & Roy 1998; Decca et al.
-2003–07; recent 0.2–8 µm work), not a rigorous meta-analysis.
+*rules out* and what it *leaves open*. The precision points are the REAL total
+relative experimental error of the Casimir pressure published by Decca et al.,
+arXiv:0706.3283 (PRD 75, 077101, 2007) — the highest-precision parallel-plate
+dataset and the standard source of new-force limits. We re-parametrise their
+analysis (they bounded Yukawa forces) for a power-law (δ=2) deviation.
+
+SCOPE: this BOUNDS the δ=2 amplitude ε from the published confidence band. It
+does NOT *detect* a residual — that would need the point-by-point
+(P_expt − P_theory) series with the full error budget (not in the public PDF;
+needs the group). CANNEX has no precision dataset published yet.
 """
 from __future__ import annotations
 
@@ -33,13 +40,15 @@ class CasimirPoint:
     reference: str
 
 
-# Representative published precision points (order-of-magnitude, cited).
+# REAL published data: total relative experimental error ΔP_exp(z)/|P̄(z)| of
+# the Casimir pressure, extracted from Decca et al., arXiv:0706.3283 (PRD 75,
+# 077101, 2007), 95% confidence, micromachined-oscillator parallel-plate
+# equivalent. These three anchor points are stated explicitly in the paper;
+# the band is monotincreasing because the force falls faster than the noise.
 DATA = [
-    CasimirPoint(62,  0.0175, "Mohideen & Roy 1998 (1.75% @ 62 nm)"),
-    CasimirPoint(100, 0.01,   "Mohideen & Roy 1998 (~1%)"),
-    CasimirPoint(200, 0.002,  "Decca et al. 2003-07 gradient (~0.2%)"),
-    CasimirPoint(300, 0.002,  "Decca et al. (~0.2%)"),
-    CasimirPoint(750, 0.005,  "sphere-plate (~0.5%)"),
+    CasimirPoint(162, 0.0019, "Decca 2007 (0.19% @ 162 nm)"),
+    CasimirPoint(400, 0.009,  "Decca 2007 (0.9% @ 400 nm)"),
+    CasimirPoint(746, 0.090,  "Decca 2007 (9.0% @ 746 nm)"),
 ]
 
 
