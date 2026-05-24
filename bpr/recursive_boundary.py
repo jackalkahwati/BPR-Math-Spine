@@ -401,14 +401,18 @@ def scaling_weight_from_casimir_delta(
 
 
 def default_generator(sigma: float = np.e) -> ScaleGenerator:
-    """Canonical CCR generator pinned to the published Casimir δ.
+    """Canonical generator carrying the DERIVED Casimir exponent δ = 2.
 
-    Uses σ = e by default (one e-fold per layer); the choice of σ is
-    free — only Δ_φ enters dimensionless predictions.
+    Under Postulate 0c (Quasicrystalline Projection) the field scaling weight
+    is Δ_φ = 1 — the unit-Pisot inflation forces σ·|σ'| = 1, so
+    Δ_φ = −ln|σ'|/lnσ = 1 — giving the parameter-free prediction
+    δ = 2·Δ_φ = 2. The earlier value δ ≈ 1.37 (Δ_φ = 0.685; see
+    ``_CASIMIR_DELTA_REF``) was a fit and is superseded. σ is free; only Δ_φ
+    enters dimensionless predictions.
     """
     return ScaleGenerator(
         sigma=sigma,
-        scaling_weight=scaling_weight_from_casimir_delta(),
+        scaling_weight=0.5 * qcp_universal_delta(),
     )
 
 
@@ -530,7 +534,10 @@ def hexagram_template(
     * outer ring at σ ≈ 1.7× the inner radius (visual estimate from
       the source image; outer rings overlap pairwise → σ < 2)
     * outer orbit co-aligned with inner orbit (offset = 0)
-    * scaling weight pinned to δ = 1.37  ⇒  Δ_φ = 0.685
+    * scaling weight at the legacy fitted δ = 1.37 (Δ_φ = 0.685);
+      superseded by the derived δ = 2 — see ``default_generator`` /
+      ``qcp_universal_delta``. This factory keeps 1.37 to document the
+      earlier hexagram CCR fit.
     """
     gen = ScaleGenerator(
         sigma=sigma,

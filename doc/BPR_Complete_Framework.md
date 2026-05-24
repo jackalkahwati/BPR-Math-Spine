@@ -35,8 +35,9 @@ layers (inner orbit + outer hexagram), not an infinite tower.
 2. Spectrum cascades as ``λ_k(n) = σ^(−2k) λ_0(n)``.
 3. Source amplitudes cascade as ``J_k = J_0 σ^(−k(2 + Δ_φ))``.
 4. The Casimir falsifier exponent in Eq (7) is identified as
-   ``δ = 2 Δ_φ`` — a substrate-universal constant pinned to
-   ``δ = 1.37 ± 0.05``, hence ``Δ_φ = 0.685 ± 0.025``.
+   ``δ = 2 Δ_φ``. The hexagram CCR fit gave ``δ ≈ 1.37`` (Δ_φ ≈ 0.685);
+   Postulate 0c (QCP) supersedes this with the **derived** ``δ = 2``
+   (Δ_φ = 1), now the framework's Casimir prediction.
 5. The visible Flower-of-Life ring overlap is the locus where
    adjacent outer C₆ rings interfere constructively pairwise; the
    inner orbit sits radially below them, not staggered between.
@@ -45,12 +46,12 @@ layers (inner orbit + outer hexagram), not an infinite tower.
 ``RecursiveBoundary``, ``HexagramTemplate``, ``CCRAction``).  The
 constraint ``S_CCR`` is added to the master action in
 ``bpr/boundary_action.BoundaryAction.action`` via the ``ccr_action``
-keyword.  ``bpr/casimir.py`` sources δ from
-``recursive_boundary.universal_delta()``.  ``bpr/first_principles.py``
+keyword.  ``bpr/casimir.py`` sources the derived δ = 2 from
+``recursive_boundary.qcp_universal_delta()``.  ``bpr/first_principles.py``
 exposes σ, Δ_φ, n, K as substrate primitives alongside (J, p, N).
 
 **Falsifiers (any one kills CCR):**
-- Casimir-class measurement of δ outside 1.32–1.42.
+- Casimir-class measurement of δ far from the derived value 2 (the 1.32–1.42 band was the superseded fit).
 - Detection of m ∈ {1, 2, 3, 4, 5} in any CCR-symmetric resonator.
 - Inner/outer amplitude ratio ≠ σ^(−Δ_φ).
 - σ > 2 in any astrophysical hexagram analog.
@@ -127,11 +128,14 @@ lattice and which orientation produced the boundary pattern. Postulate 0
    the inflation factor of the projection, not a free constant:
    ``σ ∈ {φ, 1+√2, 2+√3, …}`` keyed to ``n`` as above. This *removes*
    the freedom Postulate 0 left in σ. The Casimir exponent
-   ``δ = 2 Δ_φ`` is then no longer a free input either: Δ_φ becomes the
-   scaling dimension of φ under one inflation step of the projection
-   class. Deriving Δ_φ = 0.685 (hence δ = 1.37) from that scaling
-   dimension is **not yet done** — it is the open quantitative task this
-   postulate creates, not a result it delivers.
+   ``δ = 2 Δ_φ`` is then no longer a free input either: Δ_φ is the
+   scaling dimension of φ under one inflation step. For unit-Pisot
+   inflations ``σ·|σ'| = 1`` forces ``Δ_φ = −ln|σ'|/lnσ = 1``, giving the
+   **derived, parameter-free prediction δ = 2** (cross-checked by the c=1
+   boundary current ∂φ having dimension 1). The earlier ``δ ≈ 1.37``
+   required tuning a vertex-operator charge to ``α = √1.37`` — a fit — and
+   is superseded. δ = 2 is falsifiable: a Casimir measurement near 2
+   supports the projection, near 1.37 refutes it.
 
 4. **Rank economy.** Higher ``D = φ(n)`` is "expensive": orders 7, 9
    (``D = 6``) should be rarer than 5, 8, 10, 12 (``D = 4``), and 11
@@ -175,7 +179,7 @@ rational.
 Boundary Phase Resonance (BPR) proposes that observable physics emerges from a discrete computational substrate called the Resonant Prime Substrate (RPST). This document presents the complete mathematical framework, including:
 
 1. **Axiomatic foundation**: Physical reality represented by phase variables on a prime modular lattice
-2. **Derived coupling constants**: Couplings derived from substrate properties with one continuous anchor (J); the dimensionless sector adds one fitted exponent (δ ≈ 1.37, Casimir-only; see Postulate 0c for a derived δ = 2)
+2. **Derived coupling constants**: Couplings derived from substrate properties with one continuous anchor (J); the Casimir exponent δ = 2 is derived under Postulate 0c (the earlier δ ≈ 1.37 fit is superseded)
 3. **Testable predictions**: Phonon-coupled mechanical resonators at 10⁻⁸ precision
 4. **Explicit falsification criteria**: What would prove BPR wrong
 
@@ -888,17 +892,17 @@ The BPR boundary action is not in competition with QFT — it is a specific inst
 | Experimentally anchored integers | 0 | 1 (p, fixed by α) |
 | Structural assumptions | 3 (gauge group, matter, dimension) | 4 (S², Z_p, gradient action, particle ID) |
 | Imported math frameworks | SO(3), QFT renorm, CFT | Same |
-| Free parameters in dimensionless sector | ~24 | **1** (δ ≈ 1.37, Casimir exponent, fitted) |
+| Free parameters in dimensionless sector | ~24 | **0** (Casimir δ = 2 derived under Postulate 0c; cost: +1 structural assumption — a higher-D projected substrate) |
 
 The mixing angles, mass ratios, and dimensionless coupling constants follow
-from the structural assumptions with no fitting. The one exception is the
-Casimir/CCR exponent **δ ≈ 1.37** (Eq 7): it is a *fitted/posited* dimensionless
-parameter, not derived from the substrate (`recursive_boundary.universal_delta`
-returns the hand-set anchor). Postulate 0c (Quasicrystalline Projection) derives
-an alternative **δ = 2** from the inflation scaling
-(`recursive_boundary.qcp_universal_delta`); the two values are an experimental
-discriminator. So the honest dimensionless-sector count is **1 fitted parameter
-(δ)**, confined to the Casimir prediction.
+from the structural assumptions with no fitting. The Casimir exponent is now
+**derived too**: Postulate 0c (Quasicrystalline Projection) gives **δ = 2**
+parameter-free (`recursive_boundary.qcp_universal_delta`), from the unit-Pisot
+inflation Δ_φ = 1. This supersedes the earlier **δ ≈ 1.37**, which was a fit
+(a tuned vertex-operator charge). The cost is one added structural assumption —
+that the substrate is a higher-dimensional lattice whose 2D shadow we observe —
+and δ = 2 is an untested, falsifiable prediction (a Casimir measurement near 2
+supports it, near 1.37 refutes it).
 
 **What BPR does not yet have:** an explicit derivation from a UV-complete theory. The most natural candidate is a U(1) Chern-Simons theory on S³ at prime level k = p, where level quantization would explain the prime constraint and make the alpha formula a level-matching condition. This derivation has not been completed.
 

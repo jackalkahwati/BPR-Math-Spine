@@ -70,7 +70,7 @@ BPR is a **testable framework** with explicit falsification criteria. See [EXPER
 | Electromagnetic | λ ~ 10⁻⁵⁴ | 50 orders |
 | **Phonon Collective** | **λ ~ 10⁻⁸** | **1-2 orders** |
 
-**Mixing angles and mass ratios are derived from substrate properties with 1 free continuous parameter (J, an energy anchor) and 1 experimentally anchored integer (p, fixed by α). One additional dimensionless parameter is fitted, not derived: the Casimir/CCR exponent δ ≈ 1.37 (Eq 7), which enters only the Casimir-deviation prediction. Postulate 0c (Quasicrystalline Projection) derives an alternative δ = 2 from the inflation scaling; the two are an experimental discriminator. See [LIMITATIONS_AND_FALSIFICATION.md §9](doc/LIMITATIONS_AND_FALSIFICATION.md) for honest parameter accounting.**
+**Mixing angles and mass ratios are derived from substrate properties with 1 free continuous parameter (J, an energy anchor) and 1 experimentally anchored integer (p, fixed by α). The Casimir/CCR exponent δ = 2 (Eq 7) is derived under Postulate 0c (Quasicrystalline Projection) from the unit-Pisot inflation, not fitted — superseding the earlier δ ≈ 1.37, which required a tuned vertex-operator charge. δ = 2 is a falsifiable prediction (a Casimir measurement near 2 supports the projection, near 1.37 refutes it). See [LIMITATIONS_AND_FALSIFICATION.md §9](doc/LIMITATIONS_AND_FALSIFICATION.md) for honest parameter accounting.**
 
 The phonon collective channel (combining mode enhancement, coherent phases, and resonator Q-factor) brings BPR within plausible experimental reach.
 
@@ -412,7 +412,7 @@ Pull requests must:
 - [x] **Equation (4)**: Information integration with IIT (`information.py`)
 - [x] **Equation (5)**: Six-factor consciousness coupling (`information.py`)
 - [x] **Equation (6a/6b)**: Field equations with conservation verification
-- [x] **Equation (7)**: Casimir prediction with δ = 1.37 ± 0.05 (`casimir.py`)
+- [x] **Equation (7)**: Casimir prediction with derived δ = 2 (Postulate 0c; earlier δ ≈ 1.37 fit superseded) (`casimir.py`)
 - [x] **E₈ embedding**: Complete group theory implementation (`notebooks/04_e8_index.ipynb`)
 - [x] **Thin-shell analytics**: SymPy benchmark (`scripts/thin_shell_benchmark.py`)
 - [x] **FEniCS integration**: Multiple installation paths + fallback modes

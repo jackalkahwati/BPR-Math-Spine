@@ -37,9 +37,11 @@ def test_universal_delta_equals_2_delta_phi():
     assert gen.universal_delta() == pytest.approx(1.37, rel=1e-12)
 
 
-def test_default_generator_pins_delta_to_published_value():
+def test_default_generator_uses_derived_delta():
+    # δ = 2 is the parameter-free value derived under Postulate 0c (QCP).
+    # The earlier δ ≈ 1.37 was a fit, now superseded.
     gen = default_generator()
-    assert gen.universal_delta() == pytest.approx(1.37, rel=1e-12)
+    assert gen.universal_delta() == pytest.approx(2.0, rel=1e-12)
 
 
 def test_field_rescales_correctly_under_dilation():

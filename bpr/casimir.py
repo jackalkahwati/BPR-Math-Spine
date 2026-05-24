@@ -276,15 +276,14 @@ def _compute_bpr_force_correction(phi_solution, radius, coupling_lambda, geometr
     # Total BPR correction
     Delta_F_BPR = geometric_factor * base_correction * radius_scaling
     
-    # Fractal scaling from Eq (7). δ = 2 Δ_φ. NOTE: the value used here,
-    # δ ≈ 1.37, is an EMPIRICAL anchor (fit/posited), not derived from the
-    # substrate — universal_delta() returns the hand-set value back. The
-    # value Postulate 0c (QCP) actually derives is δ = 2
-    # (recursive_boundary.qcp_universal_delta); swap it in to test the
-    # derived prediction against the fitted exponent.
+    # Fractal scaling from Eq (7). δ = 2 Δ_φ. The framework prediction is the
+    # DERIVED value δ = 2 from Postulate 0c (Quasicrystalline Projection): the
+    # unit-Pisot inflation forces Δ_φ = 1. The earlier δ ≈ 1.37 was a fitted
+    # exponent and is superseded. A Casimir-class measurement of δ near 2
+    # supports the projection scaling; near 1.37 falsifies it.
     R_f = 1e-6  # Reference fractal scale (1 μm)
-    from .recursive_boundary import default_generator  # local import avoids cycle
-    delta_bpr = default_generator().universal_delta()  # = 1.37 (empirical)
+    from .recursive_boundary import qcp_universal_delta  # local import avoids cycle
+    delta_bpr = qcp_universal_delta()  # = 2 (derived, parameter-free)
     alpha_bpr = coupling_lambda  # BPR coupling strength
 
     fractal_factor = alpha_bpr * (radius / R_f)**(-delta_bpr)

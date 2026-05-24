@@ -180,7 +180,7 @@ This is the most important section for honest evaluation.
 |---|------------|------------|----------|---------------|
 | 1 | **Normal neutrino ordering** | JUNO | 2027 | Inverted ordering -> BPR boundary topology wrong |
 | 2 | **No 0nubetabeta (Dirac neutrinos)** | LEGEND, nEXO | 2025-2030 | Observation -> BPR p = 1 mod 4 orientability wrong |
-| 3 | **Casimir deviation delta ~ 1.37** | Delft/STM, phonon-MEMS | 1-3 yr | Null at 10^-9 -> BPR phonon channel ruled out |
+| 3 | **Casimir deviation delta = 2 (derived; 1.37 fit superseded)** | Delft/STM, phonon-MEMS | 1-3 yr | Null at 10^-9 -> phonon channel ruled out; delta near 1.37 refutes projection |
 | 4 | **LIV |dc/c| ~ 3.4 x 10^-21** | CTA, GRBs | 2026+ | Null below 10^-21 -> BPR substrate discreteness wrong |
 | 5 | **Born rule kappa ~ 10^-5** | Many-photon Sorkin | 2-5 yr | Born rule holds to 10^-7 -> BPR microstate counting wrong |
 
@@ -195,7 +195,7 @@ This is the most important section for honest evaluation.
 | m_s/m_d = 20.0 | Derived | No explanation | **BPR-unique** |
 | Neutrino normal ordering | Derived | Both orderings allowed | **BPR-unique** |
 | Dirac (no 0nubetabeta) | Derived | Majorana allowed | **BPR-unique** |
-| Casimir exponent delta = 1.37 | Derived | Standard has no correction | **BPR-unique** |
+| Casimir exponent delta = 2 (QCP-derived; 1.37 fit superseded) | Derived | Standard has no correction | **BPR-unique** |
 | Born rule kappa ~ 10^-5 | Derived | Exact in QM | **BPR-unique** |
 | LIV |dc/c| ~ 10^-21 | Derived | Zero in GR | **BPR-unique** |
 | v_GW = c | Consistent | Predicted | Shared |
@@ -803,17 +803,18 @@ generations follow, and a 4th is blocked by the fusion algebra.
 | Category | Previous count | Current count | Change |
 |----------|---------------|---------------|--------|
 | Free continuous parameters (dimensionful) | 1 | 1 | unchanged (J) |
-| Fitted dimensionless parameters | 0 (claimed) | **1** | δ ≈ 1.37 (Casimir/CCR exponent) is fitted, not derived |
+| Fitted dimensionless parameters | 0 (claimed) | **0** | δ now derived = 2 under Postulate 0c; earlier 1.37 fit superseded (cost: +1 structural assumption) |
 | Experimentally anchored integers | 1 | 1 | unchanged |
 | Structural assumptions | 4 | **3** | S² promoted to derived result |
 | Derived structural results | — | 1 | S² |
 | Imported mathematical frameworks | 4 | 4 | unchanged |
 
 **The fairest updated single-sentence summary:** BPR has one free continuous
-parameter (an energy scale J) plus one fitted dimensionless exponent
-(δ ≈ 1.37, the Casimir/CCR exponent, used only in the Casimir-deviation
-prediction and *not* derived from the substrate — Postulate 0c derives an
-alternative δ = 2, the two being an experimental discriminator), three
+parameter (an energy scale J); the Casimir exponent is derived, not fitted —
+Postulate 0c (Quasicrystalline Projection) gives δ = 2 parameter-free
+(superseding the earlier δ ≈ 1.37 fit), at the cost of one added structural
+assumption (a higher-dimensional projected substrate) and a still-untested,
+falsifiable prediction; three
 structural assumptions (Z_p, gradient action, particle identification), and
 borrows four mathematical frameworks (SO(3), CFT, QFT renormalization,
 holography); the boundary topology S² is derived from the requirements that the
