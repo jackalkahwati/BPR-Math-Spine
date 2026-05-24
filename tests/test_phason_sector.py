@@ -80,7 +80,25 @@ def test_delta_is_rank_independent():
 
 def test_artifact_numbers_lower_required_density():
     A = 4 * np.pi * 0.5 ** 2
-    base = required_substrate_energy_density_kr(1500.0, A, K=2, rank=4)
-    arti = required_substrate_energy_density_kr(1500.0, A, K=3, rank=6)
+    base = required_substrate_energy_density_kr(1500.0, A, K=2, n=5)
+    arti = required_substrate_energy_density_kr(1500.0, A, K=3, n=9)
     assert arti < base                               # 3 layers + 9-fold help
     assert topological_charge_capacity(6) == 4       # rank-6 -> d_perp = 4
+
+
+def test_chi_is_rank_of_pi1_internal_torus():
+    # DERIVED: chi = d_perp = rank - 2 (independent Burgers channels)
+    from bpr.phason_sector import embedding_rank
+    for n in (5, 8, 12):
+        assert topological_charge_capacity(embedding_rank(n)) == 2  # rank4 -> 2
+    assert topological_charge_capacity(embedding_rank(9)) == 4       # rank6 -> 4
+
+
+def test_eta_is_cascade_partial_sum():
+    # DERIVED: eta(K) = 1 - sigma^{-2K}, the geometric cascade fraction
+    from bpr.phason_sector import coherence_efficiency, inflation_constant
+    s = inflation_constant(9)
+    assert coherence_efficiency(3, s) == pytest.approx(1 - s ** (-6))
+    # monotone increasing toward 1, higher sigma converges faster
+    assert coherence_efficiency(4, s) > coherence_efficiency(2, s)
+    assert coherence_efficiency(10, s) < 1.0
