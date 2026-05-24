@@ -276,13 +276,15 @@ def _compute_bpr_force_correction(phi_solution, radius, coupling_lambda, geometr
     # Total BPR correction
     Delta_F_BPR = geometric_factor * base_correction * radius_scaling
     
-    # Add fractal scaling from Eq (7): δ = 1.37 ± 0.05.
-    # Under Postulate 0 (CCR), δ is identified with 2 Δ_φ — a substrate
-    # universal exponent — and is sourced from recursive_boundary rather
-    # than hard-coded here.
+    # Fractal scaling from Eq (7). δ = 2 Δ_φ. NOTE: the value used here,
+    # δ ≈ 1.37, is an EMPIRICAL anchor (fit/posited), not derived from the
+    # substrate — universal_delta() returns the hand-set value back. The
+    # value Postulate 0c (QCP) actually derives is δ = 2
+    # (recursive_boundary.qcp_universal_delta); swap it in to test the
+    # derived prediction against the fitted exponent.
     R_f = 1e-6  # Reference fractal scale (1 μm)
     from .recursive_boundary import default_generator  # local import avoids cycle
-    delta_bpr = default_generator().universal_delta()
+    delta_bpr = default_generator().universal_delta()  # = 1.37 (empirical)
     alpha_bpr = coupling_lambda  # BPR coupling strength
 
     fractal_factor = alpha_bpr * (radius / R_f)**(-delta_bpr)

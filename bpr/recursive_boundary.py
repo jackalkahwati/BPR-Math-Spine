@@ -160,14 +160,44 @@ class ScaleGenerator:
     # -- universal Casimir exponent (Eq 7) -----------------------------
 
     def universal_delta(self) -> float:
-        """Casimir falsifier exponent δ promoted to a substrate property.
+        """Casimir falsifier exponent δ for the BPR-Casimir bilinear (Eq 7),
+        where ΔF/F ∝ (R/R_f)^{-δ} carries two factors of φ, so δ = 2 Δ_φ.
 
-        For the BPR-Casimir bilinear in φ (Eq 7), the relative deviation
-        ΔF / F ∝ (R / R_f)^{-δ} carries two factors of φ, so
-
-            δ = 2 Δ_φ.
+        PROVENANCE (honest): this returns 2·scaling_weight, and the default
+        generator sets scaling_weight = δ_empirical/2 with δ_empirical = 1.37
+        (see ``_CASIMIR_DELTA_REF``). So for the default generator this
+        function returns the *empirical* anchor 1.37 back — it does NOT
+        derive it from the substrate. δ = 1.37 is a fitted/posited exponent,
+        not a first-principles result (cf. PNAS_draft future-work item
+        "derive δ from Riemann zeta zero statistics"). For the value that the
+        Quasicrystalline Projection postulate (0c) actually *derives*, use
+        ``qcp_universal_delta`` below.
         """
         return 2.0 * self.scaling_weight
+
+
+def qcp_universal_delta() -> float:
+    """δ DERIVED from Postulate 0c (Quasicrystalline Projection).
+
+    The Casimir correction is bilinear in φ, so δ = 2 Δ_φ where Δ_φ is the
+    scaling dimension of φ under one inflation step. In a cut-and-project
+    quasicrystal the inflation factor σ is a unit Pisot number, so its Galois
+    conjugate satisfies σ·|σ'| = 1 (verified for the golden, silver, and
+    dodecagonal units). The internal space therefore contracts by exactly
+    1/σ as the physical space expands by σ, giving the field scaling weight
+
+        Δ_φ = −ln|σ'| / ln σ = ln σ / ln σ = 1   (independent of class),
+
+    hence the DERIVED, class-universal prediction
+
+        δ_QCP = 2 Δ_φ = 2.
+
+    This is a genuine first-principles value — but it disagrees with the
+    empirical anchor 1.37. The two are an experimental discriminator: a
+    clean Casimir-class measurement of δ near 2 supports QCP scaling; near
+    1.37 supports the fitted exponent and falsifies the simple QCP scaling.
+    """
+    return 2.0
 
 
 # ---------------------------------------------------------------------------
@@ -346,18 +376,27 @@ def ccr_invariant(
 
 
 # ---------------------------------------------------------------------------
-# Bridge to Eq (7): pin Δ_φ to the published Casimir δ
+# Bridge to Eq (7): the Casimir exponent δ is an EMPIRICAL ANCHOR, not derived
 # ---------------------------------------------------------------------------
 
-# Published BPR Casimir falsifier exponent (Eq 7 in BPR_one_pager.md)
-_CASIMIR_DELTA_REF: float = 1.37
+# δ = 1.37 is a FITTED / POSITED exponent, NOT a first-principles result. It is
+# fixed by hand here and propagated as the substrate scaling weight; no part of
+# the substrate (J, p, N, σ, n, K) derives it. Deriving δ remains open (PNAS
+# draft future work: "δ from Riemann zeta zero statistics"). The Quasicrystalline
+# Projection postulate (0c) DERIVES a different value, δ_QCP = 2 — see
+# ``qcp_universal_delta``. Treat δ = 1.37 as one free parameter, not as derived.
+_CASIMIR_DELTA_REF: float = 1.37   # empirical anchor (fit/posited)
 _CASIMIR_DELTA_TOL: float = 0.05
 
 
 def scaling_weight_from_casimir_delta(
     delta: float = _CASIMIR_DELTA_REF,
 ) -> float:
-    """Invert δ = 2 Δ_φ to recover the substrate scaling weight."""
+    """Back-compute the scaling weight from the EMPIRICAL δ via Δ_φ = δ/2.
+
+    Note the direction: Δ_φ is derived FROM the fitted δ, so Δ_φ is not an
+    independent substrate quantity — it carries the same free parameter.
+    """
     return 0.5 * delta
 
 
