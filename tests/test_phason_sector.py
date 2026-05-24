@@ -94,6 +94,18 @@ def test_chi_is_rank_of_pi1_internal_torus():
     assert topological_charge_capacity(embedding_rank(9)) == 4       # rank6 -> 4
 
 
+def test_phason_energy_reservoir_exceeds_lift_requirement():
+    # Corrected reservoir: phason elastic stiffness (measurable, large),
+    # not the gravitating cosmological constant.
+    from bpr.phason_sector import (
+        PHASON_STIFFNESS_LAB_LOW, required_substrate_energy_density_kr,
+    )
+    A = 4 * np.pi * 0.5 ** 2
+    req = required_substrate_energy_density_kr(1500.0, A, K=3, n=9)
+    # lab phason stiffness is orders of magnitude above the lift requirement
+    assert PHASON_STIFFNESS_LAB_LOW > 1e3 * req
+
+
 def test_eta_is_cascade_partial_sum():
     # DERIVED: eta(K) = 1 - sigma^{-2K}, the geometric cascade fraction
     from bpr.phason_sector import coherence_efficiency, inflation_constant

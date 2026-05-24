@@ -19,11 +19,14 @@ HONEST RESULT (do not oversell):
     defect (a phason dislocation: Burgers vector in E_⊥), whose charge is
     quantized and O(1), hence unsuppressed by K or λ. See
     ``topological_phason_force``.
-  * Whether that lifts anything reduces to ONE unknown: the substrate energy
-    density ρ_sub the defect can access. ``required_substrate_energy_density``
-    turns "can a sphere float?" into that single number — which lands squarely
-    on the cosmological-constant problem (a 10^120 ambiguity). See
-    ``lift_report``.
+  * Whether that lifts anything reduces to ONE quantity: the substrate energy
+    density ρ_sub the defect couples to. CORRECTION (this is the right
+    reservoir): that is the INTERNAL-space PHASON ELASTIC energy ρ_sub ~ ½K(∂w)²,
+    NOT the gravitating cosmological constant Λ (an earlier conflation). Phason
+    stiffness is measurable — in lab quasicrystals it is ~1e7–1e8 J/m³, i.e.
+    ~1e4–1e5× ABOVE the ~1e3 J/m³ needed to lift a car. So the energy is
+    plausibly there; the open gate moves to whether the δ=2 coupling exists at
+    all and whether a controllable defect can be made. See ``phason_energy_verdict``.
 
 Nothing here is validated. It is the formal content of the "what is BPR
 missing" argument, written so the open question is a computable quantity
@@ -242,6 +245,42 @@ def coherence_efficiency(K: int, sigma: float) -> float:
     return 1.0 - sigma ** (-2 * K)
 
 
+# Phason elastic stiffness measured in laboratory quasicrystals (icosahedral
+# AlPdMn etc.), via diffuse-scattering — the measurable proxy for ρ_sub's scale.
+PHASON_STIFFNESS_LAB_LOW = 1e7   # J/m³
+PHASON_STIFFNESS_LAB_HIGH = 1e8  # J/m³
+
+# Three concrete routes to pin the substrate's actual ρ_sub.
+MEASUREMENT_ROUTES = (
+    "1. δ=2 Casimir AMPLITUDE (prefactor of the R^-2 deviation) directly probes "
+    "the substrate coupling, hence ρ_sub.",
+    "2. Derive ρ_sub from BPR's energy anchor J (J^4-scale / lattice volume); "
+    "pinning the one dimensionful input fixes ρ_sub theoretically.",
+    "3. Phason diffuse-scattering on lab quasicrystals bounds the stiffness scale "
+    "and gives the methodology to transfer to a candidate substrate.",
+)
+
+
+def phason_energy_verdict(mass_kg: float = 1500.0, radius_m: float = 0.5,
+                          K: int = 3, n: int = 9) -> str:
+    """Compare the required ρ_sub to the PHASON elastic energy scale (the
+    correct reservoir), not to Λ. Returns the honest verdict + the gate."""
+    A = 4.0 * np.pi * radius_m ** 2
+    req = required_substrate_energy_density_kr(mass_kg, A, K, n)
+    lo, hi = PHASON_STIFFNESS_LAB_LOW / req, PHASON_STIFFNESS_LAB_HIGH / req
+    return "\n".join([
+        f"Required ρ_sub to lift {mass_kg:.0f} kg (K={K}, {n}-fold): {req:.0f} J/m³",
+        f"Measured phason stiffness (lab quasicrystals): "
+        f"{PHASON_STIFFNESS_LAB_LOW:.0e}–{PHASON_STIFFNESS_LAB_HIGH:.0e} J/m³",
+        f"  -> margin {lo:.0e}× to {hi:.0e}×: the energy is plausibly THERE.",
+        "",
+        "ρ_sub is internal-space PHASON elasticity, not the gravitating Λ "
+        "(earlier conflation corrected). The open gate is no longer 'enough "
+        "energy' but: does the δ=2 coupling exist, and can a controllable "
+        "topological phason defect be made? (Lab QC ≠ the substrate; proxy only.)",
+    ])
+
+
 def required_substrate_energy_density_kr(
     mass_kg: float, area_m2: float, K: int, n: int
 ) -> float:
@@ -299,9 +338,8 @@ def summary() -> str:
         f"  baseline (K=2, rank-4)                     : {base:8.0f} J/m³",
         f"  artifact (K=3 layers, rank-6 / 9 spheres)  : {arti:8.0f} J/m³  ({base/arti:.1f}× lower)",
         "",
-        f"Both ≫ observed Λ ({RHO_LAMBDA:.0e}) — still rides on the cosmological-constant",
-        "hinge. The artifact's design numbers help the coupling; they do not remove",
-        "the dependence on which vacuum energy density the defect can access.",
+        "",
+        phason_energy_verdict(1500.0, 0.5, K=3, n=9),
     ]
     return "\n".join(lines)
 
