@@ -106,6 +106,21 @@ def test_phason_energy_reservoir_exceeds_lift_requirement():
     assert PHASON_STIFFNESS_LAB_LOW > 1e3 * req
 
 
+def test_rho_sub_from_J_anchor():
+    # rho_sub ~ J^4/(hbar c)^3 with J = m_tau ~ 1777 MeV -> ~2e38 J/m^3
+    from bpr.phason_sector import substrate_energy_density_from_J, M_TAU_MEV
+    rho = substrate_energy_density_from_J(M_TAU_MEV)
+    assert 1e37 < rho < 1e39                        # order ~2e38
+
+
+def test_required_efficiency_is_tiny_but_positive():
+    from bpr.phason_sector import required_coupling_efficiency
+    eps = required_coupling_efficiency(1500.0, 0.5, K=3, n=9)
+    assert 0 < eps < 1e-30                          # reservoir huge -> tiny eps needed
+    # heavier object needs proportionally larger efficiency
+    assert required_coupling_efficiency(3000.0, 0.5, K=3, n=9) > eps
+
+
 def test_eta_is_cascade_partial_sum():
     # DERIVED: eta(K) = 1 - sigma^{-2K}, the geometric cascade fraction
     from bpr.phason_sector import coherence_efficiency, inflation_constant

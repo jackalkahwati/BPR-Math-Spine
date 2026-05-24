@@ -296,6 +296,47 @@ def required_substrate_energy_density_kr(
     return mass_kg * G_EARTH / (chi * eta * area_m2)
 
 
+# --- Reservoir from BPR's anchor J = m_τ (route 2: derive ρ_sub from J) -----
+
+HBAR_C_MEV_FM = 197.3269804          # ℏc in MeV·fm
+M_TAU_MEV = 1776.86                  # BPR's single dimensionful anchor J (m_τ)
+_MEV_PER_FM3_TO_J_PER_M3 = 1.602176634e-13 / 1e-45   # = 1.602e32
+
+
+def substrate_energy_density_from_J(J_MeV: float = M_TAU_MEV) -> float:
+    """ρ_sub from BPR's energy anchor J, as the natural energy density of that
+    scale: ρ_sub ~ J⁴/(ℏc)³. With J = m_τ this is ~2e38 J/m³.
+
+    DIMENSIONAL ESTIMATE: it fixes the *reservoir size* from the same anchor
+    that sets every mass in the constant program — no new free parameter. The
+    true value may carry dimensionless prefactors (powers of p, z, π); this is
+    the order-of-magnitude reservoir, not a coupling."""
+    rho_natural = J_MeV ** 4 / HBAR_C_MEV_FM ** 3       # MeV/fm³
+    return rho_natural * _MEV_PER_FM3_TO_J_PER_M3       # J/m³
+
+
+def required_coupling_efficiency(
+    mass_kg: float = 1500.0, radius_m: float = 0.5, K: int = 3, n: int = 9,
+    J_MeV: float = M_TAU_MEV,
+) -> float:
+    """The ONE remaining unknown. With the reservoir derived from J and the
+    geometric/topological factors derived (χ, η), the lift force is
+
+        F = χ · η · ε · ρ_sub · A,
+
+    where ε is the coupling efficiency — the fraction of the J⁴ reservoir a
+    topological phason defect actually extracts. This returns the ε needed to
+    lift `mass_kg`. ε is what the AMPLITUDE of the δ=2 Casimir deviation
+    measures; everything else here is derived from (p, z, J). The huge reservoir
+    means ε can be astronomically small and still lift — but whether the real ε
+    clears the threshold is unknown until δ=2's amplitude is measured."""
+    A = 4.0 * np.pi * radius_m ** 2
+    chi = topological_charge_capacity(embedding_rank(n))
+    eta = coherence_efficiency(K, inflation_constant(n))
+    rho = substrate_energy_density_from_J(J_MeV)
+    return mass_kg * G_EARTH / (chi * eta * rho * A)
+
+
 # ---------------------------------------------------------------------------
 # Action term (for integration into the master BPR action)
 # ---------------------------------------------------------------------------
@@ -339,7 +380,15 @@ def summary() -> str:
         f"  artifact (K=3 layers, rank-6 / 9 spheres)  : {arti:8.0f} J/m³  ({base/arti:.1f}× lower)",
         "",
         "",
-        phason_energy_verdict(1500.0, 0.5, K=3, n=9),
+        "Reservoir derived from BPR's anchor J = m_τ:",
+        f"  ρ_sub ~ J⁴/(ℏc)³ = {substrate_energy_density_from_J():.2e} J/m³  (~1e35× the lift need)",
+        f"  => required coupling efficiency ε = {required_coupling_efficiency():.2e}",
+        "     (extract ~1 part in 2e35 of the reservoir to lift 1500 kg)",
+        "",
+        "Everything (δ=2, σ, χ, η, ρ_sub) now derives from (p, z, J). The ONE",
+        "remaining unknown is ε — the extraction efficiency — which is exactly",
+        "what the AMPLITUDE of the δ=2 Casimir deviation measures. (Speculative;",
+        "δ=2 itself unconfirmed.)",
     ]
     return "\n".join(lines)
 
