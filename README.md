@@ -2,7 +2,7 @@
 
 > **Status :** public draft | license MIT | contact <jack@thestardrive.com>
 >
-> **Website :** [`bpr.science`](https://bpr.science) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
+> **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
 >
 > **COMPLETE FRAMEWORK** → [`doc/BPR_Complete_Framework.md`](doc/BPR_Complete_Framework.md) *(80-page unified document)*
 >
@@ -35,7 +35,7 @@ This repository now carries two related development lines:
 
 ## Interactive Website
 
-The BPR framework has a full public-facing website at [`bpr.science`](https://bpr.science) (or run locally — see below). Key pages:
+The BPR framework has a full public-facing website at [`bpr.thestardrive.com`](https://bpr.thestardrive.com) (or run locally — see below). Key pages:
 
 | Page | URL | What it shows |
 |------|-----|---------------|
