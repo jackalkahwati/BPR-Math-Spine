@@ -177,6 +177,76 @@ def lift_report(mass_kg: float, radius_m: float = 0.5,
 
 
 # ---------------------------------------------------------------------------
+# Rank-6 (9-fold) extension + (K, rank)-dependent lift model
+# ---------------------------------------------------------------------------
+
+# Inflation constants σ per symmetry order n. Quadratic Pisot units for the
+# rank-4 classes; the 9-fold class is rank-6 with a CUBIC Pisot unit. All are
+# algebraic UNITS (norm ±1) — see universal_delta_qcp for why that pins δ = 2
+# independent of rank. (9-fold is the Buga/Valdivia microsphere count.)
+INFLATION_CONSTANTS = {
+    5:  ((1 + 5 ** 0.5) / 2, "x^2 - x - 1"),     # = 10-fold; golden, rank 4
+    8:  (1 + 2 ** 0.5,       "x^2 - 2x - 1"),     # silver, rank 4
+    12: (2 + 3 ** 0.5,       "x^2 - 4x + 1"),     # rank 4
+    9:  (2.8793852415718,    "x^3 - 3x^2 + 1"),   # CUBIC Pisot, rank 6
+}
+
+
+def embedding_rank(n: int) -> int:
+    """Cut-and-project embedding dimension D = φ(n) (Euler totient)."""
+    from math import gcd
+    return sum(1 for k in range(1, n + 1) if gcd(k, n) == 1)
+
+
+def inflation_constant(n: int) -> float:
+    """Pisot inflation factor σ for n-fold symmetry (9-fold is the cubic one)."""
+    if n in INFLATION_CONSTANTS:
+        return INFLATION_CONSTANTS[n][0]
+    raise KeyError(f"inflation constant for n={n} not tabulated")
+
+
+def universal_delta_qcp() -> float:
+    """Casimir exponent δ = 2 — DERIVED and RANK-INDEPENDENT.
+
+    Every quasicrystal inflation here is an algebraic UNIT (norm ±1), so the
+    product of a mode's internal-space conjugate scalings is exactly 1/σ.
+    Hence Δ_φ = −ln(1/σ)/lnσ = 1 for *every* rank, giving δ = 2Δ_φ = 2.
+    (Cross-check: the c=1 boundary current ∂φ has scaling dimension 1
+    regardless of the projection. Rank changes σ; it never changes δ.)
+    """
+    return 2.0
+
+
+# --- (K, rank) lift model — PHENOMENOLOGICAL ANSATZ, not first-principles ---
+
+def topological_charge_capacity(rank: int) -> int:
+    """ANSATZ: max topological charge ~ internal dimension d_⊥ = rank − 2
+    (rank-4 → 2, rank-6 → 4). More internal dimensions → richer defect →
+    larger O(1) charge. A scaling guess, not derived."""
+    return max(1, rank - 2)
+
+
+def coherence_efficiency(K: int, r: float = 0.35) -> float:
+    """ANSATZ: fraction of ρ_sub a K-shell stack couples to coherently.
+    K nested phase-locked shells suppress decoherence; η = 1 − r^(K−1) → 1.
+    Not derived; captures 'more layers → better coherence'."""
+    return 1.0 - r ** (K - 1)
+
+
+def required_substrate_energy_density_kr(
+    mass_kg: float, area_m2: float, K: int, rank: int
+) -> float:
+    """Required ρ_sub with the (K, rank) coupling ansatz:
+        F = χ(rank)·η(K)·ρ_sub·A   ⇒   ρ_sub = m·g / (χ·η·A).
+    Turns 'do the artifact's numbers (K=3 layers, rank-6 / 9 microspheres)
+    help?' into a single computable comparison. The (K, rank) factors are an
+    ANSATZ; δ = 2 and σ are derived."""
+    chi = topological_charge_capacity(rank)
+    eta = coherence_efficiency(K)
+    return mass_kg * G_EARTH / (chi * eta * area_m2)
+
+
+# ---------------------------------------------------------------------------
 # Action term (for integration into the master BPR action)
 # ---------------------------------------------------------------------------
 
@@ -201,14 +271,28 @@ def phason_action(
 
 
 def summary() -> str:
-    car = lift_report(1500.0, radius_m=0.5)
+    import numpy as np
+    A = 4 * np.pi * 0.5 ** 2
     fp = perturbative_phason_force()
-    return (
-        "BPR phason sector (proposed Postulate 0c extension) — SPECULATIVE\n"
-        "=================================================================\n"
-        f"Perturbative phason force ~ {fp:.1e} N  (weaker than phonon; does NOT lift)\n\n"
-        + car
-    )
+    base = required_substrate_energy_density_kr(1500.0, A, K=2, rank=4)
+    arti = required_substrate_energy_density_kr(1500.0, A, K=3, rank=6)
+    lines = [
+        "BPR phason sector (proposed Postulate 0c extension) — SPECULATIVE",
+        "=================================================================",
+        f"Perturbative phason force ~ {fp:.1e} N  (weaker than phonon; does NOT lift)",
+        "",
+        f"δ (Casimir exponent) = {universal_delta_qcp()}  — DERIVED, rank-independent",
+        f"9-fold inflation σ_9 = {inflation_constant(9):.4f}  (cubic Pisot, rank {embedding_rank(9)})",
+        "",
+        "Required substrate energy density to lift 1500 kg (r=0.5 m sphere):",
+        f"  baseline (K=2, rank-4)                     : {base:8.0f} J/m³",
+        f"  artifact (K=3 layers, rank-6 / 9 spheres)  : {arti:8.0f} J/m³  ({base/arti:.1f}× lower)",
+        "",
+        f"Both ≫ observed Λ ({RHO_LAMBDA:.0e}) — still rides on the cosmological-constant",
+        "hinge. The artifact's design numbers help the coupling; they do not remove",
+        "the dependence on which vacuum energy density the defect can access.",
+    ]
+    return "\n".join(lines)
 
 
 if __name__ == "__main__":  # pragma: no cover

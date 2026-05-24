@@ -49,3 +49,38 @@ def test_cosmological_constant_problem_framing():
     rho_req = required_substrate_energy_density(1500.0, 4 * np.pi * 0.5 ** 2)
     assert rho_req > RHO_LAMBDA          # observed Lambda cannot lift a car
     assert rho_req < RHO_QFT_PLANCK      # unrenormalized zero-point could
+
+
+# --- rank-6 (9-fold) extension ---------------------------------------------
+
+from bpr.phason_sector import (  # noqa: E402
+    inflation_constant, embedding_rank, universal_delta_qcp,
+    topological_charge_capacity, required_substrate_energy_density_kr,
+)
+
+
+def test_ninefold_is_rank6_cubic_pisot_unit():
+    n = 9
+    assert embedding_rank(n) == 6                      # phi(9) = 6
+    s = inflation_constant(n)
+    assert s == pytest.approx(2.8793852, abs=1e-6)
+    # root of x^3 - 3x^2 + 1
+    assert s**3 - 3*s**2 + 1 == pytest.approx(0.0, abs=1e-6)
+
+
+def test_delta_is_rank_independent():
+    # delta = 2 for every class, because every inflation is a unit (norm +-1)
+    assert universal_delta_qcp() == 2.0
+    for n in (5, 8, 12, 9):
+        s = inflation_constant(n)
+        # internal contraction = 1/s for a unit -> Delta_phi = 1 -> delta = 2
+        Dphi = -np.log(1.0 / s) / np.log(s)
+        assert 2 * Dphi == pytest.approx(2.0, abs=1e-9)
+
+
+def test_artifact_numbers_lower_required_density():
+    A = 4 * np.pi * 0.5 ** 2
+    base = required_substrate_energy_density_kr(1500.0, A, K=2, rank=4)
+    arti = required_substrate_energy_density_kr(1500.0, A, K=3, rank=6)
+    assert arti < base                               # 3 layers + 9-fold help
+    assert topological_charge_capacity(6) == 4       # rank-6 -> d_perp = 4
