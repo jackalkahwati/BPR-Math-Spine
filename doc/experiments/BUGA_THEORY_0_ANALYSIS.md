@@ -250,3 +250,101 @@ evidence is produced for the same artifact:
 Without item 1 there is no phenomenon for Theory 0 to address, and any
 further geometric analysis is premature.
 
+---
+
+## 9. Framework adjustment (v0.2 of Postulate 0c)
+
+Following this falsification, the module was refined with one principled
+extension and two arithmetic corrections. The adjustment is theory hygiene
+— it fixes underived steps in the original module — and stands on its own
+independent of the Buga artifact. Buga benefits as a side effect, not as
+the motivation.
+
+### The principled extension: visible ≠ internal symmetry
+
+The original module implicitly assumed that the visible 3D rotational
+symmetry of a constructed device equals the internal substrate's discrete
+rotational symmetry. This step was never derived. The phason field lives
+in E⊥; how it couples to the visible slice's shape is one further coupling
+step left implicit.
+
+**Refined statement.** The substrate's discrete rotational symmetry belongs
+to one of the four Pisot-unit classes {5, 8, 9, 12}. The visible engineering
+symmetry of a device is a *subgroup* of the substrate class — the constructor
+may choose any divisor of the substrate order. Visible symmetry tells you
+which substrate classes are compatible, not which one is present.
+
+Implemented as `compatible_internal_classes(visible_n)` in
+`bpr/phason_sector.py`. Compatibility table:
+
+| Visible symmetry | Compatible internal classes |
+|------------------|-----------------------------|
+| 2-fold           | 8, 12 |
+| 3-fold           | 9, 12 |
+| 4-fold           | 8, 12 |
+| 5-fold           | 5 |
+| 6-fold           | 12 |
+| Round (U(1))     | any (projection) |
+
+### Arithmetic corrections (not extensions)
+
+1. **K = 2 is already cascade-saturated.** For σ₉ = 2.879, η(K=2) = 1 − σ⁻⁴
+   = 0.985. The original doc's claim that "K = 4 is required for saturation"
+   was wrong; two tiers is functionally sufficient for any class with σ ≥ 2.
+2. **Standoff count is not a derived observable for χ.** χ = rank − 2 is the
+   topological mode count, measured by force-mode directionality (Tier 2
+   evidence), not by counting structural elements in a photograph. The
+   original "3 standoffs gauge-fix 3 of 4 channels" mapping was unjustified
+   pattern-matching. `topological_charge_capacity` docstring now clarifies
+   this.
+
+### Buga under v0.2
+
+| Observation | v0.1 verdict | v0.2 verdict |
+|-------------|--------------|--------------|
+| 3 standoffs at 120° | Outside allowed classes | Visible 3-fold → compatible with internal 9 or 12 |
+| Round lathe-turned pedestal | No substrate-class signature | Projection of internal symmetry; framework-neutral |
+| 2 tiers below sphere | Below K = 4 saturation | K = 2 already gives η = 0.985 |
+| Ball-in-socket mount | Mechanical bearing seat | Still mechanical bearing; defect-core location unobserved |
+| Tier ratio ~1.1–1.2:1 | Not σ_n for any n | Visible ratio is projected, doesn't constrain class |
+
+**Adjusted status:** geometry is *compatible* with internal class ∈ {9, 12}
+but does not identify one. The framework can no longer rule Buga out from
+this footage alone; it also cannot rule it in. Discrimination requires
+Tier 1+ evidence (§7).
+
+### What v0.2 costs the framework
+
+- Visible geometry alone no longer identifies the substrate class — it only
+  constrains the compatible set.
+- Buga moves from "ruled out" to "unevaluable from this footage." Weaker
+  negative.
+- Future failed visible-geometry matches will not falsify the framework;
+  they will only narrow the compatible-class set. This is a real
+  predictiveness cost.
+
+### What v0.2 preserves
+
+- **δ = 2 Casimir exponent** — depends only on the Pisot-unit norm
+  argument, unchanged.
+- **Substrate-class enumeration {5, 8, 9, 12}** — unchanged.
+- **η(K), χ = rank − 2, ρ_sub formulas** — unchanged.
+- **The Casimir lab path as the definitive framework test** — unchanged
+  and effectively strengthened, since visible-geometry predictions no
+  longer leak across as a secondary test channel.
+
+### What was refused
+
+These adjustments were considered and refused as rescues:
+
+- Locating the defect core at the ball-in-socket interface (suggestive
+  topology, no independent derivation).
+- Adding 3-fold as a substrate class (breaks the Pisot-unit derivation
+  that pins δ = 2; would falsify the framework's headline lab prediction).
+- Defining the round pedestal as evidence of "U(1)-averaged" coupling
+  (explains every visible shape, predicts nothing).
+- Fitting any prefactor.
+
+If any of these are later added, the rationale must come from independent
+theoretical or laboratory evidence, not from the Buga geometry.
+
