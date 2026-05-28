@@ -208,6 +208,40 @@ def inflation_constant(n: int) -> float:
     raise KeyError(f"inflation constant for n={n} not tabulated")
 
 
+# Allowed substrate classes (Pisot-unit symmetries that pin δ=2).
+ALLOWED_INTERNAL_CLASSES = (5, 8, 9, 12)
+
+
+def compatible_internal_classes(visible_n: int) -> tuple:
+    """Internal substrate classes compatible with a given VISIBLE engineering
+    symmetry, under the refinement to Postulate 0c that visible geometry is a
+    subgroup of the internal substrate symmetry (not equal to it).
+
+    The substrate's discrete rotational symmetry belongs to one of the four
+    Pisot-unit classes {5, 8, 9, 12}. A constructor may engineer the visible
+    device with any DIVISOR of the substrate order — three-point mounts are
+    mechanically convenient, lathe-turned (continuous-U(1)) bases are easier
+    to fabricate than nine-sided ones, etc. So the visible rotational order
+    constrains but does not identify the internal class.
+
+    Compatibility rule: visible_n is compatible with internal n_int iff
+    visible_n DIVIDES n_int (visible_n | n_int). For visible_n = 1 (no
+    discrete visible symmetry, e.g. a round lathe-turned part), every
+    allowed class is compatible — the visible shape is a projection.
+
+    Returns the tuple of compatible internal classes (subset of {5,8,9,12}),
+    or all four classes if visible_n = 1.
+
+    NOTE: This refinement weakens the framework's ability to identify the
+    substrate class from photographs alone. It does NOT touch δ=2, the
+    cascade efficiency η(K), or the topological charge χ = rank − 2, all of
+    which are tested in the lab independent of visible geometry.
+    """
+    if visible_n <= 1:
+        return ALLOWED_INTERNAL_CLASSES
+    return tuple(n for n in ALLOWED_INTERNAL_CLASSES if n % visible_n == 0)
+
+
 def universal_delta_qcp() -> float:
     """Casimir exponent δ = 2 — DERIVED and RANK-INDEPENDENT.
 
@@ -228,7 +262,13 @@ def topological_charge_capacity(rank: int) -> int:
     d_⊥ = rank − 2 (physical slice is 2D). Phason dislocations are codim-2
     line defects classified by π₁(T^{d_⊥}) = ℤ^{d_⊥}, so there are exactly
     d_⊥ independent Burgers-vector channels. Hence χ = rank − 2
-    (rank-4 → 2, rank-6 → 4). Not an ansatz — it's the rank of π₁."""
+    (rank-4 → 2, rank-6 → 4). Not an ansatz — it's the rank of π₁.
+
+    CLARIFICATION (post-Buga review): χ is the MODE-COUNT observable, measured
+    by force-mode directionality (count of independent stable lift axes), NOT
+    by counting visible structural elements in a photograph. Earlier readings
+    that mapped standoff counts directly to χ were unjustified pattern-matches.
+    """
     return max(1, rank - 2)
 
 
