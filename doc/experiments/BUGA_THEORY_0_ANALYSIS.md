@@ -1,7 +1,33 @@
 # Buga Sphere — Theory 0 (Phason Sector) Analysis
 
-> **Status:** SPECULATIVE — analysis is internal to Postulate 0c (phason sector).
-> Treat as a model construction, not a confirmed observation.
+> ## ⚠ STATUS: FALSIFIED ON FRAME-BY-FRAME VISUAL INSPECTION
+>
+> The geometry mapping below was constructed from a text description of the
+> borescope footage rather than from the frames themselves. A subsequent
+> frame-by-frame review of the same video (recorded in §8 below) returns a
+> structure incompatible with **every** allowed Theory 0 substrate class:
+>
+> - **Three copper standoffs at 120° three-fold symmetry** — outside Theory 0's
+>   allowed 5/8/9/12-fold classes.
+> - **Round, lathe-turned pedestal** with no discrete polygonal symmetry —
+>   no substrate-class signature encoded in the lateral shape.
+> - **Two tiers below the sphere**, not three — does not reach K = 4 saturation
+>   in any class.
+> - **Inner sphere flush-mounted in a curved socket** — a mechanical
+>   ball-in-socket bearing seat, not a topological defect-core geometry.
+>
+> The visible signature is consistent with conventional precision machining
+> (round turned parts, three-point equidistant mounts, polished ball-in-socket
+> bearings — the standard motifs of rigid-mount engineering), not with a
+> substrate-coupled lift device. **Buga, as observed, is not a Theory 0
+> candidate of any class.** Theory 0 itself is unaffected; it is tested in
+> the lab via δ = 2 Casimir amplitude, not via UAP artifacts.
+>
+> The original analysis is preserved below as an instructive failure case.
+> See §8 for the post-mortem.
+
+> **Status (original):** SPECULATIVE — analysis is internal to Postulate 0c
+> (phason sector). Treat as a model construction, not a confirmed observation.
 > **Module:** [`bpr/phason_sector.py`](../../bpr/phason_sector.py)
 > **Symmetry tag:** `n = 9` is already named in the module ("9-fold is the
 > Buga/Valdivia microsphere count," line 189).
@@ -153,3 +179,74 @@ coupling that powers the device.
 - `bpr/casimir_constraint.py` — what published Casimir data allows for δ = 2.
 - `bpr/casimir_epsilon_toy.py` — model-dependent ε estimator (toy, not a prediction).
 - `doc/LIMITATIONS_AND_FALSIFICATION.md` — parameter accounting, BPR-unique vs shared predictions.
+
+---
+
+## 8. Post-mortem: frame-by-frame review
+
+A frame-by-frame review of the same borescope video, focusing on the
+disassembled still at 0:42 and the drilling sequence for scale, returns the
+following observations:
+
+| Observable                            | Frame-by-frame finding                                                      | Status of original mapping |
+|---------------------------------------|-----------------------------------------------------------------------------|----------------------------|
+| Standoff count and angular spacing    | 3 copper standoffs at exactly 120° (three-fold symmetry)                    | Falsifies χ = 4 channel match |
+| Pedestal cross-section symmetry       | Round, lathe-turned, no discrete polygonal symmetry                         | Falsifies any n-fold class identification |
+| Tier count                            | 2 tiers below the sphere (not 3)                                            | Falsifies K = 4 cascade saturation |
+| Inner sphere mounting                 | Flush in a curved socket (ball-in-socket bearing seat)                      | Falsifies defect-core interpretation |
+| Pedestal base : inner sphere diameter | ~1.1–1.2 : 1                                                                | No σ-Pisot ratio present |
+| Standoff height                       | Reaches inner sphere equator                                                | Standard mechanical mount geometry |
+| Annular gap : outer shell thickness   | ~5–8×                                                                       | Hollow construction, no cascade structure |
+| Outer shell diameter                  | ~8–10 in (from hand-stabilization frames)                                   | Scale anchor |
+| Inner sphere diameter                 | ~2–2.5 in (from background workshop tools)                                  | Scale anchor |
+| Outer shell thickness                 | ~1/4–3/8 in (from drilling breakthrough)                                    | Scale anchor |
+
+### Where the original analysis went wrong
+
+1. **Source error.** The original mapping in §2 was built from a prose
+   description of the interior, not from the frames. The description used
+   "tiered cylindrical pedestal" and "concentric stacked rings or steps,"
+   which I rounded to three tiers because three tiers made K = 4 land on
+   the cascade saturation point. That's overfitting from the framework
+   side toward the description, instead of reading the frame first.
+
+2. **Ill-posed falsifier.** Sub-prediction #1 — the σ₉ tier ratio of
+   1 : 2.88 : 8.29 — was listed as a falsifier in a medium where it
+   cannot be measured. Borescope wide-angle distortion plus
+   downward-angle TikTok stills do not yield ratio discrimination at the
+   level needed to separate 1.618, 2.414, 2.879, and 3.732. A falsifier
+   that is not measurable in the available evidence is not a falsifier.
+
+3. **No-co-fit ignored.** The original mapping required the 9-fold class
+   for χ = 4 to match the standoff count, but the visible ~1.5–2× tier
+   ratio is closest to σ_5 = 1.618 (golden) — and no allowed class
+   accommodates both observables. The correct discriminator from the
+   start would have been the χ-vs-σ co-fit table, which no class passes.
+
+### Framework-internal consequence
+
+The Buga geometry has no discoverable substrate-class signature from
+borescope-quality footage. The visible signature is consistent with
+conventional precision machining (round lathe-turned parts, three-point
+equidistant rigid mounts, polished ball-in-socket bearings). It is removed
+from the candidate Theory 0 device list.
+
+Theory 0 itself is unaffected. Its falsification path runs through δ = 2
+Casimir amplitude in the lab (see `bpr/casimir_constraint.py`), not through
+artifact identification.
+
+### Evidence that would reopen the question
+
+This document does not need to be revisited unless and until the following
+evidence is produced for the same artifact:
+
+1. A controlled weight measurement showing an anomalous force.
+2. Directional or modal force data sufficient to read χ independently.
+3. A material composition analysis (XRD/EDS) showing a quasicrystalline
+   bulk capable of hosting phason modes.
+4. Calibrated photogrammetry or CT scan of the interior with absolute
+   dimensions to within ~5%.
+
+Without item 1 there is no phenomenon for Theory 0 to address, and any
+further geometric analysis is premature.
+
