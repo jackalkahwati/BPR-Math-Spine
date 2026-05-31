@@ -1,16 +1,29 @@
-# Exorcism as Re-Coherence — BPR Structural Mapping
+# Exorcism / Deliverance as Re-Coherence — BPR Structural Mapping
 
 > **Status:** Interpretive overlay, not derivation. Builds on the privation
-> framework in [`MORAL_PHENOMENOLOGY_PRIVATION.md`](MORAL_PHENOMENOLOGY_PRIVATION.md).
-> **Scope:** Maps the elements of the Roman Catholic Rite of Exorcism
-> (broadly representative of structured deliverance ritual across traditions)
-> onto BPR's identity-winding / permission-field / salience / cooperative
-> alignment machinery, as a re-coherencing intervention on a hijacked
-> identity winding.
+> framework in [`MORAL_PHENOMENOLOGY_PRIVATION.md`](MORAL_PHENOMENOLOGY_PRIVATION.md)
+> and is empirically calibrated against the May 2026 literature review in
+> [`experiments/MORAL_PHENOMENOLOGY_EMPIRICAL_CALIBRATION.md`](experiments/MORAL_PHENOMENOLOGY_EMPIRICAL_CALIBRATION.md).
+> **Scope:** Maps structured-deliverance ritual ACROSS TRADITIONS (Catholic
+> Major Exorcism, Pentecostal deliverance, Sudanese zar, Afro-Brazilian
+> Umbanda, Korean kut, Islamic ruqyah, and others) onto BPR's identity-winding /
+> permission-field / salience / cooperative-alignment machinery, as a
+> re-coherencing intervention on a disordered identity winding.
 > **Critical premise:** This mapping is *only* meaningful for cases that
-> survive thorough organic and psychiatric screening. Most cases attributed
-> to possession have neurological or psychiatric explanations. Both the
-> Catholic Rite and this mapping require that screening first.
+> survive thorough organic and psychiatric screening. The empirical record
+> shows ≥90% of "possession" presentations have psychiatric explanations
+> on careful assessment (Pfeifer 1994, Gallagher 2008, van Duijl 2013).
+
+## REVISION HISTORY
+
+- **v0.1** (initial): Read the Catholic Rite as expulsion-of-substance and
+  mapped its elements to BPR re-coherencing. The expulsion framing was
+  Catholic-tradition-specific and incomplete.
+- **v0.2** (this version, post-empirical-calibration): Reframed to
+  **integration ≥ expulsion** as the structurally complete recovery model,
+  per the cross-cultural anthropology (Bourguignon, Boddy, Cohen) and the
+  DID outcome literature (Kluft, ISSTD, TOP DD). Empirical bounds added
+  per the May 2026 literature survey.
 
 ---
 
@@ -113,11 +126,47 @@ discernment criteria like those in the Rite.
 
 ---
 
-## 4. Why the framework predicts the rite would work for genuine cases
+## 3a. Integration ≥ expulsion: the cross-cultural and clinical correction
 
-Under the privation reading, recovery from identity-winding hijacking is
-*re-coherencing*, not *substance replacement*. The rite's elements are
-structurally aligned with what re-coherencing requires:
+The original v0.1 of this doc read deliverance as expulsion of a foreign
+substance. The empirical literature pushes toward **integration** as the
+structurally complete recovery model:
+
+| Tradition / clinical literature | Recovery framed as |
+|---|---|
+| Catholic, Pentecostal, Islamic ruqyah | Expulsion of foreign entity |
+| Sudanese zar | Integration via spirit-naming and ongoing negotiation |
+| Afro-Brazilian Umbanda / Candomblé | Cultivation and integration via mediumship development |
+| Korean kut | Integration of ancestral / spirit relationships |
+| DID treatment (Kluft, ISSTD three-phase, TOP DD) | Integration / fusion of identity-states |
+| Modern cult exit (Lifton, Singer, Hassan, Langone, Lalich) | Reconstruction of integrated pre-group identity |
+| REBUS / entropic-brain model (Carhart-Harris) | Re-canalization with revised priors |
+
+Half the world's deliverance traditions and the entire modern clinical
+literature on dissociative-identity recovery model the endpoint as
+**integration of the disordered identity-states into a stable continuing
+identity**, not removal of foreign content. This fits the privation
+framework *better* than expulsion does: if evil is privation (no substance),
+there is nothing to expel.
+
+The Delmonte 2016 Afro-Brazilian Umbanda case is the smoking-gun example.
+A subject met 4/5 DID criteria during their distressing phase but did
+**not** meet criteria once integrated into the religious-ritual community
+that provided agency and structure. The same phenomenology converted from
+pathological to non-pathological through structural integration — exactly
+what the framework's "re-coherencing" prediction requires.
+
+Expulsion framings remain valid as the **theological interpretation** of one
+sub-tradition of deliverance. They are not the structural invariant across
+traditions; integration is.
+
+## 4. Why the framework predicts deliverance ritual would work for genuine cases
+
+Under the privation reading, recovery from identity-winding disorder is
+*re-coherencing* — integration of the disordered states into a stable
+continuing identity, not substance replacement or substance removal. The
+elements common across deliverance traditions and clinical treatment
+literature are structurally aligned with what re-coherencing requires:
 
 1. **A strong reference field** — the invocation provides one
 2. **External anchors that hold the salience field** — the sacramentals
@@ -136,15 +185,40 @@ what BPR's machinery says recovery requires.
 
 The same structural elements appear in:
 
-- Cult deprogramming and exit counseling (Singer, Hassan)
-- Coercive-persuasion recovery (Lifton's milieu therapy)
+- DID treatment (Kluft 1984/86; ISSTD three-phase; TOP DD n=280 with 6-yr follow-up showing sustained reductions in PTSD, dissociation, self-harm — Brand et al. 2014, Myrick et al. 2017)
+- Cult deprogramming and exit counseling (Lifton 1961 8-criteria; Singer; Hassan BITE n=1044 validation; Langone/ICSA forced-deprogramming 25–33% relapse data)
+- Coercive-persuasion recovery (Lalich Bounded Choice)
 - Trauma-focused recovery (van der Kolk, Herman)
-- DID treatment with identity-stabilization phases
+- Cross-cultural zar / Umbanda / Korean kut integrative deliverance (Boddy, Cohen, Bourguignon)
+- The DSM-5 itself — Spiegel et al. 2013 expanded DID Criterion A to include possession-form identity disruption explicitly "to acknowledge the same dissociative phenomenology presents in trauma-framed or religiously-framed idioms"
 
-This convergence — independent traditions arriving at the same structural
-elements for recovery from identity-coupling capture — is the strongest
-empirical support for the framework's prediction that re-coherence (not
-replacement) is the structurally required intervention.
+This convergence — six independent literatures arriving at the same
+structural elements for recovery from identity-coupling capture, and the
+DSM diagnostic system itself encoding the equivalence of religious and
+clinical framings — is the strongest empirical support for the framework's
+prediction that re-coherence (not replacement) is the structurally required
+intervention.
+
+### Neural mapping: REBUS / entropic-brain
+
+Carhart-Harris's REBUS model is the closest pre-existing neuroscience
+framework to BPR's "re-coherencing":
+
+- Ego ≈ DMN-organized entropy minimization
+- Ritual ≈ transient entropy elevation, prior relaxation
+- Recovery ≈ DMN re-canalization with revised, less rigid priors
+- BPR identity winding W[φ_mind] ↔ DMN attractor structure
+- BPR permission-field re-gating ↔ revised priors after re-canalization
+- BPR cooperative-winding alignment ↔ hyperscanning inter-brain coherence
+  (Konvalinka et al. 2011 *PNAS* autonomic synchrony; subsequent EEG/fNIRS
+  alpha-band hyperscanning)
+
+This gives the framework five concrete measurable observables for
+identity-winding re-coherence: DMN connectivity shifts, frontal theta
+phase consistency, EEG Lempel-Ziv complexity, alpha-band inter-brain
+coherence, superior parietal deactivation. See §5 of
+[`MORAL_PHENOMENOLOGY_EMPIRICAL_CALIBRATION.md`](experiments/MORAL_PHENOMENOLOGY_EMPIRICAL_CALIBRATION.md)
+for the research targets.
 
 ---
 
@@ -237,12 +311,37 @@ legitimate identity change.
 ## 8. Cross-references
 
 - `doc/MORAL_PHENOMENOLOGY_PRIVATION.md` — the parent framework
+- `doc/experiments/MORAL_PHENOMENOLOGY_EMPIRICAL_CALIBRATION.md` — the
+  May 2026 literature calibration (five-angle synthesis)
 - `bpr/functional_architecture.py` — IdentityWinding, PermissionField,
   SalienceField, TrajectoryEvaluation
 - `bpr/collective.py` — CooperativeWinding
 - `bpr/information.py` — Eq (5) consciousness coupling
 - *De Exorcismis et Supplicationibus Quibusdam* (1999), USCCB
+- Spiegel D. et al., "Dissociative disorders in DSM-5," *Depression &
+  Anxiety* 28:824–852 (2011) — possession-form Criterion A
+- Brand B. et al., TOP DD outcome studies (2014, 2017, 2019)
+- Kluft R.P., DID treatment outcomes (1984, 1986, 1993)
+- van der Hart, Nijenhuis & Steele, *The Haunted Self* (2006)
+- Pfeifer S., *Br J Med Psychol* (1994) — n=343, screening result
+- Gallagher R., *Demonic Foes* (2020) and *J Religion & Health* (2008)
+- Cuneo M., *American Exorcism* (2001)
+- Bourguignon E., *Religion, Altered States, and Cultural Heritage* (1973)
+- Boddy J., *Wombs and Alien Spirits* (1989) — zar integrative deliverance
+- Cohen E., *The Mind Possessed* (2007) — Afro-Brazilian executive vs
+  pathogenic possession concepts
+- Luhrmann T., *When God Talks Back* (2012)
+- Delmonte R. et al., *J Religion & Health* (2016) — Umbanda DID case
+- Newberg A. et al., SPECT studies of prayer / glossolalia / meditation
+- Peres J.F. et al., *PLOS ONE* (2012) — Brazilian trance mediums
+- Carhart-Harris R. et al., REBUS / entropic brain (2014, 2019)
+- Konvalinka I. et al., *PNAS* (2011) — fire-walking autonomic synchrony
 - Lifton, *Thought Reform and the Psychology of Totalism* (1961)
-- Hassan, *Combating Cult Mind Control* (1988)
+- Singer M., *Cults in Our Midst* (1995) — post-cult trauma syndrome
+- Hassan S., *Combating Cult Mind Control* (1988); BITE n=1044 (2020)
+- Langone M. / ICSA — GPA scale, forced deprogramming relapse data
+- Lalich J., *Bounded Choice* (2004)
 - Herman, *Trauma and Recovery* (1992)
 - van der Kolk, *The Body Keeps the Score* (2014)
+- Rosik C.H., *J Psych & Theology* (1997) — iatrogenic harm from coercive
+  exorcism
