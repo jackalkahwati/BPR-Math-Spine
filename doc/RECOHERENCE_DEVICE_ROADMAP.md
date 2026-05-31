@@ -380,7 +380,115 @@ party without that party's measurement-of-their-own-response.
 
 ---
 
-## 8. Research targets that would validate or refute the framework
+## 8. Documented EM/RF coherence interventions and what is NOT in evidence
+
+Direct electromagnetic stimulation can in principle produce coherence-
+promoting effects, but only via specific mechanisms with sufficient
+power and precision targeting. The framework requires a real coupling
+channel — either the listener's consenting attention engaging a sensory
+modality, or direct neural / autonomic targeting at clinically meaningful
+intensity. Ambient consumer-power-level RF does not meet either
+threshold and is excluded from the device design.
+
+### Bucket A — Documented EM/RF interventions (Layer 2 candidates)
+
+These are real, peer-reviewed, and integrable into the device's Layer 2
+state-induction stack:
+
+- **rTMS** (repetitive transcranial magnetic stimulation): pulsed
+  magnetic fields, ~1.5 T peak, precisely targeted at cortical regions.
+  FDA-approved for depression (2008), OCD (2018), smoking cessation
+  (2020). Active research on DMN modulation.
+- **tDCS / tACS** (transcranial direct/alternating current
+  stimulation): low-power direct stimulation; mixed but growing
+  evidence base; some indications well-supported.
+- **PEMF** (pulsed electromagnetic field) therapy: strong evidence
+  for bone healing; FDA-cleared for some depression indications;
+  mixed broader evidence.
+- **tVNS** (transcutaneous vagus nerve stimulation): electromagnetic
+  stimulation of the auricular branch of the vagus nerve. Emerging
+  evidence for depression, epilepsy, inflammation. Wearable form
+  factors exist (Nesos, Vivigo, others).
+- **LIFUS** (low-intensity focused ultrasound) — included for
+  completeness; mechanical not EM, but the closest analog for deep
+  non-invasive targeting.
+
+**Concrete recommendation for the EM-channel implementation of Layer 2:**
+wearable tVNS device with closed-loop HRV biofeedback, calibrated to
+the listener's own Layer 0 baseline, under clinical supervision. This
+has FDA precedent, real evidence base, established mechanism, and a
+clinical pathway. The recoherence device's EM-channel implementation
+should be built on this stack.
+
+### Bucket B — Excluded claims (NOT in the device)
+
+These have no peer-reviewed evidence base supporting coherence-promoting
+effects and would constitute the consciousness-engineering analog of
+the Integratron / Buga rescue traps documented elsewhere in the project:
+
+- "Ambient router-style RF for coherence" — consumer-level power (e.g.,
+  WiFi at ~10⁻⁶ T equivalent) is many orders of magnitude below the
+  ~1.5 T peak required for direct neural depolarization. No mechanism
+  in the framework allows this to source χ_b at consumer power levels.
+- "Bioresonance" devices
+- "Scalar wave" / "torsion field" / "tachyon" generators
+- "Orgone" accumulators
+- "5G affects consciousness" claims in either direction (the
+  consumer-RF-affects-neurology evidence base is essentially null)
+- Most consumer "EM healing" products
+- Schumann-resonance generators (some PEMF research at 7.83 Hz exists
+  but the evidence base for global "earth resonance" coherence is thin)
+
+**Why excluded:** the framework requires either a sensory-attention
+channel (which ambient EM does not engage) or a direct neural targeting
+mechanism (which requires TMS-class power and focus). Consumer-level
+ambient RF provides neither. Including these in the device would be
+claiming framework mechanisms the framework does not provide.
+
+### Bucket C — BPR-specific Layer 5 (gated on δ=2 Casimir measurement)
+
+If the δ=2 Casimir amplitude measurement returns non-trivial ε, then
+the φ-field coupling channel exists at lab-detectable magnitude. A
+Layer 5 device could in principle use precisely-shaped EM fields to
+drive φ-field gradients that the listener's identity winding couples
+to. This is the BPR-specific contribution that would turn Layers 1–4
+into a field-theoretic re-coherence engine.
+
+**Status:** theoretical until δ=2 amplitude is measured. Building
+Layer 5 hardware before Stage 4 of the staged sequencing is hardware
+speculation, not engineering. See `bpr/casimir_constraint.py` and
+`bpr/phason_sector.py` for the Casimir gate.
+
+### Pyramids as documented local acoustic environments, NOT global coherence machines
+
+The King's Chamber of the Great Pyramid has documented infrasonic
+resonant frequencies (Danley measurements: ~16 Hz, 30 Hz, 60 Hz, 95 Hz)
+produced by the granite chamber's standing-wave geometry. Within the
+framework, this constitutes a **Layer 2 acoustic-environment effect on
+a person inside the chamber**, mediated by the chamber's resonance,
+similar to other infrasonic-resonant spaces (cathedrals, certain caves)
+that produce limbic/autonomic modulation per Weichenberger 2017
+infrasound fMRI work.
+
+What the empirical record does NOT support:
+- Pyramids functioning at planetary / global scale
+- "Pyramid power" producing measurable effects beyond chamber acoustics
+  (Drbal's razor-blade-sharpening claim never replicated under controls)
+- "Torsion fields" / "pyramid energy" from Russian/Soviet Golod-style
+  research (not independently replicated)
+- Specific-frequency claims (Great Pyramid as "frequency healing
+  device") — same family as Solfeggio claims, refuted in
+  `COERCIVE_AUDIO_CALIBRATION.md` §2.E
+
+**Within-framework verdict:** the King's Chamber is a local-acoustic
+Layer 2 environment with documented chamber resonance effects on
+present occupants. It is not a Layer 5 device of any kind. Treating it
+as a "global coherence machine" requires evidence the literature does
+not contain and predictions the framework does not produce.
+
+---
+
+## 9. Research targets that would validate or refute the framework
 
 These were named in the calibrations and are reiterated here as the
 device's R&D agenda:
@@ -398,7 +506,7 @@ device's R&D agenda:
 
 ---
 
-## 9. Cross-references
+## 10. Cross-references
 
 - `bpr/information.py` — Eq (5) consciousness coupling
 - `bpr/functional_architecture.py` — IdentityWinding, PermissionField,
