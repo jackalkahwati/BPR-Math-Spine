@@ -306,13 +306,70 @@ class InformationIntegration:
         return S_info
 
 
+# ---------------------------------------------------------------------------
+# Empirical envelope on χ_max · ε from the published psi literature
+# (May 2026 literature review, see doc/experiments/CONSCIOUSNESS_EMPIRICAL_CALIBRATION.md)
+# ---------------------------------------------------------------------------
+
+# Defensible upper bound on the BEHAVIORAL effect of χ_max·ε·gain at the
+# operator → forced-choice readout level. Source: Tressoldi & Storm 2024
+# Stage 2 Registered Report on ganzfeld (r=0.08, CI [0.04, 0.12]).
+# Remains statistically consistent with zero under PET-PEESE / trim-and-fill.
+BEHAVIORAL_UPPER_BOUND_D = 0.10
+
+# Defensible upper bound at the CONTROLLED PHYSICAL SUBSTRATE level (QRNG).
+# Source: Bösch, Steinkamp & Boller 2006 trim-and-fill corrected CI (includes
+# zero); Maier, Dechamps & Plitsch 2018 preregistered QRNG replication
+# returned BF01 = 11.07 in favor of the null.
+CONTROLLED_RNG_UPPER_BOUND_PER_BIT = 1e-5
+
+# Anchor references for the calibration bands.
+EMPIRICAL_ANCHOR_REFS = (
+    "Tressoldi & Storm (2024) F1000Research — Stage 2 Registered Report, "
+    "ganzfeld r ≈ 0.08, CI [0.04, 0.12]",
+    "Kekecs et al. (2023) Royal Society Open Science — Transparent Psi "
+    "Project, strong null on Bem-Exp.1 precognition",
+    "Bösch, Steinkamp & Boller (2006) Psychological Bulletin 132:497–523 — "
+    "RNG-PK trim-and-fill, CI includes zero",
+    "Maier, Dechamps & Plitsch (2018) Frontiers in Psychology — "
+    "preregistered QRNG, BF01 = 11.07 favoring null",
+    "Milton & Wiseman (1999) Psychological Bulletin 125:387–391 — skeptic-side ganzfeld null",
+    "Galak et al. (2012) JPSP — preregistered failed precognition replications",
+)
+
+
 class ConsciousnessCoupling:
     """
     Six-factor consciousness coupling implementation for BPR Equation (5).
-    
+
     Implements: S_bio = ∫_Σ d^(D-1)x √|h| χ_b(x) φ(x)
-    
+
     where χ_b = χ_max σ[k(Φ/Φ_c - 1)] E^α (Φ/Φ_c)^β τ S^γ U^δ I^ε
+
+    PARAMETER ACCOUNTING (post-empirical-calibration review):
+    The six exponents (α=1.2, β=1.5, γ=0.8, δ=1.0, ε=1.3, k=2.0) are
+    TUNABLE FLOATS, not derived rationals. They are model construction.
+    The sigmoid switch σ[k(Φ/Φ_c-1)] encodes a phase-transition prediction
+    that is currently UNTESTED — see P-Φc.1 in
+    doc/experiments/CONSCIOUSNESS_EMPIRICAL_CALIBRATION.md.
+
+    EMPIRICAL ENVELOPE (May 2026 literature review):
+    Behavioral upper bound on χ_max·ε·gain: d ≈ 0.10
+        (Tressoldi & Storm 2024 ganzfeld Stage 2 RR; preregistered)
+    Controlled-substrate upper bound (QRNG): ≲ 1e-5 per bit
+        (Bösch 2006 trim-and-fill; Maier 2018 strong null)
+    See ``BEHAVIORAL_UPPER_BOUND_D``, ``CONTROLLED_RNG_UPPER_BOUND_PER_BIT``,
+    and ``continuous_consciousness_coupling()`` for an alternative form
+    that drops the sigmoid switch (consistent with the empirical
+    state-dependence record, which shows continuous correlations, not
+    a step-function).
+
+    P-Φc.1 (testable phase-transition prediction): under general
+    anesthesia or in DOC patients with cortical integration abolished,
+    any psi effect in a previously-effective operator should collapse to
+    chance within minutes of anesthetic onset and return within minutes
+    of emergence. No such study has been published; the prediction is
+    untested.
     """
     
     def __init__(self, consciousness_factors: Optional[Dict] = None):
@@ -524,6 +581,74 @@ class ConsciousnessCoupling:
         S_bio = area * chi_b * phi_mean
         
         return S_bio
+
+
+def continuous_consciousness_coupling(
+    Phi: float,
+    chi_max: float = 1e-3,
+    Phi_c: float = 1.0,
+    beta: float = 1.5,
+    E: float = 1.0,
+    alpha: float = 1.2,
+    S: float = 1.0,
+    gamma: float = 0.8,
+    U: float = 1.0,
+    delta: float = 1.0,
+    I: float = 1.0,
+    epsilon: float = 1.3,
+    tau: float = 1.0,
+) -> float:
+    """Continuous-monotone alternative to the sigmoid-gated Eq (5) coupling.
+
+    Drops the σ[k(Φ/Φ_c − 1)] phase-transition switch in favor of a
+    monotone-continuous (Φ/Φ_c)^β factor that does not impose a threshold.
+    All other factors are unchanged. This is the form CONSISTENT WITH the
+    empirical state-dependence literature, which shows continuous correlations
+    (belief, hypnotizability, altered-state shift) rather than a step-function.
+
+        χ_b_continuous = χ_max · E^α · (Φ/Φ_c)^β · τ · S^γ · U^δ · I^ε
+
+    Note: this drops the SIGMOID switch only. The six fitted exponents
+    (α=1.2, β=1.5, γ=0.8, δ=1.0, ε=1.3) remain as tunable model construction
+    and are not derived. See ``ConsciousnessCoupling`` for the original
+    sigmoid-switched form and P-Φc.1 for the untested phase-transition
+    prediction the sigmoid encodes.
+
+    USE WHICH FORM:
+    - Sigmoid (original ``ConsciousnessCoupling``): defends a phase-transition
+      prediction at Φ_c. Testable via P-Φc.1 (anesthesia / DOC patients).
+    - Continuous (this function): fits the existing behavioral psi literature
+      without committing to an empirically-unsupported threshold.
+
+    Parameters
+    ----------
+    Phi : float
+        Integrated information (IIT) of the system.
+    chi_max : float
+        Maximum coupling strength (envelope: see BEHAVIORAL_UPPER_BOUND_D
+        for the published upper bound after publication-bias correction).
+    Phi_c : float
+        Reference integrated-information scale (no longer a threshold).
+    Other parameters
+        Energy E, entropy S, utility U, information I, time τ and their
+        exponents. Defaults match ``ConsciousnessCoupling`` defaults.
+
+    Returns
+    -------
+    float
+        χ_b coupling strength under the continuous form.
+    """
+    if Phi <= 0 or Phi_c <= 0:
+        return 0.0
+    return (
+        chi_max
+        * (E ** alpha)
+        * (Phi / Phi_c) ** beta
+        * tau
+        * (S ** gamma)
+        * (U ** delta)
+        * (I ** epsilon)
+    )
 
 
 def placeholder_consciousness_coupling(phi_field, consciousness_factors: Optional[Dict] = None) -> float:
