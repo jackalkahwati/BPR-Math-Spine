@@ -901,3 +901,162 @@ def doubly_charmed_splitting_kappa_scan() -> dict:
         "lhcb_measurement_MeV": _M_OMEGA_CC_P_LHCB_2026 - _M_XI_CC_PP_LHCB_2017,
         "scan": results,
     }
+
+
+# ---------------------------------------------------------------------------
+# §12.8  Derivation of HQET κ from BPR substrate (first-pass attempt)
+# ---------------------------------------------------------------------------
+
+def derive_kappa_HQET_from_substrate(
+    l_d: int = 1,
+    l_s: int = 4,
+    l_c: int = 24,
+    l_b: int = 30,
+    z: int = 6,
+    p: int = 104761,
+    n_gen: int = 3,
+    v_EW_GeV: float = 246.0,
+) -> dict:
+    """First-pass derivation of HQET coupling κ from BPR substrate structure.
+
+    Status
+    ------
+    PRINCIPLED-BUT-NOT-RIGOROUS. None of the candidate ansätze below is
+    derived from first principles in BPR's boundary action. Each follows
+    the framework's existing pattern (mass-ratio + boundary-coordination
+    suppression, as in V_cb derivation) but the *choice* of ansatz is
+    heuristic. A rigorous derivation requires building doubly-heavy
+    baryon spectroscopy from the boundary action -- a real research
+    project, not a one-function task.
+
+    What this function does
+    -----------------------
+    Computes κ under four candidate ansätze, each motivated by existing
+    BPR derivation patterns:
+
+    1. **LO HQET**: κ = 1.
+       What the framework's HQ expansion naturally gives at leading
+       order. Heavy diquark dominates; light quark contributes just m_q.
+
+    2. **Mode-ratio**: κ = 1 + (l_s − l_d) / l_c.
+       Light-quark boundary mode difference relative to charm mode
+       index. Encodes "by how much does s differ from d as seen by
+       the cc diquark." Analogous to the (l_s − l_d) appearing in
+       the down-type spectrum normalization.
+
+    3. **Mass-ratio with color factor**: κ = 1 + N_c · (m_s + m_d) / (2 m_c).
+       1/m_Q correction with N_c = z/2 color factor (BPR derives
+       N_c from substrate). Analog of the standard HQET 1/m_Q
+       expansion organized by BPR's color structure.
+
+    4. **CKM-analog**: κ = 1 + (m_s + m_d) / (m_c + m_b) · √(ln(p) + z/3).
+       Mirrors the V_cb formula's structure (mass ratio + boundary
+       coordination factor √(ln(p) + z/3)).
+
+    None of these is unique; the framework's existing structure does
+    not single one out. Returned values let the reader see the range
+    a substrate-derived κ might take.
+
+    Parameters
+    ----------
+    l_d, l_s, l_c, l_b : int
+        Boundary mode integers for d, s, c, b quarks. Defaults are
+        BPR-derived values (l_d = 1, l_s = z − 2 = 4, l_c = z(z − 2)
+        = 24, l_b = z(z − 1) = 30 for z = 6).
+    z : int
+        Substrate coordination number.
+    p : int
+        Substrate structural prime.
+    n_gen : int
+        Number of fermion generations (derived = 3 in BPR).
+    v_EW_GeV : float
+        Electroweak VEV [GeV], anchor for quark masses.
+
+    Returns
+    -------
+    dict with keys:
+        kappa_LO            -- 1.0 (HQET leading order)
+        kappa_mode_ratio    -- from (l_s − l_d)/l_c
+        kappa_mass_ratio    -- from N_c (m_s + m_d) / (2 m_c)
+        kappa_CKM_analog    -- from CKM-analog ansatz
+        kappa_range         -- (min, max) across all ansätze
+        delta_m_predictions -- dict mapping ansatz name to predicted Δm [MeV]
+        delta_m_LHCb_MeV    -- LHCb measurement
+        residual_range_MeV  -- (min, max) residual across ansätze
+        note                -- text summary of status
+    """
+    import numpy as np
+
+    qms = QuarkMassSpectrum(v_EW_GeV=v_EW_GeV, p=p)
+    m = qms.all_masses_MeV
+    m_d, m_s, m_c, m_b = m["d"], m["s"], m["c"], m["b"]
+
+    N_c = z // 2  # BPR derives N_c = z/2 = 3 for z = 6
+
+    # Ansatz 1: LO HQET
+    kappa_LO = 1.0
+
+    # Ansatz 2: Mode-ratio
+    kappa_mode_ratio = 1.0 + (l_s - l_d) / l_c
+
+    # Ansatz 3: Mass-ratio with color factor
+    kappa_mass_ratio = 1.0 + N_c * (m_s + m_d) / (2.0 * m_c)
+
+    # Ansatz 4: CKM-analog (mass ratio × boundary coordination factor)
+    coord_factor = np.sqrt(np.log(p) + z / 3.0)
+    kappa_CKM_analog = 1.0 + (m_s + m_d) / (m_c + m_b) * coord_factor
+
+    kappa_values = {
+        "LO": kappa_LO,
+        "mode_ratio": kappa_mode_ratio,
+        "mass_ratio": kappa_mass_ratio,
+        "CKM_analog": kappa_CKM_analog,
+    }
+    kappa_range = (min(kappa_values.values()), max(kappa_values.values()))
+
+    # Predicted splittings
+    delta_m_current = m_s - m_d
+    delta_m_predictions = {
+        name: float(kappa * delta_m_current) for name, kappa in kappa_values.items()
+    }
+
+    # LHCb measurement
+    delta_m_LHCb = _M_OMEGA_CC_P_LHCB_2026 - _M_XI_CC_PP_LHCB_2017
+    delta_m_LHCb_err = float(
+        (_M_OMEGA_CC_P_LHCB_2026_ERR ** 2 + _M_XI_CC_PP_LHCB_2017_ERR ** 2) ** 0.5
+    )
+
+    residuals = {
+        name: dm - delta_m_LHCb for name, dm in delta_m_predictions.items()
+    }
+    residual_range = (min(residuals.values()), max(residuals.values()))
+
+    # Residuals in sigma
+    residual_sigmas = {
+        name: r / delta_m_LHCb_err for name, r in residuals.items()
+    }
+
+    return {
+        "kappa_values": kappa_values,
+        "kappa_range": kappa_range,
+        "delta_m_predictions_MeV": delta_m_predictions,
+        "delta_m_LHCb_MeV": delta_m_LHCb,
+        "delta_m_LHCb_err": delta_m_LHCb_err,
+        "residuals_MeV": residuals,
+        "residuals_sigma": residual_sigmas,
+        "residual_range_MeV": residual_range,
+        "m_s_BPR": m_s,
+        "m_d_BPR": m_d,
+        "m_c_BPR": m_c,
+        "m_b_BPR": m_b,
+        "N_c_derived": N_c,
+        "note": (
+            "PRINCIPLED-BUT-NOT-RIGOROUS first-pass derivation. None of "
+            "the four ansatze is uniquely selected by BPR's existing "
+            "structure. The framework naturally gives kappa = 1 at LO "
+            "HQET; principled corrections following V_cb-style boundary "
+            "patterns yield kappa values in the displayed range. A "
+            "rigorous derivation requires extending qcd_flavor.py into "
+            "doubly-heavy baryon spectroscopy from the boundary action."
+        ),
+    }
