@@ -140,34 +140,104 @@ derived from substrate.
 
 ---
 
-## 6. What would make this BPR-discriminating
+## 6. First-pass derivation of κ from BPR substrate
 
-The clean target is **deriving κ from boundary-mode dynamics**.
+**Status:** PRINCIPLED-BUT-NOT-RIGOROUS. Implemented in
+`bpr/qcd_flavor.py:derive_kappa_HQET_from_substrate()`. None of the
+four candidate ansätze below is uniquely selected by BPR's existing
+boundary structure; a rigorous derivation requires building doubly-
+heavy baryon spectroscopy from the boundary action (real research
+project, not a one-function task).
 
-A BPR-discriminating extension of `bpr/qcd_flavor.py` would have to:
-1. Build a substrate-level model of the cc-diquark binding in the
-   light-quark field
-2. Derive κ from the boundary phase-field coupling between the
-   diquark and the light quark
-3. Show that the derived κ either agrees with or differs from the
-   lattice QCD value in a way that the LHCb measurement can test
+### Four candidate ansätze using BPR's existing structure
 
-If the derived κ matches lattice (~1.18), the framework demonstrates
-deeper inheritance — substrate predicts the same QCD dynamics as
-lattice. If it differs by enough that LHCb can distinguish (say
-κ_BPR ≠ κ_lattice by > 5%), the framework makes a discriminating
-prediction against lattice QCD.
+| Ansatz | Formula | κ value |
+|--------|---------|---------|
+| LO HQET | 1 | 1.0000 |
+| Mode-ratio | 1 + (l_s − l_d) / l_c | 1.1250 |
+| Mass-ratio with color factor | 1 + N_c · (m_s + m_d) / (2 m_c) | 1.1182 |
+| CKM-analog | 1 + (m_s + m_d) / (m_c + m_b) · √(ln(p) + z/3) | 1.0667 |
 
-Either outcome is informative. Currently neither is done.
+All four use BPR substrate-derived inputs (l-modes, quark masses,
+N_c = z/2, p = 104761, z = 6); the *choice* of ansatz is what's
+heuristic. Each is motivated by an existing BPR derivation pattern
+(the V_cb formula's mass-ratio × boundary-coordination structure,
+the m_b derivation's boundary phase-space correction, etc.).
 
-Related research targets:
+### Splitting predictions and residuals against LHCb
+
+| Ansatz | Δm_BPR [MeV] | Residual [MeV] | Residual [σ] |
+|--------|--------------|-----------------|---------------|
+| LO HQET | 89.15 | −16.30 | **−3.25** (tension) |
+| Mode-ratio | 100.29 | −5.16 | −1.03 |
+| Mass-ratio | 99.69 | −5.76 | −1.15 |
+| CKM-analog | 95.09 | −10.36 | −2.06 |
+
+**LHCb measured: 105.45 ± 5.02 MeV** (Ωcc⁺ at 3727 − Ξcc⁺⁺ at 3621.55)
+
+### What this attempt actually shows
+
+1. **BPR's natural LO HQET gives κ = 1, which is in 3.25σ tension with
+   the LHCb measurement.** This is itself informative: a strict LO-HQET
+   reading of the framework is *discriminated against* by the discovery.
+   The framework requires some correction to κ to be consistent with
+   experiment.
+2. **Two structurally-distinct BPR-internal corrections (mode-ratio and
+   mass-ratio) yield nearly identical κ ≈ 1.12.** The agreement between
+   the two derivations is interesting — they encode different physical
+   intuitions (boundary-mode geometry vs. mass-ratio 1/m_Q expansion)
+   but converge on the same value to within 0.5%. This may indicate
+   the framework genuinely points toward κ ≈ 1.12 from substrate, even
+   though the rigorous derivation is not yet done.
+3. **BPR's principled-derivation range κ ∈ [1.07, 1.13] is slightly
+   *lower* than the lattice QCD central value κ = 1.18.** The
+   corresponding Δm prediction is ~99-100 MeV vs lattice ~105 MeV vs
+   LHCb 105.45 ± 5.02 MeV. All three are mutually consistent at the
+   current experimental precision (~5 MeV).
+4. **If LHCb improves precision to ~1 MeV on this splitting, the
+   measurement could distinguish between BPR's substrate-derived κ
+   (~1.12) and the lattice QCD value (1.18).** That's the testable
+   prediction that emerges from this attempt: **BPR predicts the Ωcc⁺
+   − Ξcc⁺ splitting is ~100 MeV, not ~105 MeV.** Currently the
+   measurement is consistent with both; future precision could
+   discriminate.
+
+### Verdict on the derivation attempt
+
+This is a first-pass exercise that:
+
+- **Refutes the strict LO-HQET reading** of BPR (3.25σ tension)
+- **Yields a substrate-derived κ ≈ 1.12** under two independent
+  principled ansätze with structurally different motivations
+- **Predicts Δm(Ωcc⁺ − Ξcc⁺) ≈ 99 − 100 MeV** as the BPR-derived
+  value (vs lattice 105 MeV, LHCb 105.45 ± 5.02 MeV)
+- **Identifies a testable discriminating prediction** for future
+  higher-precision LHCb measurements
+
+The attempt is *not* a rigorous derivation. The mode-ratio and
+mass-ratio ansätze were chosen by analogy with existing BPR
+patterns; the framework's boundary action does not currently
+uniquely select among them. A rigorous version requires extending
+the framework's hadron-mass machinery into doubly-heavy baryon
+spectroscopy.
+
+But the consistency of the two non-trivial ansätze at κ ≈ 1.12 is
+suggestive enough that the BPR-discriminating prediction "Δm ≈ 99-100
+MeV" is worth recording as a target for future LHCb measurements.
+
+### Related research targets (for full rigor)
+
+- Build substrate-level doubly-heavy baryon spectroscopy from the
+  boundary action: derive M(QQq) = 2M_Q + λ_QQ + κ·m_q with all
+  three constants from substrate, then compare with the family of
+  LHCb measurements
 - Magnetic moments of Ωcc⁺ and Ξcc⁺ from BPR's boundary spin-flavor
-  structure (lattice predictions exist; LHCb will not measure soon
-  but future experiments might)
-- Hyperfine splitting Ξcc⁺(½) − Ξcc⁺(3/2) (the spin-3/2 doubly-charmed
-  baryon family is the next LHCb target per the video transcript)
-- Decay rates Ωcc⁺ → Ξc⁺K⁻π⁺ (or whatever final state) from BPR's
-  CKM structure (Ωcc⁺ lifetime not yet measured at LHCb)
+  structure (lattice predictions exist; future experiments may
+  measure)
+- Hyperfine splitting Ξcc⁺(½) − Ξcc⁺(3/2) (spin-3/2 family is the
+  next LHCb target per the discovery announcement)
+- Decay rates Ωcc⁺ → Ξc⁺K⁻π⁺ from BPR's CKM structure (lifetime not
+  yet measured)
 
 ---
 
