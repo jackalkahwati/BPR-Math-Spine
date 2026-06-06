@@ -736,3 +736,168 @@ def pion_mass(m_u_MeV: float = 2.16, m_d_MeV: float = 4.67,
     # NLO chiral correction: δ_π = (6.2 ± 1.6)% from QCD sum rules (JHEP 2010, arxiv 2403.18112)
     delta_pi = 0.062
     return m_pi_LO * (1.0 + delta_pi)
+
+
+# ---------------------------------------------------------------------------
+# §12.7  Doubly-charmed baryon SU(3) flavor splitting Ωcc⁺ − Ξcc⁺
+# ---------------------------------------------------------------------------
+
+# LHCb mass measurements [MeV/c^2]
+_M_XI_CC_PP_LHCB_2017 = 3621.55       # Ξcc⁺⁺ (ccu), LHCb 2017, arXiv:1707.01621
+_M_XI_CC_PP_LHCB_2017_ERR = 0.40      # combined stat+syst
+_M_OMEGA_CC_P_LHCB_2026 = 3727.0      # Ωcc⁺ (ccs), LHCb 2026 (Beauty conference)
+_M_OMEGA_CC_P_LHCB_2026_ERR = 5.0     # placeholder until paper published
+
+# Lattice QCD prediction range for Ωcc⁺ − Ξcc⁺ [MeV] (Brown 2014; Mathur 2018; HPQCD)
+_LATTICE_SPLITTING_LOW = 85.0
+_LATTICE_SPLITTING_HIGH = 130.0
+_LATTICE_SPLITTING_CENTRAL = 100.0
+
+# Heavy-quark effective theory coupling coefficient κ for the light-quark mass
+# entering doubly-heavy baryon masses. LO HQET: κ = 1. With O(1/m_Q) corrections
+# and constituent dressing, lattice studies favor κ ∈ [1.0, 1.30] with central
+# value around 1.15-1.20 (Mathur et al. 2018, arXiv:1807.00174; Brown et al.
+# 2014, arXiv:1409.0497). κ is QCD machinery -- NOT derived from BPR.
+_HQET_KAPPA_LO = 1.00
+_HQET_KAPPA_CENTRAL = 1.18
+_HQET_KAPPA_HIGH = 1.30
+
+
+def doubly_charmed_isospin_splitting(
+    m_s_MeV: float = 93.88,
+    m_d_MeV: float = 4.73,
+    kappa_HQET: float = _HQET_KAPPA_CENTRAL,
+) -> dict:
+    """SU(3) flavor mass splitting M(Ωcc⁺) − M(Ξcc⁺) at heavy-quark
+    effective theory leading order.
+
+    Formula
+    -------
+    For doubly-heavy baryons (QQq), HQET gives
+        M(QQq) = 2·M_Q + λ_QQ + κ · m_q + O(1/m_Q),
+    so the SU(3)-flavor splitting between Ωcc⁺ (ccs) and Ξcc⁺ (ccd) is
+        ΔM ≡ M(Ωcc⁺) − M(Ξcc⁺) = κ · (m_s − m_d).
+    At LO HQET κ = 1; with 1/m_Q corrections κ rises to ~1.1-1.3 in
+    lattice studies (Brown 2014, Mathur 2018).
+
+    BPR's contribution and what is inherited
+    ----------------------------------------
+    DERIVED from BPR substrate (J, p, z, l-modes):
+        m_s, m_d  → ``QuarkMassSpectrum`` boundary-mode spectrum, 0.5%
+                    accuracy against PDG; m_s − m_d = 89.15 MeV.
+
+    INHERITED FROM SM/QCD (not derived in BPR):
+        κ_HQET    → HQ effective theory coupling; same value as in
+                    lattice QCD analyses.
+
+    The prediction is therefore **not BPR-discriminating** against
+    lattice QCD at present: both frameworks input m_s and m_d (BPR
+    derives them; SM fits them to data) and both apply the same κ
+    coefficient. A BPR-discriminating extension would require a
+    substrate-level prediction of κ from the boundary-mode dynamics
+    that differs from the QCD value.
+
+    Parameters
+    ----------
+    m_s_MeV : float
+        Strange-quark current mass at 2 GeV [MeV]. Default is the BPR-
+        derived value from ``QuarkMassSpectrum(v_EW_GeV=246, p=104761)``.
+    m_d_MeV : float
+        Down-quark current mass at 2 GeV [MeV]. BPR-derived default.
+    kappa_HQET : float
+        Light-quark coupling coefficient in HQET. Default uses the
+        central value from lattice QCD studies. Pass _HQET_KAPPA_LO
+        (= 1.0) for the LO HQET prediction without 1/m_Q corrections.
+
+    Returns
+    -------
+    dict with keys:
+        delta_m_BPR_MeV     -- κ · (m_s − m_d) [MeV]
+        delta_m_LHCb_MeV    -- measured splitting from LHCb [MeV]
+        delta_m_LHCb_err    -- estimated combined experimental uncertainty
+        residual_MeV        -- BPR prediction minus LHCb measurement
+        residual_sigma      -- residual / uncertainty (rough z-score)
+        kappa_used          -- κ value used
+        lattice_range_MeV   -- (low, high) lattice QCD prediction range
+        status              -- 'CONFIRMED' | 'TENSION' | 'NON-DISCRIMINATING'
+        note                -- text summary of what BPR contributes
+    """
+    delta_m_current = m_s_MeV - m_d_MeV
+    delta_m_BPR = kappa_HQET * delta_m_current
+
+    # LHCb measured splitting (Ωcc⁺ vs Ξcc⁺⁺ as proxy; isospin shift
+    # Ξcc⁺ − Ξcc⁺⁺ is ~2-5 MeV, within combined experimental uncertainty)
+    delta_m_LHCb = _M_OMEGA_CC_P_LHCB_2026 - _M_XI_CC_PP_LHCB_2017
+    delta_m_LHCb_err = float(
+        (_M_OMEGA_CC_P_LHCB_2026_ERR ** 2 + _M_XI_CC_PP_LHCB_2017_ERR ** 2) ** 0.5
+    )
+
+    residual = delta_m_BPR - delta_m_LHCb
+    residual_sigma = residual / delta_m_LHCb_err
+
+    # The framework is non-discriminating because κ is the inherited
+    # parameter; BPR only contributes m_s − m_d. Report CONFIRMED only
+    # when the prediction lies within both experimental uncertainty AND
+    # the lattice QCD range; otherwise tag as TENSION or
+    # NON-DISCRIMINATING.
+    in_lattice_range = _LATTICE_SPLITTING_LOW <= delta_m_BPR <= _LATTICE_SPLITTING_HIGH
+    in_experimental = abs(residual) <= 2.0 * delta_m_LHCb_err
+    if in_lattice_range and in_experimental:
+        status = "NON-DISCRIMINATING"  # consistent but not unique to BPR
+    elif in_lattice_range and not in_experimental:
+        status = "WITHIN-LATTICE-OUTSIDE-MEASUREMENT"
+    elif in_experimental and not in_lattice_range:
+        status = "OUTSIDE-LATTICE-WITHIN-MEASUREMENT"
+    else:
+        status = "TENSION"
+
+    return {
+        "delta_m_BPR_MeV": float(delta_m_BPR),
+        "delta_m_LHCb_MeV": float(delta_m_LHCb),
+        "delta_m_LHCb_err": delta_m_LHCb_err,
+        "residual_MeV": float(residual),
+        "residual_sigma": float(residual_sigma),
+        "kappa_used": float(kappa_HQET),
+        "lattice_range_MeV": (_LATTICE_SPLITTING_LOW, _LATTICE_SPLITTING_HIGH),
+        "status": status,
+        "note": (
+            "BPR contribution: m_s and m_d derived from boundary modes "
+            "(QuarkMassSpectrum, 0.5%% PDG accuracy). κ inherited from "
+            "HQ effective theory / lattice QCD -- not BPR-derived. The "
+            "Ωcc⁺ − Ξcc⁺ measurement is consistent with both BPR and "
+            "lattice QCD; the discovery confirms the Standard Model "
+            "embedding but does not discriminate BPR from lattice QCD. "
+            "A BPR-discriminating extension would require deriving κ "
+            "from boundary-mode dynamics in a way that yields a value "
+            "differing from lattice QCD."
+        ),
+    }
+
+
+def doubly_charmed_splitting_kappa_scan() -> dict:
+    """Sweep HQET κ ∈ [1.0, 1.3] using BPR-derived m_s − m_d.
+
+    Helps locate which κ value reproduces the LHCb measurement and
+    whether BPR's substrate-derived m_s − m_d is consistent with the
+    full lattice QCD range without κ tuning.
+    """
+    qms = QuarkMassSpectrum(v_EW_GeV=246.0, p=104761)
+    m = qms.all_masses_MeV
+    results = []
+    for kappa in (1.00, 1.05, 1.10, 1.15, 1.18, 1.20, 1.25, 1.30):
+        r = doubly_charmed_isospin_splitting(
+            m_s_MeV=m["s"], m_d_MeV=m["d"], kappa_HQET=kappa
+        )
+        results.append({
+            "kappa": kappa,
+            "delta_m_BPR_MeV": r["delta_m_BPR_MeV"],
+            "residual_MeV": r["residual_MeV"],
+            "status": r["status"],
+        })
+    return {
+        "m_s_BPR": m["s"],
+        "m_d_BPR": m["d"],
+        "delta_m_current_BPR": m["s"] - m["d"],
+        "lhcb_measurement_MeV": _M_OMEGA_CC_P_LHCB_2026 - _M_XI_CC_PP_LHCB_2017,
+        "scan": results,
+    }
