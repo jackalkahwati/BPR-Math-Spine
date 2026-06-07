@@ -1,0 +1,198 @@
+# BPR-STARFIRE claims registry — literature validation loop
+#
+# Every claim traces to a canonical pass (A, B, C, ext) in the STARFIRE
+# design record. The lit_validate.py loop checks each claim against recent
+# open literature (arXiv + OSTI.gov) and flags papers for HUMAN review.
+# The loop never verdicts physics — it only retrieves and grounds.
+#
+# status values: unverified | fresh | review
+# last_checked: ISO date of last literature sweep (null = never)
+
+_meta:
+  design: BPR-STARFIRE 500 MW compact spherical tokamak, REBCO HTS, no-solenoid
+  reference_point: "R0=2.10 m, a=0.95 m, kappa=2.2, delta=0.5, Bt=5.0 T (8.0 T Pass 4), Ip=10.91 MA, Pfus=500 MW, Pn=400 MW, duty 30%"
+  provenance: "~/.claude/skills/starfire.md (canonical) + cad/PassA/neutronics/ in this repo"
+  rule: never invent numbers — all claims must trace to a pass
+
+claims:
+  - id: TBR-TOROIDAL-REF
+    statement: The toroidal no-solenoid reference blanket (45 cm W2B5 inboard shield, R0=2.10 m) achieves TBR = 1.3792 +/- 0.0007, above the 1.10 self-sufficiency threshold.
+    value: 1.3792
+    unit: dimensionless
+    source_pass: C
+    search_terms:
+      - tritium breeding ratio spherical tokamak
+      - lithium lead breeding blanket neutronics
+      - tritium self-sufficiency fusion blanket
+      - TBR PbLi blanket OpenMC
+    last_checked: null
+    status: unverified
+
+  - id: TBR-SPHERICAL-AB
+    statement: The spherical-geometry Pass A/B blanket model gives TBR = 1.4527 +/- 0.0004 with Be multiplier and 90% Li-6 enriched Pb-17Li.
+    value: 1.4527
+    unit: dimensionless
+    source_pass: A
+    search_terms:
+      - tritium breeding ratio beryllium multiplier
+      - lithium-6 enrichment breeding blanket
+      - Pb-17Li blanket tritium breeding Monte Carlo
+    last_checked: null
+    status: unverified
+
+  - id: REBCO-FLUENCE-LIMIT
+    statement: REBCO HTS tape retains acceptable critical current up to a fast-neutron fluence limit of 1e18 n/cm2.
+    value: 1.0e+18
+    unit: n/cm^2
+    source_pass: A
+    search_terms:
+      - REBCO neutron irradiation critical current
+      - REBCO fluence limit
+      - HTS coated conductor neutron damage fusion
+      - high temperature superconductor radiation tolerance tokamak
+    last_checked: null
+    status: unverified
+
+  - id: REBCO-FLUENCE-MARGIN
+    statement: With the 45 cm W2B5 inboard shield the REBCO 30-year fluence is 0.40x the 1e18 n/cm2 limit (PASS) in the no-solenoid reference design.
+    value: 0.40
+    unit: fraction of limit
+    source_pass: C
+    search_terms:
+      - inboard shield spherical tokamak superconducting magnet
+      - tungsten boride shield fusion neutron
+      - magnet shielding compact tokamak fluence
+    last_checked: null
+    status: unverified
+
+  - id: FW-DPA-LIFETIME
+    statement: The SS316L+W first wall accumulates 1327 dpa over 30 years at 30% duty, requiring a replaceable cassette with roughly 11-year life.
+    value: 1327
+    unit: dpa / 30 yr
+    source_pass: B
+    search_terms:
+      - first wall displacement damage dpa fusion
+      - 316 stainless steel irradiation lifetime fusion
+      - first wall replacement fusion pilot plant
+    last_checked: null
+    status: unverified
+
+  - id: BE-DPA-LIFETIME
+    statement: The 10 cm beryllium neutron multiplier accumulates 592 dpa over 30 years (20x over limit), making it the dominant maintenance driver with about 1.5-year cassette life.
+    value: 592
+    unit: dpa / 30 yr
+    source_pass: B
+    search_terms:
+      - beryllium neutron multiplier irradiation damage
+      - beryllium swelling fusion blanket
+      - beryllium pebble lifetime breeding blanket
+    last_checked: null
+    status: unverified
+
+  - id: BLANKET-ENERGY-MULT
+    statement: Photon transport gives a blanket energy multiplication M of about 1.45, for 580 MW total deposition at Pfus = 500 MW.
+    value: 1.45
+    unit: dimensionless
+    source_pass: B
+    search_terms:
+      - blanket energy multiplication fusion neutronics
+      - nuclear heating breeding blanket photon transport
+      - energy deposition PbLi blanket
+    last_checked: null
+    status: unverified
+
+  - id: LI6-DEPLETION-WINDOW
+    statement: Li-6 depletion drives TBR below the 1.10 threshold at year 9-15, requiring two Pb-17Li replacements or 100-200 kg Li-6 top-up over plant life.
+    value: 9-15
+    unit: years
+    source_pass: C
+    search_terms:
+      - lithium-6 burnup breeding blanket depletion
+      - tritium breeding ratio time evolution blanket
+      - lithium isotopic depletion fusion reactor
+    last_checked: null
+    status: unverified
+
+  - id: SIC-FCI-MHD
+    statement: SiC flow channel inserts are mandatory for the Pb-17Li loop — without FCI the MHD pressure drop is 17 MPa (infeasible); with FCI pumping power is under 1 MW.
+    value: 17
+    unit: MPa (no-FCI MHD drop)
+    source_pass: B
+    search_terms:
+      - SiC flow channel insert MHD pressure drop
+      - magnetohydrodynamic pressure drop PbLi duct
+      - liquid metal blanket MHD flow channel insert
+    last_checked: null
+    status: unverified
+
+  - id: LCOE-PILOT
+    statement: The 500 MWfus pilot at 30% duty has LCOE of $1,947/MWh — non-competitive, and the problem is capacity-factor limited rather than CAPEX limited.
+    value: 1947
+    unit: USD/MWh
+    source_pass: ext
+    search_terms:
+      - fusion pilot plant levelized cost of electricity
+      - fusion power plant economics capacity factor
+      - compact tokamak cost of electricity
+    last_checked: null
+    status: unverified
+
+  - id: CAPEX-PILOT
+    statement: Pilot plant direct CAPEX is $4.4B, with NOAK $6.0B and FOAK $10.7B, for net electric output of 75-120 MWe under honest recirculating-power accounting.
+    value: 4.4
+    unit: USD billions (direct)
+    source_pass: ext
+    search_terms:
+      - fusion pilot plant capital cost estimate
+      - compact spherical tokamak cost
+      - fusion power plant recirculating power net electric
+    last_checked: null
+    status: unverified
+
+  - id: BOOTSTRAP-COMMERCIAL
+    statement: Raising bootstrap fraction from 0.28 to at least 0.75 for non-inductive steady state is the dominant physics risk for the commercial variant, with validation route via NSTX-U, MAST-U, and ST-80HTS.
+    value: 0.75
+    unit: bootstrap fraction (target)
+    source_pass: ext
+    search_terms:
+      - bootstrap current fraction spherical tokamak
+      - non-inductive steady state spherical tokamak
+      - NSTX-U MAST-U high bootstrap scenario
+    last_checked: null
+    status: unverified
+
+  - id: DIVERTOR-BOND-CYCLES
+    statement: The divertor W/CuCrZr monoblock bond is qualified to about 1,500 ELM cycles in current data; further qualification testing is an open item.
+    value: 1500
+    unit: ELM cycles
+    source_pass: ext
+    search_terms:
+      - tungsten CuCrZr monoblock high heat flux cycling
+      - divertor monoblock thermal fatigue
+      - W/Cu joint fusion divertor qualification
+    last_checked: null
+    status: unverified
+
+  - id: VS-CONTROL
+    statement: Vertical instability growth rate is 3.8 rad/s, controlled by an in-vessel VS coil pair at (2.5, +/-1.2) m with 69 kA at 300 Hz bandwidth.
+    value: 3.8
+    unit: rad/s
+    source_pass: ext
+    search_terms:
+      - vertical stability control elongated tokamak
+      - vertical displacement event control coil
+      - in-vessel coil vertical stabilization spherical tokamak
+    last_checked: null
+    status: unverified
+
+  - id: DISRUPTION-LOADS
+    statement: Disruption analysis gives 81 MPa halo current stress and 215 MN peak force; the 40 mm VV wall is adequate but 5,913 lifetime disruption cycles require VV fatigue qualification.
+    value: 215
+    unit: MN peak force
+    source_pass: ext
+    search_terms:
+      - halo current disruption electromagnetic load vacuum vessel
+      - tokamak disruption force vacuum vessel
+      - disruption mitigation structural load spherical tokamak
+    last_checked: null
+    status: unverified
