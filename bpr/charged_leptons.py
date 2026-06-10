@@ -76,18 +76,21 @@ class ChargedLeptonSpectrum:
 
     where l_k are the S² Laplacian eigenvalues (l(l+1) ≈ l² for l ≫ 1).
 
-    The three generations occupy modes:
-        l = 1  → e  (smallest eigenvalue, lightest lepton)
-        l = 14 → μ  (intermediate)
-        l = 59 → τ  (largest eigenvalue, heaviest lepton)
+    The three generations occupy modes (v0.9.6 derived values):
+        l = 1            → e  (smallest eigenvalue, lightest lepton)
+        l = √210 ≈ 14.49 → μ  (intermediate; √(z(z²−1)) for z=6)
+        l = 59           → τ  (largest eigenvalue, heaviest lepton)
 
     Mass ratios:
-        m_e : m_μ : m_τ = 1² : 14² : 59² = 1 : 196 : 3481
+        m_e : m_μ : m_τ = 1 : 210 : 3481   (l², with l_μ² = 210 exactly)
 
     Anchoring to m_τ = 1776.86 MeV (1 experimental input):
         scale = m_τ / 59² = 1776.86 / 3481 = 0.5104 MeV
-        m_e  = 0.5104 MeV  (exp: 0.5110, 0.11% off)
-        m_μ  = 0.5104 × 196 = 100.05 MeV  (exp: 105.66, 5.3% off)
+        m_e  = 0.5104 MeV          (exp: 0.5110, 0.11% off)
+        m_μ  = 0.5104 × 210 = 107.19 MeV  (exp: 105.66, 1.45% off)
+
+    (The earlier draft used l_μ = 14 → ratio 196 → m_μ = 100.05 MeV,
+    5.3% off; superseded by the derived l_μ = √210 below.)
 
     This replaces the previous fitted c_norms = (2.077e-6, 4.294e-4, 7.223e-3)
     which were reverse-engineered from experimental masses.

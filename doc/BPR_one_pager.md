@@ -93,9 +93,9 @@ For a fractal cylindrical cavity of scale R:
 ```
 F_Cas(R) = -(π² ℏ c)/(240 R⁴) [1 + α (R/R_f)^(-δ)]
 ```
-where **δ = 1.37 ± 0.05** is the critical BPR exponent. Under Postulate 0 (CCR), this exponent is identified with **δ = 2 Δ_φ**, fixing the substrate scaling weight at **Δ_φ = 0.685 ± 0.025**. The same δ is therefore predicted to appear in any CCR-compatible cascade — micron-scale fractal cavity, hexagram boundary template, or larger-scale resonance hierarchy — not just one apparatus.
+where **δ = 2** is the critical BPR exponent — DERIVED under Postulate 0c (Quasicrystalline Projection) from the unit-Pisot inflation, which forces the substrate scaling weight to **Δ_φ = 1** exactly (δ = 2 Δ_φ). The same δ is predicted to appear in any CCR-compatible cascade — micron-scale fractal cavity, hexagram boundary template, or larger-scale resonance hierarchy — not just one apparatus. *(The earlier fitted exponent δ ≈ 1.37 ± 0.05, i.e. Δ_φ ≈ 0.685, required a tuned vertex-operator charge and is superseded; see README §Key Results.)*
 
-**Falsification criterion**: A null result at |δ| < 0.05 to 3 picoNewton precision invalidates the boundary-resonant correction *and* falsifies CCR's universal-exponent claim.
+**Falsification criterion**: A measured exponent near 2 supports the quasicrystalline projection; a measurement near 1.37 refutes it. A null deviation at 3 picoNewton precision invalidates the boundary-resonant correction *and* falsifies CCR's universal-exponent claim.
 
 ## 6. Implementation Status
 

@@ -120,7 +120,7 @@ class SubstrateDerivedTheories:
         sigma: float = 2.0,
         n_rotation: int = 6,
         ccr_depth: int = 2,
-        delta_casimir: float = 1.37,
+        delta_casimir: float = 2.0,
     ) -> "SubstrateDerivedTheories":
         """Construct everything from substrate primitives.
 
@@ -134,7 +134,10 @@ class SubstrateDerivedTheories:
         sigma : float – CCR scaling factor σ > 1 (Postulate 0)
         n_rotation : int – discrete rotation order C_n (Postulate 0)
         ccr_depth : int – recursion depth K (Postulate 0; canonical 2)
-        delta_casimir : float – Casimir falsifier δ; Δ_φ = δ/2
+        delta_casimir : float – Casimir falsifier δ; Δ_φ = δ/2.
+            Default 2.0 is the DERIVED value (Postulate 0c, unit-Pisot
+            inflation). Pass 1.37 to reproduce the superseded fitted
+            exponent from the pre-0c papers.
         """
         geo_map = {
             "ring": LatticeGeometry.RING,

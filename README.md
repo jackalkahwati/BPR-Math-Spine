@@ -461,6 +461,19 @@ Pull requests must:
 - [x] **Quantum Gravity Phenomenology** — modified dispersion (ξ₁=0, ξ₂=1/p), GUP (β=1/p), Lorentz invariance to exp(-p^{1/3})
 - [x] **Quantum Chemistry & Periodic Table** — noble gas Z from shell filling, chemical bonds, electronegativity, chirality, periodic table
 
+### 📚 **Empirical Calibrations & Interpretive Overlays** (May–June 2026)
+
+Peer-reviewed-literature calibrations that bound speculative sectors of the framework, plus interpretive-overlay docs (clearly labeled as such — not derivations):
+
+- [`doc/experiments/CONSCIOUSNESS_EMPIRICAL_CALIBRATION.md`](doc/experiments/CONSCIOUSNESS_EMPIRICAL_CALIBRATION.md) — Eq (5) χ_max·ε bounds from preregistered psi literature; continuous coupling alternative; P-Φc.1 anesthesia test
+- [`doc/experiments/MORAL_PHENOMENOLOGY_EMPIRICAL_CALIBRATION.md`](doc/experiments/MORAL_PHENOMENOLOGY_EMPIRICAL_CALIBRATION.md) — identity-state recovery across six literatures (DID treatment, cult exit, deliverance ritual, cross-cultural possession, ritual neuroscience)
+- [`doc/experiments/COERCIVE_AUDIO_CALIBRATION.md`](doc/experiments/COERCIVE_AUDIO_CALIBRATION.md) — engineered acoustic decoherence: gross not subtle; refutation register for subliminal/frequency pseudoscience
+- [`doc/experiments/CONTEMPLATIVE_CHANT_CALIBRATION.md`](doc/experiments/CONTEMPLATIVE_CHANT_CALIBRATION.md) — cross-tradition coherence-promoting acoustic toolkit
+- [`doc/experiments/DOUBLY_CHARMED_BARYONS_CALIBRATION.md`](doc/experiments/DOUBLY_CHARMED_BARYONS_CALIBRATION.md) — Ωcc⁺−Ξcc⁺ splitting: BPR 105.2 MeV vs LHCb 105.45±5 MeV; substrate-derived κ ≈ 1.12 vs lattice 1.18 as future discriminator
+- [`doc/MORAL_PHENOMENOLOGY_PRIVATION.md`](doc/MORAL_PHENOMENOLOGY_PRIVATION.md) — privation-theory structural mapping (interpretive overlay)
+- [`doc/EXORCISM_BPR_MAPPING.md`](doc/EXORCISM_BPR_MAPPING.md) — deliverance ritual as re-coherence, v0.2 (integration ≥ expulsion)
+- [`doc/RECOHERENCE_DEVICE_ROADMAP.md`](doc/RECOHERENCE_DEVICE_ROADMAP.md) — Layer 0–5 clinical device architecture with misuse-risk register and EM/RF scope boundaries
+
 ### 🚀 **Ready for Use**
 
 The BPR-Math-Spine framework is **feature-complete** and ready for:
@@ -478,7 +491,7 @@ The BPR-Math-Spine framework is **feature-complete** and ready for:
 * **7/7** BPR equations complete
 * **21 theories** — 10 adjacent + 6 extended + 5 frontier (Gauge, Leptons, Nuclear, QG, Chemistry)
 * **205** falsifiable predictions (from 3 substrate numbers: J, p, N)
-* **1,294** tests passing (+ ~21 FEniCS tests that auto-skip without FEniCS)
+* **1,419** tests passing (+ FEniCS tests that auto-skip without FEniCS; helionis/lunarfire tests auto-skip on main — they belong to the `lunarfire` branch)
 * **58** mathematical consistency tests (no experiments needed)
 * **29** benchmark regression tests (predictions vs experiment)
 * **51** predictions benchmarked (41 DERIVED, 5 FRAMEWORK; 50 PASS, 1 CLOSE)
