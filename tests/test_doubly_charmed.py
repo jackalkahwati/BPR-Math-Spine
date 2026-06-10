@@ -84,3 +84,35 @@ def test_hyperfine_ansatze_ordering():
 def test_omega_cc_hyperfine_registered():
     o = omega_cc_hyperfine_splitting()
     assert o["registered_prediction_MeV"] == pytest.approx(70.7 * 4.0 / 3.0, rel=1e-12)
+
+
+# ---------------------------------------------------------------------------
+# §12.10 Registered pre-dictions: doubly-bottom + mixed + triply-charmed
+# ---------------------------------------------------------------------------
+
+def test_xi_bb_hyperfine_registered():
+    """Ξbb* − Ξbb hyperfine = 21.2 × 4/3 = 28.27 MeV. Locked until LHCb measures."""
+    from bpr.qcd_flavor import doubly_bottom_hyperfine_splitting
+    r = doubly_bottom_hyperfine_splitting()
+    assert r["registered_prediction_MeV"] == pytest.approx(21.2 * 4.0 / 3.0, rel=1e-12)
+    lo, hi = r["lattice_band_MeV"]
+    assert lo <= r["registered_prediction_MeV"] <= hi
+
+
+def test_omega_bb_hyperfine_registered():
+    from bpr.qcd_flavor import omega_bb_hyperfine_splitting
+    r = omega_bb_hyperfine_splitting()
+    assert r["registered_prediction_MeV"] == pytest.approx(25.0 * 4.0 / 3.0, rel=1e-12)
+
+
+def test_omega_bb_xi_bb_su3_splitting():
+    from bpr.qcd_flavor import omega_bb_minus_xi_bb_splitting
+    r = omega_bb_minus_xi_bb_splitting()
+    assert r["registered_prediction_MeV"] == pytest.approx(1.125 * (93.88 - 4.73), rel=1e-4)
+
+
+def test_omega_ccc_within_lattice_band():
+    from bpr.qcd_flavor import triply_charmed_omega_ccc_mass_predictions
+    r = triply_charmed_omega_ccc_mass_predictions()
+    lo, hi = r["lattice_band_MeV"]
+    assert lo <= r["registered_prediction_MeV"] <= hi
