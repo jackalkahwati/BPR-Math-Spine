@@ -37,3 +37,39 @@ def test_status_flags_missing_rep_assignment():
     r = gut_winding_report()
     assert "rep ASSIGNMENT" in r["status"]
     assert "NOT done" in r["status"]
+
+
+# ---------------------------------------------------------------------------
+# SU(5) X,Y rep assignment + threshold closure
+# ---------------------------------------------------------------------------
+
+def test_su5_xy_uses_12_states():
+    """X,Y multiplet (3,2,±5/6) has exactly 12 states."""
+    from bpr.gut_winding_spectrum import gut_threshold_su5_assigned
+    r = gut_threshold_su5_assigned()
+    assert r["n_xy_states_assigned"] == 12
+
+
+def test_su5_xy_asymmetric_pattern():
+    """|Δ(1/α₁)| > |Δ(1/α₂)| > |Δ(1/α₃)| -- the GUT-asymmetry signature."""
+    from bpr.gut_winding_spectrum import gut_threshold_su5_assigned
+    r = gut_threshold_su5_assigned()
+    d = r["delta_inv_alpha"]
+    assert abs(d["U1_Y_GUT_norm"]) > abs(d["SU2_L"]) > abs(d["SU3_c"])
+
+
+def test_su5_xy_closes_qualitatively():
+    """Magnitude reaches the residual scale (1.5% in 1/alpha units)."""
+    from bpr.gut_winding_spectrum import gut_threshold_su5_assigned
+    r = gut_threshold_su5_assigned()
+    assert r["closes_qualitatively"]
+    # max contribution comfortably exceeds the residual
+    assert r["max_abs_contribution"] > r["residual_to_close_approx"]
+
+
+def test_su5_status_flags_ansatz():
+    """Status string is explicit about being ANSATZ-BASED."""
+    from bpr.gut_winding_spectrum import gut_threshold_su5_assigned
+    r = gut_threshold_su5_assigned()
+    assert "ANSATZ" in r["status"]
+    assert "boundary CFT" in r["status"]
