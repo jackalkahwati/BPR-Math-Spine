@@ -212,10 +212,21 @@ class PMNSMatrix:
     Large mixing angles arise because the weak boundary has ≈ equal
     overlap with all three cohomology classes in the neutrino sector.
 
-    DERIVED angles:
-        θ₁₂: sin²θ₁₂ = 1/3 - 1/(3.5×ln(p)) (tri-bimaximal + curvature correction)
+    Mixing angles (mixed derivation status — see per-line tags):
+        θ₁₂: sin²θ₁₂ = 1/3 − 1/(3.5×ln(p))   [tri-bimaximal DERIVED; the
+             3.5 in the curvature correction is FITTED, not derived]
         θ₂₃: sin²θ₂₃ = 1/2 + (Δm²₂₁/Δm²₃₁)×1.35 + (m_μ/m_τ)×sin(2θ₂₃_bare)/2
-        θ₁₃: sin θ₁₃ = e⁻¹/√6 = 0.1502 (boundary lattice Gaussian localization)
+             [maximal-mixing 1/2 DERIVED; the coefficient 1.35 is FITTED
+             (phenomenological), NOT derived from (p, z, n_gen). Reported
+             as such — do not count θ₂₃ among the parameter-free predictions.]
+        θ₁₃: sin θ₁₃ = e⁻¹/√6 = 0.1502   [DERIVED, boundary lattice Gaussian
+             localization]
+
+    PARAMETER HONESTY (audit, June 2026): the 1.35 (θ₂₃) and 3.5 (θ₁₂)
+    coefficients are fitted dimensionless numbers. They are flagged here so
+    the framework's "two-integer" claim is not overstated for the neutrino
+    mixing sector. See doc/LIMITATIONS_AND_FALSIFICATION.md §parameter
+    accounting.
 
     Parameters
     ----------

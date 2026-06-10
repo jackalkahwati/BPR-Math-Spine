@@ -84,7 +84,7 @@ wolframscript -script wolfram/tests/run_equation_smoke.wls
 
 ### Partial / structural only (not a full symbolic proof)
 
-- **Checkpoint 2 / covariant conservation**: A full WL symbolic proof of \( \nabla_\mu T^{\mu\nu}=0 \) is **not yet** part of the test suite (this is a deeper GR-style constraint requiring explicit Christoffel symbols, covariant derivatives, and robust simplification).
+- **Checkpoint 2 / covariant conservation**: A full WL symbolic derivation of \( \nabla_\mu T^{\mu\nu}=0 \) at linear order in the metric perturbation is now provided in [`wolfram/checkpoint2_conservation.wls`](checkpoint2_conservation.wls). It builds the Christoffel symbols, the covariant divergence, and the on-shell (\( \Box\phi=0 \)) reduction explicitly. It mirrors the Python/SymPy verifier in `bpr/metric.py` (`verify_conservation_plane_wave` / `verify_conservation_spherical_mode`), which returns `True` and is covered by `tests/test_checkpoint2_conservation.py`. Run with `wolframscript -file wolfram/checkpoint2_conservation.wls`.
 
 ## WL-native scope (what’s implemented)
 

@@ -772,7 +772,13 @@ class HierarchyProblem:
             Corrected: 4.98 × 10¹⁶ (0.4% off)
             Observed: 4.96 × 10¹⁶
 
-        STATUS: DERIVED from (p, z) with finite-boundary correction.
+        STATUS: DERIVED from (p, z); the finite-boundary correction factor
+        ln(p)/(ln(p)+1) is PHENOMENOLOGICAL. The "one ground-state mode does
+        not participate" rationale motivates its FORM but the factor is not
+        rigorously derived from the boundary action — it improves the bare
+        p^(z/2+1/3) from 9.1% to 0.4%. Honest reading: the exponent z/2+1/3
+        is derived; the sub-percent correction is a motivated fit. (Audit,
+        June 2026.)
         """
         z = 6  # coordination number
         exponent = z / 2.0 + 1.0 / 3.0  # = 10/3
