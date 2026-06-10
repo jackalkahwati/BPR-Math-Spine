@@ -435,3 +435,79 @@ def summary() -> str:
 
 if __name__ == "__main__":  # pragma: no cover
     print(summary())
+
+# ---------------------------------------------------------------------------
+# Decisive lift budget — closes the audit's open question
+# ---------------------------------------------------------------------------
+
+def phason_defect_lift_budget(
+    mass_kg: float = 1500.0,
+    radius_m: float = 0.5,
+    K: int = 3,
+    n: int = 9,
+) -> dict:
+    """The decisive YES / NO / UNDECIDABLE verdict on controlled phason lift.
+
+    Ties together the two numbers the whole "can a topological phason defect
+    lift a macroscopic object?" question reduces to:
+
+      1. ε_required  — coupling efficiency needed to lift `mass_kg`
+                       (from required_coupling_efficiency, with the J⁴
+                       reservoir derived from the m_τ anchor).
+      2. ε_bound     — the EXPERIMENTAL upper bound on the δ=2 Casimir
+                       amplitude ε from published precision-Casimir data
+                       (bpr/casimir_constraint.best_bound).
+
+    Decision logic
+    --------------
+      ε_required > ε_bound      → EXCLUDED (data already rules lift out)
+      ε_required < ε_bound but
+        within ~3 orders         → TESTABLE (next-gen Casimir can decide)
+      ε_required ≪ ε_bound
+        (many orders below)      → UNDECIDABLE (required coupling is far
+                                   below any current or near-term
+                                   experimental sensitivity)
+
+    Result (June 2026 data): ε_required ≈ 6e-36, ε_bound ≈ 5e-5 — a gap of
+    ~31 orders of magnitude. The verdict is UNDECIDABLE: the Casimir data
+    does NOT exclude lift, but the required coupling is so far below
+    experimental reach that no current measurement can confirm it either.
+    This is the honest closure of the "phason defect coupling" open
+    question: the energy reservoir is there (phason_energy_verdict), the
+    mechanism is concrete (topological_phason_force), but whether the real ε
+    clears the ~6e-36 threshold is beyond present experimental decidability.
+
+    Returns
+    -------
+    dict with the two ε values, their ratio (orders of magnitude), and the
+    verdict string.
+    """
+    from .casimir_constraint import best_bound
+
+    eps_required = required_coupling_efficiency(
+        mass_kg=mass_kg, radius_m=radius_m, K=K, n=n
+    )
+    eps_bound, point = best_bound()
+
+    orders_gap = np.log10(eps_bound / eps_required)
+    if eps_required > eps_bound:
+        verdict = "EXCLUDED"
+    elif orders_gap <= 3.0:
+        verdict = "TESTABLE"
+    else:
+        verdict = "UNDECIDABLE"
+
+    return {
+        "eps_required": float(eps_required),
+        "eps_bound": float(eps_bound),
+        "eps_bound_source": point.reference,
+        "orders_of_magnitude_gap": float(orders_gap),
+        "verdict": verdict,
+        "note": (
+            f"ε_required ({eps_required:.1e}) vs experimental ε_bound "
+            f"({eps_bound:.1e}): {orders_gap:.0f} orders apart. "
+            f"Verdict: {verdict}. The reservoir exists and the mechanism is "
+            "concrete, but the required coupling is far below experimental "
+            "decidability -- lift is neither excluded nor supported by data."
+        ),
+    }
