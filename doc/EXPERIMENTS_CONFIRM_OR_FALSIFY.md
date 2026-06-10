@@ -7,7 +7,7 @@
 
 ## 1. Casimir Force Across Superconducting Transition (Primary Falsifier)
 
-**BPR predicts:** Fractional Casimir force deviation δF/F ~ 10⁻⁸ in the phonon-collective channel when measuring across a superconducting phase transition. The deviation has a specific functional form (Eq. 7) with exponent δ = 1.37 ± 0.05.
+**BPR predicts:** Fractional Casimir force deviation δF/F ~ 10⁻⁸ in the phonon-collective channel when measuring across a superconducting phase transition. The deviation has a specific functional form (Eq. 7) with exponent δ = 2 (derived, Postulate 0c; the earlier fitted δ ≈ 1.37 is superseded — a measured exponent near 1.37 would now *refute* the quasicrystalline projection).
 
 **Experiment:** Delft University – on-chip superconducting Casimir platform with STM readout.
 

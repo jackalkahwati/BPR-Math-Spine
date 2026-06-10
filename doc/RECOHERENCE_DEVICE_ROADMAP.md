@@ -8,7 +8,8 @@
 > [`EXORCISM_BPR_MAPPING.md`](EXORCISM_BPR_MAPPING.md),
 > [`experiments/MORAL_PHENOMENOLOGY_EMPIRICAL_CALIBRATION.md`](experiments/MORAL_PHENOMENOLOGY_EMPIRICAL_CALIBRATION.md),
 > [`experiments/COERCIVE_AUDIO_CALIBRATION.md`](experiments/COERCIVE_AUDIO_CALIBRATION.md),
-> [`experiments/CONSCIOUSNESS_EMPIRICAL_CALIBRATION.md`](experiments/CONSCIOUSNESS_EMPIRICAL_CALIBRATION.md).
+> [`experiments/CONSCIOUSNESS_EMPIRICAL_CALIBRATION.md`](experiments/CONSCIOUSNESS_EMPIRICAL_CALIBRATION.md),
+> [`experiments/CONTEMPLATIVE_CHANT_CALIBRATION.md`](experiments/CONTEMPLATIVE_CHANT_CALIBRATION.md).
 
 ---
 
@@ -102,6 +103,17 @@ meaning-integrated context and decohering in coerced, externally-
 framed context (Becker; Rouget; Gao 2017; Perry 2025; Wagner 2024).
 Without Layer 0, the device is generic neuromodulation. With Layer 0,
 it is person-specific re-coherence support.
+
+**CRITICAL — context-dependence is load-bearing, not advisory.** The
+identical acoustic profile (slow, repetitive, sustained-vowel,
+microtonal) appears in BOTH contemplative chant AND documented
+coercive-deployment playlists (`COERCIVE_AUDIO_CALIBRATION.md` §2.A,
+§2.E). The acoustic content does not determine the valence; consent,
+exit-ability, and voluntary meaning-integration do. Layer 0
+personalization and the consent safeguards in §5 are therefore not
+optional add-ons — they are what prevents this device architecture
+from being operable as a coercive tool. Any deployment that bypasses
+Layer 0 consent must be treated as misuse per §5.
 
 ### Layer 1 — Measurement
 

@@ -312,9 +312,15 @@ class InformationIntegration:
 # ---------------------------------------------------------------------------
 
 # Defensible upper bound on the BEHAVIORAL effect of χ_max·ε·gain at the
-# operator → forced-choice readout level. Source: Tressoldi & Storm 2024
-# Stage 2 Registered Report on ganzfeld (r=0.08, CI [0.04, 0.12]).
-# Remains statistically consistent with zero under PET-PEESE / trim-and-fill.
+# operator → forced-choice readout level, in Cohen's d units.
+# UNIT NOTE: this is the CROSS-DOMAIN "hostile-but-fair reviewer" band
+# (d ≈ 0.00–0.10), dominated by the preregistered precognition nulls
+# (Galak 2012 d ≈ 0.04; Kekecs 2023 strong null) and the RNG nulls.
+# The single highest preregistered estimate — ganzfeld r = 0.08,
+# CI [0.04, 0.12] (Tressoldi & Storm 2024) — converts to d ≈ 0.16, but
+# shrinks toward zero under PET-PEESE / trim-and-fill bias correction;
+# it is an r-statistic and must not be read as d. The 0.10 figure is the
+# synthesis band across all four phenomenon classes, not any single CI.
 BEHAVIORAL_UPPER_BOUND_D = 0.10
 
 # Defensible upper bound at the CONTROLLED PHYSICAL SUBSTRATE level (QRNG).

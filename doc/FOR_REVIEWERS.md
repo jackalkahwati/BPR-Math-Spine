@@ -19,7 +19,7 @@ BPR (Boundary Phase Resonance) derives physical observables from a discrete phas
 |------|-----------------|----------|----------------|
 | 1. Neutrino mass ordering | Normal | JUNO ~2027 | Inverted → falsifies |
 | 2. 0νββ decay | No signal (Dirac) | LEGEND 2025+ | Signal → falsifies |
-| 3. Casimir deviation | δ = 1.37 ± 0.05 at 10⁻⁸ | Delft/STM 1–3 yr | Null at 10⁻⁹ → falsifies |
+| 3. Casimir deviation | δ = 2 (derived, Postulate 0c) at 10⁻⁸ | Delft/STM 1–3 yr | δ ≈ 1.37 or null at 10⁻⁹ → falsifies |
 | 4. Lorentz invariance | \|δc/c\| = 3.4×10⁻²¹ | CTA 2026+ | Null below 10⁻²¹ → falsifies |
 | 5. Born rule | κ ~ 10⁻⁵ deviation | Many-photon 2–5 yr | Born exact to 10⁻⁷ → falsifies |
 

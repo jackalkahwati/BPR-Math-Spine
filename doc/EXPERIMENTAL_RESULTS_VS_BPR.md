@@ -58,7 +58,7 @@
 
 ## 4. Casimir Force Across Superconducting Transition — **INCONCLUSIVE**
 
-**BPR predicts:** Fractional deviation δF/F ~ 10⁻⁸ with exponent δ = 1.37 ± 0.05.
+**BPR predicts:** Fractional deviation δF/F ~ 10⁻⁸ with exponent δ = 2 (derived, Postulate 0c; the earlier fitted δ ≈ 1.37 is superseded — a measured exponent near 1.37 would now *refute* the quasicrystalline projection).
 
 **Result:** Delft (Xu et al.) reports "preliminary measurements suggest superconductivity-dependent shifts" — but no quantitative comparison to BPR yet.
 
