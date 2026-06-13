@@ -165,3 +165,41 @@ The over-determination argument could be tightened by:
 is refuted: p = 104,761 is the unique prime ≡ 1 mod 4 that makes four
 structurally distinct BPR equations consistent with observed values of
 α, M_Pl/v_EW, v_EW, and M_Pl to within 3%.*
+
+---
+
+## Intellectual lineage — June 2026 addendum
+
+The view that primes carry deep physical/informational structure has
+substantial mainstream support, independent of BPR. Two recent results
+are directly relevant:
+
+- **Kontoyiannis** ("Counting Primes Using Entropy," 2008;
+  arXiv:0710.4076 for the technical version) proves Chebyshev's
+  Σ (log p)/p ~ log n using Shannon entropy arguments. The slogan
+  "all the information in the integers is in the primes" (2021
+  follow-up arXiv:2112.08911) captures the entropic content carried
+  by primes under unique factorization.
+- **García-Martín, Ribas, Carrazza, Latorre, Sierra** ("The Prime state
+  and its quantum relatives," Quantum 4, 371 (2020), arXiv:2005.02422)
+  show the Prime state |P_n⟩ — a uniform quantum superposition over
+  primes up to 2^n — has bipartite entanglement entropy scaling with
+  the Shannon entropy of the square-free integer density 6/π².
+
+These establish that the number-theoretic-physics tradition (Connes,
+Berry-Keating, Sierra, etc.) treating primes as physical objects is
+substantively backed by both information-theoretic and quantum-
+mechanical results. BPR's prime-substrate program belongs to this
+tradition.
+
+**Important caveat:** these papers do NOT validate BPR's specific
+selection of p = 104,761. Both work with primes collectively (sums
+or superpositions over all primes), not individual prime selection.
+What they support is the *family* of prime-substrate approaches; what
+they leave open is which specific implementation is correct.
+
+See [`doc/PRIME_INFORMATION_STRUCTURE_CONNECTIONS.md`](../PRIME_INFORMATION_STRUCTURE_CONNECTIONS.md)
+for detailed connections, computational reproduction of the
+García-Martín scaling result in [`bpr/prime_state_check.py`](../../bpr/prime_state_check.py),
+and the discriminating BPR-substrate-analog calculation that would
+either strengthen or weaken BPR's prime claim quantitatively.
