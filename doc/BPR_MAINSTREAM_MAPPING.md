@@ -55,7 +55,7 @@ Status legend:
 | Boundary-encodes-bulk principle | Holographic principle | Bekenstein 1973 (BH entropy = A/4); 't Hooft; Susskind | Direct |
 | Substrate has finite information per region | Bekenstein bound + holographic entropy | Bekenstein 1981; Bousso 1999 (covariant bound) | Direct |
 | Emergent spacetime from boundary | Van Raamsdonk entanglement reconstruction | Van Raamsdonk 2010 ("Building up spacetime with entanglement"); Swingle 2012 (tensor networks) | Same family |
-| Z_p substrate (discrete prime modular) | Discrete substrate proposals | LQG (Rovelli, Smolin); causal sets (Sorkin); CDT (Ambjørn); Wolfram physics | Same family |
+| Z_p substrate (discrete prime modular) | Discrete substrate proposals | LQG (Rovelli, Smolin); causal sets (Sorkin); CDT (Ambjørn); Wolfram physics; **Latorre-Sierra Prime state (arXiv:2005.02422)**; Kontoyiannis info-theoretic primes (arXiv:0710.4076) | Same family |
 | Z_p symplectic dynamics → uniform phase | Ergodicity of hyperbolic discrete maps | Arnold-Avez 1968 (cat map on T²); Anosov 1967 | Direct (via cat map limit) |
 | Finite U(1)_p Hilbert space → unitary Page curve | Page curve from finite-dim subsystem | Page 1993; recent island derivations (Penington, Almheiri 2019–2020) | Direct |
 | Cabibbo angle = √(m_d/m_s) | Gatto-Sartori-Tonin relation | Gatto-Sartori-Tonin 1968 | Direct (BPR uses the established formula) |
