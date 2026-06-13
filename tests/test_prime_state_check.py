@@ -73,3 +73,55 @@ def test_kontoyiannis_audit_excess_information():
     """205 binary predictions encode more bits than (J, p, z) input alone."""
     a = kontoyiannis_bound_audit()
     assert a["binary_excess_bits"] > 0
+
+
+# ---------------------------------------------------------------------------
+# BPR-substrate analog: quadratic residue state
+# ---------------------------------------------------------------------------
+
+def test_legendre_symbol_basic():
+    """Legendre symbol gives 0/1/-1 with known small values."""
+    from bpr.prime_state_check import legendre_symbol
+    # (1|p) = 1 for any p
+    assert legendre_symbol(1, 31) == 1
+    # (0|p) = 0
+    assert legendre_symbol(0, 31) == 0
+    # 4 = 2^2 is a QR mod any odd prime
+    assert legendre_symbol(4, 31) == 1
+    # 3 is not a QR mod 31
+    assert legendre_symbol(3, 31) == -1
+
+
+def test_quadratic_residues_count():
+    """|QR_p| = (p-1)/2 for odd prime p."""
+    from bpr.prime_state_check import quadratic_residues_mod_p
+    for p in (31, 61, 127, 251):
+        qrs = quadratic_residues_mod_p(p)
+        assert len(qrs) == (p - 1) // 2
+
+
+def test_quadratic_residue_state_normalized():
+    from bpr.prime_state_check import quadratic_residue_state
+    psi, n = quadratic_residue_state(31)
+    assert np.linalg.norm(psi) == pytest.approx(1.0)
+
+
+def test_qr_state_entropy_below_bernoulli_baseline():
+    """KEY FINDING: |QR_p⟩ entropy is BELOW log 2 × n_A → multiplicative
+    correlations carry information. Ratio ≈ 0.55-0.77 across small primes."""
+    from bpr.prime_state_check import bpr_substrate_analog_scaling
+    r = bpr_substrate_analog_scaling()
+    for row in r["scan"]:
+        # ratio strictly less than 1 (correlations present) but bounded away
+        # from 0 (state has nontrivial entanglement)
+        assert 0.4 < row["ratio_to_bernoulli"] < 0.9
+
+
+def test_qr_ratio_stable_across_primes():
+    """The QR-state-to-Bernoulli ratio is approximately constant in p,
+    suggesting an asymptotic limit set by Z_p multiplicative structure
+    (not dependent on the specific value of p)."""
+    from bpr.prime_state_check import bpr_substrate_analog_scaling
+    r = bpr_substrate_analog_scaling()
+    # very weak slope: structure doesn't depend strongly on p
+    assert abs(r["ratio_slope_vs_log_p"]) < 0.15

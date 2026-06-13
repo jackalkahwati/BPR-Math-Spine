@@ -251,3 +251,120 @@ def bpr_substrate_prime_state_analog_stub() -> dict:
             "If different: framework's prime claim is decorative."
         ),
     }
+
+
+# ---------------------------------------------------------------------------
+# BPR-substrate analog: quadratic-residue state |QR_p⟩
+# ---------------------------------------------------------------------------
+# The Z_p substrate's most natural "support rule" analogous to "primes" in
+# the standard Prime state is the SET OF QUADRATIC RESIDUES mod p. Reasons:
+#
+#   1. QRs are intrinsic to the prime modular structure (Legendre symbol).
+#   2. They form a multiplicative subgroup of index 2 in (Z/pZ)*.
+#   3. Their density is exactly 1/2, giving a clean Bernoulli baseline of
+#      H(1/2) = log 2 ≈ 0.693 nats per qubit for comparison.
+#   4. They have nontrivial multiplicative correlation structure
+#      (reciprocity, quadratic Gauss sums), so if the substrate's quantum
+#      content is more than nominally prime-based, it should show up here.
+#
+# Discriminating outcomes (relative to Bernoulli log 2 baseline):
+#
+#   - S_E(|QR_p⟩) ≈ log 2 × n_A exactly → BPR substrate state has no
+#     nontrivial number-theoretic correlation beyond bare density;
+#     prime-substrate claim is decorative.
+#
+#   - S_E(|QR_p⟩) < log 2 × n_A with specific structure → multiplicative
+#     correlations are present; substrate quantum state has number-theoretic
+#     content beyond density (analogous to how square-free correlations
+#     reduce Prime state entropy below H(6/π²) × n_A).
+#
+#   - S_E(|QR_p⟩) > log 2 × n_A → not consistent with standard QI;
+#     would indicate a calculation error.
+
+
+def legendre_symbol(a: int, p: int) -> int:
+    """Legendre symbol (a/p) for odd prime p ∈ {-1, 0, +1}.
+
+    Uses Euler's criterion: a^((p-1)/2) mod p, mapping to {-1, 0, 1}.
+    """
+    if a % p == 0:
+        return 0
+    r = pow(a, (p - 1) // 2, p)
+    return 1 if r == 1 else -1
+
+
+def quadratic_residues_mod_p(p: int) -> np.ndarray:
+    """Return all nonzero quadratic residues a ∈ {1, ..., p-1} with (a|p) = +1."""
+    return np.array(
+        [a for a in range(1, p) if legendre_symbol(a, p) == 1],
+        dtype=np.int64,
+    )
+
+
+def quadratic_residue_state(p: int, n_qubits: int | None = None) -> tuple[np.ndarray, int]:
+    """BPR-substrate analog: uniform superposition over QRs mod p.
+
+        |QR_p⟩ = (1 / √|QR|) Σ_{a: (a|p)=+1, 0 < a < p} |a⟩
+
+    The state is embedded in a 2^n_qubits Hilbert space (n_qubits chosen
+    so 2^n_qubits ≥ p; padded with zeros for indices ≥ p).
+
+    Returns (amplitude_array, n_qubits_used).
+    """
+    if n_qubits is None:
+        n_qubits = int(np.ceil(np.log2(p)))
+    dim = 2 ** n_qubits
+    if dim < p:
+        raise ValueError(f"2^n_qubits = {dim} < p = {p}")
+    qrs = quadratic_residues_mod_p(p)
+    psi = np.zeros(dim, dtype=np.float64)
+    psi[qrs] = 1.0
+    psi /= np.linalg.norm(psi)
+    return psi, n_qubits
+
+
+def bpr_substrate_analog_scaling(
+    primes: tuple[int, ...] = (31, 61, 127, 251, 509),
+) -> dict:
+    """Compute entanglement entropy of |QR_p⟩ vs the Bernoulli (log 2) baseline.
+
+    For each prime p, builds |QR_p⟩ embedded in the smallest power-of-2
+    Hilbert space, computes half-half bipartite entanglement entropy, and
+    reports the ratio to log 2 × n_A (the bare-density baseline).
+
+    Discriminating signal:
+      ratio < 1   → multiplicative correlations present (number-theoretic
+                    content beyond bare density)
+      ratio ≈ 1   → Bernoulli-like, no extra structure (prime substrate is
+                    decorative for entanglement)
+    """
+    results = []
+    log2 = float(np.log(2.0))
+    for p in primes:
+        psi, n = quadratic_residue_state(p)
+        S = bipartite_entanglement_entropy(psi, n, n_A=n // 2)
+        S_bernoulli = log2 * (n // 2)
+        results.append({
+            "p": p,
+            "n_qubits": n,
+            "n_A": n // 2,
+            "S_observed_nats": S,
+            "S_bernoulli_baseline_nats": S_bernoulli,
+            "ratio_to_bernoulli": S / S_bernoulli if S_bernoulli > 0 else float("nan"),
+            "n_QRs": (p - 1) // 2,
+        })
+    # Linear fit ratio vs ln(p) to see convergence trend
+    lp = np.array([np.log(r["p"]) for r in results])
+    ratios = np.array([r["ratio_to_bernoulli"] for r in results])
+    slope = float(np.polyfit(lp, ratios, 1)[0]) if len(results) >= 2 else float("nan")
+    return {
+        "support_rule": "quadratic residues mod p (BPR-distinctive choice)",
+        "scan": results,
+        "ratio_slope_vs_log_p": slope,
+        "interpretation": (
+            "ratio → 1 with negligible slope → Bernoulli; prime substrate is "
+            "decorative for entanglement. ratio bounded < 1 with structure → "
+            "multiplicative correlations carry quantum-information content "
+            "(BPR's prime claim has teeth)."
+        ),
+    }
