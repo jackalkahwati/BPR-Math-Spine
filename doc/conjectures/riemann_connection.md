@@ -268,3 +268,70 @@ substrate eigenvalue statistics, as implemented, say nothing about the
 Riemann zeros. Gaps 1–3 above are therefore moot until a full-spectrum
 operator is constructed — that construction is now the prerequisite, not
 the convergence proof.
+
+---
+
+## UPDATE — Strengthened negative finding (June 2026, full Hermitian-operator survey)
+
+Following the earlier rank-1 finding for `RPSTHamiltonian`, a comprehensive
+survey of candidate full-rank Hermitian operators on Z_p was conducted in
+`bpr/substrate_hamiltonians.py`. **Result: no natural prime-modular Z_p
+Hermitian operator exhibits Wigner-Dyson level statistics.**
+
+### Constructions tested
+
+1. **Legendre Hankel**: H_{ij} = Legendre((i+j) mod p, p) — nearly full
+   rank, but only ~3 distinct eigenvalues (Gauss-sum degeneracy). Cannot
+   support level-spacing analysis.
+2. **Legendre Multiplicative**: H_{ij} = Legendre((i·j) mod p, p) — by
+   multiplicativity equals `outer(leg, leg)`. **Rank 1**, same problem
+   as the original `RPSTHamiltonian` from a different angle.
+3. **Legendre Circulant**: H_{ij} = Legendre((i−j) mod p, p) — Gauss-sum
+   degeneracies, ≤3 distinct eigenvalues.
+4. **Discrete Berry-Keating**: H = (X̂P̂ + P̂X̂)/2 on Z_p with
+   P̂ = F†X̂F (DFT-conjugate). **Full rank with p distinct eigenvalues**,
+   but Poisson level-spacing (integrable), not Wigner-Dyson. K-S
+   D_Poisson ≈ 0.14, D_GOE ≈ 0.27, D_GUE ≈ 0.33 across primes 211–1009.
+5. **2D Berry-Keating** on Z_p × Z_p — same Poisson result at dim p².
+6. **Berry-Keating + scaled perturbation** — transitions to GOE only at
+   perturbation strength ≳ 10× mean level spacing, where the random
+   component dominates the spectrum (prime-modular structure becomes
+   negligible).
+
+### Sanity check (locks in methodology)
+
+Generic random GOE matrix correctly classifies as GOE
+(D_GOE ≈ 0.07 ≪ D_GUE ≈ 0.10 < D_Poisson ≈ 0.21). The testing methodology
+works; the negative findings are real.
+
+### Status revision
+
+**Strengthened**: the Riemann/GUE conjecture for BPR is downgraded from
+"not currently supported by the implementation" (earlier finding) to
+"**no Hermitian operator in the natural prime-modular Z_p class
+reproduces GUE statistics.**" The prime-modular structure is
+incompatible with generic Wigner-Dyson level repulsion at this level.
+
+What this leaves open:
+
+- **Non-Hermitian operators**: relaxing self-adjointness gives more
+  spectral freedom; the Hannay-Berry quantum cat map is unitary (not
+  Hermitian) and has different statistical properties. Untested here.
+- **Larger Hilbert spaces with non-trivial coupling structure**: e.g.,
+  Z_p^N with N > 2 and coupling terms — too large to test exhaustively
+  but worth considering.
+- **Random perturbation as a phenomenological fix**: BK + 10× mean-
+  spacing perturbation gives GOE, but the random part dominates — this
+  isn't a derivation of GUE from prime structure, it's adding randomness
+  to wash out the prime structure.
+
+### Verdict
+
+The Hilbert-Pólya / Berry-Keating program for Riemann zeros via Z_p
+Hermitian operators is not realized by any natural construction in this
+module's survey. The conjecture's original numerical claim (KS p=0.92
+for GUE) is not just unsupported by the framework's specific
+implementation — it's structurally incompatible with the prime-modular
+operator class. Closure of this question is now substantively negative.
+
+Locked in by 6 tests in `tests/test_substrate_hamiltonians.py`.
