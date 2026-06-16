@@ -276,3 +276,59 @@ def extended_candidate_survey(primes_small: tuple[int, ...] = (211, 503)) -> dic
     H2 = legendre_2d_berry_keating(min(53, p))  # cap to avoid memory blowup
     results["legendre_2d_berry_keating"] = {min(53, p): spectral_statistics(H2)}
     return results
+
+
+# ---------------------------------------------------------------------------
+# Final attempt: Hannay-Berry quantum cat map (UNITARY, not Hermitian)
+# ---------------------------------------------------------------------------
+# The Hermitian-operator survey closed negatively. The obvious next class is
+# UNITARY operators -- specifically the Hannay-Berry quantum cat map, which
+# implements the classical Arnold cat map at the quantum level on a finite
+# Hilbert space. Unitary eigenvalues lie on the unit circle; their angular
+# spacing is tested against the CUE (Circular Unitary Ensemble) Wigner surmise.
+
+
+def quantum_cat_map_unitary(p: int) -> np.ndarray:
+    """Hannay-Berry quantum cat map on Z_p (unitary, dim p).
+
+    Builds U = F · D · F where F is the DFT and D = diag(exp(2πi n²/p)) is
+    a quadratic-phase diagonal encoding the classical cat map's metaplectic
+    representation. The result is a p × p unitary matrix whose eigenphases
+    can be tested against CUE statistics.
+    """
+    n = np.arange(p, dtype=np.float64)
+    D = np.diag(np.exp(2j * np.pi * n ** 2 / p))
+    k, j = np.meshgrid(np.arange(p), np.arange(p), indexing="ij")
+    F = np.exp(2j * np.pi * k * j / p) / np.sqrt(p)
+    return F @ D @ F
+
+
+def unitary_eigenphase_spacings(U: np.ndarray) -> np.ndarray:
+    """Unfolded angular spacings of a unitary's eigenphases (mean 1)."""
+    eigs = np.linalg.eigvals(U)
+    phases = np.sort(np.angle(eigs) % (2 * np.pi))
+    spacings = np.diff(phases)
+    if spacings.size == 0:
+        return spacings
+    return spacings / spacings.mean()
+
+
+def quantum_cat_map_spectral_statistics(p: int) -> dict:
+    """Run K-S test on quantum-cat-map eigenphase spacings vs CUE (= GUE Wigner)."""
+    U = quantum_cat_map_unitary(p)
+    sp = unitary_eigenphase_spacings(U)
+    if sp.size < 20:
+        return {"n_spacings": int(sp.size), "best_fit": "insufficient_data"}
+    d_gue = float(kstest(sp, GUE_CDF).statistic)
+    d_goe = float(kstest(sp, GOE_CDF).statistic)
+    d_poisson = float(kstest(sp, POISSON_CDF).statistic)
+    results = {"GOE": d_goe, "GUE/CUE": d_gue, "Poisson": d_poisson}
+    best = min(results, key=results.get)
+    return {
+        "p": p,
+        "n_eigs": int(U.shape[0]),
+        "n_spacings": int(sp.size),
+        "ks_statistic": results,
+        "best_fit": best,
+        "best_fit_D": results[best],
+    }
