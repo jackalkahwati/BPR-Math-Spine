@@ -1,0 +1,28 @@
+repo_id: bpr
+name: BPR Math Spine
+role: Source of truth for the BPR physics framework and BPR-STARFIRE fusion reactor design work, including analysis passes, canonical design numbers, CAD directives, and commercial trade-space.
+domains:
+  - bpr
+  - physics
+  - fusion
+  - starfire
+  - tokamak
+  - reactor
+  - plasma
+  - math spine
+  - lcoe
+  - tbr
+source_paths:
+  - CLAUDE.md
+  - README.md
+  - docs/
+  - analysis/
+  - numbers and design passes
+safe_operations:
+  - read
+  - summarize
+  - run local analysis
+  - draft technical plan
+approval_required:
+  - publish design numbers externally
+  - change canonical reference design point
