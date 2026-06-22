@@ -74,7 +74,18 @@ separate. They remain valid framework content with their own evidence
 streams:
 
 - **Phason topological propulsion** — UNDECIDABLE at 31 orders below
-  experimental sensitivity (`bpr/phason_sector.py:phason_defect_lift_budget`)
+  experimental sensitivity (`bpr/phason_sector.py:phason_defect_lift_budget`).
+  Two honest attacks on the gap, both resolved (`bpr/phason_coupling.py`):
+  (1) *Mode census* — **NEGATIVE/CLOSED**: the internal space is a torus
+  T^{d_⊥} whose only nonzero homotopy is π_1 = ℤ^{d_⊥} (higher homotopy of a
+  torus vanishes), so the known dislocation sector is the *complete*
+  topological-defect content — there is no missed lift channel. (2) *Coupling
+  derivation* — **OPEN, retrofit-flagged**: reaching ε_required ≈ 6×10⁻³⁶
+  needs ~7 powers of 1/p; no derivation predicts that exponent, and the
+  (1/p)⁷ numerical coincidence is locked as a retrofit *risk*, not a result
+  (tripwire test: `test_no_hypothesis_is_marked_derived`). The 31-order gap is
+  an *undecidability* gap (the J⁴ reservoir is ~10³⁵× the lift need), not an
+  energy shortfall.
 - **Eq (5) consciousness coupling** — empirically bounded ≤ 10⁻³
   behavioral, ≤ 10⁻⁵ at QRNG; consistent with null psi literature
 - **Moral phenomenology / privation framework / exorcism mapping** —
