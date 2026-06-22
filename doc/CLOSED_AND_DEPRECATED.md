@@ -85,7 +85,14 @@ streams:
   (1/p)⁷ numerical coincidence is locked as a retrofit *risk*, not a result
   (tripwire test: `test_no_hypothesis_is_marked_derived`). The 31-order gap is
   an *undecidability* gap (the J⁴ reservoir is ~10³⁵× the lift need), not an
-  energy shortfall.
+  energy shortfall. **Lagrangian attempt** (`bpr/phason_defect_lagrangian.py`,
+  `doc/PHASON_DEFECT_LAGRANGIAN.md`): writing the LRT quasicrystal-elasticity
+  action pins the energy convention (c=2, quadratic F) and the protection count
+  (τ=1, single winding direction) from structure, fixing the *bulk* exponent
+  k_bulk = 2(d⊥−1) = 6 for the 9-fold class. The odd power 7 would come from a
+  single-site defect-**core** factor (g_core ~ 1/p) — physically natural but a
+  hypothesis, not derived. Net: 2 of 3 ambiguities pinned; the gap is reduced to
+  one number (the core coupling), still open.
 - **Eq (5) consciousness coupling** — empirically bounded ≤ 10⁻³
   behavioral, ≤ 10⁻⁵ at QRNG; consistent with null psi literature
 - **Moral phenomenology / privation framework / exorcism mapping** —
