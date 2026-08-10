@@ -15,6 +15,7 @@
 | Legendre Hankel/Multiplicative/Circulant Hermitian | **GAUSS-SUM DEGENERATE** | `bpr/substrate_hamiltonians.py`; tested in `tests/test_substrate_hamiltonians.py` | All ≤ 3 distinct eigenvalues (Hankel/Circulant) or rank-1 (Multiplicative). Cannot do level spacing. |
 | Discrete Berry-Keating 1D and 2D | **POISSON (integrable)** | `bpr/substrate_hamiltonians.py` | Full rank, p (or p²) distinct eigenvalues, but Poisson level spacings rather than GUE. K-S D_Poisson ≈ 0.14 across primes 211–1009. |
 | Hannay-Berry quantum cat map (unitary) | **POOR FIT to CUE** | `bpr/substrate_hamiltonians.py:quantum_cat_map_spectral_statistics` | Final attempt in the unitary class. K-S D ≈ 0.32 — much worse than the random-matrix sanity control (D = 0.07). Spectrum has arithmetic structure, not generic Wigner-Dyson. |
+| Glueball sector (all branches) | **CLOSED** | `bpr/glueball_gates.py`, `bpr/phason_boundary_modes.py`; sealed protocol `doc/GLUEBALL_BENCHMARK_V1.md` | Blind test: targets locked before any spectrum. Positives: bound states exist (Gate 1); {0⁺⁺, 2⁺⁺} families with C=+ emerge from two J=1 quasiparticles. Fatal: extra light 1⁻ at 0.5×M(0⁺⁺); light 0⁻⁺ forbidden by parity/bose selection rules (lightest is (2,3,4) triple, ratio ≥ 3.7 vs target 1.497); 2⁺⁺/0⁺⁺ ∈ [0.87, 1.00] vs 1.387; no γ rescues it. All three loopholes then dispositioned: interactions can't beat symmetry-protected parity rules; lump branch shares the scalar parity lock; phason sector has NO propagating boundary branch (root-symmetry theorem + full-range scan — relaxation, not particles). Lessons kept as constraints: glueball spectrum fingerprints *vector* constituents; BPR lacked a derived state-selection principle — since derived (Z_p neutrality superselection, `bpr/zp_selection_principle.py`): confines bare quanta, yields Z_p baryons, but quasiparticles are exactly neutral so the 1⁻ defect and this closure stand. |
 
 **Net result for the prime-substrate quantum-information program:** the
 Hilbert-Pólya / Berry-Keating / GUE story for Riemann zeros via Z_p
@@ -74,7 +75,25 @@ separate. They remain valid framework content with their own evidence
 streams:
 
 - **Phason topological propulsion** — UNDECIDABLE at 31 orders below
-  experimental sensitivity (`bpr/phason_sector.py:phason_defect_lift_budget`)
+  experimental sensitivity (`bpr/phason_sector.py:phason_defect_lift_budget`).
+  Two honest attacks on the gap, both resolved (`bpr/phason_coupling.py`):
+  (1) *Mode census* — **NEGATIVE/CLOSED**: the internal space is a torus
+  T^{d_⊥} whose only nonzero homotopy is π_1 = ℤ^{d_⊥} (higher homotopy of a
+  torus vanishes), so the known dislocation sector is the *complete*
+  topological-defect content — there is no missed lift channel. (2) *Coupling
+  derivation* — **OPEN, retrofit-flagged**: reaching ε_required ≈ 6×10⁻³⁶
+  needs ~7 powers of 1/p; no derivation predicts that exponent, and the
+  (1/p)⁷ numerical coincidence is locked as a retrofit *risk*, not a result
+  (tripwire test: `test_no_hypothesis_is_marked_derived`). The 31-order gap is
+  an *undecidability* gap (the J⁴ reservoir is ~10³⁵× the lift need), not an
+  energy shortfall. **Lagrangian attempt** (`bpr/phason_defect_lagrangian.py`,
+  `doc/PHASON_DEFECT_LAGRANGIAN.md`): writing the LRT quasicrystal-elasticity
+  action pins the energy convention (c=2, quadratic F) and the protection count
+  (τ=1, single winding direction) from structure, fixing the *bulk* exponent
+  k_bulk = 2(d⊥−1) = 6 for the 9-fold class. The odd power 7 would come from a
+  single-site defect-**core** factor (g_core ~ 1/p) — physically natural but a
+  hypothesis, not derived. Net: 2 of 3 ambiguities pinned; the gap is reduced to
+  one number (the core coupling), still open.
 - **Eq (5) consciousness coupling** — empirically bounded ≤ 10⁻³
   behavioral, ≤ 10⁻⁵ at QRNG; consistent with null psi literature
 - **Moral phenomenology / privation framework / exorcism mapping** —
