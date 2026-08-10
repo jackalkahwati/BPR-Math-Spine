@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPR 2.0 — Honest Status</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #060612; --panel: #10101c; --panel2: #0b0b16;
+    --line: #22223a; --line-soft: #1a1a2e;
+    --text: #e2e4ee; --muted: #7c7f96; --faint: #4a4d63;
+    --accent: #67e8f9;
+    --pass: #4ade80; --fail: #f87171; --sealed: #fbbf24; --proposed: #c084fc;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Courier New", monospace;
+  }
+  html { background: var(--bg); }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.6; padding: 48px 20px 80px;
+  }
+  main { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+
+  .eyebrow {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600;
+  }
+  header h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; margin: 6px 0 4px; text-wrap: balance; }
+  header .sub { color: var(--muted); font-size: 15px; max-width: 64ch; }
+  header .lede { margin-top: 18px; font-size: 15px; color: var(--text); max-width: 66ch; }
+  header .lede em { color: var(--accent); font-style: normal; }
+
+  h2 { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; margin-bottom: 4px; }
+  section > p.note { color: var(--muted); font-size: 13px; margin-bottom: 14px; max-width: 68ch; }
+
+  .chip {
+    display: inline-block; font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 2px 9px; border-radius: 999px; border: 1px solid;
+    white-space: nowrap;
+  }
+  .chip.pass     { color: var(--pass);     border-color: rgba(74,222,128,.4);  background: rgba(74,222,128,.08); }
+  .chip.fail     { color: var(--fail);     border-color: rgba(248,113,113,.4); background: rgba(248,113,113,.08); }
+  .chip.sealed   { color: var(--sealed);   border-color: rgba(251,191,36,.4);  background: rgba(251,191,36,.08); }
+  .chip.proposed { color: var(--proposed); border-color: rgba(192,132,252,.4); background: rgba(192,132,252,.08); }
+  .chip.info     { color: var(--accent);   border-color: rgba(103,232,249,.4); background: rgba(103,232,249,.07); }
+
+  /* 1.0 vs 2.0 diff */
+  .diff { display: grid; grid-template-columns: 150px 1fr 1fr; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: 13.5px; }
+  .diff > div { padding: 11px 14px; border-top: 1px solid var(--line-soft); background: var(--panel2); }
+  .diff > .h { border-top: none; background: var(--panel); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; color: var(--muted); }
+  .diff > .h.v2 { color: var(--accent); }
+  .diff > .k { color: var(--faint); font-size: 12px; font-weight: 600; }
+  .diff .old { color: var(--muted); }
+  .diff .new { color: var(--text); }
+
+  /* timeline */
+  .timeline { display: flex; flex-direction: column; gap: 0; border-left: 2px solid var(--line); margin-left: 6px; }
+  .tl-item { position: relative; padding: 0 0 18px 22px; }
+  .tl-item:last-child { padding-bottom: 2px; }
+  .tl-item::before {
+    content: ""; position: absolute; left: -6px; top: 7px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--faint);
+  }
+  .tl-item.pass::before { border-color: var(--pass); }
+  .tl-item.fail::before { border-color: var(--fail); }
+  .tl-item.info::before { border-color: var(--accent); }
+  .tl-item .when { font-size: 11px; color: var(--faint); font-family: var(--mono); }
+  .tl-item .what { font-size: 14px; }
+  .tl-item .what b { font-weight: 650; }
+  .tl-item .why { font-size: 12.5px; color: var(--muted); max-width: 66ch; }
+
+  /* milestone + prediction tables */
+  .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; background: var(--panel2); }
+  th {
+    text-align: left; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; padding: 10px 14px; background: var(--panel);
+  }
+  td { padding: 10px 14px; border-top: 1px solid var(--line-soft); vertical-align: top; }
+  td.mono, .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 12.5px; }
+  td .detail { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; max-width: 52ch; }
+
+  .callout {
+    border: 1px solid var(--line); border-left: 3px solid var(--sealed);
+    background: var(--panel2); border-radius: 8px; padding: 14px 18px;
+    font-size: 13.5px; color: var(--muted); max-width: 100%;
+  }
+  .callout b { color: var(--text); }
+  .callout.blue { border-left-color: var(--accent); }
+
+  .decisions { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .decision { border: 1px solid var(--line); border-radius: 10px; background: var(--panel2); padding: 16px 18px; }
+  .decision .q { font-size: 13.5px; font-weight: 650; margin: 6px 0 4px; }
+  .decision p { font-size: 12.5px; color: var(--muted); }
+
+  footer { border-top: 1px solid var(--line); padding-top: 18px; font-size: 12.5px; color: var(--faint); }
+  footer a, a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+  footer .links { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 6px; }
+
+  @media (max-width: 700px) {
+    .diff { grid-template-columns: 1fr; }
+    .diff > .k { background: var(--panel); }
+    .decisions { grid-template-columns: 1fr; }
+    header h1 { font-size: 27px; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <div class="eyebrow">Postulate 0d &middot; Proposed v0.1 &middot; August 2026</div>
+  <h1>BPR 2.0 — Honest Status</h1>
+  <p class="sub">What changed, what forced it, what survived, and what is still unproven.
+  Every claim below is locked by tests in the repository.</p>
+  <p class="lede">BPR 1.0 treated the substrate's boundary as a <em>scalar, Abelian</em> phase
+  field. A sealed, blind benchmark proved that structure cannot produce the particle
+  sector reality contains. BPR 2.0 changes one thing: the rotation-and-mirror symmetry
+  the quasicrystal substrate <em>always had</em> is promoted from decoration to a
+  <em>gauge force</em>. The flavor predictions survive unchanged; the new sector is
+  possible but unproven.</p>
+</header>
+
+<section>
+  <h2>1.0 → 2.0, at a glance</h2>
+  <p class="note">The upgrade touches one postulate. Everything else is inherited.</p>
+  <div class="diff">
+    <div class="h"></div><div class="h">BPR 1.0</div><div class="h v2">BPR 2.0</div>
+    <div class="k">Boundary content</div>
+      <div class="old">Scalar phase field, Abelian (U(1) / Z<sub>p</sub>)</div>
+      <div class="new">Same field <b>+ gauged dihedral point group D<sub>n</sub></b> (non-Abelian, discrete)</div>
+    <div class="k">Point-group symmetry</div>
+      <div class="old">Present in Postulate 0c, unused</div>
+      <div class="new">Promoted to a gauge force — the one structural change</div>
+    <div class="k">Parity-odd (0<sup>&minus;</sup>) states</div>
+      <div class="old">Provably impossible — parity locked to (&minus;1)<sup>J</sup></div>
+      <div class="new">Kinematically possible — the A2 gauge charge exists for every allowed class</div>
+    <div class="k">Force-carrier matter</div>
+      <div class="old">None (no self-interacting sector)</div>
+      <div class="new">Non-Abelian anyon content (verified: most excitations have d &gt; 1)</div>
+    <div class="k">State selection</div>
+      <div class="old">None — any excitation counted as physical</div>
+      <div class="new">Derived Z<sub>p</sub> neutrality superselection (confinement analog, Z<sub>p</sub> baryons)</div>
+    <div class="k">Headline claim</div>
+      <div class="old">Theory of everything</div>
+      <div class="new">Flavor-sector organizing framework + a proposed, untested particle sector</div>
+    <div class="k">Flavor predictions</div>
+      <div class="old">Registered pre-LHCb</div>
+      <div class="new"><b>Numerically identical</b> — modes acquire D<sub>n</sub> charge, energies unchanged (verified exactly)</div>
+  </div>
+</section>
+
+<section>
+  <h2>What forced the change</h2>
+  <p class="note">A sealed, blind glueball benchmark — targets locked before any spectrum
+  was computed, solver mechanically forbidden from reading them.</p>
+  <div class="timeline">
+    <div class="tl-item info">
+      <div class="when">protocol sealed</div>
+      <div class="what"><b>Lattice-QCD targets locked</b> <span class="chip info">blind</span></div>
+      <div class="why">2<sup>++</sup>/0<sup>++</sup> = 1.387, 0<sup>&minus;+</sup>/0<sup>++</sup> = 1.497; pass bands fixed before any BPR number existed.</div>
+    </div>
+    <div class="tl-item pass">
+      <div class="when">gate 1</div>
+      <div class="what"><b>Discrete bound states exist</b> <span class="chip pass">pass</span></div>
+      <div class="why">Lattice discreteness + conserved U(1) norm evade Derrick's theorem; two states found at machine precision.</div>
+    </div>
+    <div class="tl-item fail">
+      <div class="when">gates 2–4</div>
+      <div class="what"><b>Spectrum fails</b> <span class="chip fail">fail</span></div>
+      <div class="why">J/P/C emerged numerically (nothing inserted); {0<sup>++</sup>, 2<sup>++</sup>} families appear — but a light 0<sup>&minus;+</sup> is <b>forbidden</b> by parity selection rules, an extra light 1<sup>&minus;</sup> appears, and no coupling reaches the sealed bands.</div>
+    </div>
+    <div class="tl-item fail">
+      <div class="when">loopholes</div>
+      <div class="what"><b>All three closed</b> <span class="chip fail">sector closed</span></div>
+      <div class="why">Interactions can't beat symmetry-protected parity rules; the lump branch shares the scalar parity lock; the phason branch is exactly non-propagating.</div>
+    </div>
+    <div class="tl-item info">
+      <div class="when">2026</div>
+      <div class="what"><b>BESIII anchors the target to reality</b></div>
+      <div class="why">X(2370) established as a flavor singlet; a dominant 0<sup>&minus;+</sup> glueball component judged essential. The state BPR 1.0 cannot make is now the best-established glueball in nature.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Path B milestones</h2>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Milestone</th><th>Content</th><th>Status</th></tr>
+    <tr>
+      <td class="mono">M1</td>
+      <td>Gauge-sector kinematics from the frozen point group
+        <span class="detail">A2 pseudoscalar charge exists for every allowed class; E<sub>k</sub> spin doublets; quantum-double sum rule verified exactly.</span></td>
+      <td><span class="chip pass">done</span></td>
+    </tr>
+    <tr>
+      <td class="mono">M2</td>
+      <td>Freeze a dynamics beyond the topological point
+        <span class="detail">Canonical Wilson Hamiltonian, one coupling; exact electric Casimirs computed. Phase location (confining or not) still open.</span></td>
+      <td><span class="chip pass">form frozen</span> <span class="chip sealed">phase open</span></td>
+    </tr>
+    <tr>
+      <td class="mono">M3</td>
+      <td>Flavor-sector survival under gauging <b>(kill condition)</b>
+        <span class="detail">Charge sectors partition the spectrum exactly — gauging relabels states, never moves an energy. All LHCb pre-dictions unchanged.</span></td>
+      <td><span class="chip pass">pass</span></td>
+    </tr>
+    <tr>
+      <td class="mono">M4</td>
+      <td>Sealed Benchmark v3 — same targets, same blindness
+        <span class="detail">Blocker: leading-order strong coupling is J<sup>PC</sup>-degenerate; splitting needs higher-order expansion or Monte&nbsp;Carlo.</span></td>
+      <td><span class="chip sealed">sealed</span></td>
+    </tr>
+  </table>
+  </div>
+  <p class="note" style="margin-top:12px">
+    <span class="chip proposed">proposed</span>&nbsp; Postulate 0d is <b>not</b> merged
+    into the frozen core. No spectrum exists. No glueball claim is made.
+  </p>
+</section>
+
+<section>
+  <h2>Unchanged: the registered flavor predictions</h2>
+  <p class="note">These were locked before measurement and pass through the 2.0 upgrade
+  numerically identical. They are the framework's real scoreboard.</p>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Observable</th><th>BPR value</th><th>Decided by</th></tr>
+    <tr><td>&Xi;<sub>cc</sub>* hyperfine splitting</td><td class="mono">85.9 MeV</td><td>LHCb</td></tr>
+    <tr><td>&Omega;<sub>cc</sub>* hyperfine splitting</td><td class="mono">94.3 MeV</td><td>LHCb</td></tr>
+    <tr><td>&Xi;<sub>bb</sub>* hyperfine splitting</td><td class="mono">28.3 MeV</td><td>LHCb</td></tr>
+    <tr><td>&Omega;<sub>bb</sub> &minus; &Xi;<sub>bb</sub> splitting</td><td class="mono">100.3 MeV</td><td>LHCb</td></tr>
+    <tr><td>&Omega;<sub>ccc</sub> mass</td><td class="mono">&asymp; 4900 MeV</td><td>LHCb</td></tr>
+    <tr><td>Casimir deviation exponent</td><td class="mono">&delta; = 2 (derived)</td><td>precision Casimir</td></tr>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>The two decision points</h2>
+  <div class="decisions">
+    <div class="decision">
+      <span class="chip info">experiment</span>
+      <div class="q">Does LHCb confirm the hyperfine pre-dictions?</div>
+      <p>Confirm &rarr; the flavor sector is real signal and the 2.0 rebuild is worth
+      completing. Refute &rarr; the last live positive program ends and BPR is archived
+      as a documented negative result.</p>
+    </div>
+    <div class="decision">
+      <span class="chip sealed">calculation</span>
+      <div class="q">Can anyone compute the gauged spectrum?</div>
+      <p>Higher-order strong coupling or Monte&nbsp;Carlo of the frozen Hamiltonian on
+      S&sup2;, with emergent J<sup>PC</sup>. Only then does the sealed v3 envelope open
+      — against the same lattice targets, untouched.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="callout">
+    <b>Why trust this page?</b> Because the same repository documents everything that
+    failed. The negative-findings registry records the closed Riemann/GUE program, the
+    refuted artifact retrofits, the glueball closure, and every fitted-not-derived
+    coefficient — each locked by tripwire tests that fail if a claim is ever quietly
+    upgraded. A framework's credibility lives in what it admits doesn't work.
+  </div>
+</section>
+
+<footer>
+  Sources in this repository — every number above is asserted by a test.
+  <div class="links">
+    <a href="../doc/BPR2_PATH_B_NONABELIAN_GAUGE.md">Path B proposal &amp; milestones</a>
+    <a href="../doc/GLUEBALL_BENCHMARK_V1.md">Sealed glueball benchmark</a>
+    <a href="../doc/CLOSED_AND_DEPRECATED.md">Negative-findings registry</a>
+    <a href="../doc/derivations/zp_neutrality_superselection.md">Z<sub>p</sub> superselection</a>
+    <a href="../doc/BPR_FLAVOR_SECTOR.md">Flavor-sector pre-dictions</a>
+  </div>
+</footer>
+
+</main>
+</body>
+</html>
