@@ -2,6 +2,10 @@
 
 > **Status :** public draft | license MIT | contact <jack@thestardrive.com>
 >
+> **BPR 2.0 (Path B)** → [`viz/bpr2-status.html`](viz/bpr2-status.html) *(honest status page: what changed from 1.0, the sealed glueball benchmark that forced it, milestones, and the two open decision points)* | proposal: [`doc/BPR2_PATH_B_NONABELIAN_GAUGE.md`](doc/BPR2_PATH_B_NONABELIAN_GAUGE.md)
+>
+> **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
+>
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
 >
 > **COMPLETE FRAMEWORK** → [`doc/BPR_Complete_Framework.md`](doc/BPR_Complete_Framework.md) *(80-page unified document)*
@@ -46,6 +50,7 @@ The BPR framework has a full public-facing website at [`bpr.thestardrive.com`](h
 | **Global Consistency Audit** | `/global-consistency-audit.html` | Radar chart of 58 consistency checks |
 | **Researcher Portal** | `/researcher-portal.html` | API access, rate limits, SDK, CLI docs |
 | **Paper** | `/bpr-paper.pdf` | Full 13-page LaTeX paper |
+| **BPR 2.0 Status** | `/viz/bpr2-status.html` | 1.0 → 2.0: gauged point group, sealed glueball benchmark, milestones, decision points |
 
 **Run locally:**
 ```bash
