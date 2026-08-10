@@ -91,11 +91,49 @@ every candidate assignment is mass-inert, and M3's PASS is unaffected.
 
 ---
 
+## 4. The M2 remainder: physical λ from substrate quantities — **PROPOSED v0.1**
+
+The sharpened M2 question ("which side of β_c does the substrate sit on?")
+was worked in `bpr/physical_lambda.py` (locks:
+`tests/test_physical_lambda.py`). Two independent derivations from frozen
+inputs, no tuning:
+
+| Route | Basis | Provenance | β |
+|---|---|---|---|
+| A (thermal) | β = J/T_eff with T_eff = J/ln p | frozen in `bpr/rpst/boundary_energy.py` | **ln p = 11.56** |
+| B (gauge) | β = 1/g², g² = 4πα, frozen α formula | Postulate 0c (`bpr/consistency.py`) | **1/(4πα) = 10.91** |
+
+The routes agree to 6% — with the caveat stated plainly: the agreement holds
+because ln p ≈ 4π for the selected prime; it is a property of the frozen p,
+not an independent identity.
+
+**Verdict (PROPOSED):** β_phys ≈ 11.2 ± 0.3 against measured β_c ≈ 1.9–2.2 —
+the substrate sits on the **deconfined/topological side, a factor ~5 above
+the transition**, robust to any O(1) convention ambiguity below that factor.
+
+**Kill condition (explicit):** an anisotropic-lattice calibration of the
+Euclidean-β ↔ Hamiltonian-λ map (or an exact duality) shifting the effective
+coupling by more than ~5× overturns the verdict. Nothing smaller can.
+
+**Consequence if it stands:** the physical excitation content is the M1 anyon
+spectrum (topological phase) — consistent with M1's quantum-double
+kinematics. The confining glueball-analog spectrum that the M4 machinery
+targets belongs to a phase the substrate does not occupy; Benchmark v3 then
+tests the confining phase of the frozen dynamics as a theory exercise, and
+the particle-sector interpretation must route through anyonic excitations.
+
+**Recorded, not used:** the per-link value ln(p)/z = 1.93 lands *on* the
+measured β_c (ratios 0.88–0.99 across all four classes). No frozen derivation
+supports dividing by z, so this is logged as a numerical observation only —
+but a per-link convention would place the substrate essentially AT
+criticality, and the coincidence across all four classes is flagged for
+future work.
+
 ## Net status change
 
 | Problem | Before | After |
 |---|---|---|
-| M2 phase location | OPEN — "requires simulation" | **β_c located for all 4 classes** (± 0.1, volume-stable, Z₂-anchored); open remainder sharpened to "physical λ underived" |
+| M2 phase location | OPEN — "requires simulation" | **β_c located for all 4 classes** (± 0.1, volume-stable, Z₂-anchored); remainder worked in §4: β_phys ≈ 11.2 from two frozen routes → **deconfined side (PROPOSED, kill condition on record)** |
 | M4 J^PC splitting | BLOCKER — no machinery | **Machinery built + gated**; blocker recharacterized as statistics/compute; envelope SEALED |
 | M3 √210 wrinkle | OPEN — "l mod n undefined" | **CLOSED for D_5**; reduced to component ambiguity for D_8/9/12 |
 

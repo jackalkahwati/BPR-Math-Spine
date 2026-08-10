@@ -143,9 +143,18 @@ The three §5 open items were worked; full record in
 - **M2 phase location: ANSWERED at scan resolution.** Monte Carlo of the
   frozen Wilson dynamics (`bpr/gauge_phase_mc.py`, Z₂ literature anchor
   passes): pseudo-critical β_c = 1.9–2.0 (D_5), 2.1 (D_8), 2.1 (D_9),
-  2.2 (D_12), ±0.1, volume-stable L=4→6. Sharpened remainder: the substrate's
-  *physical* λ is underived — which side of the transition it sits on is the
-  remaining M2 question.
+  2.2 (D_12), ±0.1, volume-stable L=4→6.
+- **M2 remainder — physical λ: PROPOSED v0.1** (`bpr/physical_lambda.py`).
+  Two independent frozen-input routes converge: β = ln p = 11.56 (thermal,
+  T_eff = J/ln p frozen in rpst) and β = 1/(4πα) = 10.91 (Wilson convention +
+  frozen α formula) — agreement to 6%, with the ln p ≈ 4π coincidence stated
+  plainly. Verdict: β_phys ≈ 11.2 vs β_c ≈ 2 → the substrate sits on the
+  **deconfined/topological side (~5× above the transition)**. Kill condition:
+  a Euclidean↔Hamiltonian calibration shift > ~5×. Consequence if it stands:
+  physical excitations are the M1 anyons; the confining glueball-analog
+  spectrum belongs to a phase the substrate does not occupy. Recorded, not
+  used: ln(p)/z = 1.93 lands on β_c (no frozen provenance for the z-division;
+  flagged for future work).
 - **M4 blocker: machinery built, envelope SEALED.** Channel correlators
   (A1/B1/A2 precursors of 0⁺⁺/2⁺⁺/parity-odd) with jackknife + hard gates
   (`bpr/glueball_channels_mc.py`). Gates fail at laptop statistics — the
