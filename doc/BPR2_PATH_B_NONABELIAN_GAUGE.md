@@ -89,10 +89,43 @@ discrete-gauge analog of self-interacting force carriers.
 
 | Milestone | Content | Status |
 |---|---|---|
-| **M1** | Gauge-sector kinematics from the frozen point group | **DONE** (this doc) |
-| **M2** | Freeze a dynamics away from the topological point | OPEN |
-| **M3** | Prove flavor-sector survival under gauging | OPEN |
-| **M4** | Sealed Benchmark v3: same lattice targets, same blindness, emergent J^PC from the gauged dynamics | OPEN (sealed) |
+| **M1** | Gauge-sector kinematics from the frozen point group | **DONE** |
+| **M2** | Freeze a dynamics away from the topological point | **FORM FROZEN** — phase location OPEN (`bpr/gauge_dynamics_m2_m3.py`) |
+| **M3** | Prove flavor-sector survival under gauging | **PASS (kinematic)** — see §5 |
+| **M4** | Sealed Benchmark v3: same lattice targets, same blindness, emergent J^PC from the gauged dynamics | **SEALED** — blocker documented in §5 |
+
+## 5. Milestones 2–4 — executed 2026-08-10 (`bpr/gauge_dynamics_m2_m3.py`)
+
+**M3 (the kill condition) — PASS, kinematic.** The flavor mass formulas consume
+only gauge-inert inputs (mode integers l_i and J, p, z, n_gen). Gauging
+organizes boundary states by D_n charge and adds flux sectors, but does not
+touch the untwisted Hamiltonian — verified exactly: the charge-sector spectra
+partition the full spectrum for every allowed class (no energy moves). **Every
+registered LHCb pre-diction is numerically unchanged.** What changes is
+interpretation: flavor modes now carry D_n gauge charge fixed by l mod n
+(e.g. n=9: d,u → E1; b,c → E3; s,t → E4), directly parallel to quarks carrying
+color. Caveats on record: the lepton labels include √210 (l mod n undefined —
+open wrinkle), and if the M2 dynamics confines at the physical coupling,
+binding-energy corrections are unquantified until the phase is located.
+
+**M2 — dynamics FROZEN (form), phase OPEN.** The canonical finite-group Wilson
+Hamiltonian with one coupling λ: H(λ) = (1/λ)Σ_links Δ_G + λΣ_plaq(1 −
+Re χ_F/d_F), generating set {r, r⁻¹, s} — the textbook form, not tuned.
+Exactly computed: the electric Casimirs ε(A1)=0, ε(A2)=2, ε(B1)=4, ε(B2)=6,
+ε(E_k)=3−2cos(2πk/n) for all four classes. Limits: λ→∞ deconfined/topological
+(no spectrum); λ→0 confining, string tensions σ(R) ∝ ε(R), glueball analogs =
+closed electric loops with LO mass 4ε_min/λ. Structural note recorded without
+significance claims: for n=5 the lightest nontrivial charge sector is A2 (the
+pseudoscalar precursor); for n=8, 9, 12 it is E1. The confinement–deconfinement
+phase location in λ is OPEN — it requires simulation.
+
+**M4 — Benchmark v3 stays SEALED, blocker precise.** The leading-order
+strong-coupling spectrum is J^PC-**degenerate** (every smallest-loop state has
+mass 4ε_min/λ); quantum numbers split only at higher orders in the
+strong-coupling expansion or via Monte Carlo, with emergent J^PC read from
+loop multiplets on S². Rather than manufacture ratios, v3 remains sealed with
+that single blocker on record. Targets and pass bands inherited unchanged from
+v1; mechanical blindness greps enforced on every Path B module.
 
 Rules frozen now: M4 uses the *identical* sealed targets and pass bands as
 Benchmark v1 (`doc/GLUEBALL_BENCHMARK_V1.md` §4). No result from M1–M3 may be

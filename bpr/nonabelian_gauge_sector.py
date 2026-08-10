@@ -205,11 +205,18 @@ def anyon_content(n: int) -> dict:
 def milestone_status() -> dict:
     return {
         "M1_gauge_sector_kinematics": "DONE (this module)",
-        "M2_dynamics_beyond_topological_point": "OPEN — no spectrum exists yet",
-        "M3_flavor_sector_compatibility": "OPEN — survival under gauging unproven",
-        "M4_sealed_benchmark_v3": "OPEN — sealed; same lattice targets as v1",
-        "spectrum_claims": "NONE — the solvable point is topological (gapped, "
-                           "deconfined, degenerate); masses and ratios require M2",
+        "M2_dynamics_beyond_topological_point":
+            "FORM FROZEN (gauge_dynamics_m2_m3) — phase location OPEN; "
+            "no spectrum exists yet",
+        "M3_flavor_sector_compatibility":
+            "PASS kinematic (gauge_dynamics_m2_m3) — energies unchanged, "
+            "modes acquire D_n charge",
+        "M4_sealed_benchmark_v3":
+            "SEALED — blocker: LO strong coupling is J^PC-degenerate; needs "
+            "higher-order expansion or MC",
+        "spectrum_claims": "NONE — the solvable point is topological and the "
+                           "LO strong-coupling spectrum is degenerate; masses "
+                           "and ratios require the M4 blocker calculation",
         "postulate_0d_status": "PROPOSED v0.1 — not merged into the frozen core",
     }
 

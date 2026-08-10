@@ -101,13 +101,15 @@ def test_d5_reference_values():
 
 # --- honesty guards ----------------------------------------------------------
 
-def test_no_spectrum_claims_and_milestones_open():
-    """Milestones 2-4 must remain OPEN and spectrum claims NONE until a
-    dynamics is frozen. Flipping these requires real new frozen physics."""
+def test_no_spectrum_claims_and_v3_sealed():
+    """Spectrum claims stay NONE and Benchmark v3 stays SEALED until the M4
+    blocker calculation (higher-order strong coupling / MC) is actually done.
+    M2 form is frozen and M3 passed kinematically — per gauge_dynamics_m2_m3."""
     ms = milestone_status()
-    assert ms["M2_dynamics_beyond_topological_point"].startswith("OPEN")
-    assert ms["M3_flavor_sector_compatibility"].startswith("OPEN")
-    assert ms["M4_sealed_benchmark_v3"].startswith("OPEN")
+    assert ms["M2_dynamics_beyond_topological_point"].startswith("FORM FROZEN")
+    assert "OPEN" in ms["M2_dynamics_beyond_topological_point"]
+    assert ms["M3_flavor_sector_compatibility"].startswith("PASS")
+    assert ms["M4_sealed_benchmark_v3"].startswith("SEALED")
     assert ms["spectrum_claims"].startswith("NONE")
     assert "PROPOSED" in ms["postulate_0d_status"]
 
