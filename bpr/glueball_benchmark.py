@@ -176,13 +176,14 @@ def gate1_report() -> dict:
 
 
 def benchmark_status() -> dict:
-    """The four gates. Gates 2-4 stay sealed until the S^2 eigenproblem runs;
-    the comparison targets live only in the protocol doc and tests."""
+    """The four gates. Gates 2-4 were computed in bpr/glueball_gates.py (the S^2
+    eigenproblem) and the envelope was opened there; this Gate-1 module still
+    never reads the comparison targets."""
     return {
         "gate1_discrete_localized_states": gate1_report()["gate1"],
-        "gate2_jpc_families": "OPEN (sealed)",
-        "gate3_ordering": "OPEN (sealed)",
-        "gate4_mass_ratios": "OPEN (sealed)",
+        "gate2_jpc_families": "PARTIAL FAIL (envelope opened; see glueball_gates)",
+        "gate3_ordering": "FAIL (envelope opened; see glueball_gates)",
+        "gate4_mass_ratios": "FAIL (envelope opened; see glueball_gates)",
         "no_jpc_claim": ("the ring calculation carries no J^PC content; "
                          "no glueball identification is made or implied"),
     }
@@ -213,8 +214,8 @@ def report() -> str:
         f"Gate 3 (ordering):      {st['gate3_ordering']}",
         f"Gate 4 (mass ratios):   {st['gate4_mass_ratios']}",
         "",
-        "The envelope stays SEALED: comparison targets live only in",
-        "doc/GLUEBALL_BENCHMARK_V1.md; this solver never reads them, and " +
+        "The envelope was OPENED in bpr/glueball_gates.py after this solver was",
+        "frozen; this Gate-1 module still never reads the targets, and " +
         st["no_jpc_claim"] + ".",
     ]
     return "\n".join(lines)

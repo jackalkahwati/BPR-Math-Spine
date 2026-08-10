@@ -104,11 +104,13 @@ def test_gate1_passes():
 # Honesty guards: gates 2-4 sealed, no J^PC claim
 # ---------------------------------------------------------------------------
 
-def test_gates_2_to_4_are_sealed():
+def test_gates_2_to_4_reflect_opened_envelope():
+    """Gates 2-4 were computed in bpr/glueball_gates.py; the statuses here must
+    reflect the opened envelope's verdicts, not claim success."""
     st = benchmark_status()
-    assert st["gate2_jpc_families"] == "OPEN (sealed)"
-    assert st["gate3_ordering"] == "OPEN (sealed)"
-    assert st["gate4_mass_ratios"] == "OPEN (sealed)"
+    assert "PARTIAL FAIL" in st["gate2_jpc_families"]
+    assert st["gate3_ordering"].startswith("FAIL")
+    assert st["gate4_mass_ratios"].startswith("FAIL")
 
 
 def test_no_jpc_or_glueball_claim():
@@ -116,5 +118,5 @@ def test_no_jpc_or_glueball_claim():
     not claim any glueball identification."""
     txt = report()
     assert "no J^PC content" in txt
-    assert "SEALED" in txt
+    assert "OPENED" in txt
     assert "no glueball identification" in txt

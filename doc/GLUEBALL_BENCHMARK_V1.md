@@ -49,10 +49,10 @@ Exactly what is already committed in this repo — nothing added for this test:
 
 | Gate | Question | Status |
 |---|---|---|
-| 1 | Does the frozen theory generate discrete localized finite-energy states at all? | **PASS** (this commit — see §5) |
-| 2 | Do the solutions fall into the correct J^PC families (0^{++}, 2^{++}, 0^{−+}, …) without hand-inserted labels? | **OPEN (sealed)** — requires the S² boundary eigenproblem |
-| 3 | Is the ordering of the lowest states M(0^{++}) < M(2^{++}) < M(0^{−+})? | **OPEN (sealed)** |
-| 4 | After fixing one overall scale, do the remaining ratios land near lattice QCD? | **OPEN (sealed)** |
+| 1 | Does the frozen theory generate discrete localized finite-energy states at all? | **PASS** (§5) |
+| 2 | Do the solutions fall into the correct J^PC families (0^{++}, 2^{++}, 0^{−+}, …) without hand-inserted labels? | **PARTIAL FAIL** (§8 — envelope opened) |
+| 3 | Is the ordering of the lowest states M(0^{++}) < M(2^{++}) < M(0^{−+})? | **FAIL** (§8) |
+| 4 | After fixing one overall scale, do the remaining ratios land near lattice QCD? | **FAIL** (§8) |
 
 ## 4. The sealed envelope — locked comparison targets
 
@@ -128,6 +128,39 @@ SO(3) rotations:
 4. Read off J from the SO(3) irrep of each solution/fluctuation family, P from
    inversion, C from ψ → ψ*.
 5. Compute E[Φ_n]; form ratios; **then** open §4.
+
+## 8. Envelope opened — results (2026-08-10, same day; spectrum computed blind first)
+
+The S² eigenproblem was computed in `bpr/glueball_gates.py` on the branch our
+own condensate chain forces (excitations of the uniform k=0 condensate — see
+`bpr/condensate_mechanism.py`). Emergence was verified, not asserted: a
+real-space solver discovered the SO(3) multiplets numerically (degeneracies
+1, 3, 5, 7, 9, 11 → J = 0…5; ε = J(J+1) to 4 decimals; parity (−1)^J from the
+antipodal map on the eigenvectors), and composite selection rules came from
+SO(3) character integrals, not hand-coded tables.
+
+**Gate 2 — PARTIAL FAIL.** The genuinely nontrivial positive: two J=1
+quasiparticles give *exactly* {0^{++}, 2^{++}} (J=1 bose-forbidden), C=+
+throughout — the right lowest glueball families emerge without insertion. But
+two disqualifying features also emerge: (a) the lightest excitation is a single
+1^− quasiparticle at 0.50 × M(0^{++}), a family with no counterpart in the low
+glueball spectrum; (b) a light 0^{−+} is *forbidden*: parity arithmetic kills
+every 1- and 2-quasiparticle J=0^− state, and character integrals kill (1,1,1),
+(2,2,1), (2,2,3), (3,3,3). The lightest pseudoscalar is the (2,3,4) triple.
+
+**Gate 3 — FAIL.** Computed ordering: 1^− < {0^{++} = 2^{++} degenerate} ≪
+0^{−+}, versus the required 0^{++} < 2^{++} < 0^{−+}.
+
+**Gate 4 — FAIL.** Over the full interaction range γ ∈ [0.1, 1000]:
+2^{++}/0^{++} ∈ [0.87, 1.00] (target 1.387; never reaches the band) and
+0^{−+}/0^{++} ∈ [3.7, 9.3] (target 1.497; off by ≥ 2.5×). No γ rescues either
+ratio — this is not a tuning failure, it is structural.
+
+**Overall: the condensate branch of BPR fails the glueball benchmark.**
+Recorded in `doc/CLOSED_AND_DEPRECATED.md` §1 as promised. Loopholes recorded
+(not used to soften the verdict): leading-order treatment of quasiparticle
+interactions; the self-bound-lump (focusing) branch was not quantized; the
+phason sector's boundary parity content was not computed.
 
 ## 7. Cross-references
 
