@@ -1,0 +1,138 @@
+# BPR Glueball Benchmark v1 — sealed protocol
+
+> **Status: PROTOCOL LOCKED, ENVELOPE SEALED.** This document freezes the rules
+> and the comparison targets BEFORE the BPR spectrum is computed. The solver
+> never reads the targets; the comparison happens only after the S² eigenproblem
+> produces a spectrum. Locked 2026-08-10 on branch
+> `claude/bpr-experiment-review-Gpd2R`.
+
+## 1. The test
+
+Treat BPR as an eigenmode problem and judge it against the QCD glueball
+spectrum with no tuning:
+
+```
+frozen BPR equations → stationary/topological modes → {J^PC} → {E_n} → E_n/E_0
+```
+
+compared against lattice-QCD glueball ratios and (secondarily) the BESIII
+X(2370) pseudoscalar-glueball candidate.
+
+**Rules (fixed now, before any spectrum exists):**
+1. The BPR equations are frozen as of this commit (§2). No new terms after
+   looking at any spectrum.
+2. No glueball mass or ratio enters any solver, seed, loss function, or
+   convergence criterion. The targets live only in this document and its tests.
+3. Absolute scale is not judged. Exactly ONE overall scale may be fixed to one
+   state; all remaining ratios are then predictions.
+4. Quantum numbers must emerge from the symmetry of the solutions (rotations →
+   J, inversion → P, complex conjugation of the U(1) field → C), never inserted
+   by hand.
+5. The envelope (§4) is opened only after Gates 2–4 produce numbers.
+
+## 2. The frozen equations
+
+Exactly what is already committed in this repo — nothing added for this test:
+
+- Substrate: Z_p lattice; linear dispersion from nearest-neighbour hopping,
+  ω_k = −2C cos(2πk/p) (`bpr/condensate_mechanism.py`).
+- Interaction: the substrate-symmetric quartic |ψ|⁴ whose Fourier vertex is the
+  momentum-conserving (translation-invariant) coupling derived in
+  `bpr/harmonic_coupling_derivation.py`.
+- Elastic/phason sector: the LRT free energy + phason dislocation content of
+  `bpr/phason_defect_lagrangian.py` (π₁ line defects only; higher homotopy
+  vanishes — `bpr/phason_coupling.py`).
+- Conserved U(1) norm of the complex boundary field (charge conjugation C acts
+  as ψ → ψ*).
+
+## 3. The four gates
+
+| Gate | Question | Status |
+|---|---|---|
+| 1 | Does the frozen theory generate discrete localized finite-energy states at all? | **PASS** (this commit — see §5) |
+| 2 | Do the solutions fall into the correct J^PC families (0^{++}, 2^{++}, 0^{−+}, …) without hand-inserted labels? | **OPEN (sealed)** — requires the S² boundary eigenproblem |
+| 3 | Is the ordering of the lowest states M(0^{++}) < M(2^{++}) < M(0^{−+})? | **OPEN (sealed)** |
+| 4 | After fixing one overall scale, do the remaining ratios land near lattice QCD? | **OPEN (sealed)** |
+
+## 4. The sealed envelope — locked comparison targets
+
+These numbers are recorded now so the later comparison is blind. **No solver
+may import them.**
+
+**Primary: lattice QCD, quenched SU(3)** (Morningstar & Peardon, PRD 60, 034509, 1999):
+
+| State | Mass (MeV) | Ratio to 0^{++} |
+|---|---|---|
+| 0^{++} | 1730 ± 80 | 1.000 |
+| 2^{++} | 2400 ± 120 | **1.387** |
+| 0^{−+} | 2590 ± 130 | **1.497** |
+
+**Cross-check** (Chen et al., PRD 73, 014516, 2006): 0^{++} 1710, 2^{++} 2390,
+0^{−+} 2560 → ratios 1.398, 1.497. Consistent.
+
+**Experimental context** (not a fit target): BESIII observes X(2370) at
+≈ 2.37–2.40 GeV with quantum numbers increasingly consistent with 0^{−+}; its
+ratio to the lattice 0^{++} (1730) is ≈ 1.37–1.39, in mild tension with the
+lattice 0^{−+}/0^{++} = 1.50 (possibly from scalar-sector mixing). That tension
+belongs to QCD phenomenology, not to this benchmark; BPR is judged against the
+lattice ratios.
+
+**Pass bands (fixed now):** Gate 3 requires the strict ordering above. Gate 4
+requires 2^{++}/0^{++} ∈ [1.25, 1.55] and 0^{−+}/0^{++} ∈ [1.35, 1.65] (lattice
+central values ± ~10%), with BOTH ratios from a single parameter set.
+
+## 5. Gate 1 result (this commit)
+
+**Structural part (Derrick's theorem).** The frozen continuum scalar sector
+(quadratic elastic + quartic) admits NO stable static localized solitons in 3D:
+under x → λx both terms drive scale collapse. So a naive continuum reading of
+BPR fails Gate 1 immediately — this is recorded, not hidden. The frozen theory
+contains exactly three Derrick escapes, all already present before this test:
+
+1. **Lattice discreteness** — the Z_p substrate has no continuous scaling
+   symmetry, which is the textbook loophole permitting intrinsic localized
+   modes / discrete breathers (Flach & Willis).
+2. **Conserved U(1) norm** — permits time-periodic Q-ball-type states
+   ψ = φ e^{−iμt} evading the static assumption.
+3. **π₁ line defects** (phason dislocations) — topologically stable but
+   string-like (infinite energy as point particles in 3D), so they are NOT
+   glueball candidates; excluded.
+
+**Numerical part.** Solving the frozen stationary equation
+μφ = −C∆φ − |φ|²φ on the Z_p ring (`bpr/glueball_benchmark.py`):
+
+- Newton converges to residual ~10⁻¹³ on **two distinct** localized states
+  (site-centered and bond-centered), localization ~10⁵ over 20 sites.
+- The linearized (Bogoliubov) fluctuation operator has the exact U(1) phase
+  zero mode and **discrete internal modes below the continuum band edge**
+  (ω² ≈ 0.073, 0.223 below the edge at 0.250 for C=1, μ=−2.5).
+
+**Verdict: Gate 1 PASSES** — the frozen equations generate discrete, localized,
+finite-energy bound states with discrete fluctuation spectra, via escapes 1+2.
+
+**What Gate 1 does NOT claim:** the ring calculation carries **no J^PC
+content** — a 1D winding number is not angular momentum, and no glueball
+identification is made or implied. These states demonstrate existence and the
+solver machinery, nothing more.
+
+## 6. What Gates 2–4 require (defined now)
+
+The eigenproblem must be posed on the 2-sphere boundary (BPR's derived boundary
+topology, `bpr/boundary_topology.py`) so that solutions transform under real
+SO(3) rotations:
+
+1. Discretize the frozen equations on S² (or solve in the continuum with the
+   lattice-derived dispersion as UV completion).
+2. Find stationary states Φ_n (Newton, as validated in Gate 1).
+3. Linearize: H_n ψ_k = ω_k² ψ_k.
+4. Read off J from the SO(3) irrep of each solution/fluctuation family, P from
+   inversion, C from ψ → ψ*.
+5. Compute E[Φ_n]; form ratios; **then** open §4.
+
+## 7. Cross-references
+
+- `bpr/glueball_benchmark.py` — Gate 1 solver + Derrick analysis (never reads §4)
+- `tests/test_glueball_benchmark.py` — locks targets, Gate 1 results, honesty guards
+- `bpr/harmonic_coupling_derivation.py` — the frozen coupling
+- `bpr/condensate_mechanism.py` — the frozen dispersion + nonlinearity
+- `doc/CLOSED_AND_DEPRECATED.md` — where a Gate 2–4 failure will be recorded if it fails
