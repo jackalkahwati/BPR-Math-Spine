@@ -77,6 +77,23 @@ lattice 0^{−+}/0^{++} = 1.50 (possibly from scalar-sector mixing). That tensio
 belongs to QCD phenomenology, not to this benchmark; BPR is judged against the
 lattice ratios.
 
+*Update (post-envelope, 2026 BESIII Letter with 10B J/ψ events):* the
+experimental anchor has strengthened substantially since the envelope was
+sealed and opened. BESIII established the X(2370) as a **flavor singlet** (the
+K*(892)⁰K̄⁰ mode is suppressed, B < 2.7×10⁻⁶ at 90% C.L. — forbidden for a
+0^{−+} flavor singlet by generalized G-parity), the first flavor-singlet light
+hadron above 1 GeV. Combined mass/width: 2359 MeV / 170 MeV; J^PC = 0^{−+} at
+>9.8σ; high production in gluon-rich J/ψ radiative decays; ηc-like decay
+pattern; narrow partial widths; γω/γφ strongly suppressed. BESIII's conclusion:
+a dominant lightest-0^{−+}-glueball component is essential to explain all
+properties simultaneously; η–η′ excitation, q q̄, multiquark, hybrid, and Σ Σ̄
+baryonium interpretations are disfavored. This does not change the sealed
+lattice targets or any verdict — it means the state this benchmark judged BPR
+against is now the best-established glueball in nature, so the Gate 2–4
+failure is anchored to *measured* physics, not only to lattice prediction
+(experimental ratio 2359/1710 ≈ 1.38, inside the sealed 0^{−+} band; BPR's
+computed range was [3.7, 9.3]).
+
 **Pass bands (fixed now):** Gate 3 requires the strict ordering above. Gate 4
 requires 2^{++}/0^{++} ∈ [1.25, 1.55] and 0^{−+}/0^{++} ∈ [1.35, 1.65] (lattice
 central values ± ~10%), with BOTH ratios from a single parameter set.
