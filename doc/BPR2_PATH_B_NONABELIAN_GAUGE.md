@@ -135,9 +135,39 @@ M4. The Abelian-sector closures (`doc/CLOSED_AND_DEPRECATED.md`) are
 unaffected either way — Postulate 0d is a *proposal on top of* the frozen
 core, not an amendment to it.
 
+## 6. Open-problem session — executed 2026-08-10 (second pass)
+
+The three §5 open items were worked; full record in
+`doc/derivations/path_b_open_problems_2026-08.md`:
+
+- **M2 phase location: ANSWERED at scan resolution.** Monte Carlo of the
+  frozen Wilson dynamics (`bpr/gauge_phase_mc.py`, Z₂ literature anchor
+  passes): pseudo-critical β_c = 1.9–2.0 (D_5), 2.1 (D_8), 2.1 (D_9),
+  2.2 (D_12), ±0.1, volume-stable L=4→6. Sharpened remainder: the substrate's
+  *physical* λ is underived — which side of the transition it sits on is the
+  remaining M2 question.
+- **M4 blocker: machinery built, envelope SEALED.** Channel correlators
+  (A1/B1/A2 precursors of 0⁺⁺/2⁺⁺/parity-odd) with jackknife + hard gates
+  (`bpr/glueball_channels_mc.py`). Gates fail at laptop statistics — the
+  blocker is now "insufficient statistics" (compute), not "no method". Ratios
+  are not computed unless every gate passes; no comparison code exists.
+- **M3 √210 wrinkle: CLOSED for n=5, reduced elsewhere.** The derivation's own
+  factorization 210 = 14×15 makes the muon a two-mode composite; tensor-product
+  charge is exact (`bpr/lepton_dn_assignment.py`). D_5: μ → E1, determinate.
+  D_8/9/12: two-component ambiguity remains (dynamical selection input absent).
+
+Locks: `tests/test_gauge_open_problems.py` (16 tests incl. mechanical
+blindness grep on all three modules).
+
 ## Cross-references
 - `bpr/nonabelian_gauge_sector.py` — Milestone 1 computations + honesty guards
+- `bpr/gauge_dynamics_m2_m3.py` — M2/M3/M4 first pass (frozen dynamics, Casimirs)
+- `bpr/gauge_phase_mc.py` — M2 phase location Monte Carlo (§6)
+- `bpr/glueball_channels_mc.py` — M4 channel-correlator machinery, gated (§6)
+- `bpr/lepton_dn_assignment.py` — M3 lepton-charge resolution (§6)
 - `tests/test_nonabelian_gauge_sector.py` — exact rep-theory locks + blindness grep
+- `tests/test_gauge_open_problems.py` — locks for the §6 modules
+- `doc/derivations/path_b_open_problems_2026-08.md` — full session record
 - `doc/GLUEBALL_BENCHMARK_V1.md` — the diagnosis this responds to; the sealed targets M4 inherits
 - `doc/derivations/zp_neutrality_superselection.md` — the Abelian selection principle (still holds; complementary)
 - `bpr/phason_sector.py:ALLOWED_INTERNAL_CLASSES` — the frozen classes supplying D_n
