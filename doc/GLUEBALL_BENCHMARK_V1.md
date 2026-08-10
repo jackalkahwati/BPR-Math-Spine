@@ -194,6 +194,13 @@ selection principle (confinement analog) — the extra light 1⁻ exists because
 nothing forbids single-quasiparticle states; any future version must derive
 such a principle from the substrate, not postulate it to fix a spectrum.
 
+*Update:* lesson (b) has since been partially addressed — a Z_p neutrality
+superselection rule was derived from the substrate
+(`doc/derivations/zp_neutrality_superselection.md`,
+`bpr/zp_selection_principle.py`): it confines bare quanta and yields a
+Z_p-baryon sector, but Bogoliubov quasiparticles are exactly neutral, so the
+light 1⁻ survives it and **this section's closure stands unchanged**.
+
 ## 7. Cross-references
 
 - `bpr/glueball_benchmark.py` — Gate 1 solver + Derrick analysis (never reads §4)
