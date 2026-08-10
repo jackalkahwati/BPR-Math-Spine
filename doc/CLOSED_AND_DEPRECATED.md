@@ -5,11 +5,17 @@
 > Existing for two reasons: (1) reviewers shouldn't have to scrape commit
 > history to find what didn't pan out, (2) the framework's credibility
 > depends on documented negatives as much as positive claims.
+>
+> **Last updated:** 2026-08-10 (post-Path-B session). The largest single
+> entry: the BPR 1.0 "theory of everything" headline claim is **WITHDRAWN**
+> (§1, first row). The current claim is a flavor-sector organizing framework
+> plus a proposed, untested particle sector (`doc/BPR2_PATH_B_NONABELIAN_GAUGE.md`).
 
 ## 1. Structural negatives (architectural problems with no fix in current scope)
 
 | Item | Status | Where | Notes |
 |---|---|---|---|
+| BPR 1.0 "theory of everything" headline claim | **WITHDRAWN** | `doc/BPR2_PATH_B_NONABELIAN_GAUGE.md`; status page `viz/bpr2-status.html` | The sealed glueball benchmark (row below) falsified the 1.0 particle sector structurally: scalar/Abelian boundary content provably cannot host a light parity-odd state or non-Abelian gauge matter. The claim was narrowed, not defended: BPR 2.0 = flavor-sector organizing framework + a proposed, untested particle sector (Postulate 0d, PROPOSED — not merged into the frozen core). Flavor predictions numerically unchanged (verified exactly, M3). |
 | Original `RPSTHamiltonian` rank-1 problem | **STRUCTURALLY INCOMPATIBLE** | `bpr/rpst/hamiltonian.py`; locked in by `tests/test_gue_riemann_honest.py` | H = outer(leg, leg) is rank-1 by construction — one nonzero eigenvalue. Cannot show GUE level statistics. |
 | Riemann/GUE conjecture for BPR | **DOWNGRADED** | `doc/conjectures/riemann_connection.md` | Originally "Tier 2 with KS p=0.92 numerical support" — not reproducible by any operator. Final survey verdict: no natural prime-modular Z_p Hermitian or unitary operator class reproduces Wigner-Dyson statistics. |
 | Legendre Hankel/Multiplicative/Circulant Hermitian | **GAUSS-SUM DEGENERATE** | `bpr/substrate_hamiltonians.py`; tested in `tests/test_substrate_hamiltonians.py` | All ≤ 3 distinct eigenvalues (Hankel/Circulant) or rank-1 (Multiplicative). Cannot do level spacing. |
@@ -113,6 +119,9 @@ one URL rather than scattered across the commit history. The framework
 is meaningfully more credible than a pure-positive-claims version
 because:
 
+- The headline claim itself was withdrawn when a sealed blind benchmark
+  falsified it (TOE → flavor-sector framework) — the framework applied its
+  own kill rules to its own biggest claim
 - Negative findings are explicit (rank-1 Hamiltonian, fabricated-event
   rejection, retrofit refusals, parameter-honesty flags)
 - Discriminating tests are registered BEFORE measurement (Ξcc* hyperfine,
