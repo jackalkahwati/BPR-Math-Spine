@@ -162,6 +162,38 @@ Recorded in `doc/CLOSED_AND_DEPRECATED.md` §1 as promised. Loopholes recorded
 interactions; the self-bound-lump (focusing) branch was not quantized; the
 phason sector's boundary parity content was not computed.
 
+## 9. Loopholes dispositioned — sector closed (2026-08-10)
+
+The go/no-go for a Benchmark v2 through the phason sector was computed in
+`bpr/phason_boundary_modes.py`. The frozen phason dynamics (inertial phonon +
+overdamped phason + D coupling) has a root-symmetry theorem: the dispersion
+cubic satisfies P(−ω̄) = conj(P(ω)), so at most ONE propagating (mirror) pair
+exists — and it is continuously connected to the D=0 phonon. The full-range
+scan (ε ∈ [10⁻², 316], D up to √(KC), Γ ∈ [0.1, 10]) confirms: the
+phason-dominated branch sits *exactly* on the imaginary axis everywhere
+(relaxation, not particles), and the propagating-family count never exceeds
+one. Honest caveat, reported: at short wavelength and strong coupling the
+single phonon pair carries up to ~98% *slaved* phason amplitude — dressing of
+the same family, no new quantum numbers.
+
+**Verdict: v2 is NO-GO.** With that, all three recorded loopholes close for
+the fatal gate (the missing light 0^{−+}):
+
+1. *Beyond-leading-order interactions* — cannot help: the 0^{−+} absence is
+   symmetry-protected (parity selection rules); interactions shift energies,
+   they do not create parity-odd light states.
+2. *Self-bound-lump branch* — built from the same scalar quanta, hence the
+   same parity lock.
+3. *Phason sector* — no propagating boundary branch exists.
+
+**The glueball sector is CLOSED for BPR as frozen.** What the failure taught
+(recorded as constraints, not patched): (a) the lattice glueball spectrum is a
+fingerprint of *vector* constituents — any scalar-constituent boundary theory
+is structurally incapable of it; (b) BPR lacks a derived physical-state
+selection principle (confinement analog) — the extra light 1⁻ exists because
+nothing forbids single-quasiparticle states; any future version must derive
+such a principle from the substrate, not postulate it to fix a spectrum.
+
 ## 7. Cross-references
 
 - `bpr/glueball_benchmark.py` — Gate 1 solver + Derrick analysis (never reads §4)
