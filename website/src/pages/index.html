@@ -1,0 +1,96 @@
+<!-- title: Introduction -->
+<!-- description: Boundary Phase Resonance (BPR) is an open research framework that asks whether the constants of nature can be calculated from a discrete boundary with two integer inputs. Here is what it is, what it gets right, and what it got wrong. -->
+<!-- nav: index -->
+<!-- math: yes -->
+<div class="hero"><div class="wrap">
+  <div class="kicker">An open research framework in physics</div>
+  <h1>What if the constants of nature could be calculated?</h1>
+  <p class="lead">Boundary Phase Resonance is an attempt to answer that question with a discrete model of space, two integers, and a public record of every result, including the ones that failed.</p>
+  <a class="cta" href="#start">Start here</a>
+  <a class="cta ghost" href="/mathematics.html">Skip to the mathematics</a>
+</div></div>
+
+<section id="start"><div class="wrap">
+  <h2>The question</h2>
+  <p>Physics has a short list of numbers it cannot explain. The strength of electromagnetism is one of them: about 1/137. The masses of the electron, the muon, and the quarks are others. The Standard Model of particle physics needs roughly two dozen such numbers typed in by hand. It describes what happens with extraordinary accuracy, but it does not say why those particular numbers.</p>
+  <p>Most physicists treat this as a fact of life. A few frameworks, string theory among them, hope the numbers fall out of a deeper structure, but so far none has produced them. BPR is a much smaller and more concrete attempt at the same goal. It does not claim to be finished. It claims to be checkable.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>The picture</h2>
+  <p>Imagine that space, at the smallest scale, is not a smooth fabric but a grid. Each point on the grid holds a single quantity: a phase, like the position of a clock hand. The clock has not infinitely many positions but a fixed, very large number of them. In BPR that number is a prime, written <em>p</em>. Each point is connected to a fixed number of neighbours, written <em>z</em>.</p>
+  <p>Now imagine the edge of a region of this grid. Phases on that boundary can line up with each other, or resonate, in patterns. BPR proposes that what we call particles, forces, and fields are the long-wavelength shadows of those boundary patterns. The framework's name comes from this: resonance of phases on a boundary.</p>
+  <p>Two things make this more than a metaphor. First, the boundary is taken to be a sphere, and there is an argument for why it must be a sphere rather than, say, a doughnut. Second, once <em>p</em> and <em>z</em> are fixed, the model produces numbers, and those numbers can be compared with experiment.</p>
+  <div class="grid">
+    <div class="card"><div class="big mono">p = 104,761</div><p>A prime number. It sets how many phase states each point can hold. It is fixed by asking the framework's own formula for electromagnetism to match the measured value, then choosing the nearest prime that satisfies an orientability condition (<em>p</em> ≡ 1 mod 4).</p></div>
+    <div class="card"><div class="big mono">z = 6</div><p>The number of neighbours per point. It is the coordination number of a cubic tiling on a two-sphere boundary.</p></div>
+  </div>
+  <p class="small dim">Honest note: <em>p</em> is not derived from nothing. It is anchored to one measured constant, the fine-structure constant, and then checked against three other relations that point to the same prime. The details are on the <a href="/how-it-works.html#p">how it works</a> page.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>One formula you can check tonight</h2>
+  <p>The fine-structure constant, α, sets the strength of electromagnetism. BPR's expression for its inverse is</p>
+  <div class="eq">$$\frac{1}{\alpha} = (\ln p)^2 + \frac{z}{2} + \gamma - \frac{1}{2\pi}$$</div>
+  <p>where γ ≈ 0.5772 is the Euler–Mascheroni constant. With <em>p</em> = 104,761 and <em>z</em> = 6 this gives 137.039. The measured value is 137.036. The difference is 0.002 percent.</p>
+  <p>You should be suspicious of this, and so are we. The prime was chosen to make this formula work, so the agreement is partly built in. What is not built in is the form of the formula, the fact that a prime near 10<sup>5</sup> is also singled out by three unrelated relations in the framework, and the fact that the same <em>p</em> and <em>z</em> then feed everything else. Whether that is a coincidence or a clue is the open question. The <a href="/calculator.html">calculator</a> lets you move <em>p</em> and <em>z</em> and watch what happens.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>What it gets right</h2>
+  <p>With the two integers fixed, the framework produces a long list of quantities. Some agree with experiment surprisingly well. A few examples, with the status the project assigns to each:</p>
+  <div class="scroll"><table class="tbl">
+    <tr><th>Quantity</th><th class="num">BPR</th><th class="num">Measured</th><th>Status</th></tr>
+    <tr><td>Inverse fine-structure constant 1/α</td><td class="num">137.039</td><td class="num">137.036</td><td><span class="tag ok">derived</span> <span class="small dim">p anchored to this</span></td></tr>
+    <tr><td>Solar neutrino mixing, sin²θ₁₂</td><td class="num">0.3086</td><td class="num">0.309 ± 0.009 (JUNO 2025)</td><td><span class="tag warn">framework</span> <span class="small dim">one fitted coefficient</span></td></tr>
+    <tr><td>Reactor neutrino mixing, θ₁₃</td><td class="num">8.64°</td><td class="num">8.54° ± 0.15°</td><td><span class="tag ok">derived</span></td></tr>
+    <tr><td>CKM CP phase, δ</td><td class="num">68.5°</td><td class="num">68.5° ± 5.7°</td><td><span class="tag ok">derived</span></td></tr>
+    <tr><td>Muon to electron mass ratio</td><td class="num">210</td><td class="num">206.77</td><td><span class="tag warn">conjectural</span> <span class="small dim">1.5% off</span></td></tr>
+    <tr><td>Sum of neutrino masses</td><td class="num">0.060 eV</td><td class="num">&lt; 0.12 eV</td><td><span class="tag ok">derived</span></td></tr>
+  </table></div>
+  <p>The full scorecard, with every status label explained, is on the <a href="/results.html">results</a> page. Read the labels. "Derived" means the number follows from <em>p</em> and <em>z</em> with no adjustment. "Framework" means the formula is BPR's but at least one coefficient was fitted. "Conjectural" means the formula reproduces a number but no derivation from the model's equations exists yet.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>What it got wrong</h2>
+  <p>This is the part most theory websites leave out, and the part we think matters most.</p>
+  <div class="callout bad">
+    <p><strong>The "theory of everything" claim was withdrawn in 2026.</strong> The original version of BPR claimed to contain the strong nuclear force. A blind test was set up: the masses of certain bound states of the strong force, called glueballs, were locked in before any calculation, and the model was then asked to reproduce their ratios. It could not. The boundary field in BPR 1.0 provably cannot host a light parity-odd state, and its predicted mass ratio fell outside the pass band. The claim was narrowed rather than defended.</p>
+  </div>
+  <div class="callout warn">
+    <p><strong>Two foundational derivations were withdrawn in September 2026.</strong> A step that claimed to derive the number three, for the three families of matter particles, from the geometry of a sphere turned out to be invalid. So did a topological argument behind one of the quark mass formulas. The numbers those formulas produce are unchanged, but they are now labelled as conjectures, and the family count is treated as an input from experiment, not a prediction. The corrected mathematics is on the <a href="/mathematics.html#withdrawn">mathematics</a> page.</p>
+  </div>
+  <p>Everything the project has determined not to work is kept in one place, the <a href="https://github.com/jackalkahwati/BPR-Math-Spine/blob/main/doc/CLOSED_AND_DEPRECATED.md" rel="noopener">negative-findings registry</a>. The <a href="/status.html">status</a> page tells the story in order.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Where it stands today</h2>
+  <p>BPR 2.0 is best described as an exploratory framework with one working sector and one open problem.</p>
+  <ul>
+    <li><strong>The working sector</strong> is flavor: formulas for mixing angles, some mass ratios, and neutrino properties that agree with data and, in a few cases, were registered before the measurements came in.</li>
+    <li><strong>The open problem</strong> is the particle sector. A proposed replacement, built from a gauged discrete symmetry of the lattice, gives a legitimate two-dimensional theory of exotic quasiparticles called anyons. It does not yet give the three-dimensional strong force, the chiral matter of the Standard Model, or a particle spectrum. Nobody should read the proposal as more than a proposal.</li>
+  </ul>
+  <p>Whether BPR is a coincidence machine or the edge of something real will be settled by experiments, not by argument. The <a href="/experiments.html">experiments</a> page lists the measurements that would rule it out and when they are expected.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Go deeper</h2>
+  <div class="grid">
+    <div class="card"><h3><a href="/how-it-works.html">How it works</a></h3><p>The four steps from a lattice to a measurable number, in plain language with the key equations alongside.</p></div>
+    <div class="card"><h3><a href="/mathematics.html">Mathematics</a></h3><p>The action, the field equation, the spectrum on the sphere, the flavor ansatz with its honest labels, and the two withdrawn proofs with their corrections.</p></div>
+    <div class="card"><h3><a href="/results.html">Results</a></h3><p>Every benchmarked quantity with its status and its distance from experiment.</p></div>
+    <div class="card"><h3><a href="/experiments.html">Experiments</a></h3><p>What would falsify BPR, which instrument can do it, and when.</p></div>
+    <div class="card"><h3><a href="/status.html">Status</a></h3><p>The timeline: the 1.0 claim, the blind glueball benchmark, the 2.0 narrowing, and the 2026 foundation repair.</p></div>
+    <div class="card"><h3><a href="/run-it.html">Run it</a></h3><p>Clone the repository, run 1,600 tests in about a minute, and reproduce every number on this site.</p></div>
+  </div>
+</div></section>
+
+<section id="faq"><div class="wrap">
+  <h2>Questions people ask</h2>
+  <details><summary>Has this been peer reviewed?</summary><p>No. The paper, the code, and the full record of failures are public so that anyone can check the work now. Formal review has not happened, and nothing here should be treated as established physics.</p></details>
+  <details><summary>Isn't picking p to match α just cheating?</summary><p>Choosing <em>p</em> from α makes the α agreement unsurprising, and the site says so wherever it appears. The case for taking <em>p</em> seriously rests on everything else it feeds. Three other structural relations in the framework each point to a prime within a few percent of the same value. That could still be coincidence. It is the kind of coincidence worth testing.</p></details>
+  <details><summary>Why a sphere?</summary><p>The argument is that a consistent boundary must be compact, orientable, and simply connected, and the only closed surface with all three properties is the two-sphere. That part is sound mathematics. What was withdrawn is the further claim that the sphere's geometry forces exactly three families of matter. It does not. Three is an input.</p></details>
+  <details><summary>What would prove it wrong?</summary><p>Several things, each tied to a scheduled experiment. If the JUNO observatory finds the neutrino masses are in inverted order, the boundary topology argument fails. If neutrinoless double beta decay is observed, the orientability condition fails. If precision Casimir force measurements find an exponent far from 2, the projection postulate fails. The <a href="/experiments.html">experiments</a> page has the full list with thresholds.</p></details>
+  <details><summary>How is this different from string theory or loop quantum gravity?</summary><p>It is far less ambitious and far more specific. BPR works in ordinary 3+1 dimensions, has two integer inputs, and produces particular numbers that can be compared with today's data. It also currently lacks what those programs have: a consistent account of gravity and the strong force at the quantum level. It should be judged as a source of testable coincidences, not as a rival to those programs.</p></details>
+  <details><summary>Can I run it myself?</summary><p>Yes. The repository is MIT licensed. See <a href="/run-it.html">run it</a>.</p></details>
+</div></section>

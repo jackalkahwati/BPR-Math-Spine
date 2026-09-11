@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Run it | Boundary Phase Resonance</title>
+<meta name="description" content="Clone the BPR repository, run the test suite, reproduce every number on this site, and read the papers.">
+<meta property="og:title" content="Run it | Boundary Phase Resonance">
+<meta property="og:description" content="Clone the BPR repository, run the test suite, reproduce every number on this site, and read the papers.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bpr.thestardrive.com/run-it.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href="/">Boundary Phase Resonance</a>
+    <button class="menu-btn" aria-label="Menu" aria-expanded="false" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
+    <nav id="nav" class="nav">
+      <a href="/index.html">Introduction</a>
+      <a href="/how-it-works.html">How it works</a>
+      <a href="/mathematics.html">Mathematics</a>
+      <a href="/results.html">Results</a>
+      <a href="/experiments.html">Experiments</a>
+      <a href="/status.html">Status</a>
+      <a href="/calculator.html">Calculator</a>
+      <a href="/run-it.html" class="active">Run it</a>
+      <a href="https://github.com/jackalkahwati/BPR-Math-Spine" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="hero"><div class="wrap">
+  <div class="kicker">Reproduce</div>
+  <h1>Run the code</h1>
+  <p class="lead">Every number on this site comes from a function in a public repository. Here is how to get it and check it.</p>
+</div></div>
+
+<section><div class="wrap">
+  <h2>Quick start</h2>
+<pre><code># clone and install (Python 3.10+)
+git clone https://github.com/jackalkahwati/BPR-Math-Spine.git
+cd BPR-Math-Spine
+pip install -e .
+
+# run the test suite (about a minute on a laptop)
+pytest -q
+
+# derive constants from the two substrate integers
+bpr predict --p 104761 --z 6
+bpr constants --filter alpha
+
+# verify field equations symbolically
+bpr verify</code></pre>
+  <p>The FEniCS finite-element dependency is optional. Most functionality, including everything on this site, runs without it. A Docker setup with FEniCS included is in the repository.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Reproduce the September 2026 corrections</h2>
+<pre><code>python3 - &lt;&lt;'PY'
+from bpr.flavor_foundations import compact_boson_weights, su_bundle_twisted_index, sphere_line_zero_modes
+print(compact_boson_weights(1, 1))        # (4/3, 1/3): conformal spin mn = 1, an integer
+print(su_bundle_twisted_index(3))          # 0: ordinary SU(3) bundle on S^2 has index zero
+print(sphere_line_zero_modes(3).index)     # 3: only with an O(3) line twist, which is an input
+
+from bpr.qcd_flavor import derive_l_modes
+m = derive_l_modes(6, 3)
+print(m["l_up"], m["derivation_status"]["l_up_2"], m["input_status"])
+PY</code></pre>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Python API</h2>
+<pre><code>from bpr.alpha_derivation import derive_alpha
+r = derive_alpha(p=104761, z=6)
+print(r.inv_alpha_0)                     # 137.039
+
+from bpr.neutrino import PMNSMatrix
+print(PMNSMatrix().mixing_angles())      # theta12 33.7, theta23 49.3, theta13 8.64
+
+from bpr.qcd_flavor import CKMMatrix
+print(CKMMatrix().mixing_angles())       # delta_CP 68.5 deg, J = 2.9e-5
+
+from bpr.cosmology import BPRDarkEnergyEOS
+print(BPRDarkEnergyEOS().desi_tension)   # w0 = -1.0, 2.9 sigma from DESI DR1</code></pre>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Papers and documents</h2>
+  <div class="grid">
+    <div class="card"><h3><a href="/bpr-paper.pdf">The paper (PDF)</a></h3><p>13 pages. Documents the BPR 1.0 derivation chain. The first page carries a status note explaining what has since been withdrawn. Read it as a historical record of the 1.0 claim, with the <a href="/status.html">status</a> page alongside.</p></div>
+    <div class="card"><h3><a href="/bpr-textbook.pdf">The complete framework (PDF)</a></h3><p>The long-form document with all 1.0 theories. Same caveat: parts of it describe claims that have been narrowed or withdrawn. The repository markdown version is kept current.</p></div>
+    <div class="card"><h3><a href="https://github.com/jackalkahwati/BPR-Math-Spine/blob/main/doc/CLOSED_AND_DEPRECATED.md" rel="noopener">Negative-findings registry</a></h3><p>Everything determined not to work, in one document. Start here if you are reviewing.</p></div>
+    <div class="card"><h3><a href="https://github.com/jackalkahwati/BPR-Math-Spine/tree/main/doc/derivations" rel="noopener">Derivation notes</a></h3><p>One markdown note per derivation, including the withdrawn ones with their corrections.</p></div>
+  </div>
+  <p>A Wolfram Language port of the core equations is in <code>wolfram/</code> for Mathematica users. A local REST API (<code>uvicorn api.main:app</code>) exists in the repository for scripting; there is no hosted API.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Reviewing, criticising, contributing</h2>
+  <p>The most useful thing a reader can do is find the next invalid step. Two were found in September 2026 by an outside review and are now on record. Open an <a href="https://github.com/jackalkahwati/BPR-Math-Spine/issues" rel="noopener">issue</a> on GitHub, or write to <a href="mailto:jack@thestardrive.com">jack@thestardrive.com</a>. Pull requests that add a test for a claim, or that fail an existing one, are especially welcome.</p>
+  <p>Citation: Al-Kahwati, J. (2026). <em>Boundary Phase Resonance: BPR-Math-Spine</em>. GitHub repository, MIT license.</p>
+</div></section>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand">Boundary Phase Resonance</div>
+        <p class="dim">An open research framework in mathematical physics. Pre-publication work by Jack Al-Kahwati, StarDrive Inc. Not peer reviewed. Source code MIT licensed.</p>
+      </div>
+      <div>
+        <div class="foot-h">Read</div>
+        <a href="/how-it-works.html">How it works</a>
+        <a href="/mathematics.html">Mathematics</a>
+        <a href="/results.html">Results</a>
+        <a href="/status.html">Status and negative findings</a>
+        <a href="/bpr-paper.pdf">Paper (PDF, BPR 1.0 with 2.0 status note)</a>
+      </div>
+      <div>
+        <div class="foot-h">Do</div>
+        <a href="/calculator.html">Calculator</a>
+        <a href="/experiments.html">Experiments that could rule it out</a>
+        <a href="/run-it.html">Run the code</a>
+        <a href="https://github.com/jackalkahwati/BPR-Math-Spine" rel="noopener">Source on GitHub</a>
+        <a href="mailto:jack@thestardrive.com">Contact</a>
+      </div>
+    </div>
+    <p class="fine">&copy; 2026 StarDrive Inc. Results here have not been peer reviewed and should not be used as the basis for engineering, financial, or medical decisions. <a href="/privacy.html">Privacy</a> &middot; <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+</body>
+</html>

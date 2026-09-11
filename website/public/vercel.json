@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    { "source": "/(.*)\\.pdf", "headers": [ { "key": "Content-Type", "value": "application/pdf" }, { "key": "Cache-Control", "value": "public, max-age=3600" } ] },
+    { "source": "/(.*)\\.html", "headers": [ { "key": "Cache-Control", "value": "public, max-age=300" } ] },
+    { "source": "/style.css", "headers": [ { "key": "Cache-Control", "value": "public, max-age=300" } ] }
+  ],
+  "redirects": [
+    { "source": "/researcher-portal", "destination": "/run-it", "permanent": true },
+    { "source": "/researcher-portal.html", "destination": "/run-it", "permanent": true },
+    { "source": "/docs", "destination": "/run-it", "permanent": true },
+    { "source": "/api-access", "destination": "/run-it", "permanent": true },
+    { "source": "/api-access.html", "destination": "/run-it", "permanent": true },
+    { "source": "/experimental-roadmap", "destination": "/experiments", "permanent": true },
+    { "source": "/experimental-roadmap.html", "destination": "/experiments", "permanent": true },
+    { "source": "/roadmap", "destination": "/experiments", "permanent": true },
+    { "source": "/global-consistency-audit", "destination": "/results", "permanent": true },
+    { "source": "/global-consistency-audit.html", "destination": "/results", "permanent": true },
+    { "source": "/audit", "destination": "/results", "permanent": true },
+    { "source": "/constant-calculator", "destination": "/calculator", "permanent": true },
+    { "source": "/constant-calculator.html", "destination": "/calculator", "permanent": true },
+    { "source": "/viz/bpr2-status", "destination": "/status", "permanent": true },
+    { "source": "/viz/bpr2-status.html", "destination": "/status", "permanent": true },
+    { "source": "/paper", "destination": "/bpr-paper.pdf", "permanent": false },
+    { "source": "/explorer", "destination": "/viz/physics-landscape", "permanent": true },
+    { "source": "/proofs", "destination": "/mathematics", "permanent": true }
+  ]
+}

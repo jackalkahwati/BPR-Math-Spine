@@ -1,0 +1,99 @@
+<!-- title: Mathematics -->
+<!-- description: The BPR action, field equation, spectrum on the sphere, the flavor ansatz with honest status labels, and the two withdrawn derivations with corrected mathematics. -->
+<!-- nav: math -->
+<!-- math: yes -->
+<div class="hero"><div class="wrap">
+  <div class="kicker">Drill down</div>
+  <h1>The mathematics</h1>
+  <p class="lead">Everything on this page is implemented in the <a href="https://github.com/jackalkahwati/BPR-Math-Spine" rel="noopener">repository</a> and covered by tests. Where a statement is a conjecture or an assumption, it says so.</p>
+</div></div>
+
+<section><div class="wrap">
+  <h2>1. Action and field equation</h2>
+  <p>The total action separates into bulk, boundary, and coupling pieces:</p>
+  <div class="eq">$$S = S_{\text{bulk}}[g,\Psi] + S_{\partial}[\phi] + S_{\text{int}}[g,\phi] + \dots$$</div>
+  <p>The boundary term is a scalar phase field on the surface Σ with induced metric <em>h</em>:</p>
+  <div class="eq">$$S_{\partial} = \frac{1}{2\kappa}\int_\Sigma d^{2}x\,\sqrt{|h|}\,h^{ab}\nabla_a\phi\nabla_b\phi - \int_\Sigma d^{2}x\,\sqrt{|h|}\,V(\phi)$$</div>
+  <p>and the metric coupling projects boundary gradients onto the normal direction:</p>
+  <div class="eq">$$S_{\text{int}} = \lambda\int_M d^{D}x\,\sqrt{|g|}\,P^{ab}_{\mu\nu}(\nabla_a\phi)(\nabla_b\phi)\,g^{\mu\nu},\qquad P^{ab}_{\mu\nu}=h^{ab}n_\mu n_\nu$$</div>
+  <p>Varying with respect to φ gives the boundary field equation, and varying with respect to the metric adds a boundary stress-energy T<sup>φ</sup> to the Einstein equations. The free massless case on S² is the c = 1 compact boson, a standard two-dimensional conformal field theory. The dimensionless rigidity is identified as κ = z/2 = 3.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>2. Spectrum on the sphere</h2>
+  <p>For the round metric on S² of radius <em>a</em>, the scalar Laplacian has</p>
+  <div class="eq">$$-\nabla^2 Y_{\ell m} = \frac{\ell(\ell+1)}{a^2}\,Y_{\ell m},\qquad \ell=0,1,2,\dots,\quad \text{multiplicity } 2\ell+1.$$</div>
+  <p>The ℓ = 1 space is three-dimensional. It is a spatial spin-1 triplet under SO(3). It is <em>not</em> a spin-½ multiplet and does not by itself represent three copies of a fermion species. This distinction is the root of the September 2026 correction below.</p>
+  <p>The topological selection of S² is sound: a compact, orientable, simply connected closed surface is a sphere. Topology alone does not select the round metric or its degeneracies.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>3. The fine-structure constant</h2>
+  <div class="eq">$$\frac{1}{\alpha}=(\ln p)^2+\frac{z}{2}+\gamma-\frac{1}{2\pi}=133.62+3.00+0.577-0.159=137.039$$</div>
+  <p>Measured: 137.035999. The stated origins of the four terms are lattice phase-space screening (two propagators each scaling as ξ²/a² = ln p), the bare rigidity κ, the harmonic-number correction Σ1/k = ln(p−1) + γ + O(1/p), and a Kaluza–Klein zero-mode subtraction. Since <em>p</em> was selected by this formula, the agreement is anchored, not predicted. What is checkable is the sensitivity: d(1/α)/d(ln p) = 2 ln p ≈ 23, so a 1 percent change in <em>p</em> moves 1/α by about 0.2. Implementation: <code>bpr/alpha_derivation.py</code>.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>4. Neutrino and CKM mixing</h2>
+  <div class="eq">$$\sin^2\theta_{12} = \frac{1}{3} - \frac{1}{3.5\,\ln p} = 0.3086 \qquad \text{(JUNO 2025: } 0.3092\pm0.0087)$$</div>
+  <p>The tri-bimaximal 1/3 is derived; the coefficient 3.5 in the curvature correction is fitted, so this is labelled <span class="tag warn">framework</span>. The reactor angle uses a Gaussian boundary-localisation factor:</p>
+  <div class="eq">$$\sin\theta_{13} = \frac{e^{-1}}{\sqrt{2\,n_{\text{gen}}}} = 0.1502 \;\Rightarrow\; \theta_{13}=8.64^\circ \qquad \text{(PDG: } 8.54^\circ\pm0.15^\circ)$$</div>
+  <p>Note that this uses n<sub>gen</sub> = 3 as an input. The CKM CP phase is</p>
+  <div class="eq">$$\delta_{CP} = \frac{\pi}{2} - \frac{1}{\sqrt{z+1}} = 68.3^\circ \qquad \text{(PDG: } 68.5^\circ\pm5.7^\circ)$$</div>
+  <p>and the three CKM angles follow from quark mass ratios in the flavor ansatz below, with the Jarlskog invariant J = 2.9 × 10⁻⁵ against a measured 3.1 × 10⁻⁵. Implementation: <code>bpr/neutrino.py</code>, <code>bpr/qcd_flavor.py</code>.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>5. The flavor ansatz, honestly labelled</h2>
+  <p>Fermion masses are modelled with effective labels ℓ<sub>k</sub> and the rule m<sub>k</sub> ∝ ℓ<sub>k</sub>² (up-type quarks and charged leptons) or a shifted quadratic for down-type quarks. The labels are written as functions of <em>z</em> and n<sub>gen</sub>:</p>
+  <div class="scroll"><table class="tbl">
+    <tr><th>Sector</th><th>Labels</th><th class="num">z = 6, n<sub>gen</sub> = 3</th><th>Status</th></tr>
+    <tr><td>Up quarks (u, c, t)</td><td class="mono">1, z(z−2), (z²−1)(z+n<sub>gen</sub>+2−N<sub>c</sub>)+n<sub>gen</sub></td><td class="num">1, 24, 283</td><td><span class="tag warn">conjectural</span></td></tr>
+    <tr><td>Down quarks (d, s, b)</td><td class="mono">1, z−2, z(z−1)</td><td class="num">1, 4, 30</td><td><span class="tag warn">conjectural</span></td></tr>
+    <tr><td>Charged leptons (e, μ, τ)</td><td class="mono">1, √(z(z²−1)), z(z+n<sub>gen</sub>+1)−1</td><td class="num">1, √210, 59</td><td><span class="tag warn">conjectural</span></td></tr>
+  </table></div>
+  <p>These reproduce, for example, m<sub>μ</sub>/m<sub>e</sub> = 210 (measured 206.77) and m<sub>u</sub>/m<sub>t</sub> = 1/283² (giving m<sub>u</sub> = 2.16 MeV against a reference 2.16 MeV). They are not eigenvalues of any fermionic Hamiltonian in the framework. ℓ² is not the exact Laplacian eigenvalue ℓ(ℓ+1), and √210 is not an integer angular momentum. Until September 2026 the labels were described as derived. They are retained as phenomenology only. Implementation: <code>bpr.qcd_flavor.derive_l_modes</code>, which now reports <code>CONJECTURAL</code> for every label and <code>EMPIRICAL_INPUT</code> for n<sub>gen</sub>.</p>
+</div></section>
+
+<section id="withdrawn"><div class="wrap">
+  <h2>6. Two withdrawn derivations, with the corrections</h2>
+  <h3>6a. The color-bundle index behind ℓ<sub>t</sub> = 283</h3>
+  <p><strong>The claim.</strong> The +n<sub>gen</sub> = +3 offset in the top-quark label was attributed to an Atiyah–Singer index: index(D<sub>color</sub>) = c₁(color bundle) = 3 on S².</p>
+  <p><strong>Why it fails.</strong> For an ordinary SU(<em>r</em>) bundle E over S², the determinant line bundle is trivial and the connection is su(<em>r</em>)-valued, so</p>
+  <div class="eq">$$\operatorname{ind} D_E = \int_{S^2} c_1(E) = \frac{i}{2\pi}\int_{S^2}\operatorname{tr}F = 0.$$</div>
+  <p>The Â-genus has no degree-two term, and a second Chern number cannot contribute on a two-dimensional base. A nonzero index requires extra U(1) data: twisting by a line bundle O(<em>q</em>) gives c₁(E ⊗ O(q)) = <em>rq</em>, so index = <em>rq</em>. That <em>q</em> is not derived from <em>p</em> or <em>z</em>. And an index counts net zero modes; it does not add an integer to an angular-momentum label.</p>
+  <p><strong>What survives, conditionally.</strong> On CP¹ with spin bundle K<sup>1/2</sup> = O(−1), a Dirac field twisted by O(<em>q</em>) has positive-chirality zero modes counted by H⁰(O(q−1)) and negative by H¹(O(q−1)), so</p>
+  <div class="eq">$$n_+=\max(q,0),\qquad n_-=\max(-q,0),\qquad \operatorname{ind}=q.$$</div>
+  <p><em>q</em> = 3 gives three chiral modes. So does <em>q</em> = 4 give four. Topology does not select three. Implementation with exact rational arithmetic: <code>bpr/flavor_foundations.py</code>. Full note: <a href="https://github.com/jackalkahwati/BPR-Math-Spine/blob/main/doc/derivations/color_bundle_index.md" rel="noopener">color_bundle_index.md</a>.</p>
+
+  <h3>6b. "Exactly three generations" from the compact boson</h3>
+  <p><strong>The claim.</strong> The c = 1 compact boson at R² = 3 was said to contain exactly one SO(3) triplet of spin-½ single-particle operators, hence three families, with a fourth excluded by the fusion ring.</p>
+  <p><strong>Why it fails.</strong> With the standard normalisation p<sub>L,R</sub> = m/R ± nR and h = p<sub>L</sub>²/4, the conformal spin of the momentum-winding lattice is</p>
+  <div class="eq">$$s = h - \bar h = mn \in \mathbb{Z},$$</div>
+  <p>an integer for every (m, n) and every radius. The untwisted lattice has no spin-½ operators. Dressing with an unspecified weight-1/16 field is not a construction. The 3 + 1 decomposition of four labels was asserted without any group action on the states. The fusion V<sub>(1,1)</sub>V<sub>(1,1)</sub> → V<sub>(2,2)</sub> produces a primary, not a descendant, so it excludes nothing. And 10/3 + 1/16 = 163/48, not 167/48 as written.</p>
+  <p><strong>Consequence.</strong> n<sub>gen</sub> = 3 is an empirical input. No fourth-generation exclusion follows from BPR topology. Full note: <a href="https://github.com/jackalkahwati/BPR-Math-Spine/blob/main/doc/derivations/generations_from_CFT.md" rel="noopener">generations_from_CFT.md</a>.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>7. The Casimir prediction</h2>
+  <p>The one laboratory-scale prediction that has been in the framework since the beginning is a deviation in the Casimir force at sub-micron separation:</p>
+  <div class="eq">$$\frac{\Delta F}{F_{\text{Casimir}}} = \delta\left(\frac{\lambda_{\text{eff}}}{R}\right)^2,\qquad \delta = 2\Delta_\phi = 2$$</div>
+  <p>The exponent δ = 2 is derived under Postulate 0c (a quasicrystalline projection with unit Pisot inflation, Δ<sub>φ</sub> = 1). An earlier fitted value δ ≈ 1.37 is superseded and would now count as a refutation if measured. The phonon-collective channel brings the predicted coupling to about 10⁻⁸, one to two orders of magnitude from current MEMS sensitivity. Implementation: <code>bpr/recursive_boundary.py</code>.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>8. The condensate result, and its limits</h2>
+  <p>For the frozen ring Hamiltonian with hopping C &gt; 0 and repulsive quartic g &gt; 0 at fixed norm N,</p>
+  <div class="eq">$$H \ge -2CN + \frac{gN^2}{2p},$$</div>
+  <p>with equality for the uniform, phase-aligned state. This is an exact classical statement, and gradient-flow tests confirm it. It does not compute the quantum vacuum of the interacting substrate. The characteristic temperature T* ≈ C/ln p on the two-sphere comes from Rayleigh–Jeans occupation on an assumed dispersion, cutoff, and density. The substrate temperature is not derived. Coherence is therefore <em>conditional</em>, not established. Implementation: <code>bpr/condensate_regime.py</code>.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Further reading in the repository</h2>
+  <ul>
+    <li><a href="https://github.com/jackalkahwati/BPR-Math-Spine/blob/main/doc/BPR_Complete_Framework.md" rel="noopener">BPR_Complete_Framework.md</a>: the full document, with the 1.0 derivation chain and 2.0 status notes.</li>
+    <li><a href="https://github.com/jackalkahwati/BPR-Math-Spine/blob/main/doc/LIMITATIONS_AND_FALSIFICATION.md" rel="noopener">LIMITATIONS_AND_FALSIFICATION.md</a>: what is derived, what is borrowed, and the honest parameter accounting.</li>
+    <li><a href="https://github.com/jackalkahwati/BPR-Math-Spine/blob/main/doc/derivations/" rel="noopener">doc/derivations/</a>: one note per derivation, including the withdrawn ones.</li>
+    <li><a href="/bpr-paper.pdf">The paper (PDF)</a>: documents the 1.0 chain with a 2.0 status note on the first page.</li>
+  </ul>
+</div></section>

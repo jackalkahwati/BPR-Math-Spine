@@ -39,26 +39,32 @@ This repository now carries two related development lines:
 
 ---
 
-## Interactive Website
+## Website
 
-The BPR framework has a full public-facing website at [`bpr.thestardrive.com`](https://bpr.thestardrive.com) (or run locally — see below). Key pages:
+[`bpr.thestardrive.com`](https://bpr.thestardrive.com) is a static site built from
+`website/src/` by `website/build.py` (rewritten 2026-09-10 to match the current
+claim status). Pages:
 
 | Page | URL | What it shows |
 |------|-----|---------------|
-| **Home** | `/` | Plain-English narrative of BPR — no equations required |
-| **Physics Landscape** | `/viz/physics-landscape.html` | Interactive D3 node graph of all 21 theories |
-| **Constant Calculator** | `/constant-calculator.html` | Derive any constant from (J, p, N) |
-| **Experimental Roadmap** | `/experimental-roadmap.html` | 10 falsification tests with timelines |
-| **Global Consistency Audit** | `/global-consistency-audit.html` | Radar chart of 58 consistency checks |
-| **Researcher Portal** | `/researcher-portal.html` | API access, rate limits, SDK, CLI docs |
-| **Paper** | `/bpr-paper.pdf` | Full 13-page LaTeX paper |
-| **BPR 2.0 Status** | `/viz/bpr2-status.html` | 1.0 → 2.0: gauged point group, sealed glueball benchmark, milestones, decision points |
+| **Introduction** | `/` | Plain-language introduction: the question, the picture, one checkable formula, what it gets right, what it got wrong |
+| **How it works** | `/how-it-works` | The four steps from lattice to number, with the key equations |
+| **Mathematics** | `/mathematics` | Action, field equation, S² spectrum, α, mixing, the flavor ansatz with honest labels, the two withdrawn derivations with corrections |
+| **Results** | `/results` | Every benchmarked quantity with status label and gap to experiment |
+| **Experiments** | `/experiments` | Kill conditions, current tensions, the failed glueball benchmark |
+| **Status** | `/status` | Timeline of claims, negative-findings registry summary, open problems |
+| **Calculator** | `/calculator` | The framework's actual closed-form expressions, live in the browser |
+| **Run it** | `/run-it` | Clone, test, reproduce; papers |
+| **The Well** | `/the-well` | Scaling-exponent cross-checks against PolymathicAI datasets |
+| **Physics landscape** | `/viz/physics-landscape` | Interactive D3 graph (legacy) |
 
-**Run locally:**
+Old URLs (`/researcher-portal`, `/experimental-roadmap`, `/global-consistency-audit`,
+`/constant-calculator`, `/viz/bpr2-status`, `/api-access`) redirect to the new pages.
+
+**Build and preview:**
 ```bash
-cd website/public/stitch
-python3 -m http.server 9001
-# open http://localhost:9001
+python3 website/build.py
+cd website/public && python3 -m http.server 9001
 ```
 
 ---

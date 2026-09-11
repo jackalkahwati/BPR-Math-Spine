@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Well | Boundary Phase Resonance</title>
+<meta name="description" content="BPR scaling-exponent predictions cross-checked against PolymathicAI's The Well, a collection of peer-reviewed physics simulation datasets.">
+<meta property="og:title" content="The Well | Boundary Phase Resonance">
+<meta property="og:description" content="BPR scaling-exponent predictions cross-checked against PolymathicAI's The Well, a collection of peer-reviewed physics simulation datasets.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bpr.thestardrive.com/the-well.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href="/">Boundary Phase Resonance</a>
+    <button class="menu-btn" aria-label="Menu" aria-expanded="false" onclick="var n=document.getElementById('nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)">Menu</button>
+    <nav id="nav" class="nav">
+      <a href="/index.html">Introduction</a>
+      <a href="/how-it-works.html">How it works</a>
+      <a href="/mathematics.html">Mathematics</a>
+      <a href="/results.html" class="active">Results</a>
+      <a href="/experiments.html">Experiments</a>
+      <a href="/status.html">Status</a>
+      <a href="/calculator.html">Calculator</a>
+      <a href="/run-it.html">Run it</a>
+      <a href="https://github.com/jackalkahwati/BPR-Math-Spine" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="hero"><div class="wrap">
+  <div class="kicker">Cross-validation</div>
+  <h1>The Well harness</h1>
+  <p class="lead">PolymathicAI's The Well is a 15 TB collection of physics simulations across fluid dynamics, plasma, astrophysics, and reaction–diffusion systems. BPR's scaling predictions are checked against it automatically.</p>
+</div></div>
+
+<section><div class="wrap">
+  <div class="callout warn"><p><strong>Read this first.</strong> Most of these checks test spectral exponents that standard physics also predicts (Kolmogorov −5/3, enstrophy −3, and so on). They show that BPR's scaling relations are consistent with known physics, not that BPR is right about particles. They are labelled <span class="tag info">consistent</span> for that reason. Two are BPR-specific and labelled <span class="tag warn">conjectural</span>.</p></div>
+  <div class="scroll"><table class="tbl">
+    <tr><th>ID</th><th>Dataset</th><th>Prediction</th><th class="num">Predicted</th><th class="num">Observed</th><th class="num">σ</th><th>Status</th></tr>
+    <tr><td class="mono">PW2.1</td><td>acoustic_scattering_inclusions</td><td>Mode entropy H/H<sub>max</sub> &gt; 0.5</td><td class="num">&gt; 0.50</td><td class="num">0.696</td><td class="num">pass</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td class="mono">PW3.1</td><td>rayleigh_benard</td><td>Nu ~ Ra<sup>β</sup> (Class C)</td><td class="num">0.307</td><td class="num">0.287</td><td class="num">0.82</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td class="mono">PW4.1</td><td>active_matter</td><td>Kuramoto transition direction</td><td class="num">—</td><td class="num">correct</td><td class="num">pass</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td class="mono">PW5.1</td><td>MHD_64</td><td>E(k) ~ k<sup>−5/3</sup></td><td class="num">−1.667</td><td class="num">−2.180</td><td class="num">0.45</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td class="mono">PW6.1</td><td>brusselator</td><td>Turing wavelength λ<sub>T</sub> = 2π/k<sub>c</sub></td><td class="num">0.393</td><td class="num">0.333</td><td class="num">1.51</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td class="mono">PW7.1</td><td>turbulent_radiative_layer_2D</td><td>2D enstrophy cascade α = −3</td><td class="num">−3.000</td><td class="num">−3.006</td><td class="num">0.01</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td class="mono">PW8.1</td><td>turbulence_gravity_cooling</td><td>Stratified Fr &lt; 1 cascade</td><td class="num">−3.0</td><td class="num">−3.15</td><td class="num">0.30</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td class="mono">PW9.1</td><td>rayleigh_taylor_instability</td><td>Stratified buoyancy α = −3</td><td class="num">−3.000</td><td class="num">−3.661</td><td class="num">1.32</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td class="mono">PW10.1</td><td>supernova_explosion_64</td><td>Post-shock Kolmogorov</td><td class="num">−1.667</td><td class="num">−2.1</td><td class="num">2.11</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td class="mono">PW11.1</td><td>turbulent_radiative_layer_3D</td><td>Cooling-steepened spectrum</td><td class="num">−3.5</td><td class="num">−3.96</td><td class="num">0.91</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td class="mono">PW12.1</td><td>acoustic_scattering_maze</td><td>Mode entropy &gt; 0.5</td><td class="num">&gt; 0.50</td><td class="num">0.870</td><td class="num">pass</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td class="mono">PW13.1</td><td>shear_flow</td><td>2D enstrophy k<sup>−3</sup></td><td class="num">−3.0</td><td class="num">−3.9</td><td class="num">1.85</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td class="mono">PW14.1</td><td>planetswe</td><td>Geostrophic k<sup>−3</sup></td><td class="num">−3.0</td><td class="num">−3.5</td><td class="num">1.05</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td class="mono">PW15.1</td><td>helmholtz_staircase</td><td>Mode spacing CV &lt; 0.3</td><td class="num">&lt; 0.30</td><td class="num">0.100</td><td class="num">0.50</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td class="mono">PW16.1</td><td>viscoelastic_instability</td><td>α = −(3 + Wi<sup>1/3</sup>)</td><td class="num">−6.68</td><td class="num">−6.82</td><td class="num">0.27</td><td><span class="tag warn">conjectural</span> <span class="small dim">BPR-specific</span></td></tr>
+    <tr><td class="mono">PW17.1</td><td>euler_multi_quadrants_openBC</td><td>Burgers shock α = −2</td><td class="num">−2.000</td><td class="num">−2.973</td><td class="num">1.95</td><td><span class="tag warn">conjectural</span></td></tr>
+    <tr><td class="mono">PW18.1</td><td>convective_envelope_rsg</td><td>Compressible stellar α = −4</td><td class="num">−4.000</td><td class="num">−4.023</td><td class="num">0.05</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td class="mono">PW19.1</td><td>post_neutron_star_merger</td><td>Compressible MHD α = −3</td><td class="num">−3.000</td><td class="num">−3.085</td><td class="num">0.17</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td class="mono">PW1.1</td><td>gray_scott</td><td colspan="4">Exempt. Gray–Scott spots are self-replicating structures, not Turing instabilities: det J = F(F+k) &gt; 0 at the trivial state, so the bifurcation condition is never met.</td><td><span class="tag">exempt</span></td></tr>
+  </table></div>
+  <p class="small dim">18 validators pass, 1 exempt. Several observed exponents differ from the predicted ones by well over 10 percent while the quoted σ is small; the σ reflects the fit uncertainty of the observed exponent, not a claim of precision agreement. Source: <code>experiments/the_well_harness.py</code>.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>What was learned from it</h2>
+  <ul>
+    <li><strong>Turing wavelength corrected.</strong> The original validator targeted Gray–Scott, which is not Turing-unstable. Switching to the Brusselator gives a genuine test, at 1.5σ.</li>
+    <li><strong>Class B vs Class C.</strong> The wrong universality class was initially applied to Rayleigh–Bénard convection. Corrected.</li>
+    <li><strong>Radiative cooling steepens spectra</strong> from k<sup>−5/3</sup> towards k<sup>−3</sup> to k<sup>−4</sup>, consistent with the simulations.</li>
+    <li><strong>One new formula</strong>, α = −(3 + Wi<sup>1/3</sup>) for viscoelastic turbulence, agrees at 0.27σ and is not in the existing literature. It is a conjecture.</li>
+  </ul>
+</div></section>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand">Boundary Phase Resonance</div>
+        <p class="dim">An open research framework in mathematical physics. Pre-publication work by Jack Al-Kahwati, StarDrive Inc. Not peer reviewed. Source code MIT licensed.</p>
+      </div>
+      <div>
+        <div class="foot-h">Read</div>
+        <a href="/how-it-works.html">How it works</a>
+        <a href="/mathematics.html">Mathematics</a>
+        <a href="/results.html">Results</a>
+        <a href="/status.html">Status and negative findings</a>
+        <a href="/bpr-paper.pdf">Paper (PDF, BPR 1.0 with 2.0 status note)</a>
+      </div>
+      <div>
+        <div class="foot-h">Do</div>
+        <a href="/calculator.html">Calculator</a>
+        <a href="/experiments.html">Experiments that could rule it out</a>
+        <a href="/run-it.html">Run the code</a>
+        <a href="https://github.com/jackalkahwati/BPR-Math-Spine" rel="noopener">Source on GitHub</a>
+        <a href="mailto:jack@thestardrive.com">Contact</a>
+      </div>
+    </div>
+    <p class="fine">&copy; 2026 StarDrive Inc. Results here have not been peer reviewed and should not be used as the basis for engineering, financial, or medical decisions. <a href="/privacy.html">Privacy</a> &middot; <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+</body>
+</html>

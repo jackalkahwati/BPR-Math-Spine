@@ -1,0 +1,69 @@
+<!-- title: How it works -->
+<!-- description: The four steps from a discrete boundary to a measurable number, with the key equations shown alongside the plain-language explanation. -->
+<!-- nav: how -->
+<!-- math: yes -->
+<div class="hero"><div class="wrap">
+  <div class="kicker">The method</div>
+  <h1>From a lattice to a number</h1>
+  <p class="lead">Four steps. Each one is a place where the framework could be wrong, and each is checked by code you can run.</p>
+</div></div>
+
+<section><div class="wrap">
+  <h2>Step 1. Assume a substrate</h2>
+  <p>BPR starts from four axioms. They are assumptions, not derivations, and the project says so.</p>
+  <ol>
+    <li><strong>Structure.</strong> Reality is represented by a lattice of nodes. Each node carries a position and a momentum, each taking values in the integers modulo a large prime <em>p</em>. Prime moduli are chosen because arithmetic modulo a prime has no zero divisors. Why nature would use a prime is not explained.</li>
+    <li><strong>Dynamics.</strong> The lattice evolves by discrete Hamiltonian dynamics that conserve energy and phase-space volume:
+      <div class="eq">$$H=\sum_i \frac{\pi_i^2}{2m}+\sum_{\langle ij\rangle} J\,V(q_j-q_i)$$</div></li>
+    <li><strong>Boundary coupling.</strong> The boundary of a coherent region couples to bulk fields through a stress-energy tensor built from the gradient of a phase field φ. The coupling constant λ is computed, not fitted.</li>
+    <li><strong>Emergence.</strong> Smooth physics appears in the limit of large <em>p</em> and many nodes, where the phase angle θ = 2πq/p, averaged over a region, becomes a continuous field.</li>
+  </ol>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Step 2. Choose the boundary, and let it choose <em>z</em></h2>
+  <p>Where does the coordination number come from? BPR argues that a consistent boundary must be <em>compact</em> (so masses come out discrete), <em>orientable</em> (so fermion fields can be defined globally), and <em>simply connected</em> (so there are no free holonomy parameters to tune). By the classification of surfaces, the only closed surface satisfying all three is the two-sphere S². A cubic tiling of the sphere has six neighbours per node, so <em>z</em> = 6.</p>
+  <div class="callout warn"><p>The sphere argument stands. A further claim, that the three-dimensional space of lowest vibrations on the sphere gives three families of matter, was withdrawn in September 2026. Those three modes are a spatial spin-1 triplet, not three copies of a spin-½ particle. See the <a href="/mathematics.html#withdrawn">corrected mathematics</a>.</p></div>
+</div></section>
+
+<section id="p"><div class="wrap">
+  <h2>Step 3. Fix <em>p</em>, then check it four ways</h2>
+  <p>The prime is fixed by the fine-structure constant. Inverting</p>
+  <div class="eq">$$\frac{1}{\alpha} = (\ln p)^2 + \frac{z}{2} + \gamma - \frac{1}{2\pi}$$</div>
+  <p>for the measured 1/α gives <em>p</em> ≈ 104,749. The nearest prime satisfying <em>p</em> ≡ 1 (mod 4), the condition the framework needs for an orientable boundary, is 104,761.</p>
+  <p>The four terms each have a stated origin: (ln p)² from phase-space screening on the lattice, z/2 from the bare boundary rigidity, γ from the difference between a discrete sum and a continuum integral, and 1/(2π) from the Kaluza–Klein zero mode. Whether these are the right origins is exactly the kind of thing a referee should attack.</p>
+  <p>Three independent relations in the framework (the electroweak hierarchy, the ratio of the electroweak scale to the QCD scale, and a Sakharov-style relation between the Planck mass and the boundary scale) each pin <em>p</em> to within a few percent of the same value when solved against measured numbers. That over-determination is the strongest argument that <em>p</em> is not simply a fit. It is not proof.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Step 4. Compute, then compare without adjusting</h2>
+  <p>With <em>p</em> and <em>z</em> fixed, the codebase chains together several dozen functions, each unit tested, from substrate structure to measurable quantities. Every output is compared with published values from CODATA, the Particle Data Group, Planck, and dedicated experiments. Nothing is tuned after the comparison. Each result gets one of a fixed set of labels:</p>
+  <div class="scroll"><table class="tbl">
+    <tr><th>Label</th><th>Meaning</th></tr>
+    <tr><td><span class="tag ok">derived</span></td><td>Follows from p and z with no adjustable coefficient, and is not reproducible from standard physics by the same route.</td></tr>
+    <tr><td><span class="tag warn">framework</span></td><td>The formula is BPR's, but at least one coefficient or scale was fitted or taken from experiment.</td></tr>
+    <tr><td><span class="tag info">consistent</span></td><td>Matches data, but the Standard Model or general relativity predicts the same thing.</td></tr>
+    <tr><td><span class="tag warn">conjectural</span></td><td>A formula reproduces a number, but no derivation from the model's equations exists. Includes all nine fermion flavor labels since September 2026.</td></tr>
+    <tr><td><span class="tag bad">withdrawn</span></td><td>A claimed derivation that was checked and found invalid. Kept on record.</td></tr>
+    <tr><td><span class="tag">input</span></td><td>Taken from experiment. Includes the family count n<sub>gen</sub> = 3 and the electroweak scale.</td></tr>
+  </table></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>The one equation underneath</h2>
+  <p>On the boundary, the phase field obeys a wave equation with a potential and a source:</p>
+  <div class="eq">$$\kappa\,\nabla^2_\Sigma\,\phi = \partial_\phi V + \chi(x) + \lambda\, n^\mu n^\nu\!\left[\nabla_\mu\nabla_\nu\phi - \Gamma^\rho_{\mu\nu}\nabla_\rho\phi\right]$$</div>
+  <p>Its different limits are what the framework identifies with different pieces of physics. The free, massless case on the sphere is a well-known two-dimensional field theory, the c = 1 compact boson, which is what makes some of the arguments tractable and also what makes some of the earlier overclaims easy to check and reject. On the sphere, the operator ∇² has eigenvalues ℓ(ℓ+1) with multiplicity 2ℓ+1, and many of the framework's integers are, or were claimed to be, labels of these modes.</p>
+  <p>The <a href="/mathematics.html">mathematics</a> page has the action these come from, the flavor ansatz with its current labels, and the withdrawn derivations with their corrections.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>What the framework does not do</h2>
+  <ul>
+    <li>It does not derive the strong force. The 1.0 attempt failed a blind benchmark, and the 2.0 proposal is untested.</li>
+    <li>It does not derive why there are three families of matter. That is an input.</li>
+    <li>It does not derive the absolute energy scale. One dimensionful anchor is taken from experiment, as in every framework.</li>
+    <li>It does not yet establish that its quantum vacuum is the coherent state its classical analysis suggests. That result is conditional on assumptions about temperature and dispersion.</li>
+    <li>It has not been peer reviewed.</li>
+  </ul>
+</div></section>

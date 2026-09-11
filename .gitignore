@@ -126,8 +126,9 @@ helionis/
 scripts/helionis_*.py
 scripts/lunarfire_*.py
 
-# Website frontend (separate repo)
-website/
+# Website: source in website/src, build output in website/public (both tracked)
+website/public/.vercel/
+website/public/.env*.local
 
 # MCP infrastructure (not physics)
 mcp/

@@ -1,0 +1,94 @@
+<!-- title: Results -->
+<!-- description: Every benchmarked BPR quantity with its honest status label and its distance from experiment. -->
+<!-- nav: results -->
+<div class="hero"><div class="wrap">
+  <div class="kicker">Scorecard</div>
+  <h1>Results, with labels</h1>
+  <p class="lead">Numbers here are produced by the code at the current commit. Read the status column before the agreement column.</p>
+</div></div>
+
+<section><div class="wrap">
+  <div class="grid">
+    <div class="card"><div class="big">87</div><p>quantities benchmarked against published data by <code>scripts/benchmark_predictions.py</code>. 51 are numeric comparisons; 36 are bounds or structural statements.</p></div>
+    <div class="card"><div class="big">51 / 51</div><p>numeric comparisons within 2σ or the stated tolerance. This includes many results that standard physics also predicts.</p></div>
+    <div class="card"><div class="big">7</div><p>predictions the project classes as genuinely unique to BPR, meaning standard physics makes no prediction or a different one.</p></div>
+    <div class="card"><div class="big">1,655</div><p>tests passing in the repository as of September 2026. A passing test suite checks internal consistency, not truth.</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Status labels</h2>
+  <p><span class="tag ok">derived</span> from p and z with no adjustable coefficient. <span class="tag warn">framework</span> BPR formula, at least one fitted coefficient or experimental input. <span class="tag info">consistent</span> matches, but so does standard physics. <span class="tag warn">conjectural</span> reproduces a number without a derivation. <span class="tag">input</span> taken from experiment.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Couplings and mixing</h2>
+  <div class="scroll"><table class="tbl">
+    <tr><th>Quantity</th><th class="num">BPR</th><th class="num">Measured</th><th class="num">Gap</th><th>Status</th></tr>
+    <tr><td>1/α (fine-structure)</td><td class="num">137.039</td><td class="num">137.036</td><td class="num">0.002%</td><td><span class="tag ok">derived</span> <span class="small dim">p anchored here</span></td></tr>
+    <tr><td>sin²θ<sub>W</sub> at M<sub>Z</sub></td><td class="num">0.2312</td><td class="num">0.2312</td><td class="num">&lt;0.01%</td><td><span class="tag warn">framework</span> <span class="small dim">3/8 at unification, run down with SM RGEs</span></td></tr>
+    <tr><td>sin²θ<sub>12</sub> (solar)</td><td class="num">0.3086</td><td class="num">0.3092 ± 0.0087</td><td class="num">0.1σ</td><td><span class="tag warn">framework</span> <span class="small dim">coefficient 3.5 fitted</span></td></tr>
+    <tr><td>θ<sub>23</sub> (atmospheric)</td><td class="num">49.3°</td><td class="num">~49° ± 1.3°</td><td class="num">0.2σ</td><td><span class="tag warn">framework</span> <span class="small dim">coefficient 1.35 fitted</span></td></tr>
+    <tr><td>θ<sub>13</sub> (reactor)</td><td class="num">8.64°</td><td class="num">8.54° ± 0.15°</td><td class="num">0.7σ</td><td><span class="tag ok">derived</span> <span class="small dim">uses n<sub>gen</sub> input</span></td></tr>
+    <tr><td>CKM θ<sub>12</sub> (Cabibbo)</td><td class="num">12.97°</td><td class="num">13.04°</td><td class="num">0.5%</td><td><span class="tag warn">conjectural</span> <span class="small dim">from flavor labels</span></td></tr>
+    <tr><td>CKM θ<sub>23</sub></td><td class="num">2.32°</td><td class="num">2.38°</td><td class="num">2.5%</td><td><span class="tag warn">conjectural</span></td></tr>
+    <tr><td>CKM θ<sub>13</sub></td><td class="num">0.202°</td><td class="num">0.201°</td><td class="num">0.5%</td><td><span class="tag warn">conjectural</span> <span class="small dim">uses ℓ<sub>t</sub> = 283</span></td></tr>
+    <tr><td>CKM δ<sub>CP</sub></td><td class="num">68.5°</td><td class="num">68.5° ± 5.7°</td><td class="num">0.0σ</td><td><span class="tag ok">derived</span> <span class="small dim">π/2 − 1/√(z+1)</span></td></tr>
+    <tr><td>Jarlskog J</td><td class="num">2.9 × 10⁻⁵</td><td class="num">3.1 × 10⁻⁵</td><td class="num">6.5%</td><td><span class="tag warn">conjectural</span></td></tr>
+  </table></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Masses</h2>
+  <div class="scroll"><table class="tbl">
+    <tr><th>Quantity</th><th class="num">BPR</th><th class="num">Reference</th><th class="num">Gap</th><th>Status</th></tr>
+    <tr><td>m<sub>e</sub></td><td class="num">0.5104 MeV</td><td class="num">0.5110 MeV</td><td class="num">0.11%</td><td><span class="tag warn">conjectural</span> <span class="small dim">labels (1, √210, 59), τ anchor</span></td></tr>
+    <tr><td>m<sub>μ</sub></td><td class="num">107.2 MeV</td><td class="num">105.66 MeV</td><td class="num">1.45%</td><td><span class="tag warn">conjectural</span> <span class="small dim">documented tension</span></td></tr>
+    <tr><td>m<sub>u</sub></td><td class="num">2.16 MeV</td><td class="num">2.16 MeV</td><td class="num">0.1%</td><td><span class="tag warn">conjectural</span> <span class="small dim">ℓ = 1/283 of top</span></td></tr>
+    <tr><td>m<sub>c</sub></td><td class="num">1242 MeV</td><td class="num">1270 ± 20 MeV</td><td class="num">1.4σ</td><td><span class="tag warn">conjectural</span></td></tr>
+    <tr><td>m<sub>s</sub></td><td class="num">93.5 MeV</td><td class="num">93.4 MeV</td><td class="num">0.1%</td><td><span class="tag warn">conjectural</span></td></tr>
+    <tr><td>m<sub>t</sub> = v<sub>EW</sub>/√2</td><td class="num">174.1 GeV</td><td class="num">172.5–173.7 GeV</td><td class="num">scheme dependent</td><td><span class="tag warn">framework</span> <span class="small dim">v<sub>EW</sub> input; pole vs MC mass</span></td></tr>
+    <tr><td>Σ m<sub>ν</sub></td><td class="num">0.060 eV</td><td class="num">&lt; 0.12 eV</td><td class="num">bound</td><td><span class="tag ok">derived</span></td></tr>
+    <tr><td>Neutrino ordering</td><td class="num">normal</td><td class="num">slight preference</td><td class="num">open</td><td><span class="tag ok">derived</span> <span class="small dim">from p ≡ 1 mod 4</span></td></tr>
+    <tr><td>Koide parameter Q</td><td class="num">2/3</td><td class="num">0.66666</td><td class="num">—</td><td><span class="tag info">consistent</span> <span class="small dim">asserted, not derived; mechanism withdrawn with the ℓ = 1 argument</span></td></tr>
+  </table></div>
+  <p class="small dim">Quark references are quoted at different scales (u, d, s at MS-bar 2 GeV; c and b at their own mass scales; t as a pole-mass reference). Comparisons across them need a stated scheme, which the current code does not enforce.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Cosmology and gravity</h2>
+  <div class="scroll"><table class="tbl">
+    <tr><th>Quantity</th><th class="num">BPR</th><th class="num">Measured</th><th class="num">Gap</th><th>Status</th></tr>
+    <tr><td>Dark energy w₀ today</td><td class="num">−1.000</td><td class="num">−0.827 ± 0.060 (DESI DR1)</td><td class="num">2.9σ</td><td><span class="tag ok">derived</span> <span class="small dim">tension; falsifier if w₀ &gt; −0.80 holds</span></td></tr>
+    <tr><td>Baryon asymmetry η</td><td class="num">6.2 × 10⁻¹⁰</td><td class="num">6.14 × 10⁻¹⁰</td><td class="num">0.4σ</td><td><span class="tag warn">framework</span></td></tr>
+    <tr><td>Ω<sub>DM</sub> h²</td><td class="num">0.11</td><td class="num">0.120</td><td class="num">~10%</td><td><span class="tag warn">framework</span></td></tr>
+    <tr><td>MOND scale a₀</td><td class="num">1.04 × 10⁻¹⁰ m/s²</td><td class="num">1.2 × 10⁻¹⁰</td><td class="num">13%</td><td><span class="tag warn">framework</span></td></tr>
+    <tr><td>Gravitational wave speed</td><td class="num">c</td><td class="num">|v − c|/c &lt; 10⁻¹⁵</td><td class="num">—</td><td><span class="tag info">consistent</span></td></tr>
+    <tr><td>Post-Newtonian series</td><td class="num">GR exactly</td><td class="num">GR</td><td class="num">—</td><td><span class="tag info">consistent</span> <span class="small dim">corrections ~ (ℓ<sub>P</sub>/r)²</span></td></tr>
+  </table></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Genuinely unique predictions</h2>
+  <p>These are the places where BPR says something the Standard Model and general relativity do not. They are the results worth testing.</p>
+  <div class="scroll"><table class="tbl">
+    <tr><th>Prediction</th><th>BPR</th><th>Standard physics</th></tr>
+    <tr><td>Neutrino mass ordering</td><td>Normal</td><td>Either allowed</td></tr>
+    <tr><td>Neutrino nature</td><td>Dirac; no neutrinoless double beta decay</td><td>Majorana allowed</td></tr>
+    <tr><td>Casimir exponent δ</td><td>2</td><td>No correction</td></tr>
+    <tr><td>Born rule deviation κ</td><td>~10⁻⁵</td><td>Exact</td></tr>
+    <tr><td>Lorentz violation |δc/c|</td><td>~3 × 10⁻²¹</td><td>Zero</td></tr>
+    <tr><td>m<sub>s</sub>/m<sub>d</sub></td><td>20.0 (conjectural labels)</td><td>No prediction</td></tr>
+    <tr><td>Z′ at 511 GeV from b → s structure</td><td>δC₉ ≈ −0.97</td><td>No anomaly expected</td></tr>
+  </table></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>What is not on this page</h2>
+  <ul>
+    <li><strong>Strong-force spectrum.</strong> None. The 1.0 glueball sector failed a blind benchmark; the 2.0 proposal has no spectrum yet. See <a href="/status.html">status</a>.</li>
+    <li><strong>The 1.0 "24 theories" scope.</strong> Earlier versions of this site listed biological, neural, and fluid-dynamics results alongside particle physics. Those are retained in the repository as <span class="tag info">consistent</span> checks of scaling exponents, mostly reproducing standard results, and are catalogued on <a href="/the-well.html">The Well</a> page. They are not evidence for BPR's particle-physics claims.</li>
+    <li><strong>Percent-confidence dashboards.</strong> Earlier versions displayed "mean confidence 97%". That number had no defined meaning and has been removed.</li>
+  </ul>
+  <p>Source of record: <a href="https://github.com/jackalkahwati/BPR-Math-Spine/blob/main/VALIDATION_STATUS.md" rel="noopener">VALIDATION_STATUS.md</a> and <a href="https://github.com/jackalkahwati/BPR-Math-Spine/blob/main/doc/BENCHMARK_SCORECARD.md" rel="noopener">BENCHMARK_SCORECARD.md</a>.</p>
+</div></section>
