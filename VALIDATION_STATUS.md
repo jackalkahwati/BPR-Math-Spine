@@ -1,6 +1,24 @@
 # BPR-Math-Spine: Prediction Validation Status
 
-> **Version:** 1.0.2 (April 2026)
+> **Version:** 1.0.3 (2026-09-10) — foundation repair
+> **v1.0.3 changes (SUPERSEDES the v0.9.9 and v1.0 status claims below for the flavor sector):**
+> Two foundational derivations were audited and found invalid; both are WITHDRAWN.
+> (1) The "Atiyah–Singer index = n_gen" step behind l_t=283: for an ordinary SU(N_c) bundle
+> on S², c₁=0 (det E trivial, tr F=0), so the twisted Dirac index is 0, not 3. Any nonzero
+> index needs an extra U(1) flux that is not derived from (p,z), and an index would not shift
+> an angular-momentum label anyway. See `doc/derivations/color_bundle_index.md`.
+> (2) The c=1 compact-boson "three generations" proof: conformal spin s=mn is an integer, so
+> the untwisted lattice has no spin-1/2 operators; the 3+1 decomposition was asserted without
+> a group action; the fusion-ring exclusion of ℓ≥2 confuses OPE products with descendants;
+> and 10/3+1/16=163/48, not 167/48. See `doc/derivations/generations_from_CFT.md`.
+> Consequence: **n_gen=3 is an EMPIRICAL INPUT**; all nine fermion l-mode labels are
+> **CONJECTURAL** assignments (numbers unchanged); no fourth-generation exclusion follows
+> from topology. `derive_l_modes()` now reports these statuses; `generation_count_from_topology`
+> returns None unless the ℓ=1↔families assumption is requested explicitly.
+> Retained conditional result: a Dirac field twisted by O(q) on S² has |q| chiral zero modes
+> (`bpr/flavor_foundations.py`, `tests/test_flavor_foundations.py`). q=3 gives three; so does
+> q=4 give four. The flux is an input, not a prediction.
+> Rows below that say "DERIVED" for l_t, l_μ, l_τ, or n_gen are historical and read CONJECTURAL/INPUT.
 > **Policy:** Every prediction is classified honestly.  Failures are documented.
 > **v1.0.2 changes:** θ₁₃ derived from first principles (sin θ₁₃=e⁻¹/√6=0.1502, +0.65σ) — P5.7 upgraded CONJECTURAL→DERIVED.
 > ArXiv survey expanded: HAYSTAC Phase II null (4th axion null, arXiv:2409.08998), T2K+NOvA joint (arXiv:2510.19888),
@@ -110,7 +128,7 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P5.5 | θ₁₂ | 33.65° | **DERIVED** | JUNO 2025 (arXiv:2511.14593): sin²θ₁₂=0.3092±0.0087 vs BPR 0.3083 — 0.03σ ✓. NOTE: SM has no prediction here (free parameter), so this is not BPR vs SM. Real test is BPR vs tribimaximal (1/3=0.333, now 2.8σ excluded by JUNO) and vs other discrete-symmetry models. BPR's specific formula will be discriminating when JUNO reaches projected ±0.002 precision (~2028). |
 | P5.6 | θ₂₃ | 47.6° | **DERIVED** | PDG: ~49° ± 1.3° ✓; m_μ/m_τ=l_μ²/l_τ²=210/3481, no PDG input |
 | P5.7 | θ₁₃ | 8.64° | **DERIVED** | PDG: 8.54° ± 0.15° (+0.65σ) — sin θ₁₃ = e⁻¹/√6 = 0.1502; derived from boundary lattice Gaussian localization: ε=exp(−l₃(l₃+1)/(2z))=e⁻¹, sin θ₁₃=ε/√(2n_gen). Zero free parameters. |
-| P5.10 | 3 generations | 3 | DERIVED | Observed: 3 ✓ |
+| P5.10 | 3 generations | 3 | **EMPIRICAL INPUT** (v1.0.3; topology/CFT proofs withdrawn) | Observed: 3 ✓ — consistent by construction, not a prediction |
 
 ### Gravitational Wave Phenomenology (P7.x)
 | # | Prediction | Status | Comparison |
@@ -159,8 +177,8 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 
 | # | Prediction | Value | Status | Comparison |
 |---|-----------|-------|--------|------------|
-| P12.0 | l-mode derivation | partial | **v0.9.8** | 7/9 modes derived; l_t CONJECTURAL with structural story; see derive_l_modes() |
-| P12.2 | m_u | 2.16 MeV | **DERIVED** | PDG: 2.16 (0.01σ); l_u=1, l_t=283 DERIVED; m_t=v_EW/√2 anchor |
+| P12.0 | l-mode derivation | none | **CONJECTURAL (v1.0.3)** | 0/9 physical mode assignments derived; SU(3) index step for l_t withdrawn (index=0); see derive_l_modes() and color_bundle_index.md |
+| P12.2 | m_u | 2.16 MeV | **DERIVED** | PDG: 2.16 (0.01σ); l_u=1, l_t=283 CONJECTURAL (v1.0.3); m_t=v_EW/√2 anchor |
 | P12.3 | m_d | 4.72 MeV | **DERIVED** | PDG: 4.67 (1.0%); l_d=1, l_s=z−2=4, b=−W_c(1−1/(4z)) all derived |
 | P12.4 | m_s | 93.6 MeV | **DERIVED** | PDG: 93.4 (0.2%); from z-derived spectrum, no free parameters |
 | P12.5 | m_c | 1242 MeV | **DERIVED** | PDG: 1270 ± 20 (1.38σ); l_c=z(z−2)=24; m_t=v_EW/√2 anchor; 1% theory floor |
@@ -168,7 +186,7 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P12.7 | m_t = v_EW/√2 (y_t = 1) | 174.1 GeV | **DERIVED** | BPR predicts pole mass. Pole-mass extractions from tt̄ differential cross-sections (theoretically clean): ATLAS 13 TeV 173.1 +2.0/−2.1 (+0.5σ), CMS 13 TeV 173.7 +1.9/−2.1 (+0.2σ). ATLAS+CMS combined MC mass 172.52±0.33 (not directly comparable; MC→pole correction ≈ +0.5–1 GeV gives +1.8 to +3.3σ — scheme-dependent, not a falsification). |
 | P12.8 | CKM θ₁₂ | 12.92° | **DERIVED** | PDG: 13.04°; sin(θ_C)=√(m_d/m_s)=√(r_ds); r_ds from l-modes+W_c only |
 | P12.9 | CKM θ₂₃ | 2.33° | **DERIVED** | PDG: ~2.38°; √(r_sb)/√(ln p+z/3); r_sb from l-modes+W_c; p,z only |
-| P12.10 | CKM θ₁₃ | 0.20° | **DERIVED** | PDG: ~0.201°; √(r_ut)=√(1/l_t²); l_t=283 DERIVED |
+| P12.10 | CKM θ₁₃ | 0.20° | **DERIVED** | PDG: ~0.201°; √(r_ut)=√(1/l_t²); l_t=283 CONJECTURAL (v1.0.3) |
 | P12.11 | CKM δ_CP = π/2−1/√(z+1) | 68.3° | **DERIVED** | PDG: 68.5°±5.7° (0.03σ) — pure geometry, no free parameters ✓ |
 | P12.12 | Jarlskog J | 2.9×10⁻⁵ | **DERIVED** | PDG: 3.12×10⁻⁵ (6.5% off); follows from DERIVED angles |
 | P12.13 | m_proton | 0.996 GeV | CONSISTENT | Standard QCD: m_p ≈ 3Λ_QCD (not BPR-specific) |
@@ -181,7 +199,7 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 >
 > l_e = 1 (trivial) — DERIVED
 > l_μ = √(z(z²−1)) = √(z(z−1)(z+1)) = √(6×5×7) = √210 — DERIVED (geometric mean of 3 shells)
-> l_τ = z(z + n_gen + 1) − 1 = 6×10 − 1 = 59 — DERIVED (uses n_gen=3 from topology)
+> l_τ = z(z + n_gen + 1) − 1 = 6×10 − 1 = 59 — CONJECTURAL (v1.0.3: n_gen=3 is an empirical input, not from topology)
 >
 > Previously labeled SUSPICIOUS because the values appeared chosen to fit masses.
 > Now shown to follow from z=6 geometry and n_gen=3 generation counting.
@@ -390,7 +408,7 @@ derivation power to date.
 | # | Condition | Current status | BPR prediction |
 |---|-----------|---------------|----------------|
 | F1 | θ_QCD > 10⁻¹⁰ detected | |θ_QCD| < 10⁻¹⁰ (bound) | Exactly 0 from orientability |
-| F2 | 4th quark/lepton generation discovered | 3 confirmed (LEP, LHC) | Exactly 3 from topological winding |
+| F2 | 4th quark/lepton generation discovered | 3 confirmed (LEP, LHC) | v1.0.3: no longer a BPR falsifier — n_gen=3 is an input; topology does not exclude 4 |
 | F3 | Inverted neutrino hierarchy confirmed >5σ | Normal preferred (T2K+NOvA) | Normal from orientability |
 | F4 | CKM δ_CP outside [55°, 80°] at >5σ | 68.5°±5.7° | 68.3° from z=6 geometry |
 | F5 | l-modes derived and wrong | OPEN | Integer S² modes with l² scaling |
@@ -433,7 +451,7 @@ P24.1 GUE spacing ratio (1.04σ), P1.3 non-Markovian ratio (0.89σ).
 | **Genuinely Unique** | **7** | — | Unchanged |
 | **The Well** | **10/10 pass** | — | Unchanged |
 
-**v0.9.9 key result:** ALL 9 fermion l-mode integers now DERIVED from (z, N_c=z/2, n_gen).
+**v0.9.9 key result (WITHDRAWN in v1.0.3, kept for history):** ALL 9 fermion l-mode integers now DERIVED from (z, N_c=z/2, n_gen).
 l_t = (z²−1)(z+n_gen+2−N_c)+n_gen: adjoint base × generation-extended coordination + Dirac index.
 Derivation chain: SU(z) adjoint (z²−1) × [z + (n_gen+1) − rank(SU(N_c))] + index(D_color).
 rank(SU(N_c)) = N_c−1 (Cartan subalgebra); index(D_color) = n_gen (Atiyah-Singer, same winding).

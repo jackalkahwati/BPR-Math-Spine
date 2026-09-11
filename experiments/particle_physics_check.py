@@ -325,8 +325,8 @@ def check_unique_predictions() -> list[Result]:
 
     # Strong CP = 0
     theta_qcd = strong_cp_theta(p)
-    # Three generations from topological winding constraint (p=3 colors → 3 families)
-    # In BPR: n_gen = number of prime winding sectors in SU(3)_c = 3
+    # n_gen = 3 is an EMPIRICAL INPUT (2026-09-10 repair). The topological-winding
+    # and CFT derivations are withdrawn: see doc/derivations/generations_from_CFT.md.
     n_gen_bpr = 3
     # Top quark mass from Higgs VEV: y_t=1 → m_t = v_EW/√2
     m_t_derived = V_EW_GEV * 1000.0 / np.sqrt(2.0)  # MeV
@@ -340,11 +340,11 @@ def check_unique_predictions() -> list[Result]:
                None,
                f"p={p}≡1 mod 4 → orientable boundary → ∫F∧F=0 exactly"),
 
-        Result("P5.10", "3 lepton/quark generations [UNIQUE]",
-               "DERIVED",
+        Result("P5.10", "3 lepton/quark generations",
+               "INPUT",
                float(n_gen_bpr), 3.0, 0.5,
                0.0,
-               "n_gen = |SU(3)_c prime winding sectors| = 3 from color confinement"),
+               "n_gen=3 is an empirical input; topology/CFT derivations withdrawn 2026-09-10"),
 
         Result("P12.7", "m_t = v_EW/√2 (y_t = 1 from boundary) [UNIQUE]",
                "DERIVED",
@@ -404,8 +404,9 @@ Hard falsifications (any one of these rules out BPR as stated):
    [Current bound: <10⁻¹⁰; BPR predicts exactly 0 from orientability of p≡1 mod 4]
 
 2. A 4th generation of quarks or leptons discovered
-   [BPR predicts exactly 3 from topological winding; a 4th generation
-    would require a fundamental revision of the generation-counting mechanism]
+   [Since 2026-09-10 n_gen=3 is an input, not a prediction; a 4th generation
+    would invalidate the flavor-mode ansatz built on n_gen=3 but is not
+    excluded by BPR topology]
 
 3. Inverted neutrino mass hierarchy confirmed at >5σ
    [BPR predicts normal hierarchy from orientability; inverted hierarchy

@@ -123,26 +123,40 @@ class TestS2Uniqueness:
 # ---------------------------------------------------------------------------
 
 class TestGenerationCount:
-    def test_s2_gives_3_generations(self):
-        """The ℓ=1 eigenspace of the Laplacian on S² is 3-dimensional."""
+    """2026-09-10 repair: topology does not derive the family count.
+
+    The l=1 scalar multiplicity on round S² is 3, but identifying it with
+    fermion families is an explicit assumption (see
+    doc/derivations/generations_from_CFT.md). The default API returns None.
+    """
+
+    def test_s2_default_is_not_established(self):
         s2 = CompactOrientableSurface(genus=0)
-        assert generation_count_from_topology(s2) == 3
+        assert generation_count_from_topology(s2) is None
+
+    def test_s2_l1_multiplicity_under_assumption(self):
+        """Only with the explicit l=1-to-families assumption is 3 returned."""
+        s2 = CompactOrientableSurface(genus=0)
+        assert generation_count_from_topology(s2, assume_l1_families=True) == 3
 
     def test_torus_generation_count_undefined(self):
-        """T² has no canonical generation count (metric-dependent)."""
+        """T² has no canonical multiplicity, with or without the assumption."""
         t2 = CompactOrientableSurface(genus=1)
         assert generation_count_from_topology(t2) is None
+        assert generation_count_from_topology(t2, assume_l1_families=True) is None
 
-    def test_s2_killing_vectors_equals_generation_count(self):
-        """dim Isom(S²) = dim SO(3) = 3 = generation count."""
+    def test_s2_killing_vectors_equals_l1_multiplicity(self):
+        """dim Isom(S²) = dim SO(3) = 3 = l=1 multiplicity (a spatial fact)."""
         s2 = CompactOrientableSurface(genus=0)
-        assert s2.continuous_isometry_dim == generation_count_from_topology(s2)
+        assert s2.continuous_isometry_dim == generation_count_from_topology(
+            s2, assume_l1_families=True
+        )
 
-    def test_generation_count_matches_observed(self):
-        """S² predicts 3 generations; experiment observes 3."""
-        observed_generations = 3
-        s2 = CompactOrientableSurface(genus=0)
-        assert generation_count_from_topology(s2) == observed_generations
+    def test_proof_summary_marks_generation_count_open(self):
+        from bpr.boundary_topology import derive_boundary_topology
+        summary = derive_boundary_topology()["proof_summary"]
+        assert "OPEN" in summary
+        assert "derived, not postulated" not in summary
 
 
 # ---------------------------------------------------------------------------

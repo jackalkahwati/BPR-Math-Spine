@@ -1,178 +1,128 @@
-# Three Fermion Generations from CFT Operator Content
+# Fermion generations: corrected CFT argument and open identification
 
-> **Status:** April 2026 — closes the ℓ=1 ↔ 3 generations identification gap
-> listed as the residual open question in §12 of LIMITATIONS_AND_FALSIFICATION.md.
+> **Status: 2026-09-10 — previous closure withdrawn.** The compact-boson
+> argument does not derive three fermion generations or exclude a fourth.
+> The retained flavor model uses `n_gen = 3` as an empirical input.
+> The companion [index calculation](color_bundle_index.md) gives a valid,
+> conditional route through twisted Dirac zero modes, not a completed BPR model.
 
-## The gap
+## 1. What the spherical spectrum establishes
 
-LIMITATIONS §12 derives S² as the unique boundary topology from compactness +
-orientability + π₁=0. The ℓ=1 Laplacian eigenspace on S² has dimension 3,
-giving a natural candidate for 3 fermion generations. But the step
+For the **round metric** on S² of radius a, the scalar Laplacian has
 
-> "The ℓ=1 Laplacian sector corresponds to fermion generations"
+    eigenvalue = l(l+1)/a²,     multiplicity = 2l+1,     l = 0,1,2,...
 
-was motivated rather than proved. The motivation rested on three observations:
-(a) ℓ=1 is the lightest non-vacuum sector, (b) the three ℓ=1 modes carry
-exactly the quantum numbers that distinguish generations, (c) the identification
-reproduces the observed count. This document closes the step by showing that
-the ℓ=1 modes are the *unique* single-particle fermion states in the BPR
-spectrum using the c=1 compact boson operator content.
+Thus l=1 has three states. This is a spatial spin-1 multiplet. It is not a
+spin-1/2 multiplet and does not establish three copies of a fermion species.
+Topology alone also does not select the round metric or its degeneracies.
+A family interpretation needs an internal mode space and a map to spacetime
+fields, with identical gauge representations and independently specified
+spacetime spin. No such map was supplied by the previous argument.
 
-## Setup: the c=1 compact boson at R = √3
+S² has a unique spin structure: spin structures form a torsor for
+H¹(S²; Z₂)=0. There is no additional Möbius choice. Spin structure alone does
+not impose odd winding on a compact boson, and a Hopf fiber is not a
+noncontractible loop in the base S².
 
-From CS_UV_COMPLETION.md §3: the BPR boundary theory is the c=1 compact boson
-at compactification radius R = √(z/2) = √3 (for z=6). The primary operators
-of this CFT are the vertex operators
+## 2. Compact-boson weights: explicit convention
 
-    V_{m,n}(x) = :exp(i m φ(x) + i n φ̃(x)):                            (1)
+Use the nonchiral compact boson with alpha-prime = 1 and dimensionless R:
 
-labeled by momentum m ∈ ℤ and winding n ∈ ℤ. Their conformal dimensions are
+    p_L = m/R + n R,       p_R = m/R - n R,      m,n in Z
+    h = p_L²/4,           hbar = p_R²/4
+    x = h + hbar = (m²/R² + n² R²)/2
+    s = h - hbar = mn.
 
-    Δ_{m,n} = (1/2)(m/R + n R)²      (holomorphic)
-    Δ̄_{m,n} = (1/2)(m/R − n R)²     (anti-holomorphic)
-    h_{m,n}  = Δ_{m,n} + Δ̄_{m,n} = m²/R² + n² R²                       (2)
+These formulas are implemented with exact rational arithmetic in
+`bpr/flavor_foundations.py`. Changing R does not change the integrality of s.
+Descendants shift h and hbar by integers, so they do not supply a local
+half-integer-spin operator in this untwisted bosonic operator lattice.
+This statement concerns this lattice, not every possible fermionization or
+spin-CFT extension of a bosonic theory.
 
-For R² = 3 the dimension formula becomes
+The old note used h=p_L²/2 and hbar=p_R²/2 with the same momentum lattice.
+Taken literally, those equations give s=2mn, still an integer; the later
+table used mn instead. Neither convention justifies the claimed fermions.
+The factor-of-two correction is local to this note and its checking module;
+it does not rescale existing phenomenological mass formulas elsewhere.
 
-    h_{m,n} = m²/3 + 3 n²                                              (3)
+For R²=3, the conventional weights are:
 
-## Selection rules for fermionic single-particle states
+| (m,n) | h | hbar | x | s |
+|-------|---|------|---|---|
+| (1,0) | 1/12 | 1/12 | 1/6 | 0 |
+| (0,1) | 3/4 | 3/4 | 3/2 | 0 |
+| (1,1) | 4/3 | 1/3 | 5/3 | 1 |
+| (1,-1) | 1/3 | 4/3 | 5/3 | -1 |
+| (2,2) | 16/3 | 4/3 | 20/3 | 4 |
 
-A single-particle fermion state in BPR must satisfy four conditions. Each
-condition is a standard requirement, not a BPR-specific assumption.
+The use of R²=3 is conditional. Matching this nonchiral theory to a chosen
+chiral U(1) Chern–Simons edge requires a separate normalization and operator
+identification. Moreover S² as a Euclidean two-dimensional CFT surface is
+not automatically a spatial S² supporting a 2+1-dimensional theory. The Hopf
+base of a closed S³ is not its boundary; the CS edge correspondence alone
+does not provide the missing identification.
 
-**S1 — spin 1/2.** The state must transform in a spinor representation of the
-boundary isometry group SO(3). In the compact boson CFT, spin-1/2 states come
-from vertex operators whose conformal spin s = Δ − Δ̄ = 2mn/R² × R² = 2mn
-equals a half-integer multiple of the SO(3) Casimir. This forces mn = 1/2 ×
-(odd integer) in R²=3 units, i.e. (m,n) = (±1, ±1)/√3 after the standard
-dressing with the spin field σ (dimension 1/16) at the boundary of the chiral
-block.
+## 3. Why the old selection rules fail
 
-**S2 — physical state (unitarity cut).** Δ_{m,n}, Δ̄_{m,n} ≥ 0 individually.
-Combined with the chirality constraint from S1, this restricts (m,n) to the
-lattice of mutually local operators with h ≤ h_max where h_max is set by the
-boundary RG flow (see below).
+- Nonnegative h and hbar impose no upper dimension cutoff; they hold for
+  every momentum/winding pair here.
+- Adding an unspecified field of weight 1/16 is not a construction of a
+  fermion. An orbifold/twist or spin-CFT extension needs its action, operator
+  spectrum, locality, spin structure and projection. The old arithmetic
+  also erred: 10/3 + 1/16 = 163/48, not 167/48.
+- A vertex operator can be a Virasoro primary **and** appear in an operator
+  product. The leading operator in V_(1,1) V_(1,1) is V_(2,2), which remains
+  primary. Fusion is not a criterion for discarding it as a descendant or
+  determining a spacetime single-particle spectrum.
+- Four labels do not determine a representation. A 3+1 decomposition needs
+  explicit generators acting on the states. A spin-1 triplet plus scalar
+  would still not by itself supply three spin-1/2 families.
+- Orbifolding can introduce twisted sectors. The previous blanket exclusion
+  of additional generations from unspecified orbifolds is withdrawn.
 
-**S3 — normalizable on S².** The vertex operator on the spatial S² must admit
-a globally well-defined spinor section. By the classification of spin
-structures on S² (unique up to the Möbius twist), this requires n ≡ 1 (mod 2)
-— the *periodic* boundary condition around the Hopf fiber. Even-n operators
-are excluded as local operators of the boundary theory on S².
+## 4. A constructive replacement: Dirac zero modes
 
-**S4 — single-particle (not composite).** Multi-particle states factor as
-products of vertex operators: V_{m_1,n_1} · V_{m_2,n_2} = V_{m_1+m_2, n_1+n_2}
-up to OPE structure constants. A single-particle state is a primary operator
-that is *not* a descendant or a product in the fusion algebra. The single-
-particle primaries are the generators of the fusion ring — the elements with
-no shorter decomposition.
+On S² = CP¹, the spin bundle is K^(1/2)=O(-1). Couple a Dirac field to
+L=O(q), with integral degree q. Positive-chirality zero modes are holomorphic
+sections of O(q-1); negative-chirality modes are counted by its H¹:
 
-## Counting ℓ=1 single-particle fermion states
+    n_plus  = max(q,0)
+    n_minus = max(-q,0)
+    index D_L = n_plus - n_minus = q.
 
-Apply S1–S4 with R² = 3:
+This follows from the polynomial sections of O(k) and Serre duality; see
+[color_bundle_index.md](color_bundle_index.md) for the full argument.
+For q=3 it supplies three chiral internal zero modes. The same calculation
+supplies four for q=4 on the same sphere: topology does not exclude four.
+Here q is an additional specified flux/charge, **not derived from p or z**.
+The zero-mode count is not yet a four-dimensional generation count.
 
-| (m, n) | h_{m,n} = m²/3 + 3n² | spin mn | S3 (n odd) | single-particle |
-|--------|-----|------|-----|-----|
-| (0, 0) | 0 | 0 | — | vacuum |
-| (±1, ±1) | 1/3 + 3 = 10/3 | ±1 | ✓ | ← composite of others? |
-| (±1, 0) | 1/3 | 0 | ✗ (n=0) | excluded |
-| (0, ±1) | 3 | 0 | ✓ | ← spinless sector |
-| (±2, 0) | 4/3 | 0 | ✗ | excluded |
-| (±1, ±3) | 1/3 + 27 | ±3 | ✓ | higher |
+To turn this into a BPR derivation one must specify the fermionic kinetic
+operator and internal-to-spacetime map, derive the twisting bundle and q,
+recover the gauge representations and chirality for every species, exclude
+unwanted mirror modes, and check anomalies. The dynamics must select the
+flux without using the observed family count as input. None is supplied by
+merely choosing q=3. This extension is a candidate, not a new frozen postulate.
 
-The lowest-dimension spin-carrying primaries satisfying S1–S3 are the four
-states (±1, ±1). These have conformal dimension h = 10/3, so their
-fermionic avatars (after dressing with the spin field σ of dimension 1/16)
-sit at total dimension h_f = 10/3 + 1/16 = 167/48 ≈ 3.48.
+## 5. Consequences for code and claims
 
-The SO(3) isometry of S² acts on (m, n) by the coset structure of the c=1
-Kac-Moody current algebra. Under the global SO(3), the four primaries
-(±1, ±1) decompose as
+| Quantity | Corrected status |
+|----------|------------------|
+| Round S² scalar l=1 multiplicity = 3 | Mathematical result |
+| Fermionic operators from the old CFT selection rules | Not established |
+| Exactly three families / no fourth | OPEN |
+| n_gen=3 in numerical flavor calculations | Empirical input |
+| Chiral zero modes of O(q) on S² | Derived conditional on q and Dirac setup |
+| l_t=283 and other physical flavor-mode assignments | CONJECTURAL |
 
-    4 vertex operators → 3 + 1  (vector + scalar of SO(3))              (4)
+`generation_count_from_topology` returns None unless the caller explicitly
+requests the l=1-to-families assumption. `number_of_generations` retains the
+legacy numerical ansatz for compatibility; its docstring and prediction
+metadata identify it as an assumption. Passing a numerical regression test
+does not restore the withdrawn proof.
 
-The 3-dimensional SO(3) multiplet is precisely the ℓ=1 Laplacian eigenspace
-on S². This is not a coincidence: the boundary SO(3) is the global symmetry
-of the spatial S², and the spin-1/2 representation content of the lowest
-non-trivial primaries organizes into the 3-dim ℓ=1 irrep plus a scalar
-singlet.
+## References
 
-**The scalar singlet is identified with the Higgs-like mode.** It carries no
-SO(3) quantum number and has h = 3 (from (0, ±1) after symmetrization),
-separating it from the fermion content.
-
-## Why ℓ=2 and higher do not give additional generations
-
-The next SO(3) irrep is ℓ=2, dimension 5. The corresponding CFT primaries
-come from (m, n) with h > h_{1,1}. By S4, single-particle ℓ=2 states would
-have to be primaries of the fusion ring, not composites. But
-
-    V_{1,1} · V_{1,1} = V_{2,2} + (descendants)                         (5)
-
-The (±2, ±2) sector has h = 4/3 + 12 = 40/3, which would naively place an
-ℓ=2 fermion multiplet above ℓ=1. However, the fusion (5) shows that (±2, ±2)
-is *not primary* — it is generated by two copies of (±1, ±1). Under S4 it is
-therefore excluded from the single-particle spectrum.
-
-The same argument eliminates every (m, n) with |m|, |n| ≥ 2 from the
-single-particle spectrum: all such states factor as composites of (±1, ±1)
-and simpler primaries. The single-particle fermion spectrum is exhausted at
-ℓ=1.
-
-**Consequence: the number of fermion generations is exactly 3.**
-
-## The pattern: 3 ± 1 generations is blocked
-
-A natural concern is whether a fourth generation could appear from a different
-CFT sector, e.g. from twisted sectors or orbifold points. Two facts rule this
-out:
-
-1. **Orbifolds.** The c=1 compact boson at R=√3 has two orbifolds (ℤ₂ and
-   ℤ₃). Neither introduces new primaries below h_{1,1}; the orbifold spectrum
-   reorganizes the existing primaries into projections of the original
-   vertex operator lattice.
-
-2. **Boundary states.** Twisted sector states with non-integer winding have
-   h ≥ R²/2 = 3/2 and are SO(3) singlets, not triplets. They cannot supply
-   a fourth generation.
-
-A fifth generation would require h < h_{1,1} = 10/3 with the correct SO(3)
-triplet structure and odd winding. No such state exists in the c=1 compact
-boson at R=√3.
-
-## Status
-
-| Step | Previous status | Current status |
-|------|-----------------|----------------|
-| S² from (compact, orientable, π₁=0) | §12 of LIMITATIONS, April 2026 | Derived |
-| ℓ=1 eigenspace has dimension 3 | Standard S² spectrum | Derived |
-| ℓ=1 ↔ fermion generations | Motivated, not proved | **Derived — this document** |
-| Exactly 3 generations (no 4th) | Motivated by ℓ=1 only | **Derived — compact boson fusion** |
-| Lightest fermion is electron (W=1 labeling) | Uses experimental "electron is lightest" | Still uses 1 bit of experimental info |
-
-The final bit — identifying which physical particle sits in which of the three
-ℓ=1 states — remains tied to the overall mass ordering (lightest → electron,
-middle → muon, heaviest → tau). This is not a count problem; it is a
-labeling problem, and BPR handles it via the l-mode hierarchy for charged
-leptons (l_e=1, l_μ=√210, l_τ=59).
-
-## Net effect on the open-problems count
-
-| Problem | Previous state | State after this document |
-|---------|----------------|---------------------------|
-| Why 3 generations? | Motivated by ℓ=1 dim | **Derived from c=1 compact boson fusion ring** |
-| 4th generation possibility | Open speculation | **Excluded by fusion algebra** |
-| Scalar singlet partner | Unidentified | Identified as Higgs-like mode in (0,±1) sector |
-
-## Code integration
-
-No new computation is required in `bpr/` — this is an analytic closure. The
-claim is that `bpr.first_principles.SubstrateDerivedTheories.n_generations`
-and the corresponding neutrino / lepton / quark sector codes can treat
-n_gen = 3 as **derived from CFT fusion** rather than as input.
-
-Updated `derive_n_generations()` docstring should reference this document.
-
----
-
-*April 2026 — closes Task #6 of the April 2026 gap-closure pass.*
+- David Tong, [String Theory, compactification and CFT](https://www.damtp.cam.ac.uk/user/tong/string/string.pdf), especially sections 4 and 8.1, for compact-boson weights and momentum/winding conventions.
+- Deguchi and Kitsukawa, [Charge quantization conditions based on the Atiyah–Singer index theorem](https://arxiv.org/abs/hep-th/0512063), for Dirac zero modes on a monopole sphere.

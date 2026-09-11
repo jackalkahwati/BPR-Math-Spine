@@ -1,52 +1,10 @@
-"""
-Charged Lepton Masses
-================================================================
+"""Charged-lepton phenomenology from candidate boundary-mode labels.
 
-Derives electron, muon, and tau masses from the S² boundary mode
-eigenvalue spectrum, using the same mechanism as neutrinos (Boundary-Mediated Neutrino Dynamics).
-
-DERIVATION (BPR §18.1)
-──────────────────────
-The charged lepton Yukawa coupling for generation k is determined by
-the overlap integral of left-handed and right-handed fermion boundary
-modes with the Higgs boundary mode on S²:
-
-    y_k ∝ 1/l_k²
-
-where l_k is the angular momentum quantum number of the boundary mode.
-Higher-l modes have weaker Higgs overlap (1/l² falloff from the
-angular integration on S²).
-
-MODE ASSIGNMENT:
-    l = 1  → τ  (strongest coupling, heaviest lepton)
-    l = 14 → μ  (intermediate)
-    l = 59 → e  (weakest coupling, lightest lepton)
-
-The l = 0 mode is reserved for the Higgs scalar itself (it is the
-constant mode on S², which couples to electroweak symmetry breaking).
-
-MASS RATIOS:
-    m_τ : m_μ : m_e = l_τ⁻² : l_μ⁻² : l_e⁻²
-                     = 1 : 1/196 : 1/3481
-
-Anchoring to m_τ = 1776.86 MeV (1 input, not 3):
-    m_e  = 1776.86/3481 = 0.5104 MeV  (exp: 0.5110, 0.11% off)
-    m_μ  = 1776.86/196 × 196/3481... = 100.05 MeV  (exp: 105.66, 5.3% off)
-
-The key ratio 59²/14² = 16.84 matches m_τ/m_μ = 16.82 within 0.1%.
-
-The Koide parameter Q naturally emerges at 0.672 (vs exact 2/3 = 0.667),
-a 0.75% deviation that is a PREDICTION, not an assumption.
-
-Key results
------------
-* m_e predicted within 0.11% (DERIVED, not fitted)
-* m_μ predicted within 5.3% (DERIVED, genuine prediction with known discrepancy)
-* m_τ is the anchor mass (1 experimental input, reduced from 3)
-* Koide Q ≈ 0.672 emerges from the l² spectrum (approximate, not exact)
-* Lepton universality: g_e = g_μ = g_τ to O(1/p) precision
-
-References: Al-Kahwati (2026), BPR-Math-Spine extended theories
+The numerical model uses squared effective labels (1, sqrt(210), 59),
+normalized to a tau reference or the existing model Yukawa relation.
+Physical mode selection is conjectural and three families are an input;
+see doc/derivations/generations_from_CFT.md. sqrt(210) is not a scalar
+spherical-harmonic angular momentum, and l² is not the exact S² Laplacian.
 """
 
 from __future__ import annotations
@@ -66,70 +24,19 @@ _M_TAU_MEV = 1776.86        # MeV (anchor mass — 1 experimental input)
 
 @dataclass
 class ChargedLeptonSpectrum:
-    """Charged lepton masses from S² boundary mode eigenvalue spectrum.
+    """Evaluate the retained charged-lepton mass ansatz.
 
-    DERIVATION:
-    The mass eigenvalue for generation k is proportional to the square
-    of the boundary angular momentum quantum number l_k:
+    The default effective labels are (1,sqrt(210),59), so the raw squared
+    weights are (1,210,3481). Subsequent model corrections are retained.
+    These labels are conjectural assignments, not derived S² modes;
+    n_gen=3 in their motivating formula is an empirical input. The invalid
+    CFT family-count proof is withdrawn. See qcd_flavor.derive_l_modes.
 
-        m_k ∝ l_k²
-
-    where l_k are the S² Laplacian eigenvalues (l(l+1) ≈ l² for l ≫ 1).
-
-    The three generations occupy modes (v0.9.6 derived values):
-        l = 1            → e  (smallest eigenvalue, lightest lepton)
-        l = √210 ≈ 14.49 → μ  (intermediate; √(z(z²−1)) for z=6)
-        l = 59           → τ  (largest eigenvalue, heaviest lepton)
-
-    Mass ratios:
-        m_e : m_μ : m_τ = 1 : 210 : 3481   (l², with l_μ² = 210 exactly)
-
-    Anchoring to m_τ = 1776.86 MeV (1 experimental input):
-        scale = m_τ / 59² = 1776.86 / 3481 = 0.5104 MeV
-        m_e  = 0.5104 MeV          (exp: 0.5110, 0.11% off)
-        m_μ  = 0.5104 × 210 = 107.19 MeV  (exp: 105.66, 1.45% off)
-
-    (The earlier draft used l_μ = 14 → ratio 196 → m_μ = 100.05 MeV,
-    5.3% off; superseded by the derived l_μ = √210 below.)
-
-    This replaces the previous fitted c_norms = (2.077e-6, 4.294e-4, 7.223e-3)
-    which were reverse-engineered from experimental masses.
-
-    Parameters
-    ----------
-    l_modes : tuple
-        S² boundary angular momentum modes for (e, μ, τ) generations.
-        Higher l → larger eigenvalue → heavier lepton.
-    DERIVATION STATUS (v0.9.6) — modes now derived from (z, n_gen):
-    ─────────────────────────────────────────────────────────────────────
-        l_e  = 1                          (trivial)          — DERIVED
-        l_μ  = √(z(z²−1)) = √(z(z−1)(z+1)) = √210 ≈ 14.49  — DERIVED
-        l_τ  = z(z + n_gen + 1) − 1 = 59                    — DERIVED
-
-    Physical interpretation:
-    - l_μ = √(z(z-1)(z+1)): geometric mean of three consecutive coordination
-      shells (z-1, z, z+1). The muon couples via the geometric average of
-      the single-shell and pair-shell mode counts.
-    - l_τ = z(z+n_gen+1)-1: the tau uses the extended coordination including
-      all n_gen=3 generation sectors plus the coordination number. For z=6,
-      n_gen=3: z+n_gen+1 = 10, so l_τ = 6×10-1 = 59.
-
-    This replaces the previous "l_μ = √(14×15) from boundary-Higgs mixing"
-    which was an ad hoc justification. The derivation is now: z(z²-1) = 210.
-
-    anchor_mass_MeV : float
-        Mass of the heaviest lepton [MeV].  This is the single
-        experimental input (reduced from 3 fitted parameters).
-    v_EW_GeV : float or None
-        When provided with alpha_EM, derive m_τ = v_EW × α (no anchor).
-    alpha_EM : float or None
-        Fine structure constant from BPR (1/137.03).  With v_EW, yields m_τ.
-    z : int
-        Substrate coordination number (default 6). l-modes derived from this.
-    n_gen : int
-        Number of generations (default 3, derived from topology).
+    l_modes supplies the three effective labels. anchor_mass_MeV fixes the
+    tau scale unless v_EW_GeV is supplied, in which case the existing Yukawa
+    ansatz is used. alpha_EM is retained for API compatibility.
     """
-    # l_modes derived from (z, n_gen): see derive_l_modes() in qcd_flavor.py
+    # Conjectural labels evaluated at z=6 and the empirical n_gen=3.
     # l_e=1 (trivial), l_μ=√(z(z²-1))=√210, l_τ=z(z+n_gen+1)-1=59
     l_modes: tuple = (1, np.sqrt(6 * (6**2 - 1)), 6*(6+3+1)-1)   # (e, μ, τ)
     anchor_mass_MeV: float = _M_TAU_MEV
@@ -161,7 +68,7 @@ class ChargedLeptonSpectrum:
 
     @property
     def c_norms(self) -> np.ndarray:
-        """Boundary mode eigenvalues: c_k = l_k² (S² Laplacian spectrum).
+        """Squared effective flavor labels c_k=l_k², not exact S² eigenvalues.
 
         Ordered (e, μ, τ) to match ascending mass convention.
         """

@@ -372,35 +372,20 @@ class SterileNeutrino:
 # ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
-# §7.6  Number of generations from boundary topology  (Prediction 20)
+# §7.6  Legacy generation-count ansatz (not a topological derivation)
 # ---------------------------------------------------------------------------
 
 def number_of_generations(geometry: str = "sphere") -> int:
-    """Number of matter generations from boundary topology.
+    """Return the legacy generation-count ansatz for numerical compatibility.
 
-    The number of independent cohomology classes on the boundary
-    determines how many fermion generations exist:
-
-        S² (sphere)  → H¹(S²) trivial, but 3 Killing vectors → 3 generations
-        T² (torus)   → H¹(T²) = ℤ² → 2 independent classes + 1 trivial = 3
-        RP² (non-orientable) → H¹(RP²) = ℤ₂ → different physics
-
-    For any orientable 2D boundary with genus g:
-        N_gen = max(3, 2g + 1)   (minimum 3 from sphere topology)
-
-    BPR prediction: **exactly 3 generations** for spherical boundary.
-    A 4th generation requires higher-genus topology (g ≥ 2).
-
-    Parameters
-    ----------
-    geometry : str – "sphere", "torus", or "genus_g" (e.g. "genus_2")
-
-    Returns
-    -------
-    int – number of fermion generations
+    Sphere/torus return the empirical count 3; genus_g uses max(3,2g+1).
+    This is an assumed prescription, not a theorem of topology or CFT.
+    A round-sphere scalar triplet is not automatically three fermion families.
+    No fourth-generation exclusion follows. See generations_from_CFT.md.
+    For a derivation-only answer use boundary_topology.generation_count_from_topology.
     """
     if geometry == "sphere":
-        return 3  # Three Killing vectors of S²
+        return 3  # empirical family-count input
     elif geometry == "torus":
         return 3  # 2g + 1 = 3 for g=1
     elif geometry.startswith("genus_"):

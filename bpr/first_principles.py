@@ -855,10 +855,11 @@ class SubstrateDerivedTheories:
         preds["P19.3_BH_hawking_temp_K"] = bh.hawking_temperature
         preds["P19.4_BH_info_bits_1Msun"] = bh.information_bits
 
-        # ── Prediction 20: Three generations ──
+        # ── Legacy family-count input; not derived from topology ──
         n_gen = th5.number_of_generations("sphere")
         preds["P5.10_number_of_generations"] = n_gen
-        preds["P5.11_4th_generation_requires"] = "genus ≥ 2 boundary topology"
+        preds["P5.10_number_of_generations_status"] = "EMPIRICAL_INPUT"
+        preds["P5.11_4th_generation_requires"] = "OPEN: no topology-only exclusion"
 
         # ==================================================================
         # THEORIES XI–XVI:  ~60 NEW PREDICTIONS

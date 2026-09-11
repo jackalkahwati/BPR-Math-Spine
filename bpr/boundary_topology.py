@@ -199,11 +199,11 @@ def derive_boundary_topology(max_genus_checked: int = 5) -> dict:
         "  compact connected orientable 2-manifold with π₁ = 0.",
         "  S² is derived, not assumed.",
         "",
-        "Corollary (3 generations):",
+        "Conditional family-count ansatz (not a corollary):",
         f"  First non-trivial Laplacian eigenspace on S²: dim = {CompactOrientableSurface(0).laplacian_first_eigenspace_dim}",
         "  This equals the ℓ = 1 sector (m = −1, 0, +1) of SO(3).",
-        "  Identification of each sector with one fermion generation gives",
-        "  exactly 3 generations — derived, not postulated.",
+        "  Identifying these spatial modes with internal families is an assumption.",
+        "  Fermion generation count: OPEN; three is an empirical input.",
     ]
 
     return {
@@ -228,16 +228,18 @@ def verify_s2_uniqueness() -> bool:
     )
 
 
-def generation_count_from_topology(surface: CompactOrientableSurface) -> Optional[int]:
-    """
-    Predict the number of fermion generations from boundary topology.
+def generation_count_from_topology(
+    surface: CompactOrientableSurface, *, assume_l1_families: bool = False
+) -> Optional[int]:
+    """Return a conditional family count, or None when not established.
 
-    Fermion generations = multiplicity of the first non-trivial eigenspace of
-    the Laplacian on the boundary, for the maximally symmetric metric.
-
-    For S²: returns 3.
-    For others: returns None (multiplicity is metric-dependent).
+    Topology and scalar Laplacian multiplicity do not derive fermion families.
+    Only an explicit assume_l1_families=True identifies the round S² l=1
+    multiplicity with families. That is a model assumption, not a theorem.
+    Other surfaces retain None because no canonical multiplicity is supplied.
     """
+    if not assume_l1_families:
+        return None
     return surface.laplacian_first_eigenspace_dim
 
 
@@ -247,8 +249,8 @@ if __name__ == "__main__":
     print()
     surf = result["derived_topology"]
     if surf:
-        n_gen = generation_count_from_topology(surf)
-        print(f"Fermion generations predicted by {surf.name}: {n_gen}")
+        n_gen = generation_count_from_topology(surf, assume_l1_families=True)
+        print(f"Family count for {surf.name} under the l=1 assumption: {n_gen} (derivation OPEN)")
         print(f"Killing vectors (continuous isometries): {surf.continuous_isometry_dim}")
         print(f"Euler characteristic: {surf.euler_characteristic}")
         print(f"Holonomy free parameters: {surf.holonomy_free_parameters}")

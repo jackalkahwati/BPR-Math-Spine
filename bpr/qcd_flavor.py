@@ -2,8 +2,10 @@
 QCD & Flavor Physics
 ========================================================
 
-Derives color confinement, quark mass hierarchy, the CKM mixing matrix,
-and the strong CP solution from boundary winding in the color sector.
+Phenomenological color/flavor models and candidate boundary-mode relations.
+The 2026-09-10 foundation repair withdraws the SU(3) index derivation:
+physical mode assignments are conjectural and n_gen=3 is an empirical input.
+See doc/derivations/color_bundle_index.md; existing numbers are retained.
 
 Key results
 -----------
@@ -27,7 +29,8 @@ _V_HIGGS = 246.0            # GeV  (Higgs VEV)
 _ALPHA_S_MZ = 0.1179        # strong coupling at M_Z
 _LAMBDA_QCD_GEV = 0.332     # GeV  (QCD confinement scale, MS-bar)
 
-# Experimental quark masses (MS-bar, 2 GeV) in MeV
+# Reference masses in MeV: u,d,s at MS-bar 2 GeV; c,b at their own
+# MS-bar mass scales; t is a quoted top-mass reference. Not a common-scale set.
 _QUARK_MASSES_EXP = {
     "u": 2.16, "d": 4.67, "s": 93.4,
     "c": 1270.0, "b": 4180.0, "t": 172760.0,
@@ -82,117 +85,31 @@ class ColorConfinement:
 # ---------------------------------------------------------------------------
 
 def derive_l_modes(z: int = 6, n_gen: int = 3) -> dict:
-    """Derive boundary mode integers from BPR substrate parameters.
+    """Evaluate the retained flavor-mode ansatz from z and n_gen.
 
-    DERIVATION STATUS (v0.9.8):
-    ───────────────────────────────────────────────────────────────────
+    This historical API name does not certify a first-principles derivation.
+    The physical assignments are CONJECTURAL; n_gen=3 is an empirical input.
+    Counting coordination sites does not establish eigenvalues of a fermionic
+    Hamiltonian. In particular, the claimed SU(N_c) bundle index on S² is
+    zero, not n_gen, and an index would not itself shift angular momentum.
+    See doc/derivations/color_bundle_index.md and generations_from_CFT.md.
 
-    DOWN-TYPE (SU(2)_L / isospin sector) — FULLY DERIVED from z:
-        l_d = 1         (trivial ground state)
-        l_s = z − 2     (z neighbors minus 2 SU(2)_L isospin d.o.f.)
-        l_b = z(z−1)    (ordered pairs of distinct neighbors)
+    Retained formulas:
+        up:   (1, z(z-2), (z²-1)(z+n_gen+2-N_c)+n_gen), N_c=z//2
+        down: (1, z-2, z(z-1))
+        lepton: (1, sqrt(z(z²-1)), z(z+n_gen+1)-1)
 
-    Physical interpretation: The SU(2)_L doublet structure removes 2
-    degrees of freedom from the z-neighbor boundary. The first excited
-    mode sees z−2 active neighbors. The second sees all z(z−1) ordered
-    pairs of distinct neighbors (like counting directed edges in the
-    first coordination shell).
+    For z=6, n_gen=3 these give (1,24,283), (1,4,30), (1,sqrt(210),59).
+    The square-root lepton label is an effective mass parameter, not an
+    integer spherical-harmonic angular momentum. The z//2 extrapolation is
+    part of the legacy ansatz; it is not a derived color rank for arbitrary z.
 
-    For z=6: (1, 4, 30) ✓
-
-    UP-TYPE (SU(3)_c / color sector) — l_u, l_c DERIVED; l_t DERIVED (v0.9.9):
-        l_u = 1
-        l_c = z(z−2)                       (ordered non-color-conjugate pairs)
-        l_t = (z²−1)(z + n_gen + 2 − N_c) + n_gen    where N_c = z/2
-
-    Physical interpretation for l_c: In SU(3)_c with z=6 and 3 color
-    axes (±R, ±G, ±B), there are z(z−1)=30 ordered pairs of distinct
-    neighbors, minus z=6 "color-conjugate" pairs (one per axis direction)
-    = z(z−1)−z = z(z−2) = 24 ✓
-
-    COMPLETE DERIVATION FOR l_t (v0.9.9):
-    ─────────────────────────────────────────────────────────────────────
-    The heaviest fermion modes follow a structural parallel:
-
-        l_τ + 1     = z       × (z + n_gen + 1)   [lepton sector]
-        l_t − n_gen = (z²−1)  × (z + n_gen − 1)   [quark sector]
-
-    Each factor has a distinct physical origin:
-
-    (A) BASE MULTIPLIER: z → (z²−1) = dim(su(z))
-        Leptons are color-neutral → couple to z bare coordination sites.
-        Quarks carry SU(N_c) color → couple through ALL z²−1 generators
-        of the SU(z) adjoint boundary structure (gauge modes, not just
-        coordinate modes).
-        N_c = z/2 because z coordination axes pair as ±R, ±G, ±B.
-
-    (B) GENERATION EXTENSION REDUCTION: (n_gen+1) → (n_gen−1)
-        The generation-extension mode space has dimension (n_gen+1) for
-        color-neutral particles (modes j=0,1,...,n_gen).
-        For a quark in the fundamental of SU(N_c), the color holonomy
-        U = exp(i Σ_a φ_a H_a) on the S² boundary acts on generation-
-        extension modes. The N_c−1 = rank(SU(N_c)) = 2 linearly
-        independent Cartan generators H_a (λ₃/2, λ₈/2 for SU(3)) each
-        fix one phase in the generation-extension winding → (N_c−1)
-        constraints.
-        Unconstrained extension: (n_gen+1) − (N_c−1) = n_gen+2−N_c = 2.
-        [Verified: weight matrix of SU(3) fundamental has rank 2 = N_c−1.]
-
-    (C) OFFSET: −1 for leptons, +n_gen for quarks
-        Leptons: the l=0 mode is the Higgs scalar (constant on S², reserved
-        for EW symmetry breaking); fermion modes start at l=1 → offset −1.
-        Quarks: the Atiyah-Singer index theorem on S² with the SU(N_c)
-        color holonomy background gives:
-            index(D_color) = c₁(color bundle)|_{S²} = winding number = n_gen
-        These n_gen topological zero modes are ADDED to the quark spectrum
-        → offset +n_gen. Crucially, this winding number is the SAME
-        topological invariant that BPR uses to derive n_gen = 3 from color
-        confinement — so the +n_gen offset requires no new assumption.
-
-    UNIFIED FORMULA:
-        l_t = (z²−1) × (z + n_gen + 2 − N_c) + n_gen,   N_c = z/2
-            = (z²−1) × (z + n_gen − 1) + n_gen            [since N_c=z/2=3]
-
-    For z=6, n_gen=3: l_t = 35 × 8 + 3 = 283 ✓
-    NOTE: at z=6 this coincides with C(l_c,2)+(z+1) = 283,
-    but they differ for z≠6. The (z²−1)(z+n_gen+2−N_c)+n_gen form is
-    primary because it uses N_c and n_gen from first principles.
-
-    REMAINING VERIFICATION: Confirm explicitly that c₁(color bundle)
-    evaluated in the BPR boundary path integral equals the winding number
-    that determines n_gen. This is a single Atiyah-Singer calculation that
-    closes the argument formally; the physical identity is established.
-
-    CHARGED LEPTONS — FULLY DERIVED from (z, n_gen):
-        l_e  = 1                        (trivial ground state)
-        l_μ  = sqrt(z(z−1)(z+1))        (geometric mean of consecutive shells)
-        l_τ  = z(z + n_gen + 1) − 1     (extended coordination with n_gen)
-
-    Physical interpretation: l_μ = √(z(z²−1)) is the geometric mean of
-    z−1, z, z+1 (three consecutive coordination shells). l_τ uses
-    n_gen=3 (generations, derived from topological winding) so
-    z + n_gen + 1 = 10 counts the "extended boundary" including all
-    generation-separated modes.
-
-    For z=6, n_gen=3: (1, √210≈14.49, 59) ✓
-
-    Parameters
-    ----------
-    z : int
-        Coordination number (default 6 for 3D cubic substrate)
-    n_gen : int
-        Number of generations (default 3, derived from topology)
-
-    Returns
-    -------
-    dict with keys 'l_up', 'l_down', 'l_lep' — each a tuple of mode numbers
+    Returns the legacy mode tuples plus derivation_status and input_status.
+    All statuses refer to the physical interpretation, not the arithmetic.
     """
     l_u = 1
     l_c = z * (z - 2)
-    # Full derivation in docstring (v0.9.9):
-    # N_c = z/2 (color charge pairs), rank(SU(N_c)) = N_c-1 Cartan constraints,
-    # Dirac index = n_gen (Atiyah-Singer, same winding as n_gen derivation).
-    # l_t = (z²-1)(z + n_gen + 2 - N_c) + n_gen = (z²-1)(z+n_gen-1)+n_gen for z=6
+    # Retained phenomenological formula; the former index proof is withdrawn.
     N_c = z // 2
     l_t_conjectural = (z**2 - 1) * (z + n_gen + 2 - N_c) + n_gen
 
@@ -209,134 +126,39 @@ def derive_l_modes(z: int = 6, n_gen: int = 3) -> dict:
         "l_down": (l_d, l_s, l_b),
         "l_lep":  (l_e, l_mu, l_tau),
         "derivation_status": {
-            "l_up_0": "DERIVED",
-            "l_up_1": "DERIVED",
-            "l_up_2": "DERIVED",  # v0.9.9: Cartan+Dirac-index derivation complete
-            "l_down_0": "DERIVED",
-            "l_down_1": "DERIVED",
-            "l_down_2": "DERIVED",
-            "l_lep_0": "DERIVED",
-            "l_lep_1": "DERIVED",
-            "l_lep_2": "DERIVED",
-        }
+            key: "CONJECTURAL"
+            for key in (
+                "l_up_0", "l_up_1", "l_up_2", "l_down_0", "l_down_1",
+                "l_down_2", "l_lep_0", "l_lep_1", "l_lep_2",
+            )
+        },
+        "input_status": {"n_gen": "EMPIRICAL_INPUT", "z": "MODEL_INPUT"},
     }
 
 
 @dataclass
 class QuarkMassSpectrum:
-    """Quark masses from boundary mode spectrum in the color sector.
+    """Phenomenological quark masses from specified flavor-mode labels.
 
-    UP-TYPE QUARKS
-    ─────────────────────────────────────────────────────────────────────
-    The up-type mass eigenvalue for generation k is proportional to the
-    square of the S² boundary angular momentum quantum number:
+    Physical mode selection is CONJECTURAL (see derive_l_modes); the former
+    SU(3) index proof is withdrawn. The three-family structure is an input.
+    These formulas are not eigenvalues of a derived fermionic Hamiltonian.
 
-        m_k ∝ l_k²
+    Up-type masses use the squared labels (1,24,283), normalized to the top
+    reference mass or to the model relation m_t=v_EW/sqrt(2). Down-type masses
+    use a shifted quadratic ansatz with labels (1,4,30), normalized to the
+    bottom reference mass or the existing EW/boundary relation. These labels
+    and normalization prescriptions are retained for numerical comparison.
+    In particular l² is not the exact scalar S² Laplacian eigenvalue l(l+1).
 
-    Mode derivation (see derive_l_modes()):
-        l_u = 1                                          — DERIVED (trivial)
-        l_c = z(z-2)    = 24 (z=6)                       — DERIVED
-        l_t = (z²-1)(z+n_gen+2-N_c)+n_gen = 283         — DERIVED (v0.9.9)
-            N_c = z/2; base z²-1 = dim(su(z));
-            extension reduced by rank(SU(N_c))=N_c-1=2 Cartan constraints;
-            offset +n_gen = Atiyah-Singer index (same winding as n_gen derivation)
-
-    When v_EW_GeV is provided: m_t = v_EW/√2 (DERIVED from boundary).
-    Otherwise anchored to m_t = 172760 MeV (1 experimental input).
-
-    Results:
-        m_u = m_t × 1²/283² = 2.156 MeV  (exp: 2.16, 0.2% off)
-        m_c = m_t × 24²/283² = 1242 MeV   (exp: 1270, 2.2% off)
-        m_t = v_EW/√2 or anchor            (0.8% off pole mass)
-
-    DOWN-TYPE QUARKS — FULLY DERIVED from (z, W_c, m_b anchor)
-    ------------------------------------------------------------------
-    The down-type quarks see the boundary Laplacian SHIFTED by W_c = √3:
-
-        E_l = l(l + W_c)
-
-    Mode derivation (see derive_l_modes()):
-        l_d = 1      (trivial)            — DERIVED
-        l_s = z-2    = 4 (z=6)            — DERIVED
-        l_b = z(z-1) = 30 (z=6)           — DERIVED
-
-    Physical: SU(2)_L removes 2 d.o.f. → l_s = z-2; ordered neighbor
-    pairs → l_b = z(z-1).
-
-    With derived b = -W_c(1-1/(4z)) from boundary coordination:
-        m_d = 4.716 MeV  (exp: 4.67, 1.0% off)  — DERIVED
-        m_s = 93.6 MeV   (exp: 93.4, 0.2% off)  — DERIVED
-        m_b = anchor     (1 experimental input)
-
-    This replaces the previous fitted c_norms_up = (8.78e-6, 5.16e-3, 7.02e-1)
-    which were reverse-engineered from PDG quark masses.
-
-    DOWN-TYPE QUARKS -- DERIVED from winding-shifted boundary spectrum
-    ------------------------------------------------------------------
-    The down-type quarks couple to the boundary through the isospin-1/2
-    sector of the SU(2)_L doublet.  Unlike the up-type (which see the
-    scalar Laplacian l^2), the down-type quarks see the boundary Laplacian
-    SHIFTED by the critical winding number W_c = sqrt(kappa):
-
-        E_l^down = l^2 + W_c * l = l(l + W_c)
-
-    where W_c = sqrt(3) for the sphere (kappa = z/2 = 3).
-
-    Physical interpretation: the Higgs doublet couples the up-type and
-    down-type sectors differently.  The up-type couples to the scalar
-    boundary modes (eigenvalue l^2).  The down-type couples through the
-    Higgs doublet's lower component, which carries winding charge W_c,
-    shifting the effective angular momentum by W_c.
-
-    Using l = (1, 4, 30), anchored to m_b:
-        E_1 = 1*(1 + 1.732) = 2.732
-        E_4 = 4*(4 + 1.732) = 22.93
-        E_30 = 30*(30 + 1.732) = 951.96
-
-    When v_EW_GeV given: m_b = m_t × (E_b/c_t) × 2 (DERIVED from up-down
-    boundary ratio; factor 2 from Higgs doublet isospin structure).
-    Otherwise anchored to m_b = 4180 MeV. Constant b from m_d target:
-        m_d = 4.67 MeV  (exp: 4.67, 0.0% off) -- DERIVED
-        m_s = 93.5 MeV  (exp: 93.4, 0.1% off) -- DERIVED
-        m_b = m_t×(E_b/c_t)×2 or anchor -- DERIVED when v_EW given
-
-    DERIVATION STATUS (v0.9.6) — see derive_l_modes() for full derivation:
-    ─────────────────────────────────────────────────────────────────────
-    Down-type l = (1, z-2, z(z-1)) = (1, 4, 30)        — FULLY DERIVED
-    Up-type   l = (1, z(z-2), C(z(z-2),2)+(z+1))
-                = (1, 24, 283)                           — l_u,l_c DERIVED; l_t CONJECTURAL
-
-    The previously-SUSPICIOUS mode integers are now explained:
-    - l_d = 1, l_s = z-2 = 4, l_b = z(z-1) = 30: derived from z-neighbor geometry
-    - l_u = 1, l_c = z(z-2) = 24: derived from color-sector neighbor counting
-    - l_t = C(24,2) + (z+1) = 276+7 = 283: formula works, physical motivation unclear
-
-    SU(3) connection: l_u=1=dim(0,0) and l_c=24=dim(3,1) of SU(3) — promising lead.
-
-    Parameters
-    ----------
-    l_modes_up : tuple of int
-        S^2 boundary angular momentum modes for (u, c, t) generations.
-    anchor_mass_up_MeV : float
-        Top quark mass [MeV] -- the single experimental input for up-type.
-    l_modes_down : tuple of int
-        S^2 boundary modes for (d, s, b) generations.
-    anchor_mass_down_MeV : float
-        Bottom quark mass [MeV] -- anchor for down-type.
-    W_c : float
-        Critical winding number = sqrt(kappa) for the boundary geometry.
-        For sphere with z=6: W_c = sqrt(3) = 1.7321.
-    v_higgs : float
-        Higgs VEV [GeV].
-    v_EW_GeV : float or None
-        When provided, derive m_t = v_EW/√2 [MeV] from boundary (no anchor).
-    p : int or None
-        Substrate prime for m_b boundary correction (2 + 1/(3 ln p)).
-    z : float
-        Coordination number for m_d spectrum (b = -W_c×(1−1/(4z))).
+    Parameters are the mode tuples, reference masses in MeV, Higgs/EW scale
+    in GeV, p, and coordination z. Setting v_EW_GeV replaces mass anchors
+    with model relations; it does not establish a first-principles derivation.
+    Quark mass comparisons require an explicit renormalization scheme and
+    scale; the stored reference list is not a common-scale spectrum.
     """
-    # UP-TYPE modes — derived from z via derive_l_modes()
-    # l_u=1 (trivial), l_c=z(z-2)=24 (DERIVED), l_t=C(l_c,2)+(z+1)=283 (CONJECTURAL)
+    # UP-TYPE labels from the retained ansatz in derive_l_modes()
+    # All physical mode assignments, including l_t=283, are conjectural.
     l_modes_up: tuple = (1, 24, 283)   # (u, c, t) -- ascending mass order
     anchor_mass_up_MeV: float = 172760.0  # m_t (PDG 2024)
     v_EW_GeV: Optional[float] = None   # when set, m_t = v_EW/√2 (DERIVED)
@@ -344,7 +166,7 @@ class QuarkMassSpectrum:
     z: float = 6.0                     # coordination number (cubic lattice)
 
     # DOWN-TYPE: winding-shifted spectrum l(l + W_c)
-    # l_d=1 (trivial), l_s=z-2=4 (DERIVED), l_b=z(z-1)=30 (DERIVED)
+    # Conjectural physical assignments: l_d=1, l_s=z-2=4, l_b=z(z-1)=30.
     l_modes_down: tuple = (1, 4, 30)   # (d, s, b) -- ascending mass order
     anchor_mass_down_MeV: float = 4180.0  # m_b (PDG 2024)
     W_c: float = np.sqrt(3.0)          # critical winding = sqrt(kappa)
@@ -478,13 +300,13 @@ class CKMMatrix:
 
     def __post_init__(self):
         if self.overlap_matrix is None:
-            # All three CKM angles derived from BPR l-modes and W_c — no experimental inputs.
+            # Evaluate the retained CKM ansatz conditional on the flavor labels.
             z_int = int(self.z)
-            n_gen = 3        # derived from topological winding in BPR
+            n_gen = 3        # empirical family-count input
             N_c = z_int // 2  # = 3 for z=6 (color charges = z/2)
             W_c = np.sqrt(3.0)  # critical winding for SU(3)_c
 
-            # L-modes: all derived — see derive_l_modes()
+            # Conjectural physical mode assignments — see derive_l_modes()
             l_d = 1
             l_s = z_int - 2              # = 4
             l_b = z_int * (z_int - 1)    # = 30

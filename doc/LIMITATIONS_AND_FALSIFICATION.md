@@ -758,7 +758,20 @@ The three necessary conditions (compact, orientable, simply connected) are thems
 
 ---
 
-### The generation count follows too
+### The generation count follows too — WITHDRAWN (2026-09-10)
+
+> **Status:** the argument in this subsection and the next is withdrawn.
+> The ℓ=1 scalar eigenspace on round S² is 3-dimensional; that is a fact
+> about spatial spin-1 modes, not about spin-1/2 families. Identifying it
+> with fermion generations is an assumption, and the CFT argument that was
+> meant to justify the identification is invalid (integer conformal spin,
+> no constructed group action, fusion products misread as descendants, and
+> an arithmetic slip). n_gen=3 is now an empirical input. The text below
+> is retained as the historical claim. Corrected treatment:
+> `doc/derivations/generations_from_CFT.md`; conditional replacement
+> (Dirac zero modes of a twisted line bundle, flux an input):
+> `doc/derivations/color_bundle_index.md`.
+
 
 Given Σ = S², the number of fermion generations follows from the spectrum of the Laplacian. The eigenspaces of −∇² on S² are the spherical harmonic sectors:
 
@@ -783,7 +796,7 @@ The number of fermion generations is not a separate fact used to select S². It 
 
 ---
 
-### The residual open question — NOW CLOSED (April 2026)
+### The residual open question — REOPENED (2026-09-10; April 2026 closure withdrawn)
 
 One step in the above was not yet a theorem within BPR:
 
@@ -795,6 +808,9 @@ spectrum of the compact boson at R=√3 contains exactly one SO(3) triplet
 primary at the lowest fermionic dimension; ℓ≥2 multiplets are excluded by
 the fusion ring (they factor as composites of ℓ=1 primaries). Exactly 3
 generations follow, and a 4th is blocked by the fusion algebra.
+
+> **2026-09-10:** every step of that closure fails on inspection; see the
+> status note at the top of this subsection. The identification is OPEN.
 
 ---
 
