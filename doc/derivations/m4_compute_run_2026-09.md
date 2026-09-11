@@ -54,7 +54,49 @@ the calibration.
 | iso_b195 | 8 × 8 × 24 | 1.95 | 1.95 | closer to β_c, lighter states if the transition is continuous |
 | aniso_b18_bt36_L6 | 6 × 6 × 32 | 1.8 | 3.6 | volume gate partner |
 
-Each 100,000 configurations.
+Each 100,000 configurations. **Completed 2026-09-11; gates fail in all
+four.** Two lessons, one of them a mistake of mine:
+
+| Tag | Plaquette | A1 decay per slice | Reading |
+|---|---|---|---|
+| iso_b195 | 0.573 | ≈ ×8 (m_eff ≈ 2.1) | slightly lighter than at β = 1.8; noise by t = 3 |
+| aniso_b18_bt36 | 0.997 | ≈ ×10, amplitude 40× smaller | **wrong phase** |
+| aniso_b18_bt54 | 0.9998 | frozen; A2 amplitude 10⁻⁸ | **wrong phase** |
+
+Raising β_t while holding β_s = 1.8 does not make the temporal spacing
+finer at fixed physics; it moves the whole system across the transition
+into the ordered (deconfined) phase, where the loops barely fluctuate.
+The anisotropic action needs β_s **lowered** and β_t raised together, and
+the transition line in the (β_s, β_t) plane has to be located first. That
+scan is recorded in the next section. Closer to β_c on the isotropic
+line the states are lighter (m_eff 2.6 → 2.1), which is the expected
+direction if the transition is continuous, but not enough on its own.
+
+## Anisotropic transition line (2026-09-11)
+
+Spatial-plaquette susceptibility along β_t = ξ β_s, D₅, L_s = 8, L_t = 16,
+600 measurements per point (cheap with the vectorised code):
+
+| ξ | β_s at the jump | β_t | Character |
+|---|---|---|---|
+| 1 | ≈ 2.0 (peak at the end of the coarse scan; earlier work: 1.9–2.0) | 2.0 | susceptibility peak |
+| 2 | 1.29 ± 0.01 | 2.58 | plaquette jumps 0.52 → 0.72 → 0.85 across 0.04 in β_s |
+| 3 | 0.97 ± 0.01 | 2.91 | plaquette jumps 0.42 → 0.55 → 0.66 → 0.90 |
+
+The jumps are sharp at this volume, which is what a first-order (or
+weakly first-order) transition looks like; if that holds, the correlation
+length stays finite at the transition and the states never become light
+in lattice units. This is a property of the frozen dynamics, not of the
+algorithm. It does not block the benchmark, which needs ratios, but it
+means "go closer to β_c" is not a route to arbitrarily clean plateaus.
+
+## Run 3 (launched; results appended when complete)
+
+| Tag | Lattice | β_s | β_t | Purpose |
+|---|---|---|---|---|
+| xi2_b126 (+ L6 partner) | 8 × 8 × 32 | 1.26 | 2.52 | ξ = 2, just below the line |
+| xi3_b094 (+ L6 partner) | 8 × 8 × 48 | 0.94 | 2.82 | ξ = 3, just below the line |
+| iso_b198 | 8 × 8 × 24 | 1.98 | 1.98 | isotropic, just below the line |
 
 ## Rules kept
 
