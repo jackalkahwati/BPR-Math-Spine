@@ -69,6 +69,13 @@ discrete-gauge analog of self-interacting force carriers.
 
 ## 3. What Milestone 1 does NOT deliver — the honest gap list
 
+0. **No particle-physics bridge.** A finite-group quantum double is a
+   legitimate 2+1D anyon model (Kitaev). Non-Abelian anyons do not by
+   themselves establish 4D SU(3) color, chiral Standard Model fermions,
+   anomaly cancellation, or the observed spectrum. Nothing in Path B yet
+   supplies that bridge; it is the central open problem, not a milestone
+   with partial credit (added 2026-09-10).
+
 1. **No spectrum.** At its exactly solvable point, a 2+1D discrete gauge
    theory is *topological*: gapped, deconfined, degenerate — no propagating
    particles, no mass ratios. Claiming glueball physics from Milestone 1 alone
@@ -101,7 +108,11 @@ only gauge-inert inputs (mode integers l_i and J, p, z, n_gen). Gauging
 organizes boundary states by D_n charge and adds flux sectors, but does not
 touch the untwisted Hamiltonian — verified exactly: the charge-sector spectra
 partition the full spectrum for every allowed class (no energy moves). **Every
-registered LHCb pre-diction is numerically unchanged.** What changes is
+registered LHCb pre-diction is numerically unchanged.** (Scope, 2026-09-10
+review: this is numerical preservation under a kinematic relabeling. It does
+not establish that the flavor sector survives the interacting M2 dynamics,
+and the flavor-mode labels themselves are conjectural with n_gen=3 an
+empirical input; see `doc/derivations/color_bundle_index.md`.) What changes is
 interpretation: flavor modes now carry D_n gauge charge fixed by l mod n
 (e.g. n=9: d,u → E1; b,c → E3; s,t → E4), directly parallel to quarks carrying
 color. Caveats on record: the lepton labels include √210 (l mod n undefined —

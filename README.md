@@ -2,7 +2,7 @@
 
 > **Status :** public draft | license MIT | contact <jack@thestardrive.com>
 >
-> **CURRENT CLAIM (BPR 2.0):** a **flavor-sector organizing framework** + a proposed, untested particle sector (gauged dihedral point group, Postulate 0d). The original "theory of everything" claim was withdrawn after a sealed, blind glueball benchmark falsified the 1.0 particle sector (2026). Flavor predictions are numerically unchanged.
+> **CURRENT CLAIM (BPR 2.0):** a **flavor-sector organizing framework** + a proposed, untested particle sector (gauged dihedral point group, Postulate 0d). The original "theory of everything" claim was withdrawn after a sealed, blind glueball benchmark falsified the 1.0 particle sector (2026). Flavor formulas are numerically unchanged under gauging (a kinematic relabeling, not a proof of survival under the interacting dynamics). The proposed sector supplies 2D non-Abelian anyons only; 4D SU(3) color, chiral Standard Model matter, and the particle spectrum are NOT established. Flavor-mode labels are conjectural and n_gen=3 is an input (2026-09-10 foundation repair).
 >
 > **BPR 2.0 (Path B)** → [`viz/bpr2-status.html`](viz/bpr2-status.html) *(honest status page: what changed from 1.0, the sealed glueball benchmark that forced it, milestones, and the two open decision points)* | proposal: [`doc/BPR2_PATH_B_NONABELIAN_GAUGE.md`](doc/BPR2_PATH_B_NONABELIAN_GAUGE.md)
 >
