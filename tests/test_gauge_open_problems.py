@@ -175,7 +175,8 @@ def test_electron_tau_always_determinate():
 
 def test_open_problem_modules_blind_to_glueball_targets():
     for mod in ("gauge_phase_mc.py", "glueball_channels_mc.py",
-                "lepton_dn_assignment.py"):
+                "lepton_dn_assignment.py", "gauge_mc_fast.py",
+                "flavor_label_scan.py"):
         src = (BPR_DIR / mod).read_text()
         for leaked in ("1730", "2400", "2590", "1.387", "1.497", "2370",
                        "2359", "X(2370)", "Morningstar", "BESIII"):

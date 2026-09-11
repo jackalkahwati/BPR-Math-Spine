@@ -64,6 +64,32 @@ larger lattices, anisotropic coupling (finer time direction), operator
 smearing/variational basis, and ~10⁶ configs. None of that changes the
 frozen dynamics or the targets.
 
+**Addendum 2026-09-10 (`bpr/gauge_mc_fast.py`, `tests/test_gauge_mc_fast.py`).**
+Two defects were found in the A2 (parity-odd) operator above while building
+a faster measurement code, and both are fixed there:
+
+1. The 8-link "L" and its "mirror" in `glueball_channels_mc._l_loop` are not
+   contiguous link paths (a backward step is taken from the wrong site), so
+   their characters are **not gauge invariant** — verified: they change by
+   O(1) under a random gauge transformation while plaquettes and rectangles
+   are invariant to machine precision. The earlier A2 "signal" was gauge noise.
+2. Even a contiguous notched-square loop is **achiral**: its x-reflection is
+   a rotation of itself with reversed orientation, and D_n characters are
+   real, so the rotation-symmetrised (loop − mirror) combination vanishes
+   identically. A parity-odd zero-momentum operator needs a chiral shape.
+   The fix uses polyomino boundaries (L-tetromino, S-tetromino,
+   P-pentomino), rotation-symmetrised and antisymmetrised under x → −x;
+   these are verified gauge invariant, non-zero, and odd under reflection
+   of the configuration.
+
+The A1 and B1 operators were correct. Consequently the earlier statement
+"gates fail at laptop statistics" was true for A1/B1 and vacuous for A2.
+The compute side is also addressed: a vectorised checkerboard Metropolis
+(validated against `WilsonMC` on Z₂ and D₅) runs 8×8×16 at ~1 ms/sweep,
+with an L_t longer than L_s, a 3-operator variational basis per channel, and
+a GEVP for effective masses. Results of the first production run are
+recorded in `doc/derivations/m4_compute_run_2026-09.md`.
+
 ## 3. M3 √210 lepton wrinkle — **CLOSED for n=5; reduced elsewhere**
 
 **Resolution (no new postulate).** The l_μ derivation itself supplies the
