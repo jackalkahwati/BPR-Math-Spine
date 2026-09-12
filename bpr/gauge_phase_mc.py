@@ -1,51 +1,25 @@
-"""Path B M2 open problem: LOCATE the confinement-deconfinement transition.
+"""Character-Wilson finite-group Monte Carlo, distinct from historical M2 H.
 
-The M2 dynamics was frozen in `gauge_dynamics_m2_m3.py`:
+The D_n tables use the faithful E1 character (d=2) in the Euclidean action
+    S = beta * sum_p (1 - Re chi_E1(U_p)/2)
+on a periodic 3D lattice. Generic supplied tables instead define their own
+character/table action beta * sum_p (1 - c[U_p]/d). No sampler substitutes
+heat-kernel weights for the character array used by actions or observables.
 
-    H(lambda) = (1/lambda) sum_links Delta_G + lambda sum_plaq (1 - Re chi_F/d_F)
+This is NOT simulation of the original noncentral generator Hamiltonian in
+``gauge_dynamics_m2_m3``, nor of the new central heat-kernel model. The Wilson
+transfer has a different electric spectrum. No equality of Hamiltonians or
+beta/lambda mapping (including monotonicity) has been established.
 
-with the phase location in lambda recorded as OPEN ("requires simulation").
-This module is that simulation.
+The measured quantities are mean plaquette and n_plaq * Var(mean plaquette).
+The susceptibility peak is a finite-volume pseudo-critical beta, not proof
+of the number/order of transitions or a physical substrate phase. Neither
+the substrate coupling nor continuum/spatial particle matching is derived.
+Historical scan arithmetic and defaults are retained unchanged.
 
-WHAT IS COMPUTED
-----------------
-Standard Euclidean proxy: the 3D (2+1D) Wilson lattice gauge theory for the
-finite group D_n with plaquette action
-
-    S = beta * sum_p (1 - Re chi_F(U_p) / d_F),      F = E1 (faithful, d=2)
-
-on an L^3 periodic lattice, sampled by Metropolis. The observables are the
-mean plaquette <P> and its susceptibility chi_s = V(<P^2> - <P>^2); the
-pseudo-critical coupling beta_c(L) is the susceptibility peak. Strong coupling
-(small beta) is the confining phase; large beta is deconfined. The Euclidean
-beta maps onto the Hamiltonian lambda monotonically (the exact Hamiltonian-
-limit relation requires an anisotropic-lattice scan — recorded as a caveat,
-not glossed).
-
-VALIDATION
-----------
-The identical code run for gauge group Z_2 must reproduce the known 3D Z_2
-gauge transition at beta_c ~= 0.7613 (dual to the 3D Ising model). This is a
-literature anchor, not a BPR number.
-
-WHY A TRANSITION MUST EXIST (context, not assumption)
-------------------------------------------------------
-3D gauge theories with a discrete center/discrete group generically have a
-single bulk transition separating a confining strong-coupling phase from a
-deconfined topological weak-coupling phase; both endpoint phases were already
-identified exactly in `gauge_dynamics_m2_m3.py`. The open question was WHERE.
-
-BLINDNESS: no glueball target, mass, or ratio appears here (grep-enforced).
-
-WHAT THIS DOES NOT DELIVER (recorded)
--------------------------------------
-* The physical value of lambda for the substrate is NOT derived here; BPR
-  provides no map from (p, z, n) to lambda yet. This module answers "where is
-  the transition", not "which side of it the substrate sits on". That second
-  question remains OPEN and is now the sharpest form of the M2 problem.
-* Pseudo-critical beta_c(L) at small L carries finite-size shifts; values are
-  quoted with the scan resolution, not error bars from a finite-size-scaling
-  study.
+The Z_2 literature anchor is beta_c ~= 0.7613. This validation tests the
+Wilson sampler, not its equivalence to a proposed substrate Hamiltonian.
+No glueball benchmark target appears here; the benchmark remains sealed.
 """
 from __future__ import annotations
 
@@ -91,6 +65,20 @@ def z2_tables():
 # ---------------------------------------------------------------------------
 
 
+def wilson_model_metadata() -> dict:
+    """Generic provenance: custom tables do not establish D_n/E1 identity."""
+    return {
+        "model_id": "finite-group-character-wilson-v1",
+        "action": "S = sum_p beta_p * (1 - c[U_p]/d)",
+        "group": "supplied group tables",
+        "representation": "supplied character/table values c and normalization d",
+        "units": "dimensionless lattice action and couplings",
+        "electric_transfer": "Wilson character weight; not generator heat kernel",
+        "beta_lambda_mapping": "NOT ESTABLISHED",
+        "physical_matching": "NOT ESTABLISHED",
+    }
+
+
 class WilsonMC:
     """Metropolis for a finite-group Wilson action on an L^3 periodic lattice.
 
@@ -101,6 +89,7 @@ class WilsonMC:
 
     def __init__(self, tables, L: int = 4, beta: float = 1.0, seed: int = 0):
         self.M, self.I, self.c, self.d = tables
+        self.model_metadata = wilson_model_metadata()
         self.G = len(self.I)
         self.L, self.beta = L, beta
         self.rng = np.random.default_rng(seed)
@@ -179,6 +168,7 @@ class WilsonMC:
             "plaq_mean": float(v.mean()),
             "plaq_susc": float(n_plaq * v.var()),
             "n_samples": len(vals),
+            "model_metadata": dict(self.model_metadata),
         }
 
 
@@ -223,20 +213,22 @@ def validate_z2(L: int = 4, seed: int = 7) -> dict:
 
 def locate_dn_transition(n: int, L: int = 4, seed: int = 11,
                          betas=None) -> dict:
-    """The M2 answer for class n: pseudo-critical coupling of the D_n theory."""
+    """Finite-volume susceptibility peak of the D_n E1 character-Wilson model."""
     if betas is None:
         betas = np.arange(0.6, 2.2, 0.1)
     res = scan(dn_tables(n), betas, L=L, seed=seed)
     pc = pseudo_critical(res)
     pc["n"] = n
     pc["group"] = f"D_{n}"
+    pc["model_metadata"] = {
+        **wilson_model_metadata(), "group": f"D_{n}", "representation": "E1 (d=2)"}
     pc["scan"] = [(r["beta"], round(r["plaq_mean"], 4),
                    round(r["plaq_susc"], 4)) for r in res]
     return pc
 
 
 def report(L: int = 4) -> str:  # pragma: no cover
-    lines = ["M2 phase location — Monte Carlo of the frozen Wilson dynamics",
+    lines = ["Character-Wilson MC — finite-volume susceptibility peaks",
              "=============================================================",
              ""]
     v = validate_z2(L=L)
@@ -249,10 +241,10 @@ def report(L: int = 4) -> str:  # pragma: no cover
                      f"+- {r['resolution']:.2f} (L={L}, susceptibility peak"
                      f"{', AT SCAN EDGE' if r['at_edge'] else ''})")
     lines += ["",
-              "Confining phase: beta < beta_c (lambda below the mapped "
-              "lambda_c). Deconfined/topological: above.",
-              "OPEN remainder: the substrate's physical lambda is underived; "
-              "which side it sits on is still unknown."]
+              "These peaks characterize this Wilson model only, not the "
+              "historical generator Hamiltonian or the NEW heat-kernel model.",
+              "No beta/lambda mapping is established. Finite-volume peaks alone "
+              "do not establish a full phase diagram or the substrate phase."]
     return "\n".join(lines)
 
 

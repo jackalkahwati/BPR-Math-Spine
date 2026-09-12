@@ -1,7 +1,7 @@
 """Lock Path B Milestone 1: gauged point-group kinematics + honesty guards.
 
 Guards (a) the exact group theory (orthogonality, Burnside, quantum-double sum
-rule), (b) the two structural results (A2 pseudoscalar charge, E_k doublets),
+rule), (b) the internal representation results (A2 sign charge, E_k doublets),
 and (c) the honesty boundary: NO spectrum claims, milestones 2-4 OPEN, and the
 module stays blind to every glueball number (mechanical grep, same discipline
 as Benchmark v1).
@@ -67,9 +67,7 @@ def test_quantum_double_sum_rule_exact():
 # --- the two structural results ---------------------------------------------
 
 def test_pseudoscalar_charge_exists_for_every_class():
-    """THE HEADLINE: the A2 sign charge (rotation-invariant, reflection-odd —
-    the discrete 0^- precursor) exists for every allowed class. This is what
-    the Abelian scalar theory provably lacked."""
+    """Internal A2 sign charge exists; this does not identify spatial parity."""
     for n in ALLOWED_CLASSES:
         ps = pseudoscalar_charge(n)
         assert ps["exists"] is True
@@ -102,13 +100,14 @@ def test_d5_reference_values():
 # --- honesty guards ----------------------------------------------------------
 
 def test_no_spectrum_claims_and_v3_sealed():
-    """Spectrum claims stay NONE and Benchmark v3 stays SEALED until the M4
-    blocker calculation (higher-order strong coupling / MC) is actually done.
-    M2 form is frozen and M3 passed kinematically — per gauge_dynamics_m2_m3."""
+    """No physical spectrum or dynamical flavor claim; Benchmark v3 stays SEALED."""
     ms = milestone_status()
-    assert ms["M2_dynamics_beyond_topological_point"].startswith("FORM FROZEN")
+    assert ms["M2_dynamics_beyond_topological_point"].startswith("ORIGINAL INVALID")
+    assert "noncentral" in ms["M2_dynamics_beyond_topological_point"]
+    assert "NEW" in ms["M2_dynamics_beyond_topological_point"]
     assert "OPEN" in ms["M2_dynamics_beyond_topological_point"]
-    assert ms["M3_flavor_sector_compatibility"].startswith("PASS")
+    assert ms["M3_flavor_sector_compatibility"].startswith("KINEMATIC")
+    assert "UNKNOWN" in ms["M3_flavor_sector_compatibility"]
     assert ms["M4_sealed_benchmark_v3"].startswith("SEALED")
     assert ms["spectrum_claims"].startswith("NONE")
     assert "PROPOSED" in ms["postulate_0d_status"]

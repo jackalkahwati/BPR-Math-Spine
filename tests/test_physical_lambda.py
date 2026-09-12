@@ -1,9 +1,7 @@
-"""Locks for the physical-lambda derivation (PROPOSED v0.1).
+"""Lock historical coupling-ansatz arithmetic, not a derived physical map.
 
-These tests lock the derivation's arithmetic, its honesty guards, and its
-blindness — NOT the truth of the proposal. If the kill condition fires
-(a >5x calibration shift), the module goes to the registry and these locks
-are retired with it.
+Keep numerical anchors and source blindness while requiring explicit unknown
+physical phase and unestablished beta/lambda matching.
 """
 from __future__ import annotations
 
@@ -62,9 +60,12 @@ def test_beta_c_covers_all_allowed_classes():
     assert set(BETA_C_MEASURED) == set(ALLOWED_CLASSES)
 
 
-def test_verdict_is_deconfined_with_wide_margin():
+def test_ansatz_above_wilson_peaks_does_not_determine_physical_phase():
     v = phase_verdict()
-    assert v["verdict"] == "DECONFINED / TOPOLOGICAL"
+    assert v["verdict"].startswith("CONDITIONAL Wilson ansatz")
+    assert v["physical_phase"] == "UNKNOWN"
+    assert v["beta_lambda_mapping"] == "NOT ESTABLISHED"
+    assert v["model_id"] == "finite-group-character-wilson-v1"
     assert all(r > 4.0 for r in v["ratio_to_transition"].values())
 
 
@@ -84,12 +85,11 @@ def test_per_link_value_is_recorded_but_disavowed():
     assert "NONE frozen" in obs["provenance"]
 
 
-def test_consequence_names_both_phases():
-    """The stated consequence must acknowledge the confining spectrum belongs
-    to a phase the substrate does not occupy (no quiet reinterpretation)."""
+def test_consequence_keeps_physical_phase_conditional():
     v = phase_verdict()
+    assert "independent matching" in v["consequence_if_stands"]
     assert "anyons" in v["consequence_if_stands"]
-    assert "does not occupy" in v["consequence_if_stands"]
+    assert "confining physical sector is not excluded" in v["consequence_if_stands"]
 
 
 # ---------------------------------------------------------------------------

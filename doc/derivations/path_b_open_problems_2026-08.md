@@ -9,7 +9,20 @@ Blindness to the sealed v1/v3 targets is grep-enforced in all three.
 
 ---
 
-## 1. M2 phase location — **ANSWERED at scan resolution** (was: OPEN)
+## 2026-09-12 model-identification correction
+
+The scans below locate finite-volume features of the **Euclidean
+character-Wilson action**, not the originally declared `{r,r^-1,s}` electric
+Hamiltonian. That electric operator is noncentral and fails endpoint gauge
+invariance. The separate conjugacy-averaged model in `bpr/gauge_heat_kernel.py`
+has its own heat kernel. The Wilson transfer energies are not proportional to
+its electric spectrum: the monotone beta-to-lambda identification asserted
+below is unsupported, not merely awaiting calibration. Neither these scans nor
+the physical-lambda proposal locates the repaired Hamiltonian's physical phase.
+All historical scan numbers are retained. See
+[toe_constructive_extension_2026-09-12.md](toe_constructive_extension_2026-09-12.md).
+
+## 1. Historical Wilson phase scan — **ANSWERED at scan resolution** (not repaired-Hamiltonian phase location)
 
 **Method.** 3D Euclidean Wilson lattice theory for D_n, plaquette action in
 the faithful E1 irrep, L³ periodic lattice, Metropolis; pseudo-critical

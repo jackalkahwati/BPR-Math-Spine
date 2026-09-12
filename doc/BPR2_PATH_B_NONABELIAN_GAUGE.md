@@ -7,6 +7,27 @@
 > verified; Milestones 2–4 (dynamics, flavor survival, sealed re-benchmark) are
 > open, and **no spectrum claim exists at this stage**.
 
+## 2026-09-12 correction: three distinct gauge models
+
+The historical claims below do not identify a single Hamiltonian consistently.
+The `{r,r^-1,s}` electric Laplacian is noncentral and fails one endpoint gauge
+symmetry. Its quoted scalar “Casimirs” are trace averages, not its irrep
+eigenvalues. The conjugacy-averaged replacement in
+`bpr/gauge_heat_kernel.py` is a **new model**, not a retroactive repair of old
+simulation data. For even n, only the conjugacy class of the selected reflection
+is averaged.
+
+The recorded phase scans and M4 runs use the **Euclidean character-Wilson
+action**. Its transfer spectrum is not proportional to the repaired electric
+spectrum; an assumed scalar beta-to-lambda calibration cannot identify them.
+The new exact isolated-square transfer diagnostic is not bulk spectroscopy,
+a spatial-parity spectrum, or a Benchmark v3 result. Benchmark v3 stays SEALED.
+M3 preserves old formula outputs through kinematic relabeling; dynamical flavor
+survival remains unproved. Internal dihedral labels are not spacetime spin or
+parity. See the [audit](derivations/toe_audit_2026-09-12.md) and
+[conditional construction](derivations/toe_constructive_extension_2026-09-12.md).
+Historical sections below are retained with this qualification.
+
 ## 1. Why this revision is principled and not a retrofit
 
 The glueball benchmark (`doc/GLUEBALL_BENCHMARK_V1.md`) closed with a

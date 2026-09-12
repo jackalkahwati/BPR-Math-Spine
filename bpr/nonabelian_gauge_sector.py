@@ -19,37 +19,35 @@ benchmark (v3) under the same rules as v1.
 
 WHAT MILESTONE 1 DELIVERS (all exactly computable, all verified here)
 ---------------------------------------------------------------------
-Gauging a finite group G on a 2D boundary yields a discrete gauge theory whose
-excitation content is fixed by representation theory alone (Kitaev quantum
-double D(G)): anyons labeled by (conjugacy class C, irrep R of the centralizer
-of C), with quantum dimension d = |C| * dim(R).
+At the quantum-double topological point, finite-group gauge theory has anyon
+labels (conjugacy class C, irrep R of the centralizer of C), with quantum
+dimension d = |C| * dim(R). This is conditional kinematics, not a determination
+of the substrate's phase or physical particle content. Internal D_n reflection
+charge is not by itself spatial parity.
 
-1. PSEUDOSCALAR CHARGE EXISTS — the missing ingredient appears. Every D_n has
-   the 1-dim "sign" irrep A2: rotations -> +1, reflections -> -1. A gauge
-   charge in A2 is invariant under the substrate's rotations (spin-0 precursor)
-   and ODD under its reflections (parity -1 precursor): the discrete precursor
-   of a 0^- state, which was PROVABLY ABSENT in the Abelian scalar theory.
-   Derived from the frozen group, not inserted.
-2. SPIN-LIKE DOUBLETS EXIST — the E_k 2-dim irreps carry rotation eigenvalues
-   e^{+-2 pi i k/n}: discrete angular momentum +-k, the precursors of higher-J
-   content, up to k_max = (n-1)/2 (n odd) or n/2 - 1 (n even).
+1. INTERNAL SIGN CHARGE EXISTS. Every D_n has the 1-dim irrep A2:
+   rotations -> +1, reflections -> -1. Its historical "pseudoscalar" name
+   does not establish a spatial 0^- state after gauging.
+2. INTERNAL DOUBLETS EXIST. The E_k 2-dim irreps carry rotation eigenvalues
+   e^{+-2 pi i k/n}, up to k_max = (n-1)/2 (n odd) or n/2 - 1 (n even).
+   Their identification with physical spatial angular momentum is unproved.
 3. NON-ABELIAN CONTENT DOMINATES — the quantum double D(D_n) has mostly
    anyons with quantum dimension d > 1 (non-Abelian fusion/braiding): e.g.
    14 of 16 types for D_5. The sum rule sum(d^2) = |G|^2 is verified exactly.
 
 WHAT MILESTONE 1 DOES **NOT** DELIVER (the honest gap list)
 -----------------------------------------------------------
-* NO SPECTRUM. At its solvable (Kitaev) point a 2+1D discrete gauge theory is
-  TOPOLOGICAL: gapped, deconfined, all-degenerate — no propagating particles
-  with mass ratios. A spectrum requires freezing a dynamics away from the
-  fixed point (Milestone 2). Until then there are no masses, no ratios, and NO
-  claim about any glueball candidate.
+* NO PHYSICAL MASS SPECTRUM. The quantum-double labels do not fix propagating
+  particle masses. Its topological ground-state degeneracy is not a claim
+  that all excitation energies coincide. The original M2 electric operator
+  is noncentral and invalid as the claimed gauge-invariant Hamiltonian;
+  gauge_heat_kernel supplies a NEW central model, not a physical completion.
 * FLAVOR SECTOR COMPATIBILITY UNPROVEN. The flavor integers came from boundary
   mode counting in the Abelian sector; whether they survive gauging must be
   SHOWN, not assumed (Milestone 3).
-* CONTINUUM QUANTUM NUMBERS NOT ESTABLISHED. A2/E_k are discrete precursors of
-  P = -1 / higher J; the emergent continuum story needs the S^2 eigenproblem of
-  the gauged dynamics (part of the sealed Benchmark v3, Milestone 4).
+* CONTINUUM QUANTUM NUMBERS NOT ESTABLISHED. Internal A2/E_k labels do not
+  establish spatial P or J. That requires a physical spatial-channel
+  construction and spectrum (part of the sealed Benchmark v3, Milestone 4).
 
 ROADMAP (frozen now):
   M1 (this module)  gauge-sector kinematics from the frozen point group   DONE
@@ -140,22 +138,22 @@ def table_checks(n: int) -> dict:
 # ---------------------------------------------------------------------------
 
 def pseudoscalar_charge(n: int) -> dict:
-    """The A2 (sign) irrep: rotations -> +1 (spin-0 precursor), reflections ->
-    -1 (parity-odd precursor). Its existence is checked from the constructed
-    table, not asserted. This is the discrete precursor of a 0^- state — the
-    content whose absence was fatal in the Abelian scalar theory."""
+    """Historical name for the internal A2 sign irrep, not spatial parity.
+
+    Check rotations -> +1 and reflections -> -1 from the character table.
+    This does not construct a physical spatial 0^- state.
+    """
     T = character_table(n)
     A2 = T["A2_sign"]
     rot_ok = all(abs(A2[(k, 1)] - 1.0) < 1e-12 for k in range(n))
     refl_odd = all(abs(A2[(k, -1)] + 1.0) < 1e-12 for k in range(n))
     return {"exists": rot_ok and refl_odd,
-            "rotation_invariant": rot_ok,       # discrete spin-0
-            "reflection_odd": refl_odd}         # discrete parity -1
+            "rotation_invariant": rot_ok,       # internal group action
+            "reflection_odd": refl_odd}         # not a spatial-parity proof
 
 
 def spin_doublets(n: int) -> dict:
-    """E_k irreps: rotation eigenvalues e^{+-2 pi i k/n} — discrete angular
-    momentum +-k, precursors of higher-J content."""
+    """Internal E_k rotation eigenvalues e^{+-2 pi i k/n}, not physical J."""
     kmax = (n - 1) // 2 if n % 2 else n // 2 - 1
     return {"n_doublets": kmax, "k_values": tuple(range(1, kmax + 1))}
 
@@ -206,17 +204,15 @@ def milestone_status() -> dict:
     return {
         "M1_gauge_sector_kinematics": "DONE (this module)",
         "M2_dynamics_beyond_topological_point":
-            "FORM FROZEN (gauge_dynamics_m2_m3) — phase location OPEN; "
-            "no spectrum exists yet",
+            "ORIGINAL INVALID — noncentral Delta_G; gauge_heat_kernel is a NEW "
+            "central model. Physical matching OPEN; Wilson MC is distinct",
         "M3_flavor_sector_compatibility":
-            "PASS kinematic (gauge_dynamics_m2_m3) — energies unchanged, "
-            "modes acquire D_n charge",
+            "KINEMATIC PARTITION VERIFIED — dynamical flavor survival UNKNOWN",
         "M4_sealed_benchmark_v3":
-            "SEALED — blocker: LO strong coupling is J^PC-degenerate; needs "
-            "higher-order expansion or MC",
-        "spectrum_claims": "NONE — the solvable point is topological and the "
-                           "LO strong-coupling spectrum is degenerate; masses "
-                           "and ratios require the M4 blocker calculation",
+            "SEALED — controlled physical spatial-channel spectrum and matching "
+            "remain OPEN; trace averages do not establish glueball masses",
+        "spectrum_claims": "NONE physical — group labels and isolated-square toy "
+                           "energies are not a spatial glueball spectrum",
         "postulate_0d_status": "PROPOSED v0.1 — not merged into the frozen core",
     }
 
@@ -228,7 +224,7 @@ def report() -> str:
         "Gauge group: the FROZEN Postulate 0c point groups D_n, n in "
         f"{ALLOWED_CLASSES} (non-Abelian, already in the theory — not invented).",
         "",
-        " n | |G| | classes | anyons | non-Abelian | A2 pseudoscalar | E_k doublets",
+        " n | |G| | classes | anyons | non-Abelian | A2 sign charge | E_k doublets",
     ]
     for n in ALLOWED_CLASSES:
         ch = table_checks(n)
@@ -244,13 +240,11 @@ def report() -> str:
     lines += [
         "",
         "STRUCTURAL RESULTS (derived, verified exactly):",
-        "  1. The A2 (sign) charge exists for every allowed class: rotation-",
-        "     invariant, reflection-ODD — the discrete precursor of 0^-, which",
-        "     the Abelian scalar theory provably could not contain.",
-        "  2. E_k doublet charges carry discrete angular momentum +-k — the",
-        "     precursor of higher-J content (the 'vector constituent' skeleton).",
-        "  3. The gauged theory is overwhelmingly non-Abelian (quantum double",
-        "     sum rule verified exactly).",
+        "  1. Internal A2 sign charge exists: rotation-invariant, reflection-ODD.",
+        "     Internal reflection charge does not establish spatial parity.",
+        "  2. E_k doublets carry internal rotation labels +-k, not proven physical J.",
+        "  3. Quantum-double anyon dimensions are predominantly non-Abelian",
+        "     (sum rule verified); applicability to the substrate phase is unknown.",
         "",
         "HONEST LIMITS:",
         f"  spectrum: {ms['spectrum_claims']}",

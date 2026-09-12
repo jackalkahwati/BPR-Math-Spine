@@ -6,6 +6,12 @@
 >
 > **BPR 2.0 (Path B)** → [`viz/bpr2-status.html`](viz/bpr2-status.html) *(honest status page: what changed from 1.0, the sealed glueball benchmark that forced it, milestones, and the two open decision points)* | proposal: [`doc/BPR2_PATH_B_NONABELIAN_GAUGE.md`](doc/BPR2_PATH_B_NONABELIAN_GAUGE.md)
 >
+> **2026-09-12 THEORY AUDIT / REPAIR:** [audit](doc/derivations/toe_audit_2026-09-12.md) and [conditional construction](doc/derivations/toe_constructive_extension_2026-09-12.md). The original gauge electric operator is noncentral; the new central heat-kernel model is distinct from all historical Wilson runs. The chiral-flavor prototype uses supplied flux and scalar sources, not predicted masses. No completed TOE or new benchmark result is claimed.
+>
+> **SOURCE-SELECTION FOLLOW-UP (2026-09-12):** [derivation and limitation](doc/derivations/flavor_source_selection_2026-09-12.md). A new fixed-occupation mean-field action selects coherent monopole densities, but attractive inter-sector coupling aligns them and gives no nontrivial mixing. Without the coupling, relative orientation is unselected. This is a conditional source-selection theorem, not a BPR-derived vacuum or a flavor fit.
+>
+> **QUANTUM SOURCE DIAGNOSTIC (2026-09-12):** [operator comparison and missing microscopic inputs](doc/derivations/quantum_flavor_sources_2026-09-12.md). A separate instantaneous fermion model has a five-dimensional ground space in the one-particle-per-sector block, not a unique coherent source. Operator ordering affects number-sector energies. The substrate projection, statistics, physical population and scalar dynamics remain underived.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
