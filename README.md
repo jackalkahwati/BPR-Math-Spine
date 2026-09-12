@@ -14,6 +14,12 @@
 >
 > **SUBSTRATE PROJECTION TEST (2026-09-12):** [ring-to-triplet derivation](doc/derivations/substrate_triplet_projection_2026-09-12.md). The existing ring admits an exact three-mode restricted Hamiltonian and a conservative finite-time classical error bound. Its direct local scalar sources span only five of nine monopole matrix directions, despite generating the full complex matrix algebra through products and complex combinations. This limits that specific projection; it does not derive physical fermions or rule out all emergent mechanisms.
 >
+> **NONLINEAR SUBSTRATE RESPONSE (2026-09-12):** [finite-time interaction calculation](doc/derivations/substrate_nonlinear_response_2026-09-12.md). The unchanged ring dynamics supplies a first-order density response, including a contribution missed by the three-mode restriction, with explicit remainder bounds. This is state-dependent classical response, not a universal flavor matrix or selected vacuum; the frozen demo's conservative bounds do not resolve its finite-interaction signal.
+>
+> **CONDITIONAL FERMIONIZATION (2026-09-12):** [quantum ring dictionary and limits](doc/derivations/substrate_fermionization_2026-09-12.md). A declared extension of the existing bosonic quantum model admits a hard-core Jordan-Wigner map, with parity-dependent ring boundary conditions and finite-repulsion virtual corrections. The string does not neutralize charge or establish physical fermions. If site count equals the neutrality modulus, only empty/full strict hard-core sectors satisfy the assumed neutrality rule.
+>
+> **NEUTRAL FINITE-REPULSION RESPONSE (2026-09-12):** [excitation and density derivation](doc/derivations/substrate_neutral_response_2026-09-12.md). The same quantum ring has nontrivial neutral doublon-hole excitations at chosen unit filling, with a constrained hopping spectrum and a density-response total-weight bound. The frozen example's conservative bound does not resolve the leading density signal. Neutrality and these defect dynamics do not establish physical fermions or select a vacuum.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
