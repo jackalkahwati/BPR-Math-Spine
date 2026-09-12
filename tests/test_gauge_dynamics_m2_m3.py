@@ -1,10 +1,8 @@
-"""Lock Milestones 2-4: M3 PASS, M2 frozen form + exact Casimirs, M4 sealed.
+"""Lock historical M2/M3 arithmetic with truthful model provenance.
 
-Guards: (a) the exact M3 verification (charge sectors partition the spectrum —
-gauging never shifts energies), (b) the flavor rep assignments, (c) the exact
-Casimir values, (d) the honesty boundary — v3 stays SEALED, LO is
-J^PC-degenerate, no spectrum numbers exist, and the module is blind to every
-glueball target (mechanical grep).
+Ring partitions and normalized trace averages are numerical identities, not
+proof of dynamical flavor survival or a physical spatial-channel spectrum.
+Keep benchmark v3 SEALED and preserve the mechanical source-blindness guard.
 """
 import inspect
 
@@ -31,21 +29,20 @@ from bpr.gauge_dynamics_m2_m3 import (
 # --- M3: flavor survival -----------------------------------------------------
 
 def test_charge_sectors_partition_spectrum_exactly():
-    """THE M3 THEOREM CHECK: gauging relabels states by D_n charge but the
-    sector spectra partition the full spectrum — no energy moves, for every
-    allowed class."""
+    """Rotation-charge subsets partition a fixed ring spectrum, kinematically."""
     for n in (5, 8, 9, 12):
         assert spectrum_partition_check(n) is True
 
 
-def test_flavor_masses_unchanged():
-    """Mass-formula inputs are gauge-inert; the registered LHCb pre-dictions
-    are numerically unchanged by gauging."""
+def test_flavor_kinematics_does_not_assert_dynamical_survival():
     m3 = m3_report()
-    assert m3["any_input_gauged"] is False
-    assert m3["energies_shift_under_gauging"] is False
-    assert m3["lhcb_predictions_changed"] is False
-    assert m3["verdict"].startswith("PASS")
+    assert m3["formula_inputs_changed_here"] is False
+    assert m3["legacy_formula_values_changed_here"] is False
+    assert m3["any_input_gauged"] is None
+    assert m3["energies_shift_under_gauging"] is None
+    assert m3["lhcb_predictions_changed"] is None
+    assert m3["dynamical_flavor_survival"].startswith("UNKNOWN")
+    assert m3["verdict"].startswith("KINEMATIC PARTITION VERIFIED")
 
 
 def test_flavor_rep_assignments():
@@ -56,7 +53,7 @@ def test_flavor_rep_assignments():
     assert dn_rep_of_mode(283, 9) == "E4"      # 283 = 4 mod 9
     assert dn_rep_of_mode(30, 9) == "E3"
     assert flavor_rep_table(12)["t"] == "E5"   # 283 = 7 mod 12 -> min(7,5)
-    # top and charm land in the SAME rep for n=9 (both E3/E4 family checks)
+    # charm and top have distinct E3/E4 labels for n=9
     assert flavor_rep_table(9)["c"] == "E3"
 
 
@@ -75,9 +72,15 @@ def test_frozen_hamiltonian_has_one_coupling():
     assert spec["n_couplings"] == 1
     assert "Delta_G" in spec["form"]
     assert spec["phase_location"].startswith("OPEN")
+    assert spec["electric_operator_central"] is False
+    assert spec["endpoint_gauge_invariant"] is False
+    assert spec["status"].startswith("INVALID")
+    assert spec["electric_casimir_interpretation"] == "normalized irrep trace averages"
+    assert spec["central_replacement"].startswith("NEW model")
+    assert spec["beta_lambda_mapping"] == "NOT ESTABLISHED"
 
 
-def test_exact_casimir_values():
+def test_exact_historical_trace_average_values():
     """Closed forms: eps(A1)=0, eps(A2)=2, eps(B1)=4, eps(B2)=6,
     eps(E_k) = 3 - 2cos(2 pi k/n) — computed from the verified char table."""
     for n in (5, 8, 9, 12):
@@ -94,18 +97,19 @@ def test_exact_casimir_values():
 
 
 def test_lightest_sector_structure():
-    """n=5: A2 (pseudoscalar precursor) is the lightest nontrivial sector;
-    n=8,9,12: E1. Recorded facts, no significance claimed."""
+    """Smallest positive trace average: A2 for n=5, E1 for n=8,9,12."""
     assert lightest_charge_sector(5)[0] == "A2_sign"
     for n in (8, 9, 12):
         assert lightest_charge_sector(n)[0] == "E1"
 
 
-def test_strong_coupling_LO_is_jpc_degenerate():
-    """The M4 blocker, locked: leading order cannot split J^PC."""
+def test_historical_leading_order_arithmetic_is_not_physical_mass():
+    """Keep legacy arithmetic without asserting spatial J^PC degeneracy."""
     for n in (5, 8, 9, 12):
         lo = strong_coupling_leading_order(n)
-        assert lo["jpc_split_at_this_order"] is False
+        assert lo["jpc_split_at_this_order"] is None
+        assert "not a glueball mass" in lo["interpretation"]
+        assert lo["physical_jpc_status"].startswith("UNKNOWN")
         assert lo["glueball_LO_mass_units_invlam"] == pytest.approx(
             4 * lo["eps_min"])
 
@@ -116,7 +120,8 @@ def test_benchmark_v3_stays_sealed():
     v3 = benchmark_v3_status()
     assert v3["status"] == "SEALED"
     assert v3["numbers_invented_here"] is False
-    assert "J^PC-degenerate" in v3["reason"]
+    assert "noncentral" in v3["reason"]
+    assert "distinct model" in v3["reason"]
 
 
 def test_module_blind_to_glueball_targets():
@@ -130,6 +135,8 @@ def test_module_blind_to_glueball_targets():
 
 def test_report_honest():
     txt = report()
-    assert "PASS" in txt
+    assert "dynamical flavor survival UNKNOWN" in txt
+    assert "trace averages" in txt
+    assert "noncentral" in txt
     assert "SEALED" in txt
     assert "No spectrum was invented" in txt

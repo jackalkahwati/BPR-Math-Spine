@@ -1,32 +1,36 @@
-"""Vectorized checkerboard Metropolis for finite-group Wilson theories (Path B, M4).
+"""Vectorized checkerboard Metropolis for character-Wilson finite-group models.
 
-Purpose: remove the compute blocker recorded in
-doc/derivations/path_b_open_problems_2026-08.md §2 ("insufficient statistics").
-Same frozen dynamics as `gauge_phase_mc.WilsonMC` (plaquette action in the
-faithful irrep, beta(1 - Re chi/d)); same group tables; nothing new in the
-physics. Differences are purely computational:
+Same action family and group tables as ``gauge_phase_mc.WilsonMC``:
+S = sum_p beta_p * (1 - c[U_p]/d), with E1 for the built-in D_n tables and
+supplied character/table values for custom tables. Generic samplers do not
+infer a group or irrep from array sizes or the separate legacy n label.
 
-  * L_s x L_s x L_t lattice (time axis = correlation axis, may be longer),
-  * optional anisotropy beta_t != beta_s (spatial vs temporal plaquettes),
-  * checkerboard updates: for direction mu, links whose coordinates
-    perpendicular to mu sum to the same parity share no plaquette, so all
-    of them are updated in one vectorized Metropolis step (6 passes/sweep),
-  * loop characters on time slices computed for all (x, y) at once.
+This is not the historical noncentral M2 Hamiltonian or the new central
+heat-kernel Hamiltonian. No beta/lambda mapping is established. Observables
+remain characters, never substituted kernel weights. Spatial C_4v operator
+channels below are distinct from internal D_n representation labels.
 
-Validated against WilsonMC (mean plaquette agrees within errors) in
-tests/test_gauge_mc_fast.py. Blind to the sealed benchmark targets.
+Computational features, unchanged:
+  * L_s x L_s x L_t lattice, time axis = correlation axis;
+  * optional anisotropy beta_t != beta_s;
+  * vectorized checkerboard Metropolis, six passes per sweep;
+  * loop characters on all spatial sites and time slices.
+
+Validated against WilsonMC in tests/test_gauge_mc_fast.py. Existing sampling,
+RNG, observables, readiness gates and sealed benchmark status are unchanged.
 """
 from __future__ import annotations
 
 import numpy as np
 
-from .gauge_phase_mc import dn_tables, z2_tables  # noqa: F401  (re-export)
+from .gauge_phase_mc import dn_tables, z2_tables, wilson_model_metadata  # noqa: F401  (re-export)
 
 
 class FastWilsonMC:
     def __init__(self, tables, Ls: int = 8, Lt: int = 16, beta: float = 1.0,
                  beta_t: float | None = None, seed: int = 0):
         self.M, self.I, self.c, self.d = tables
+        self.model_metadata = wilson_model_metadata()
         self.G = len(self.I)
         self.Ls, self.Lt = Ls, Lt
         self.beta_s = float(beta)
@@ -286,6 +290,9 @@ def slice_operators(mc: FastWilsonMC, basis: dict) -> dict:
 def measure(n: int, beta: float, Ls: int = 8, Lt: int = 16, beta_t=None,
             seed: int = 5, n_equil: int = 500, n_meas: int = 20000,
             stride: int = 4, n_ops: int = 3, tables=None, log=None) -> dict:
+    model_metadata = wilson_model_metadata()
+    if tables is None:
+        model_metadata.update(group=f"D_{n}", representation="E1 (d=2)")
     tables = dn_tables(n) if tables is None else tables
     mc = FastWilsonMC(tables, Ls=Ls, Lt=Lt, beta=beta, beta_t=beta_t, seed=seed)
     basis = channel_basis(n_ops)
@@ -305,7 +312,8 @@ def measure(n: int, beta: float, Ls: int = 8, Lt: int = 16, beta_t=None,
             log(f"cfg {len(plaq)}")
     O = {ch: np.array(v) for ch, v in store.items()}         # (ncfg, nops, Lt)
     return {"n": n, "beta": beta, "beta_t": mc.beta_t, "Ls": Ls, "Lt": Lt,
-            "n_cfg": len(plaq), "plaq": np.array(plaq), "ops": O}
+            "n_cfg": len(plaq), "plaq": np.array(plaq), "ops": O,
+            "model_metadata": model_metadata}
 
 
 def correlator_matrix(O: np.ndarray, vacuum_subtract: bool) -> np.ndarray:
@@ -395,7 +403,8 @@ def readiness(run: dict, run2: dict | None = None, t0: int = 1) -> dict:
            "plaq_mean": float(run["plaq"].mean()),
            "m_eff": meffs, "plateaus": plats,
            "gate1_plateau": gate1, "gate2_error": gate2, "gate3_volume": gate3,
-           "ready_for_v3": bool(ready), "envelope": "SEALED"}
+           "ready_for_v3": bool(ready), "envelope": "SEALED",
+           "model_metadata": dict(run.get("model_metadata", wilson_model_metadata()))}
     if ready:                                        # pragma: no cover
         m0 = plats["A1"]["mass"]
         out["ratios_available"] = {"B1_over_A1": plats["B1"]["mass"] / m0,

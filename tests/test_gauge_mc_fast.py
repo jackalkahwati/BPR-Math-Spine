@@ -6,7 +6,7 @@ from bpr.gauge_phase_mc import WilsonMC, dn_tables, z2_tables
 from bpr.gauge_mc_fast import (
     FastWilsonMC, rect, l_loop, mirror, reflect_x, rotate90, channel_basis,
     polyomino_loop, CHIRAL_SHAPES, parity_odd_terms,
-    slice_operators, correlator_matrix, gevp_effective_masses, plateau,
+    slice_operators, correlator_matrix, gevp_effective_masses, plateau, measure,
 )
 
 BPR_DIR = Path(__file__).resolve().parent.parent / "bpr"
@@ -145,6 +145,49 @@ def test_gevp_pipeline_runs_and_gates_honest():
     assert len(m["m_eff"]) == 6 // 2
     p = plateau(m)
     assert p is None or p["mass"] > 0
+
+
+def test_fast_sampler_metadata_stays_generic_for_supplied_tables():
+    for tables in (dn_tables(12), z2_tables()):
+        mc = FastWilsonMC(tables, Ls=2, Lt=2, seed=0)
+        metadata = mc.model_metadata
+        assert metadata["model_id"] == "finite-group-character-wilson-v1"
+        assert metadata["group"] == "supplied group tables"
+        assert metadata["representation"] == "supplied character/table values c and normalization d"
+        assert metadata["beta_lambda_mapping"] == "NOT ESTABLISHED"
+        assert metadata["physical_matching"] == "NOT ESTABLISHED"
+        np.testing.assert_array_equal(mc.c, tables[2])
+        assert mc.d == tables[3]
+
+
+def test_measure_metadata_preserves_legacy_schema_and_custom_identity():
+    """The legacy n label must not misidentify explicitly supplied Z2 tables."""
+    for tables in (None, z2_tables()):
+        result = measure(12, beta=1.0, Ls=2, Lt=2, seed=0,
+                         n_equil=0, n_meas=1, stride=1, n_ops=1, tables=tables)
+        assert set(result) == {
+            "n", "beta", "beta_t", "Ls", "Lt", "n_cfg", "plaq", "ops",
+            "model_metadata",
+        }
+        assert result["n"] == 12
+        assert result["beta"] == result["beta_t"] == 1.0
+        assert result["Ls"] == result["Lt"] == 2
+        assert result["n_cfg"] == 1
+        assert result["plaq"].shape == (1,)
+        assert np.isfinite(result["plaq"]).all()
+        assert set(result["ops"]) == {"A1", "B1", "A2"}
+        for values in result["ops"].values():
+            assert values.shape == (1, 1, 2)
+            assert np.isfinite(values).all()
+        metadata = result["model_metadata"]
+        assert metadata["model_id"] == "finite-group-character-wilson-v1"
+        assert metadata["beta_lambda_mapping"] == "NOT ESTABLISHED"
+        if tables is None:
+            assert metadata["group"] == "D_12"
+            assert metadata["representation"] == "E1 (d=2)"
+        else:
+            assert metadata["group"] == "supplied group tables"
+            assert metadata["representation"] == "supplied character/table values c and normalization d"
 
 
 def test_fast_mc_blind_to_glueball_targets():

@@ -67,6 +67,30 @@ def test_weak_coupling_orders_plaquette():
     assert r["plaq_mean"] > 0.8
 
 
+def test_wilson_result_metadata_is_additive_and_generic():
+    """Supplied D_n and Z2 tables retain characters and a generic model label."""
+    for tables in (dn_tables(12), z2_tables()):
+        mc = WilsonMC(tables, L=2, beta=1.0, seed=0)
+        np.testing.assert_array_equal(mc.c, tables[2])
+        assert mc.d == tables[3]
+        result = mc.run(n_equil=0, n_meas=1, stride=1)
+        assert set(result) == {
+            "plaq_mean", "plaq_susc", "n_samples", "model_metadata",
+        }
+        assert result["n_samples"] == 1
+        assert isinstance(result["plaq_mean"], float)
+        assert np.isfinite(result["plaq_mean"])
+        assert result["plaq_susc"] == 0.0
+        metadata = result["model_metadata"]
+        assert metadata == mc.model_metadata
+        assert metadata is not mc.model_metadata
+        assert metadata["model_id"] == "finite-group-character-wilson-v1"
+        assert metadata["group"] == "supplied group tables"
+        assert metadata["representation"] == "supplied character/table values c and normalization d"
+        assert metadata["beta_lambda_mapping"] == "NOT ESTABLISHED"
+        assert metadata["physical_matching"] == "NOT ESTABLISHED"
+
+
 @pytest.mark.slow
 def test_z2_anchor_reproduces_literature():
     """The 3D Z_2 gauge transition (dual Ising) sits at beta ~= 0.7613; the

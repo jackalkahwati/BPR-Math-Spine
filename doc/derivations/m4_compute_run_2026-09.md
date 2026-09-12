@@ -6,6 +6,18 @@
 > statistics". Machinery: `bpr/gauge_mc_fast.py`. No comparison with the
 > sealed targets was made and no ratio is reported.
 
+## 2026-09-12 provenance correction
+
+All runs recorded here sample the Euclidean **character-Wilson action** in
+2+1 dimensions. They do not simulate either the historical noncentral electric
+Hamiltonian or its new conjugacy-averaged heat-kernel replacement. The Wilson
+transfer spectrum is not a scalar rescaling of the new electric spectrum.
+Thus neither the anisotropy settings nor phase observations below calibrate
+the repaired Hamiltonian. Historical settings, measurements, gate failures and
+SEALED status are unchanged. The separate exact isolated-square calculation
+in `bpr/gauge_heat_kernel.py` is not an M4 run or a benchmark comparison.
+See [the derivation](toe_constructive_extension_2026-09-12.md).
+
 ## Run 1: isotropic, near the transition
 
 | Setting | Value |
