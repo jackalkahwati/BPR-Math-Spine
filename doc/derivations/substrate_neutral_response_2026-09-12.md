@@ -169,6 +169,12 @@ This bounds the **total** density weight, not individual spectral-line
 intensities, matched frequencies, or the fraction concentrated in the first
 excited band. No rigorous floating-point roundoff bound is included.
 
+The [large-ring follow-up](substrate_neutral_continuum_2026-09-12.md) derives
+the leading compression's continuous spectral limit, retaining finite-size
+endpoint interference and an explicit weak-convergence bound. It also explains
+why the present full-Hamiltonian certificates do not justify that spectral
+limit at fixed g/C. No full-model exclusion of bound particles follows.
+
 ## 5. Exact finite-system spectral response and operator algebra
 
 For full eigenpairs, the numerical density spectral measure is
