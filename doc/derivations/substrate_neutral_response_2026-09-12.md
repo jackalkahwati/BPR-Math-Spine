@@ -169,6 +169,12 @@ This bounds the **total** density weight, not individual spectral-line
 intensities, matched frequencies, or the fraction concentrated in the first
 excited band. No rigorous floating-point roundoff bound is included.
 
+The [large-ring follow-up](substrate_neutral_continuum_2026-09-12.md) derives
+the leading compression's continuous spectral limit, retaining finite-size
+endpoint interference and an explicit weak-convergence bound. It also explains
+why the present full-Hamiltonian certificates do not justify that spectral
+limit at fixed g/C. No full-model exclusion of bound particles follows.
+
 ## 5. Exact finite-system spectral response and operator algebra
 
 For full eigenpairs, the numerical density spectral measure is
@@ -228,6 +234,16 @@ ring. It does not derive physical fermions, relativistic chirality, selected
 vacuum population, three families, observed masses or mixing, confinement,
 unified gauge/gravity dynamics, or empirical evidence for BPR. The earlier
 withdrawn TOE claim and failed historical particle benchmark remain unchanged.
+
+### All-population follow-up
+
+The [neutral population-selection calculation](substrate_vacuum_selection_2026-09-12.md)
+compares all N=0 modulo q sectors, not just N<=L. In the same unshifted model,
+q=L and g>=4C energetically select N=L, but do not prepare that population.
+The frozen weak case instead excludes N=L through a higher-population trial;
+its remaining global candidates are unresolved. The within-sector response
+above remains a conditional calculation. A number-dependent energy shift
+changes cross-sector selection and must not be silently introduced.
 
 ## 7. Reproduction and verification
 

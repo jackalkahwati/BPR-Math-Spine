@@ -20,6 +20,10 @@
 >
 > **NEUTRAL FINITE-REPULSION RESPONSE (2026-09-12):** [excitation and density derivation](doc/derivations/substrate_neutral_response_2026-09-12.md). The same quantum ring has nontrivial neutral doublon-hole excitations at chosen unit filling, with a constrained hopping spectrum and a density-response total-weight bound. The frozen example's conservative bound does not resolve the leading density signal. Neutrality and these defect dynamics do not establish physical fermions or select a vacuum.
 >
+> **NEUTRAL POPULATION SELECTION (2026-09-12):** [all-sector energy bounds](doc/derivations/substrate_vacuum_selection_2026-09-12.md). For the inherited unshifted quantum ring, q=L and g>=4C energetically select N=L over all neutral populations. The frozen weak-repulsion case instead excludes unit filling and leaves three candidate populations unresolved. Number conservation prevents preparation across sectors, and a number-dependent energy shift changes the selection. This is a conditional finite-system theorem, not a physical vacuum or completed TOE.
+>
+> **LARGE-RING NEUTRAL RESPONSE (2026-09-12):** [spectral limit and validity boundary](doc/derivations/substrate_neutral_continuum_2026-09-12.md). The leading doublon-hole compression has an absolutely continuous density-response limit with a finite-size error bound, not a surviving isolated line. The existing full-Hamiltonian excitation bound is not uniform at fixed repulsion as the ring grows. This is not a spatial continuum limit, a full-model exclusion of bound particles, or a derivation of relativity.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
