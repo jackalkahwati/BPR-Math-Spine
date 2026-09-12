@@ -339,3 +339,13 @@ The completed scientific target is an actual restricted Hamiltonian, a scoped
 source-map obstruction, and a finite-time classical control statement. It is
 not completion of the missing microscopic flavor bridge. No new interaction
 is added to overcome the obstruction in this pass.
+
+### Interaction-response follow-up
+
+The [finite-time nonlinear response calculation](substrate_nonlinear_response_2026-09-12.md)
+integrates the actual cubic forcing, including retained and discarded modes.
+It supplies a first-order local-density correction with explicit second-order
+remainder bounds. Retained and omitted pieces cancel at the initial density
+slope; an omitted contribution alone is not the complete response. The result
+is state dependent and does not replace this note's direct linear source-map
+obstruction with a universal dressed matrix or a physical flavor prediction.
