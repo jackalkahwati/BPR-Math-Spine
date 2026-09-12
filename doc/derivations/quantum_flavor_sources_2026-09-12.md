@@ -385,3 +385,14 @@ mediator dynamics or coupling matching. The next genuine microscopic advance
 requires one of those inputs to be derived, not another free interaction
 chosen to rescue mixing. No fitting, benchmark access, optimization, production
 Monte Carlo, remote calculation or deployment is part of this pass.
+
+### Concrete substrate follow-up
+
+The [ring-to-triplet projection test](substrate_triplet_projection_2026-09-12.md)
+now derives a restricted three-mode Hamiltonian from the existing classical
+ring, with explicit nonlinear leakage and a finite-time error bound. It does
+not identify those bosonic modes with this module's stipulated fermions.
+Direct local scalar sources span five real matrix directions, not the complete
+nine-direction monopole source map. Their generated complex associative algebra is
+nevertheless full M3(C), so the obstruction is confined to the direct linear
+local-source prescription, not all possible effective constructions.

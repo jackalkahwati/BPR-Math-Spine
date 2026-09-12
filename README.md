@@ -12,6 +12,8 @@
 >
 > **QUANTUM SOURCE DIAGNOSTIC (2026-09-12):** [operator comparison and missing microscopic inputs](doc/derivations/quantum_flavor_sources_2026-09-12.md). A separate instantaneous fermion model has a five-dimensional ground space in the one-particle-per-sector block, not a unique coherent source. Operator ordering affects number-sector energies. The substrate projection, statistics, physical population and scalar dynamics remain underived.
 >
+> **SUBSTRATE PROJECTION TEST (2026-09-12):** [ring-to-triplet derivation](doc/derivations/substrate_triplet_projection_2026-09-12.md). The existing ring admits an exact three-mode restricted Hamiltonian and a conservative finite-time classical error bound. Its direct local scalar sources span only five of nine monopole matrix directions, despite generating the full complex matrix algebra through products and complex combinations. This limits that specific projection; it does not derive physical fermions or rule out all emergent mechanisms.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
