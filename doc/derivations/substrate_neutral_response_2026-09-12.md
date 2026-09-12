@@ -229,6 +229,16 @@ vacuum population, three families, observed masses or mixing, confinement,
 unified gauge/gravity dynamics, or empirical evidence for BPR. The earlier
 withdrawn TOE claim and failed historical particle benchmark remain unchanged.
 
+### All-population follow-up
+
+The [neutral population-selection calculation](substrate_vacuum_selection_2026-09-12.md)
+compares all N=0 modulo q sectors, not just N<=L. In the same unshifted model,
+q=L and g>=4C energetically select N=L, but do not prepare that population.
+The frozen weak case instead excludes N=L through a higher-population trial;
+its remaining global candidates are unresolved. The within-sector response
+above remains a conditional calculation. A number-dependent energy shift
+changes cross-sector selection and must not be silently introduced.
+
 ## 7. Reproduction and verification
 
 Independent mathematical review found no defects in the stated derivations.
