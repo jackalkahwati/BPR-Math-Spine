@@ -42,6 +42,8 @@
 >
 > **COLLECTIVE-DYNAMICS FOLLOW-ON (2026-09-12):** [classical canonical modes and quantum projected memory](doc/derivations/substrate_collective_dynamics_2026-09-12.md). This calculation derives classical canonical modes and exact quantum projected memory while keeping the two models separate. Neither is assumed to be an internal phason or a microscopic derivation of irreversible damping; verification status is recorded in the note.
 >
+> **TWO-PLAQUETTE FOLLOW-ON (2026-09-12):** [shared-edge gauge reduction](doc/derivations/gauge_two_plaquette_2026-09-12.md). The calculation derives the shared-edge coupling and normalized gauge reduction for adjacent faces in the supplied central finite-group model. It does not derive a Bose-ring Gauss constraint or identify a physical gauge force.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
