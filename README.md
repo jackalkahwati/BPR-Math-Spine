@@ -44,6 +44,8 @@
 >
 > **TWO-PLAQUETTE FOLLOW-ON (2026-09-12):** [shared-edge gauge reduction](doc/derivations/gauge_two_plaquette_2026-09-12.md). The calculation derives the shared-edge coupling and normalized gauge reduction for adjacent faces in the supplied central finite-group model. It does not derive a Bose-ring Gauss constraint or identify a physical gauge force.
 >
+> **CHIRAL-PARENT FOLLOW-ON (2026-09-12):** [local anomaly polynomial](doc/derivations/chiral_parent_anomaly_2026-09-12.md). The calculation finds a nonzero local anomaly for the supplied lone six-dimensional chiral parent, including an irreducible gravitational term. Four-dimensional anomaly cancellation alone does not establish parent consistency.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
