@@ -6,7 +6,7 @@
 
 | Module | New calculation | State | Publication |
 |---|---|---|---|
-| 1 | Diagonal constraints and projection multiplication defects | Complete bounded calculation; independent mathematics/code review,229 focused and2305 combined tests passed; eight algebra groups, grammar/isolated demos passed. Initial synthetic-injection test failure and test-only repair retained | Scientific commit0b5fbf2 on science/substrate-constraint-algebra; push/PR command denied by external-write permission gate before execution. Not pushed, no new PR, not merged; campaign publication gate blocked |
+| 1 | Diagonal constraints and projection multiplication defects | Complete bounded calculation; independent mathematics/code review,229 focused and2305 combined tests passed; eight algebra groups, grammar/isolated demos passed. Initial synthetic-injection test failure and test-only repair retained | Scientific commit0b5fbf2 pushed on science/substrate-constraint-algebra; PR36 verified OPEN on science/substrate-energy-response, not merged. Initial external-write denial retained in8473e01; renewed explicit user authorization allowed subsequent push/PR creation |
 | 2 | Composite grading, canonical algebra and locality | Planned; not started | None |
 | 3 | Controlled classical long-wave limit and bounded quantum condensate bridge | Planned; not started | None |
 | 4 | Fixed-content anomaly solution space and reduction information loss | Planned; not started | None |
