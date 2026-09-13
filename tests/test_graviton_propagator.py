@@ -10,6 +10,24 @@ import numpy as np
 import pytest
 
 
+def _einstein_plateau_from_auxiliary_action(alpha):
+    # M=1: L=R/2 + alpha*chi*R - alpha*chi²/2, F=1+2*alpha*chi.
+    # After g_E=F*g_J, V=(alpha/2)*(chi/F)² and chi/F -> 1/(2*alpha).
+    return (alpha / 2.0) * (1.0 / (2.0 * alpha)) ** 2
+
+
+def _leading_amplitude_from_action(alpha, n_efolds):
+    epsilon = 3.0 / (4.0 * n_efolds**2)
+    return _einstein_plateau_from_auxiliary_action(alpha) / (24.0 * np.pi**2 * epsilon)
+
+
+def _default_alpha_gap_from_action():
+    alpha_minimal = (104761 / (384.0 * np.pi**2)) * (6 / 2.0) ** 2
+    n_efolds = 104761 ** (1.0 / 3.0) * (1.0 + 1.0 / 3.0)
+    alpha_required = _leading_amplitude_from_action(1.0, n_efolds) / 2.1e-9
+    return alpha_required / alpha_minimal
+
+
 def test_tt_projector_is_transverse_and_traceless():
     from bpr.graviton_propagator import transverse_traceless_projector
 
@@ -152,9 +170,32 @@ def test_curvature_squared_r2_does_not_shift_spin2_tt_sector():
 
     assert correction.alpha_R2_minimal == pytest.approx(expected_alpha)
     assert correction.spin2_eft_coefficient == 0.0
-    assert correction.scalaron_mass_over_planck == pytest.approx(
-        1.0 / (2.0 * np.sqrt(correction.alpha_R2_minimal))
+    # F=exp(sqrt(2/3)*phi): V=V0*(1-exp(-sqrt(2/3)*phi))².
+    # Hence V''(0)=2*V0*(sqrt(2/3))² in reduced M=1 units.
+    mass_squared = 2.0 * _einstein_plateau_from_auxiliary_action(expected_alpha) * (2.0 / 3.0)
+    assert correction.scalaron_mass_over_planck**2 == pytest.approx(mass_squared)
+
+
+@pytest.mark.parametrize("alpha", [1.0e308, np.finfo(float).max])
+def test_scalaron_mass_remains_representable_at_extreme_alpha(alpha):
+    from bpr.graviton_propagator import CurvatureSquaredCorrection, ScalaronSector
+
+    correction = CurvatureSquaredCorrection(p=5, z=6, alpha_R2_minimal=alpha)
+    sector = ScalaronSector(
+        p=5,
+        z=6,
+        spatial_dimensions=3,
+        observed_scalar_amplitude=1.0e-6,
+        alpha_R2_minimal=alpha,
+        n_efolds=55.0,
     )
+    # From m²=M²/(6 alpha); logs avoid overflowing 6*alpha in the oracle.
+    expected = np.exp(-0.5 * (np.log(6.0) + np.log(alpha)))
+    for result in (correction, sector):
+        mass = result.scalaron_mass_over_planck
+        assert np.isfinite(mass)
+        assert mass > 0.0
+        assert mass == pytest.approx(expected, rel=1.0e-12, abs=0.0)
 
 
 def test_scalaron_sector_derives_starobinsky_quantities_from_r2():
@@ -166,12 +207,10 @@ def test_scalaron_sector_derives_starobinsky_quantities_from_r2():
 
     assert sector.alpha_R2_minimal == pytest.approx(expected_alpha)
     assert sector.n_efolds == pytest.approx(expected_n)
-    assert sector.scalaron_mass_over_planck == pytest.approx(
-        1.0 / (2.0 * np.sqrt(expected_alpha))
-    )
-    assert sector.potential_plateau_over_planck4 == pytest.approx(
-        3.0 / (16.0 * expected_alpha)
-    )
+    plateau = _einstein_plateau_from_auxiliary_action(expected_alpha)
+    # V''(0)=2*V0*(sqrt(2/3))² follows from the canonical Weyl scalar.
+    assert sector.scalaron_mass_over_planck**2 == pytest.approx(2.0 * plateau * (2.0 / 3.0))
+    assert sector.potential_plateau_over_planck4 == pytest.approx(plateau)
     assert sector.trace_coupling_over_planck == pytest.approx(1.0 / np.sqrt(6.0))
     assert sector.n_s == pytest.approx(1.0 - 2.0 / expected_n)
     assert sector.tensor_to_scalar_ratio == pytest.approx(12.0 / expected_n**2)
@@ -181,14 +220,14 @@ def test_scalaron_minimal_r2_overpredicts_scalar_amplitude():
     from bpr.graviton_propagator import scalaron_sector_from_boundary_r2
 
     sector = scalaron_sector_from_boundary_r2(p=104761, z=6)
-    expected_amplitude = sector.n_efolds**2 / (
-        96.0 * np.pi**2 * sector.alpha_R2_minimal
+    expected_amplitude = _leading_amplitude_from_action(
+        sector.alpha_R2_minimal, sector.n_efolds
     )
 
     assert sector.scalar_amplitude_minimal == pytest.approx(expected_amplitude)
     assert sector.scalar_amplitude_minimal > sector.observed_scalar_amplitude
     assert sector.alpha_required_for_observed_amplitude == pytest.approx(
-        sector.n_efolds**2 / (96.0 * np.pi**2 * sector.observed_scalar_amplitude)
+        _leading_amplitude_from_action(1.0, sector.n_efolds) / sector.observed_scalar_amplitude
     )
     assert sector.alpha_gap_factor == pytest.approx(
         sector.alpha_required_for_observed_amplitude / sector.alpha_R2_minimal
@@ -208,9 +247,13 @@ def test_scalaron_normalization_diagnostic_marks_winding_gap_open():
     assert previous == pytest.approx(1.0 + np.sqrt(6 / 2.0) / np.sqrt(np.log(104761)))
     assert previous < 2.0
     assert diagnostic.required_alpha_gap > 1.0e6
-    assert diagnostic.best_candidate_name in diagnostic.candidate_factors
-    assert diagnostic.best_candidate_relative_error > 0.1
-    assert diagnostic.status == "open"
+    # Fixed candidates and threshold: the corrected gap changes the best match.
+    assert diagnostic.best_candidate_name == "p_four_thirds"
+    expected_error = abs(104761 ** (4.0 / 3.0) / _default_alpha_gap_from_action() - 1.0)
+    assert diagnostic.best_candidate_relative_error == pytest.approx(expected_error)
+    assert diagnostic.close_threshold == 0.1
+    assert expected_error < diagnostic.close_threshold
+    assert diagnostic.status == "candidate"
 
 
 def test_scalaron_normalization_diagnostic_effective_sector_count():
@@ -241,7 +284,7 @@ def test_compact_boson_mode_diagnostic_enumerates_winding_momentum_lattice():
     )
 
 
-def test_compact_boson_mode_diagnostic_does_not_close_alpha_gap():
+def test_compact_boson_mode_diagnostic_enters_unchanged_candidate_threshold():
     from bpr.graviton_propagator import compact_boson_mode_normalization_diagnostic
 
     diagnostic = compact_boson_mode_normalization_diagnostic(p=104761, z=6)
@@ -250,9 +293,11 @@ def test_compact_boson_mode_diagnostic_does_not_close_alpha_gap():
     assert diagnostic.square_log_gap_ratio == pytest.approx(
         diagnostic.square_log_weighted_factor / diagnostic.required_alpha_gap
     )
-    assert 0.5 < diagnostic.square_log_gap_ratio < 0.7
+    expected_ratio = (((2 * 323 + 1) ** 2 - 1) * np.log(104761)) / _default_alpha_gap_from_action()
+    assert diagnostic.square_log_gap_ratio == pytest.approx(expected_ratio)
+    assert 0.9 < expected_ratio < 1.0
     assert diagnostic.elliptic_log_gap_ratio < 0.01
-    assert diagnostic.status == "open"
+    assert diagnostic.status == "candidate"
 
 
 def test_scalaron_normalization_diagnostic_includes_compact_boson_candidates():
@@ -265,10 +310,10 @@ def test_scalaron_normalization_diagnostic_includes_compact_boson_candidates():
     assert diagnostic.candidate_factors["compact_boson_square_log"] == pytest.approx(
         ((2 * 323 + 1) ** 2 - 1) * np.log(104761)
     )
-    assert diagnostic.status == "open"
+    assert diagnostic.status == "candidate"
 
 
-def test_compact_boson_residual_loop_weight_identifies_near_match():
+def test_compact_boson_residual_loop_weight_no_longer_identifies_near_match():
     from bpr.graviton_propagator import compact_boson_residual_loop_weight_diagnostic
 
     diagnostic = compact_boson_residual_loop_weight_diagnostic(p=104761, z=6)
@@ -277,13 +322,14 @@ def test_compact_boson_residual_loop_weight_identifies_near_match():
         diagnostic.mode_diagnostic.required_alpha_gap
         / diagnostic.mode_diagnostic.square_log_weighted_factor
     )
-    assert 1.6 < diagnostic.required_residual_weight < 1.7
+    assert 1.09 < diagnostic.required_residual_weight < 1.10
     assert diagnostic.candidate_weights["radius_curvature_factor"] == pytest.approx(
         1.0 + 2.0 / diagnostic.mode_diagnostic.radius_squared
     )
-    assert diagnostic.best_candidate_name == "radius_curvature_factor"
-    assert diagnostic.best_candidate_relative_error < 0.02
-    assert diagnostic.status == "near_match_unproven"
+    assert diagnostic.best_candidate_name == "self_dual_average"
+    assert diagnostic.close_threshold == 0.02
+    assert diagnostic.best_candidate_relative_error > diagnostic.close_threshold
+    assert diagnostic.status == "open"
 
 
 def test_compact_boson_residual_loop_weight_combined_factor_tracks_gap():
@@ -296,10 +342,12 @@ def test_compact_boson_residual_loop_weight_combined_factor_tracks_gap():
         diagnostic.mode_diagnostic.square_log_weighted_factor
         * diagnostic.candidate_weights[diagnostic.best_candidate_name]
     )
-    assert combined / diagnostic.mode_diagnostic.required_alpha_gap == pytest.approx(
-        1.0,
-        rel=0.02,
+    expected_factor = (((2 * 323 + 1) ** 2 - 1) * np.log(104761)) * (
+        0.5 * (np.sqrt(3.0) + 1.0 / np.sqrt(3.0))
     )
+    expected_ratio = expected_factor / _default_alpha_gap_from_action()
+    assert combined / diagnostic.mode_diagnostic.required_alpha_gap == pytest.approx(expected_ratio)
+    assert abs(expected_ratio - 1.0) > diagnostic.close_threshold
 
 
 def test_compact_boson_residual_loop_weight_rejects_zero_log_domain():
@@ -334,7 +382,7 @@ def test_compact_boson_heat_kernel_loop_weight_derives_radius_factor():
     )
 
 
-def test_compact_boson_heat_kernel_loop_weight_matches_scalar_gap_under_ansatz():
+def test_compact_boson_heat_kernel_loop_weight_fails_scalar_gap_under_fixed_ansatz():
     from bpr.graviton_propagator import compact_boson_heat_kernel_loop_weight
 
     diagnostic = compact_boson_heat_kernel_loop_weight(p=104761, z=6)
@@ -343,9 +391,13 @@ def test_compact_boson_heat_kernel_loop_weight_matches_scalar_gap_under_ansatz()
         diagnostic.mode_diagnostic.square_log_weighted_factor
         * diagnostic.radius_loop_weight
     )
-    assert diagnostic.combined_gap_ratio == pytest.approx(1.0104554440237012)
-    assert diagnostic.relative_error < 0.02
-    assert diagnostic.status == "candidate_under_current_ansatz"
+    fixed_candidate = (((2 * 323 + 1) ** 2 - 1) * np.log(104761)) * (5.0 / 3.0)
+    expected_ratio = fixed_candidate / _default_alpha_gap_from_action()
+    assert diagnostic.combined_gap_ratio == pytest.approx(expected_ratio)
+    assert diagnostic.close_threshold == 0.02
+    assert diagnostic.relative_error == pytest.approx(abs(expected_ratio - 1.0))
+    assert diagnostic.relative_error > 0.5
+    assert diagnostic.status == "open"
     assert diagnostic.dictionary_status == "cs_dictionary_open"
 
 
@@ -399,7 +451,7 @@ def test_compact_boson_heat_kernel_loop_weight_validates_nested_radius():
         CompactBosonHeatKernelLoopWeight(residual_diagnostic=residual)
 
 
-def test_cs_wzw_selection_rule_marks_radius_pair_as_compatible_not_proven():
+def test_cs_wzw_selection_rule_keeps_radius_pair_but_normalization_is_open():
     from bpr.graviton_propagator import compact_boson_cs_wzw_selection_rule
 
     selection = compact_boson_cs_wzw_selection_rule(p=104761, z=6)
@@ -415,7 +467,7 @@ def test_cs_wzw_selection_rule_marks_radius_pair_as_compatible_not_proven():
     )
     assert selection.radius_loop_weight == pytest.approx(5.0 / 3.0)
     assert selection.cs_chirality_status == "doubled_or_nonchiral_completion_required"
-    assert selection.status == "compatible_with_cs_wzw_symmetry"
+    assert selection.status == "open"
 
 
 def test_cs_wzw_selection_rule_matches_heat_kernel_weight():
@@ -429,7 +481,10 @@ def test_cs_wzw_selection_rule_matches_heat_kernel_weight():
     assert selection.combined_alpha_factor == pytest.approx(
         selection.heat_kernel_weight.combined_alpha_factor
     )
-    assert selection.combined_gap_ratio == pytest.approx(1.0104554440237012)
+    fixed_candidate = (((2 * 323 + 1) ** 2 - 1) * np.log(104761)) * (5.0 / 3.0)
+    assert selection.combined_gap_ratio == pytest.approx(
+        fixed_candidate / _default_alpha_gap_from_action()
+    )
     assert selection.dictionary_status == "chirality_and_bulk_normalization_open"
 
 

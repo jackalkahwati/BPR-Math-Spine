@@ -1,10 +1,11 @@
 # Graviton Propagator from Boundary Stress Tensor
 
-> **Status:** May 2026 — first-pass MVP. This derives the leading
-> induced-gravity graviton propagator and derives the first finite-`p`
-> boundary stress-tensor normalization correction from the Hopf/S² mode
-> count. It does **not** claim the full finite-`p` holographic dictionary
-> is solved.
+> **Normalization correction, 2026-09-12:** Follow the frozen conventions in
+> `gravity_consistency_2026-09-12.md`. `M_Pl` in the action below is reduced,
+> `M_Pl² = 1/(8πG)` in natural units. The induced action and TT propagator are
+> conditional effective-field-theory results, not an absolute prediction of
+> Newton's constant or a solved finite-`p` holographic dictionary. The scalar
+> mass and physical-cutoff examples below supersede the old normalization.
 
 ## Target
 
@@ -30,9 +31,18 @@ Einstein-Hilbert term:
 
     M_Pl^2 = p Lambda_b^2 / (48 pi^2)                                    (1)
 
-This is the same normalization used in
-`planck_length_from_substrate.md` and
-`horizon_entropy_from_induced_gravity.md`.
+This is the reduced normalization used in `planck_length_from_substrate.md`
+and `horizon_entropy_from_induced_gravity.md`. For energy-valued `M_Pl` in
+joules, `G = ħ c^5/(8π M_Pl²)`; the unreduced Planck energy is
+`sqrt(8π) M_Pl`. With `a = ħc/Lambda_b` and physical `l_P² = ħG/c³`,
+
+    a/l_P = sqrt(p/(6π)) ≈ 74.55    at p = 104761
+
+Matching the existing physical Planck anchor gives
+`Lambda_b ≈ 1.64e17 GeV`, not the historical `8.2e17 GeV` obtained by
+inserting an unreduced Planck energy into (1). This is inverse calibration of
+a cutoff, not prediction of an absolute scale. Bare and counterterm
+contributions to the Einstein coefficient remain independent assumptions.
 
 ## GR Limit
 
@@ -93,6 +103,12 @@ This correction approaches 1 as `p -> infinity`. For `p = 104761`,
 
     D_p / D_GR = 104761 / 104976 = 0.99795...
 
+This constant ratio is a normalization comparison at fixed supplied
+coefficients, not a separately identifiable observable after calibrating `G`.
+A constant propagator amplitude depends on the product `ZG`; replacing
+`Z -> a Z`, `G -> G/a` leaves it unchanged. The corresponding degeneracy and
+bare/counterterm nonidentifiability are derived in the frozen correction note.
+
 The separate EFT cutoff expansion was originally left as:
 
     D_p(k) = D_GR(k) * [p / N_S2(p)] * [1 + O(k^2/Lambda_b^2)]            (8)
@@ -119,10 +135,12 @@ established `R²` sector is:
 
 The scalar-sector mass scale in the same convention is:
 
-    M_scalar / M_Pl = 1 / (2 sqrt(alpha_min))                             (11)
+    M_scalar / M_Pl = 1 / sqrt(6 alpha_min)                               (11)
 
 For `p = 104761`, `z = 6`, the minimal `R²` coefficient is about `249`, so
-`M_scalar / M_Pl ≈ 0.0317`, matching the existing Starobinsky-sector note.
+`M_scalar / M_Pl ≈ 0.02588`. The old `0.0317` mass is superseded. For this
+same action the plateau is `M_Pl⁴/(8 alpha)` and leading scalar amplitude is
+`N²/(144π² alpha)`; see the corrected Starobinsky-sector note.
 
 This means the current spin-2 propagator is:
 
@@ -220,10 +238,14 @@ energy is the wave quantum:
     E_probe = hbar omega = hbar (2 pi f)                                  (26)
 
 The helper `spin2_correction_for_gw_frequency(...)` implements this map. For a
-detector-band signal at `f = 100 Hz`, the result is:
+detector-band signal at `f = 100 Hz`, using the corrected inverse-calibrated
+cutoff `Lambda_b ≈ 1.64e17 GeV`, equation (24) gives:
 
     E_probe = hbar 2 pi (100 Hz)
-    |delta_TT| ~= 1.2e-78                                                  (27)
+    |delta_TT| ~= 2.8e-77                                                  (27)
+
+This direct-cutoff example supersedes the old `1.2e-78` estimate; it is not a
+new benchmark run or a newly selected observational target.
 
 So this curvature-squared spin-2 correction is not an observable correction
 for ordinary LIGO/Virgo/KAGRA band gravitational waves. It only becomes
@@ -256,15 +278,22 @@ helper `spin2_max_fractional_shift(...)` returns this bound, and
 `spin2_energy_ratio_for_fractional_shift(...)` returns the lower-energy branch
 needed to reach a requested target shift.
 
-## What Is Now Closed
+## Conditional EFT result, not physical closure
 
-This first-pass bridge closes the leading effective-field-theory piece:
+The former “What Is Now Closed” heading is superseded. This first-pass bridge
+implements the conditional chain:
 
-    p boundary sectors -> M_Pl normalization -> spin-2 GR propagator
+    supplied p sectors and cutoff -> induced reduced M_Pl -> TT propagator
 
-and connects it to the entropy result:
-
-    same M_Pl normalization -> S_BH = A/(4l_P^2)
+For the Einstein-Hilbert term with the same reduced coefficient, Wald entropy
+is `S_BH = 2π A M_Pl²` in natural units, or
+`2π A M_Pl²/(ħc)² = A/(4l_P²)` for energy-valued `M_Pl`. This is the
+Einstein-Hilbert/Einstein-frame area law, not the full Jordan-frame entropy of
+the action including `alpha R²/2`; there the local Wald density gains the
+factor `F = 1 + 2 alpha R/M_Pl²` (with the corresponding Einstein-frame area).
+This consistency does not identify bare/counterterm contributions, predict an
+absolute `G`, or turn a constant propagator normalization into an independent
+observable.
 
 ## What Remains Open
 
