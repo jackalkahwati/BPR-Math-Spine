@@ -185,4 +185,8 @@ At these two times the exact-model lower bounds are respectively0.0448262364431 
 
 The fixed code realizes the label algebra but is noninvariant in all three sizes. L5 additionally has a positive leakage Gram minimum9C², so no encoded state has zero instantaneous leakage. Its compressed centered Hamiltonian is zero rather than the stipulated nonzero D5 generator. This is a structural obstruction for the preregistered encoding, not a general impossibility theorem for emergent gauge physics. No local gauge field, Gauss constraint or empirical comparison is supplied.
 
+## Publication
+
+Scientific commit `86e5a193eb6f5784312b9c786e71294090e83a9f` was pushed by ordinary branch publication. [PR42](https://github.com/jackalkahwati/BPR-Math-Spine/pull/42) was created with base `science/substrate-prediction-contract` and head `science/substrate-gauge-encoding`; GitHub and the remote ref both verified that scientific head. PR state OPEN, mergedAt null. No merge was attempted. This publication-record update is a subsequent documentation-only commit; its eventual head is available from git/PR history rather than a self-referential hash. Unrelated AGENTS.md and CLAUDE.md remain untracked and unstaged.
+
 The inherited same-process nonlinear-response repeatability limitation remains recorded in the campaign ledger; no older implementation/test changes are authorized by this module.

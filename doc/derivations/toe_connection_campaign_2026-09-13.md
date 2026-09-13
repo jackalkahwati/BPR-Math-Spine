@@ -6,7 +6,7 @@
 
 | Module | New calculation | State | Publication |
 |---|---|---|---|
-| 1 | Fixed occupation-orbit gauge encoding, actual compression, leakage and dynamics mismatch | Exact algebra but noninvariant code; structural D5 mismatch. Original focused failure preserved; componentwise norm repair verified with149focused passes/1platform skip. All30 suites3635passes/1skip sequentially; isolated demos and8algebra groups pass. Independent dense-exponential/failure-isolation review passed; one bounded same-process prefix1093passes/2543deselected; historical one-ULP limitation retained | Local branch `science/substrate-gauge-encoding`; not committed or published |
+| 1 | Fixed occupation-orbit gauge encoding, actual compression, leakage and dynamics mismatch | Exact algebra but noninvariant code; structural D5 mismatch. Original focused failure preserved; componentwise norm repair verified with149focused passes/1platform skip. All30 suites3635passes/1skip sequentially; isolated demos and8algebra groups pass. Independent dense-exponential/failure-isolation review passed; one bounded same-process prefix1093passes/2543deselected; historical one-ULP limitation retained | [PR42](https://github.com/jackalkahwati/BPR-Math-Spine/pull/42), base `science/substrate-prediction-contract`, head `science/substrate-gauge-encoding`; scientific commit `86e5a193eb6f5784312b9c786e71294090e83a9f`; verified OPEN/not merged |
 | 2 | Quantum density-commutator propagation and finite-sector distance bound | Planned; not started | None |
 | 3 | Internal chiral source compatibility and zero-subspace leakage | Planned; not started | None |
 | 4 | Mixed energy/Peierls/density source integrability and contact-completed Ward identities | Planned; not started | None |
