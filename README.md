@@ -34,13 +34,15 @@
 >
 > **GRAVITY NORMALIZATION AUDIT (2026-09-12):** [action, units and identifiability](doc/derivations/gravity_consistency_2026-09-12.md). The stated R+R² action fixes scalaron mass, plateau and leading amplitude factors that differed in legacy helpers. Reduced-Planck conversions distinguish calibrated G from a prediction and preserve the numerical horizon area law. Bare/counterterm/cutoff freedom and flat-space energy-origin invariance leave gravitational dynamics and vacuum energy underived.
 >
+> **CONDITIONAL PHASON RESPONSE (2026-09-12):** [causality, pole bounds and held-out tests](doc/derivations/phason_response_2026-09-12.md). The supplied quadratic elastic/diffusive model gives an exact complex-modulus circle and rigorously bounded weak-coupling pole approximations. Linked inverse/held-out response tests identify two combinations, not microscopic parameters. Synthetic controls are not experiments; a BPR-specific magnitude requires an independent substrate-to-continuum calculation.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
 >
 > **COMPLETE FRAMEWORK** → [`doc/BPR_Complete_Framework.md`](doc/BPR_Complete_Framework.md) *(80-page unified document)*
 >
-> **KEY RESULT**: Testable prediction at 10⁻⁸ level via phonon-MEMS experiments
+> **PROPOSED EXPERIMENTAL DIRECTION**: Phonon-MEMS response tests. The historical 10⁻⁸ magnitude is not established by the conditional response calculation; microscopic coupling and experimental mode matching remain open.
 >
 > **EXPERIMENTAL ROADMAP** → [`doc/EXPERIMENTAL_ROADMAP.md`](doc/EXPERIMENTAL_ROADMAP.md) *(10 concrete tests with falsification criteria)*
 >
