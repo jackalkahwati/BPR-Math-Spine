@@ -8,8 +8,8 @@
 |---|---|---|---|
 | 1 | Consistently dressed neutral Hamiltonian and density response | Complete bounded calculation; math/code review passed after two scale fixes; 53 focused and 1,079 combined tests passed; ten demos/eight algebra groups passed | Committed/pushed 45f52c5; PR24 open; ordinary merge denied by environment's Merge Without Review rule, not merged |
 | 2 | Full-model joint strong-coupling/large-volume bound and spatial scaling | Complete conditional calculation; math/code review passed after oracle resolution fix; 78 post-fix focused tests and 1,152 pre-fix combined tests passed (one intentional deselection, existing marker warning); eleven demos/eight algebra groups passed | Committed/pushed 41f0196; PR25 open, stacked on PR24; not merged; main integration blocked behind PR24 |
-| 3 | Charge-resolved branch chirality and spectral flow | Complete bounded calculation; math/code review passed; 154 focused and 944 inherited substrate tests passed, eight algebra groups passed | Dependent branch science/substrate-chirality based on 41f0196; publication pending at this commit; main integration blocked behind PR24 |
-| 4 | Parity-aware quantum projection and symmetry matching | Planned; not implemented | None |
+| 3 | Charge-resolved branch chirality and spectral flow | Complete bounded calculation; math/code review passed; 154 focused and 944 inherited substrate tests passed, eight algebra groups passed | Committed/pushed d86723e; PR26 open, stacked on PR25/PR24; not merged |
+| 4 | Parity-aware quantum projection and symmetry matching | Complete bounded calculation; math/code review passed after four fixes; 119 focused and 1,085 post-fix substrate tests passed; twelve selected demos and eight algebra groups passed | Publication prepared on dependent branch science/substrate-quantum-matching based on d86723e; main integration remains blocked behind PR24 |
 | 5 | Action-consistent gravity normalization and identifiability | Planned; not implemented | None |
 | 6 | Causal phason response, resonance bounds and testable joint predictions | Planned; not implemented | None |
 

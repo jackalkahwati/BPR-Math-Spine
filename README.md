@@ -30,6 +30,8 @@
 >
 > **CHARGE-RESOLVED CHIRALITY AUDIT (2026-09-12):** [flux, branch and interaction calculation](doc/derivations/substrate_chirality_2026-09-12.md). The strict hard-core ring has parity-dependent spectra and paired opposite-velocity branches with zero net signed flux flow. Its Jordan–Wigner operators retain charge one, and finite-repulsion corrections are nonquadratic in those variables. These one-dimensional diagnostics do not derive physical Weyl fermions.
 >
+> **QUANTUM PROJECTION MATCHING (2026-09-12):** [occupation-space map and symmetry comparison](doc/derivations/substrate_quantum_matching_2026-09-12.md). The actual three-mode exterior map preserves the hard-core Hamiltonian but generally not local density actions. Its even two-particle window lacks spectral isolation and reflection closure; inherited neutral unit filling gives one state or an empty candidate, not a triplet. Vector reflection lifts differ while their bilinear actions agree. No link/Gauss map or physical flavor sector is derived.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
