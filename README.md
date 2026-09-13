@@ -38,6 +38,8 @@
 >
 > **MICROSCOPIC FOLLOW-ON CAMPAIGN (2026-09-12):** [scope and publication ledger](doc/derivations/microscopic_campaign_2026-09-12.md). The [charged-spectroscopy calculation](doc/derivations/substrate_charged_response_2026-09-12.md) studies complete addition/removal sectors of the unchanged quantum ring. Signed insertion energies and spectral weights are conditional model observables, not identified physical particle masses. Verification status is recorded in the linked notes.
 >
+> **MICROSCOPIC NUMBER RESPONSE (2026-09-12):** [continuity, Ward identities and flux curvature](doc/derivations/substrate_current_response_2026-09-12.md). Complete ring currents connect density response to conserved number, with explicit equal-time contacts and an external-flux curvature calculation. Static gauge covariance of a probe is not a dynamical gauge field or a substrate-derived physical force; verification status is recorded in the note.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
