@@ -24,6 +24,8 @@
 >
 > **LARGE-RING NEUTRAL RESPONSE (2026-09-12):** [spectral limit and validity boundary](doc/derivations/substrate_neutral_continuum_2026-09-12.md). The leading doublon-hole compression has an absolutely continuous density-response limit with a finite-size error bound, not a surviving isolated line. The existing full-Hamiltonian excitation bound is not uniform at fixed repulsion as the ring grows. This is not a spatial continuum limit, a full-model exclusion of bound particles, or a derivation of relativity.
 >
+> **SIX-MODULE SCIENTIFIC CAMPAIGN (2026-09-12):** [calculation and publication ledger](doc/derivations/scientific_campaign_2026-09-12.md). The [dressed neutral-response calculation](doc/derivations/substrate_neutral_effective_2026-09-12.md) treats excited virtual corrections, density dressing and the ground-energy reference consistently. Mathematical verification and publication status are recorded per module; none is an empirical TOE validation.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
