@@ -58,6 +58,8 @@
 >
 > **JOINT MATTER-SOURCE AUDIT (2026-09-12):** [joint kernel and static source Hessian](doc/derivations/substrate_joint_source_kernel_2026-09-12.md). Verified density/energy cross-response distinguishes the two free source partitions and keeps static contacts separate from connected response. Independent verification passed289 focused and3309 combined tests; a test-only solve-count repair and unavailable analytic bounds remain documented. Matter susceptibility does not supply a metric action or gravitational degrees of freedom.
 >
+> **PREDICTION-CONTRACT AUDIT (2026-09-13):** [same-model scaling and observation requirements](doc/derivations/substrate_prediction_contract_2026-09-13.md). Verified common-scale comparisons and a fixed synthetic held-out mismatch use preregistered componentwise tolerances and heuristic availability screens. Independent review passed607 probes;177 focused tests passed after an exact-cancellation test-fixture repair, with production unchanged. All29 suites passed3486 tests in sequential processes. A memory-interrupted combined run exposed an older one-ULP exact-repeatability failure, reproduced without Module6 and left unchanged; a clean single-process regression is not claimed. Physical calibration and empirical testing remain unavailable.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
