@@ -7,7 +7,7 @@
 | Module | New calculation | State | Publication |
 |---|---|---|---|
 | 1 | Diagonal constraints and projection multiplication defects | Complete bounded calculation; independent mathematics/code review,229 focused and2305 combined tests passed; eight algebra groups, grammar/isolated demos passed. Initial synthetic-injection test failure and test-only repair retained | Scientific commit0b5fbf2 pushed on science/substrate-constraint-algebra; PR36 verified OPEN on science/substrate-energy-response, not merged. Initial external-write denial retained in8473e01; renewed explicit user authorization allowed subsequent push/PR creation |
-| 2 | Composite grading, canonical algebra and locality | Planned; not started | None |
+| 2 | Composite grading, canonical algebra and locality | Complete bounded calculation; independent mathematics/code review,393 focused and2698 combined tests passed with unchanged hashes; grammar, isolated demos and eight algebra groups passed; no failed runs or repairs | Scientific commit50f7af773bc32fc8da0ef89d5a14335ab94ddd58 pushed; PR37 verified OPEN with matching remote head, base science/substrate-constraint-algebra; mergedAt null and no listed remote status checks. No merge attempted |
 | 3 | Controlled classical long-wave limit and bounded quantum condensate bridge | Planned; not started | None |
 | 4 | Fixed-content anomaly solution space and reduction information loss | Planned; not started | None |
 | 5 | Joint density–energy kernel and static source Hessian | Planned; not started | None |
