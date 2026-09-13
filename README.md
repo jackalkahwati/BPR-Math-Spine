@@ -28,6 +28,8 @@
 >
 > **FULL-MODEL JOINT LIMIT (2026-09-12):** [normalized neutral spectral theorem and spatial audit](doc/derivations/substrate_neutral_scaling_2026-09-12.md). Explicit full-Hamiltonian and source bounds establish a semicircle weak limit when repulsion grows sufficiently rapidly with ring size. Fixed coupling is not covered; absolute density weight vanishes along these sequences. The spatial support-edge expansion is not a particle pole or a conditioned near-edge limit.
 >
+> **CHARGE-RESOLVED CHIRALITY AUDIT (2026-09-12):** [flux, branch and interaction calculation](doc/derivations/substrate_chirality_2026-09-12.md). The strict hard-core ring has parity-dependent spectra and paired opposite-velocity branches with zero net signed flux flow. Its Jordan–Wigner operators retain charge one, and finite-repulsion corrections are nonquadratic in those variables. These one-dimensional diagnostics do not derive physical Weyl fermions.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
