@@ -46,6 +46,8 @@
 >
 > **CHIRAL-PARENT FOLLOW-ON (2026-09-12):** [local anomaly polynomial](doc/derivations/chiral_parent_anomaly_2026-09-12.md). The calculation finds a nonzero local anomaly for the supplied lone six-dimensional chiral parent, including an irreducible gravitational term. Four-dimensional anomaly cancellation alone does not establish parent consistency.
 >
+> **MICROSCOPIC ENERGY FOLLOW-ON (2026-09-12):** [local continuity and response](doc/derivations/substrate_energy_response_2026-09-12.md). The verified calculation derives energy transfers, contact-term Ward identities and a strict response difference between two local partitions of the unchanged quantum ring, despite identical total energy. An external energy probe is not identified as a metric or gravitational field.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
