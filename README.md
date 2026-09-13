@@ -40,6 +40,8 @@
 >
 > **MICROSCOPIC NUMBER RESPONSE (2026-09-12):** [continuity, Ward identities and flux curvature](doc/derivations/substrate_current_response_2026-09-12.md). Complete ring currents connect density response to conserved number, with explicit equal-time contacts and an external-flux curvature calculation. Static gauge covariance of a probe is not a dynamical gauge field or a substrate-derived physical force; verification status is recorded in the note.
 >
+> **COLLECTIVE-DYNAMICS FOLLOW-ON (2026-09-12):** [classical canonical modes and quantum projected memory](doc/derivations/substrate_collective_dynamics_2026-09-12.md). This calculation derives classical canonical modes and exact quantum projected memory while keeping the two models separate. Neither is assumed to be an internal phason or a microscopic derivation of irreversible damping; verification status is recorded in the note.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
