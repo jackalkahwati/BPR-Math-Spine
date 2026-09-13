@@ -50,6 +50,8 @@
 >
 > **FOUNDATIONAL CONNECTION CAMPAIGN (2026-09-12):** [scope and publication ledger](doc/derivations/foundational_campaign_2026-09-12.md). Six new bounded calculations test common-model constraints, composite statistics, long-wave and quantum–classical connections, anomaly solution spaces, joint matter response and prediction identifiability. The verified [constraint/projection audit](doc/derivations/substrate_constraint_algebra_2026-09-12.md) classifies diagonal conserved operators in the complete Bose ring and quantifies multiplication defects in existing hard-core projections. Commuting compressed operators need not preserve multiplication. This is not a general gauge no-go theorem or completed unification.
 >
+> **COMPOSITE-STATISTICS AUDIT (2026-09-12):** [algebra, string support and neutrality](doc/derivations/substrate_composite_statistics_2026-09-12.md). Independently reviewed formulas distinguish Jordan–Wigner exchange grading, full-space canonical algebra, original-site parity strings and modular neutrality. Bounded verification passed393 focused and2698 combined tests with independent code/numerical review. Complete Bose ladder controls retain repeated creation that binary truncation would remove. None of these algebraic properties establishes binding or physical spin/statistics.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
