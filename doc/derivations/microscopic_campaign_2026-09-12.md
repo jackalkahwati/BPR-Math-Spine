@@ -7,8 +7,8 @@
 | Module | New calculation | State | Publication |
 |---|---|---|---|
 | 1 | Complete charged addition/removal spectroscopy | Complete bounded calculation; independent math/code review after retained fixes;79 focused and1600 combined tests passed, eight algebra groups and isolated text/JSON demos passed | Committed/pushed0c39d3c; PR30 verified open on PR29, no listed remote checks; not merged |
-| 2 | Microscopic number currents, Ward response and flux curvature | Complete bounded calculation; independent math/code review after retained arithmetic fixes;75 focused and1675 combined tests passed, eight algebra groups and isolated demos passed | Dependent branch science/current-response; not published |
-| 3 | Classical canonical modes and exact quantum projected memory | Planned, separate classical/quantum interpretations | Not published |
+| 2 | Microscopic number currents, Ward response and flux curvature | Complete bounded calculation; independent math/code review after retained arithmetic fixes;75 focused and1675 combined tests passed, eight algebra groups and isolated demos passed | Committed/pushed9614e66; PR31 verified open on PR30, no listed remote checks; not merged |
+| 3 | Classical canonical modes and exact quantum projected memory | Complete bounded calculation; independent math/code review after retained underflow repair;71 focused and1746 combined tests passed, eight algebra groups and isolated demos passed. Prior inherited exact-equality failure retained in note | Dependent branch science/collective-dynamics; ready for publication, not merged |
 | 4 | Shared-edge two-plaquette central gauge model | Planned, separately supplied gauge model | Not published |
 | 5 | Six-dimensional supplied chiral parent's local anomaly | Planned, no added cancellation fields | Not published |
 | 6 | Local microscopic energy continuity and response | Planned, no covariant metric dictionary inferred | Not published |
