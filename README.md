@@ -26,6 +26,8 @@
 >
 > **SIX-MODULE SCIENTIFIC CAMPAIGN (2026-09-12):** [calculation and publication ledger](doc/derivations/scientific_campaign_2026-09-12.md). The [dressed neutral-response calculation](doc/derivations/substrate_neutral_effective_2026-09-12.md) treats excited virtual corrections, density dressing and the ground-energy reference consistently. Mathematical verification and publication status are recorded per module; none is an empirical TOE validation.
 >
+> **FULL-MODEL JOINT LIMIT (2026-09-12):** [normalized neutral spectral theorem and spatial audit](doc/derivations/substrate_neutral_scaling_2026-09-12.md). Explicit full-Hamiltonian and source bounds establish a semicircle weak limit when repulsion grows sufficiently rapidly with ring size. Fixed coupling is not covered; absolute density weight vanishes along these sequences. The spatial support-edge expansion is not a particle pole or a conditioned near-edge limit.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
