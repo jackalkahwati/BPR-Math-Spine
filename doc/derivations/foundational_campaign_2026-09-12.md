@@ -11,7 +11,7 @@
 | 3 | Controlled classical long-wave limit and bounded quantum condensate bridge | Complete bounded calculation; independent math/code review,155 focused and2853 combined tests passed with unchanged hashes; grammar, isolated demos and eight algebra groups passed; trivial/loose bounds retained, no failed runs or repairs | Scientific commitdef2575afcd9225e3f0d10baed7230859a0c5a02 pushed; PR38 verified OPEN with matching remote head, base science/substrate-composite-statistics; mergedAt null, no listed status checks and no merge attempted |
 | 4 | Fixed-content anomaly solution space and reduction information loss | Complete exact calculation; independent mathematics/code review,167 focused and3020 combined tests passed with unchanged hashes; grammar, isolated demos and eight algebra groups passed; no failures/repairs | Scientific commit9bfd101afa0cf4e39cc00dee08ae65cdfe38f292 pushed; PR39 verified OPEN with matching remote head, base science/substrate-longwave-limit; mergedAt null, no listed status checks and no merge attempted |
 | 5 | Joint density–energy kernel and static source Hessian | Complete bounded calculation; independent mathematics/code review,289 focused and3309 combined tests passed with unchanged final hashes; grammar, isolated demos and eight algebra groups passed; initial288pass/1fail scaled-base counting defect and strict test-only repair retained | Scientific commitfd274a853a9bf39d68198e573c0c5eba966c8315 pushed; PR40 verified OPEN with matching remote head, base science/chiral-content-constraints; mergedAt null, no listed status checks and no merge attempted |
-| 6 | Same-model scale/measurement identifiability and synthetic prediction contract | Planned; not started | None |
+| 6 | Same-model scale/measurement identifiability and synthetic prediction contract | Independent mathematics/API and code review complete;607 review probes and177 final focused tests passed; original176pass/1fail exact-cancellation fixture error and test-only repair retained; final-hash grammar, isolated demos and eight algebra groups passed;29 sequential suites passed3486 tests; single-process run memory-interrupted, with old nonlinear-response one-ULP repeatability failure independently reproduced using only older suites; limitation disclosed, old code/tests unchanged | Local science/substrate-prediction-contract above published module5 ledger head4df19a5 |
 
 ## Rules
 
@@ -26,3 +26,19 @@ A scoped obstruction is a valid result, not permission to change the model. A no
 ## Completion criteria
 
 Finish all six bounded calculations or explicitly record a genuine out-of-scope blocker. Report results, supplied assumptions, test evidence and actual publication state. Keep missing microscopic gauge identification, physical spacetime/chirality, parent completion, universal gravity coupling and empirical calibration explicit. Do not combine independent stipulated sectors into an unsupported unification claim.
+
+## Scientific interpretation
+
+The first five completed calculations sharpen the boundary between a checked mathematical model and a unified physical theory:
+
+| Calculation | Established within supplied assumptions | Not established |
+|---|---|---|
+| Constraint algebra | Connected complete-sector hopping makes conserved occupation-diagonal operators scalar; projection multiplication defects quantify omitted-state contributions | Classification of the full commutant, or a microscopic identification with the separately supplied gauge model |
+| Composite statistics | Exact exchange grading, parity-string support and composite anticommutators distinguish several operator constructions | Binding, full-space CAR for higher-degree composites, or physical relativistic fermions |
+| Long-wave/condensate bridge | Conditional classical acoustic/free-dispersive limits and explicit finite-time condensate error envelopes | An interacting quantum continuum theorem, emergent3+1 spacetime or physical Lorentz invariance |
+| Chiral constraints | Exact charged multiplicity kernel and explicit information lost by the restricted parent pushforward | Selection of three families, spacetime chirality from internal labels or cancellation of the anomalous parent |
+| Joint matter sources | Same-state density/energy spectral kernels, source Hessians and a scalar-contact ambiguity | A dynamical metric action, graviton or universal gravitational coupling |
+
+The final prediction-contract module passes its177 focused tests and607 independent review probes: all27 preregistered scale comparisons are consistent, the unchanged synthetic observations pass, and the single-entry heldout mutation is detected. It supplies conditional model predictions and explicit measurement requirements, not a unique identification of a physical theory. All29 suites also pass sequentially. A clean single-process regression is not established: its memory interruption and an older nonlinear-response exact-repeatability failure are preserved. The same one-ULP failure was reproduced using only the first13 old suites, so Module6 is not necessary to trigger it. The originating numerical operation remains unidentified; protected old code/tests are unchanged.
+
+No experimental preparation, physical probe/clock/length map or observational dataset has been supplied. The dimensionless contract deliberately loses absolute scale and gain information, and generic two-frequency data do not determine an interacting spectrum. These calculations do not currently establish BPR as a theory of everything.
