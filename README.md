@@ -48,6 +48,8 @@
 >
 > **MICROSCOPIC ENERGY FOLLOW-ON (2026-09-12):** [local continuity and response](doc/derivations/substrate_energy_response_2026-09-12.md). The verified calculation derives energy transfers, contact-term Ward identities and a strict response difference between two local partitions of the unchanged quantum ring, despite identical total energy. An external energy probe is not identified as a metric or gravitational field.
 >
+> **FOUNDATIONAL CONNECTION CAMPAIGN (2026-09-12):** [scope and publication ledger](doc/derivations/foundational_campaign_2026-09-12.md). Six new bounded calculations test common-model constraints, composite statistics, long-wave and quantum–classical connections, anomaly solution spaces, joint matter response and prediction identifiability. The verified [constraint/projection audit](doc/derivations/substrate_constraint_algebra_2026-09-12.md) classifies diagonal conserved operators in the complete Bose ring and quantifies multiplication defects in existing hard-core projections. Commuting compressed operators need not preserve multiplication. This is not a general gauge no-go theorem or completed unification.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
