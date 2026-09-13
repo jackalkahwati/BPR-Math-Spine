@@ -1,8 +1,14 @@
 # Scalaron Sector from Boundary R2
 
-> **Status:** May 2026 — scalar-sector audit. The boundary-induced `R2` term
-> derives the Starobinsky scalar shape, but the minimal coefficient does not
-> match the observed scalar amplitude without an additional normalization.
+> **Normalization correction, 2026-09-12:** This note uses the frozen action in
+> `gravity_consistency_2026-09-12.md`, with reduced `M_Pl`: `M_Pl² R/2 + alpha R²/2`.
+> The old mass, plateau and amplitude normalization were inconsistent with that
+> action. At unchanged parameters, the required enhancement is `2/3` of its old
+> value and every fixed candidate/required ratio is `3/2` of its old value.
+> In particular, the historical `5/3` percent-level near-match and all numerical
+> closure implications are superseded. No candidate is retuned or replaced.
+> The scalar shape is conditional on the supplied induced-action assumptions;
+> the amplitude and boundary-to-bulk coefficient derivation remain open.
 
 ## Boundary Input
 
@@ -22,20 +28,23 @@ For `p = 104761`, `z = 6`, this gives:
 
 ## Scalaron Dual
 
-In the repo convention, the `R2` term is equivalent to an Einstein-frame scalar
-with:
+For the stated action, the `R2` term is equivalent to an Einstein-frame scalar
+with mass `m_s`:
 
-    M / M_Pl = 1 / (2 sqrt(alpha))
+    m_s / M_Pl = 1 / sqrt(6 alpha)
 
 and potential:
 
-    V(phi) = (3 M_Pl^4 / 16 alpha)
+    V(phi) = (M_Pl^4 / (8 alpha))
              (1 - exp(-sqrt(2/3) phi / M_Pl))^2
 
 So the minimal BPR boundary coefficient gives:
 
-    M / M_Pl ~= 0.0317
-    V0 / M_Pl^4 ~= 7.54e-4
+    m_s / M_Pl ~= 0.02588
+    V0 / M_Pl^4 ~= 5.025e-4
+
+Here `M_Pl` is reduced. The auxiliary-field/Weyl calculation and the
+small-field mass check are given in `gravity_consistency_2026-09-12.md`.
 
 The scalaron couples universally to trace stress-energy with the standard
 Einstein-frame strength:
@@ -53,33 +62,37 @@ For `d = 3`, `N ~= 62.9`. The Starobinsky shape then gives:
     n_s = 1 - 2/N ~= 0.968
     r   = 12/N^2  ~= 0.003
 
-These shape predictions remain the strong part of the scalar sector.
+These leading shape relations are unchanged by the normalization repair;
+they remain conditional on the pure-`R2` action and the supplied e-fold estimate.
 
 ## Amplitude Audit
 
-The scalar amplitude in this convention is:
+At leading large-`N` slow roll, the scalar amplitude in this convention is:
 
-    A_s = N^2 / (96 pi^2 alpha)
+    A_s = N^2 / (144 pi^2 alpha)
 
-Using the minimal boundary `alpha_min ~= 248.8`:
+Using the minimal boundary `alpha_min ~= 248.8` and the unchanged `N` above:
 
-    A_s,min ~= 0.0168
+    A_s,min ~= 0.01117
 
-The observed value is:
+The existing comparison input is retained, not re-estimated:
 
     A_s,obs ~= 2.1e-9
 
-So the minimal `R2` coefficient overpredicts the scalar amplitude by about:
+So the minimal `R2` coefficient overpredicts that amplitude by about:
 
-    A_s,min / A_s,obs ~= 8.0e6
+    A_s,min / A_s,obs ~= 5.321e6
 
-Equivalently, the coefficient needed to match the observed amplitude is:
+Equivalently, the inverse coefficient needed to match this input is:
 
-    alpha_required = N^2 / (96 pi^2 A_s,obs) ~= 2.0e9
+    alpha_required = N^2 / (144 pi^2 A_s,obs) ~= 1.324e9
 
 That is about:
 
-    alpha_required / alpha_min ~= 8.0e6
+    alpha_required / alpha_min ~= 5.321e6
+
+This inverse is a calibration, not a prediction of the observed amplitude.
+The old `96 pi^2`, `0.0168`, `2.0e9` and `8.0e6` values are superseded.
 
 ## Winding/Anyon Normalization Diagnostic
 
@@ -95,7 +108,7 @@ For `p = 104761`, `z = 6`:
 
 This is nowhere near the required:
 
-    F_required ~= 7.98e6
+    F_required ~= 5.321e6
 
 Other simple BPR-scale combinations are also only diagnostic, not derivations:
 
@@ -109,11 +122,15 @@ Some are within an order of magnitude, but none is an established
 coefficient-level derivation of the scalar amplitude. Matching the observed
 amplitude is equivalent to an effective boundary-sector count:
 
-    p_eff = p * F_required ~= 8.36e11
+    p_eff = p * F_required ~= 5.574e11
 
-The code implementation `scalaron_normalization_diagnostic(...)` records this
-status as `open` unless an existing candidate lands within 10% of the required
-gap.
+The code implementation `scalaron_normalization_diagnostic(...)` compares the
+existing fixed candidates with the corrected gap. Its unchanged candidate set
+now has `p_four_thirds` as the closest candidate, with relative error about
+`7.18568%`; this is the existing numerical diagnostic, not a newly proposed
+normalization. A proximity status from a numerical threshold is not a
+coefficient derivation or a closed physical normalization. No candidate is
+retuned or added to recover the old match.
 
 ## Compact-Boson Mode Count
 
@@ -137,40 +154,45 @@ If the full square-lattice count is weighted by the topological log, it gives:
 
 which is about:
 
-    0.606 * F_required
+    0.9094 * F_required
 
 The stricter conformal-dimension ellipse gives:
 
     1014 log(p) ~= 1.17e4
 
-which is far too small. This is useful because it narrows the next calculation:
-the missing coefficient would have to come from a loop weight or degeneracy
-that is closer to the full finite `(m,n)` lattice than to the low-dimension
-ellipse, but with an additional factor of about `1.65`.
+which is far too small. The unchanged counts are diagnostics only. The
+corrected residual after full-lattice counting is about `1.100`, not the
+historical `1.65`; this arithmetic is not a prescription for a new loop weight.
 
 The helper `compact_boson_mode_normalization_diagnostic(...)` records these
-counts. It still reports `open`, because mode counting is not yet the same as a
-coefficient-level heat-kernel/anyon-loop calculation.
+counts. The square-lattice ratio `0.9094098996` now falls within its unchanged
+10% threshold and receives the numerical `candidate` status, superseding the
+old `open` proximity status. This is not a coefficient-level
+heat-kernel/anyon-loop calculation or a physical closure.
 
 ## Residual Loop-Weight Diagnostic
 
-After the full finite lattice count, the remaining factor is no longer huge:
+After the full finite lattice count, the corrected remaining factor is:
 
-    F_residual = F_required / (418608 log(p)) ~= 1.649
+    F_residual = F_required / (418608 log(p)) ~= 1.0996
 
-The closest simple compact-boson radius factor currently identified is:
+Keep the previously proposed radius factor fixed:
 
     F_R = 1 + 2/R^2 = 5/3 ~= 1.667
 
 For `R^2 = 3`, this gives:
 
-    (418608 log(p)) * (5/3) ~= 1.010 * F_required
+    (418608 log(p)) * (5/3) ~= 1.5157 * F_required
 
-That is a near match at the percent level, but it is not yet a derivation. The
-factor could be physically meaningful only if it falls out of the actual
-anyon/heat-kernel loop weight over the finite `(m,n)` lattice. The code records
-this with `compact_boson_residual_loop_weight_diagnostic(...)`, whose status is
-`near_match_unproven` rather than `closed`.
+The historical `1.649` residual, `1.010` ratio and percent-level near-match
+claim are superseded. The fixed `5/3` candidate now exceeds the required
+coefficient by about 51.6% and is `open`, not a normalization closure or the
+old `near_match_unproven` result. The code records the diagnostic through
+`compact_boson_residual_loop_weight_diagnostic(...)`. Within its unchanged
+candidate list, `self_dual_average` now has the smallest residual relative
+error, `5.00961%`, but still reports `open`; it is not promoted as a replacement
+physical weight. Physical meaning would require an independently derived
+anyon/heat-kernel loop weight. No replacement near-match is sought here.
 
 ## Radius-Current Heat-Kernel Weight
 
@@ -193,18 +215,19 @@ For the BPR radius `R^2 = z/2 = 3`:
 so:
 
     418608 log(p) * (5/3) ~= 8.06e6
-    [418608 log(p) * (5/3)] / F_required ~= 1.010
+    [418608 log(p) * (5/3)] / F_required ~= 1.5157
 
-This is a candidate closure of the numerical gap at the percent level under
-the compact-boson current-insertion ansatz. It still does **not** close the
-full derivation, because a single `U(1)_p` Chern-Simons edge theory is chiral.
-The two-current `J_L`, `J_R` factor requires either a doubled/non-chiral
-boundary completion or an explicit derivation of how the bulk scalar loop pairs
-the chiral edge with its conjugate.
+This is the unchanged current-insertion ansatz, not a closure of the corrected
+numerical gap. The old percent-level closure statement is superseded.
+Independently, a single `U(1)_p` Chern-Simons edge theory is chiral. The
+two-current `J_L`, `J_R` factor requires either a doubled/non-chiral boundary
+completion or an explicit derivation of how the bulk scalar loop pairs the
+chiral edge with its conjugate.
 
-The helper `compact_boson_heat_kernel_loop_weight(...)` therefore reports
-`candidate_under_current_ansatz` while keeping `dictionary_status =
-cs_dictionary_open`.
+The helper `compact_boson_heat_kernel_loop_weight(...)` evaluates this fixed
+ansatz and now reports `open`. Its former `candidate_under_current_ansatz`
+proximity implication is superseded by the corrected ratio; the CS dictionary
+remains open.
 
 ## CS/WZW Compatibility Rule
 
@@ -248,29 +271,32 @@ and for `R^2 = 3`:
 
     F_R = 5/3
 
-This moves the result from "numerical near-match" to "compatible with the
-neutral scalar operator filters of the abelian CS/WZW boundary theory." It does
-not yet prove the coefficient. Two things remain open:
+This is a compatibility argument for the neutral scalar operator filters of
+the abelian CS/WZW boundary theory, not a numerical near-match or a coefficient
+proof. The normalization correction does not change these filters. Two things
+remain open:
 
     1. chirality completion: why the scalar loop pairs the chiral CS edge with
        a conjugate edge or equivalent non-chiral completion;
     2. local and bulk normalization: why the identity/current mixing enters
        the induced 4D `R2` coefficient with exactly this unit normalization.
 
-The helper `compact_boson_cs_wzw_selection_rule(...)` reports
-`compatible_with_cs_wzw_symmetry` with
+The helper `compact_boson_cs_wzw_selection_rule(...)` now reports `open` at
+the default parameters because the fixed `5/3` coefficient/required ratio is
+`1.515683166`, with
 `dictionary_status = chirality_and_bulk_normalization_open`.
 
 ## Interpretation
 
-This closes one question and opens a sharper one:
+The corrected interpretation is conditional, not a closed scalar-amplitude
+prediction:
 
-- `R2` **does** derive the Starobinsky scalar potential shape.
-- The resulting `n_s` and `r` predictions are still internally clean.
-- The minimal one-loop boundary coefficient is far too small to set the
-  observed amplitude.
-- The proposed winding/anyon-loop enhancement must therefore supply a large
-  normalization factor, not just an order-one correction.
+- The supplied pure-`R2` action has the Starobinsky scalar potential shape.
+- Leading `n_s` and `r` relations are unchanged at the same e-fold estimate.
+- The minimal one-loop coefficient is far too small for the existing amplitude
+  comparison input; inverse matching is calibration.
+- The proposed large enhancement remains unproved. The fixed `5/3` candidate
+  no longer has the historical percent-level numerical match.
 
 The code implementation lives in `bpr/graviton_propagator.py` as
 `scalaron_sector_from_boundary_r2(...)`.

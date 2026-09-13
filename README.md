@@ -32,6 +32,8 @@
 >
 > **QUANTUM PROJECTION MATCHING (2026-09-12):** [occupation-space map and symmetry comparison](doc/derivations/substrate_quantum_matching_2026-09-12.md). The actual three-mode exterior map preserves the hard-core Hamiltonian but generally not local density actions. Its even two-particle window lacks spectral isolation and reflection closure; inherited neutral unit filling gives one state or an empty candidate, not a triplet. Vector reflection lifts differ while their bilinear actions agree. No link/Gauss map or physical flavor sector is derived.
 >
+> **GRAVITY NORMALIZATION AUDIT (2026-09-12):** [action, units and identifiability](doc/derivations/gravity_consistency_2026-09-12.md). The stated R+R² action fixes scalaron mass, plateau and leading amplitude factors that differed in legacy helpers. Reduced-Planck conversions distinguish calibrated G from a prediction and preserve the numerical horizon area law. Bare/counterterm/cutoff freedom and flat-space energy-origin invariance leave gravitational dynamics and vacuum energy underived.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap

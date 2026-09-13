@@ -5,6 +5,14 @@
 > calculation that would close it if executed. Estimated effort per gap:
 > 3–12 months of dedicated technical work.
 
+> **Gravity normalization correction, 2026-09-12:** Gap #7 below follows
+> `gravity_consistency_2026-09-12.md`. The action uses reduced `M_Pl`; cutoff
+> matching is calibration, not a prediction of `G`. The scalar enhancement
+> requirement is `2/3` of its former value and fixed candidate/required ratios
+> are `3/2` of their former values. The historical `5/3` percent-level match
+> and scalar-amplitude closure implications are superseded without retuning.
+> Gap #3 and its historical raw benchmark results are unchanged.
+
 ## Gap #3: The 1.5% GUT residual
 
 ### Current status
@@ -73,11 +81,14 @@ decomposition.
 
 ### Current status
 
-BPR derives gravity as *induced* via the Sakharov mechanism: integrating
-out the p boundary scalar modes generates an Einstein-Hilbert action with
-Newton's constant G_N = 48π²/(pΛ_b²). This gives classical GR at long
-distances and predicts M_Pl² = pΛ_b²/(48π²) at 0.2% agreement with
-observation.
+The inherited Sakharov calculation conditionally supplies an induced
+Einstein coefficient `M_Pl² = pΛ_b²/(48π²)`. Here `M_Pl` is reduced, so
+`G_N = 1/(8π M_Pl²) = 6π/(pΛ_b²)` in natural units, not the historical
+`48π²/(pΛ_b²)`. For energy-valued `M_Pl` in joules,
+`G_N = ħ c^5/(8π M_Pl²)`. The former 0.2% agreement claim is not an
+absolute prediction: cutoff matching calibrates the scale, a constant
+propagator factor is degenerate with `G`, and bare/counterterm contributions
+are not independently identified. This is a conditional classical-EFT limit.
 
 **What's missing:** Induced gravity is an *effective* description. It
 doesn't directly address:
@@ -110,35 +121,35 @@ for `p = 104761`. The RG window is now made concrete by setting
 `mu = E_probe` and `Lambda = Lambda_b`; the probe-specific shift is
 `delta_TT(E) = eta_TT(E) (E_probe/Lambda_b)^2`.
 For gravitational waves and ringdown, `E_probe = hbar 2πf`; a 100 Hz signal
-gives `|delta_TT| ~ 1e-78`, so detector-band gravitational waves are not a
+gives `|delta_TT| ~ 2.8e-77` at the corrected, inverse-calibrated
+`Lambda_b ≈ 1.64e17 GeV` (superseding the old `~1e-78` example), so
+detector-band gravitational waves are not a
 realistic observable for this specific curvature-squared correction. The
 correction has a hard EFT-envelope maximum at
 `E_probe/Lambda_b = exp(-1/2) = 0.6065`, where
 `delta_TT,max = -N_S2/(40ep) = -0.00922` for `p = 104761`.
-The scalar sector is now separately audited in
-`doc/derivations/scalaron_sector_from_boundary_r2.md`: the minimal induced
-`R²` coefficient derives the Starobinsky potential shape and keeps
-`n_s ≈ 0.968`, `r ≈ 0.003`, but its amplitude is too large by about `8e6`.
-Closing the scalar sector therefore requires deriving the winding/anyon-loop
-normalization of `alpha_R2`, not just the one-loop heat-kernel term. The old
-`1 + W_c/W_bare` estimate gives only `~1.51`, while the observed scalar
-amplitude requires `~7.98e6`; `scalaron_normalization_diagnostic(...)` now
-records this as an open coefficient-level gap. A compact-boson mode-count
-diagnostic gives `418608 log(p) ~= 4.84e6`, about `61%` of the required
-factor, while the stricter `h <= L_max` ellipse gives only `~1.17e4`.
-The residual after square-lattice counting is now only `~1.649`; the simple
-radius factor `1 + 2/R² = 5/3` is a percent-level near match, but it remains
-an unproven loop-weight candidate. A first heat-kernel current-insertion
-calculation now evaluates that same `5/3` candidate as `1 + G^{theta theta} +
-G^{theta theta}` for the two chiral compact-boson currents at `R² = 3`. This
-brings the scalar normalization to `~1.010` of the observed requirement under
-the current ansatz. The abelian CS/WZW compatibility filter is now explicit:
-neutral, spinless, parity-even scalar curvature insertions exclude charged
-vertex operators, one-sided chiral currents, and higher descendants. This
-supports the identity plus `J_L`, `J_R` radius-current pair only after a
-doubled/non-chiral completion of the chiral CS edge. The next calculation is
-therefore narrower: prove that chirality completion and then derive the
-absolute finite-`p` bulk normalization of the compatible boundary insertion.
+The scalar sector is separately corrected in
+`doc/derivations/scalaron_sector_from_boundary_r2.md`. For the stated action
+`M_Pl² R/2 + alpha R²/2`, the scalar mass is `M_Pl/sqrt(6 alpha)`, the
+plateau is `M_Pl⁴/(8 alpha)`, and leading `A_s = N²/(144π² alpha)`.
+The potential shape keeps the leading `n_s ≈ 0.968`, `r ≈ 0.003` at the
+unchanged e-fold estimate, but the minimal amplitude exceeds the existing
+comparison input by `~5.321e6`, not the old `~8e6`. Inverse
+`alpha_required = N²/(144π² A_s)` is calibration, not prediction.
+
+The old `1 + W_c/W_bare` estimate remains `~1.51`. The fixed lattice count
+`418608 log(p) ~= 4.84e6` is `0.9094` of the corrected requirement, while
+the unchanged `h <= L_max` ellipse gives only `~1.17e4`. The residual after
+square-lattice counting is `~1.0996`, not `1.649`. Keep the previously proposed
+radius factor `1 + 2/R² = 5/3` fixed: its coefficient/required ratio is now
+`~1.5157`, not `1.010`. The historical percent-level near-match and numerical
+closure are superseded. No candidate is retuned and no replacement near-match
+is sought.
+
+The current-insertion ansatz `1 + G^{theta theta} + G^{theta theta}` and
+CS/WZW neutral-scalar compatibility filters are unchanged. They do not prove
+the coefficient. The doubled/non-chiral completion and the absolute finite-`p`
+bulk normalization remain open independently of numerical proximity.
 
 **The target.** The effective graviton h_{μν} is the induced fluctuation
 of the metric from boundary modes. Its propagator is set by the
@@ -152,7 +163,8 @@ the holographic dictionary and compute the leading graviton propagator.
 
 **Deliverable.** A closed-form graviton propagator with:
 - Correct tensor structure (spin-2)
-- Correct Newton's constant G_N = 48π²/(pΛ_b²)
+- Action-consistent induced `G_N = 6π/(pΛ_b²)` in natural units, conditional
+  on a supplied cutoff and the bare/counterterm prescription
 - Leading finite-`p` stress-tensor normalization from the S² cutoff mode
   count
 - Weyl/Ricci-squared spin-2 coefficient per RG log
@@ -160,13 +172,13 @@ the holographic dictionary and compute the leading graviton propagator.
 - Gravitational-wave frequency map `E_probe = hbar 2πf`
 - Near-cutoff maximum `|delta_TT| < 1%` for the derived curvature-squared term
 - Scalaron-sector audit: Starobinsky shape derived, amplitude normalization
-  still open at the `~8e6` coefficient level
+  still open at the corrected `~5.321e6` coefficient level
 - Winding/anyon normalization diagnostic showing the old `1 + W_c/W_bare`
   factor is insufficient
 - Compact-boson `(m,n)` mode-count diagnostic narrowing the missing scalar
   amplitude factor to a finite-lattice loop-weight problem
-- Residual loop-weight diagnostic showing `1 + 2/R² = 5/3` as a near match,
-  explicitly marked unproven until derived from the finite-lattice loop sum
+- Residual loop-weight diagnostic retaining `1 + 2/R² = 5/3`, with its old
+  near-match claim superseded by the corrected ratio `~1.5157`; no retuning
 - Heat-kernel current-insertion helper evaluating the same `5/3` factor under
   the compact-boson radius ansatz, with the CS/WZW dictionary still open
 - CS/WZW compatibility helper showing the `5/3` operator family passes the
@@ -203,10 +215,13 @@ in CS terms (partial results exist from TQFT literature on BH entropy).
 
 ### Attack C: Singularity resolution via substrate discreteness
 
-**The target.** At a Big Bang or BH singularity, GR gives infinite
-curvature. If curvature in BPR is bounded by the substrate cutoff
-Λ_b ~ 8×10¹⁷ GeV, singularities cannot form — they get "smoothed" at
-the substrate scale.
+**The target.** At a Big Bang or BH singularity, classical GR can give
+infinite curvature. The corrected cutoff matching gives
+`Λ_b ≈ 1.64×10¹⁷ GeV` at default `p`, with reduced `M_Pl` and
+`a/l_P = sqrt(p/(6π))`; the old `~8×10¹⁷ GeV` example is superseded.
+A cutoff energy alone does not establish a curvature bound or resolve a
+singularity. Smoothing or a bounce remains the proposed calculation, not a
+consequence of this normalization repair.
 
 **What's to compute:** Modify the FRW or Schwarzschild metric by
 introducing a Λ_b-dependent UV cutoff (analogous to Loop Quantum Cosmology
