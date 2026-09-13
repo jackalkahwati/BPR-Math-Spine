@@ -36,6 +36,8 @@
 >
 > **CONDITIONAL PHASON RESPONSE (2026-09-12):** [causality, pole bounds and held-out tests](doc/derivations/phason_response_2026-09-12.md). The supplied quadratic elastic/diffusive model gives an exact complex-modulus circle and rigorously bounded weak-coupling pole approximations. Linked inverse/held-out response tests identify two combinations, not microscopic parameters. Synthetic controls are not experiments; a BPR-specific magnitude requires an independent substrate-to-continuum calculation.
 >
+> **MICROSCOPIC FOLLOW-ON CAMPAIGN (2026-09-12):** [scope and publication ledger](doc/derivations/microscopic_campaign_2026-09-12.md). The [charged-spectroscopy calculation](doc/derivations/substrate_charged_response_2026-09-12.md) studies complete addition/removal sectors of the unchanged quantum ring. Signed insertion energies and spectral weights are conditional model observables, not identified physical particle masses. Verification status is recorded in the linked notes.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
