@@ -54,6 +54,8 @@
 >
 > **LONG-WAVE/CONDENSATE AUDIT (2026-09-12):** [preregistered classical limit and quantum trial-state bridge](doc/derivations/substrate_longwave_limit_2026-09-12.md). Independent review confirms the classical propagator/response envelopes and quantum condensate variance with its required phase correction. Bounded verification passed155 focused and2853 combined tests; trivial and loose error bounds remain explicit. A controlled classical Hessian limit and a bounded quantum trial-state approximation remain separate; neither establishes emergent spacetime.
 >
+> **CHIRAL-CONTENT AUDIT (2026-09-12):** [fixed multiplicities and reduction information loss](doc/derivations/chiral_content_constraints_2026-09-12.md). Exact derivations establish equal charged multiplicities without selecting their count, and five parent-invariant directions invisible to nonzero-flux reduction. Independent verification passed167 focused and3020 combined tests with no repairs. No additional fields, physical chirality mechanism or parent completion is supplied.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
