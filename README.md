@@ -56,6 +56,8 @@
 >
 > **CHIRAL-CONTENT AUDIT (2026-09-12):** [fixed multiplicities and reduction information loss](doc/derivations/chiral_content_constraints_2026-09-12.md). Exact derivations establish equal charged multiplicities without selecting their count, and five parent-invariant directions invisible to nonzero-flux reduction. Independent verification passed167 focused and3020 combined tests with no repairs. No additional fields, physical chirality mechanism or parent completion is supplied.
 >
+> **JOINT MATTER-SOURCE AUDIT (2026-09-12):** [joint kernel and static source Hessian](doc/derivations/substrate_joint_source_kernel_2026-09-12.md). Verified density/energy cross-response distinguishes the two free source partitions and keeps static contacts separate from connected response. Independent verification passed289 focused and3309 combined tests; a test-only solve-count repair and unavailable analytic bounds remain documented. Matter susceptibility does not supply a metric action or gravitational degrees of freedom.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
