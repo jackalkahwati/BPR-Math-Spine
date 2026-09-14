@@ -72,6 +72,8 @@
 >
 > **SAMPLED RESPONSE (2026-09-13, ACCEPTANCE BLOCKED):** [finite-record reconstruction and separated error budgets](doc/derivations/substrate_sampled_response_2026-09-13.md), with [verification and retained failure](doc/derivations/substrate_sampled_response_verification_2026-09-13.md). The synthetic protocol separates omitted late-time response, quadrature and declared sample errors without supplying experimental data. Focused verification passed173 tests with2 platform skips; isolated demos/eight algebra groups and the sole1093-test integration prefix passed. A fixed tiny-noise fixture nevertheless failed four preregistered nonzero/sign assertions: rounding can erase its ideal signal even while error-size comparisons pass. That requirement remains unmet, with no changed fixture, tolerance or retry. Independent full35-suite audit verified4945 passes/10 platform skips across4955 nodes in125 fresh-process groups, with no failures/errors; that success does not waive the failed sign criterion. The saved demonstration retains48 unresolved ratios out of120 records. The user subsequently authorized publication and integration into main with this failure retained; that authorization does not establish scientific acceptance or empirical validation.
 >
+> **FOUNDATION PREREQUISITES (2026-09-13):** [current campaign and verification state](doc/derivations/foundation_prerequisites_2026-09-13.md). Independently reviewed results restrict exact short-interval conserved operators and bounded local encodings of higher-dimensional graphs into the ring; neither is a universal emergence no-go. The [common-foundation decision](doc/derivations/foundation_decision_2026-09-13.md) stops unsupported construction, while the [observation gate](doc/derivations/foundation_observation_gate_2026-09-13.md) finds no distinguishing prediction for the specified conventional/BPR response pair. Verification is ongoing; no revised starting physics or empirical validation is claimed.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
@@ -86,9 +88,9 @@
 >
 > **CONSISTENCY AUDIT** → [`doc/CONSISTENCY_AUDIT.md`](doc/CONSISTENCY_AUDIT.md) *(58 internal math consistency tests — no experiments needed)*
 >
-> **BENCHMARK SCORECARD** → [`doc/BENCHMARK_SCORECARD.md`](doc/BENCHMARK_SCORECARD.md) *(51 predictions vs PDG/Planck/CODATA data)*
+> **BENCHMARK SCORECARD** → [`doc/BENCHMARK_SCORECARD.md`](doc/BENCHMARK_SCORECARD.md) *(historical numerical scorecard; the quoted 51 comparisons are not independent statistical confirmations)*
 >
-> **EXPERIMENTS** → [`doc/experiments/`](doc/experiments/) *(papers that confirm or falsify BPR)*
+> **EXPERIMENTS** → [`doc/experiments/`](doc/experiments/) *(historical literature comparisons and candidate tests; current status follows dated audits)*
 >
 > **CONTINUOUS EVIDENCE LOOP** → [`doc/experiments/EVIDENCE_PIPELINE.md`](doc/experiments/EVIDENCE_PIPELINE.md) *(staged paper ingestion + audit trail + sandbox policy)*
 >
@@ -149,7 +151,7 @@ BPR is a **testable framework** with explicit falsification criteria. See [EXPER
 | Electromagnetic | λ ~ 10⁻⁵⁴ | 50 orders |
 | **Phonon Collective** | **λ ~ 10⁻⁸** | **1-2 orders** |
 
-**Mixing angles and mass ratios are derived from substrate properties with 1 free continuous parameter (J, an energy anchor) and 1 experimentally anchored integer (p, fixed by α). The Casimir/CCR exponent δ = 2 (Eq 7) is derived under Postulate 0c (Quasicrystalline Projection) from the unit-Pisot inflation, not fitted — superseding the earlier δ ≈ 1.37, which required a tuned vertex-operator charge. δ = 2 is a falsifiable prediction (a Casimir measurement near 2 supports the projection, near 1.37 refutes it). See [LIMITATIONS_AND_FALSIFICATION.md §9](doc/LIMITATIONS_AND_FALSIFICATION.md) for honest parameter accounting.**
+**Mixing-angle and mass-ratio formulas are retained phenomenological relations with 1 stated continuous energy anchor (J) and 1 experimentally anchored integer (p, fixed by α), plus model choices, conjectural physical mode assignments, and empirical n_gen=3. PMNS coefficients 1.35 and 3.5 are fitted; this is not a complete parameter count or a first-principles flavor derivation. The Casimir/CCR exponent δ = 2 (Eq 7) is derived under Postulate 0c (Quasicrystalline Projection) from the unit-Pisot inflation, not fitted — superseding the earlier δ ≈ 1.37, which required a tuned vertex-operator charge. δ = 2 is a falsifiable prediction (a Casimir measurement near 2 supports the projection, near 1.37 refutes it). See [LIMITATIONS_AND_FALSIFICATION.md §9](doc/LIMITATIONS_AND_FALSIFICATION.md) for honest parameter accounting.**
 
 The phonon collective channel (combining mode enhancement, coherent phases, and resonator Q-factor) brings BPR within plausible experimental reach.
 

@@ -1,7 +1,7 @@
 # BPR Flavor Sector — Headline Predictions
 
 > **Status:** This is the framework's strongest content for outside-physicist
-> evaluation. Repackages BPR's substrate-derived flavor-sector predictions
+> evaluation. Repackages BPR's phenomenological flavor-sector formulas and candidate predictions
 > (quark mass ratios, CKM, CP phase, doubly-heavy baryons) in the same
 > registered-pre-diction style that Asymptotic Safety used for the Higgs mass.
 > The speculative sectors (phason propulsion, consciousness coupling, moral
@@ -10,40 +10,45 @@
 
 ## 1. What this doc claims
 
-BPR makes specific, parameter-free pre-dictions in the Standard Model flavor
-sector that no other framework predicts at this level of sharpness from a
-small input set. The pre-dictions are derived from three substrate quantities
-(J, p, z), the boundary mode integers, and the established quark-model
-structure that any framework must use. Several pre-dictions are for
-quantities **not yet measured**. They are registered here, locked into code
-tests, and dated. Future LHCb measurements will test them as genuine
-pre-dictions rather than retrofits.
+BPR records specific candidate predictions in the Standard Model flavor
+sector. Their numerical formulas are retained, but their physical mode
+assignments are conjectural. They use substrate quantities (J, p, z),
+assumed boundary labels, empirical n_gen=3, normalization inputs, and
+inherited quark-model relations. They are not established parameter-free
+predictions from a derived fermionic Hamiltonian. The historical registration
+and measurement-status labels below are retained, not independently
+reverified in this audit. Code-locking establishes reproducibility, not
+independent timestamp verification or empirical success.
 
-This is the BPR-distinctive content. It can be evaluated empirically without
-adopting any of BPR's broader ontological or interpretive claims. A reviewer
-can read this doc, agree or disagree with the predictions, and form a view
-on the flavor sector independent of everything else BPR claims.
+These formulas can be assessed separately from BPR's broader interpretive
+claims. Whether a comparison distinguishes BPR from conventional models
+requires an explicit alternative model, independently constrained inputs
+and uncertainty analysis; numerical specificity alone does not establish it.
+The [negative-findings registry](CLOSED_AND_DEPRECATED.md) and
+[current foundation campaign](derivations/foundation_prerequisites_2026-09-13.md)
+supersede stronger historical derivation and validation claims below.
 
 ## 2. The framework, briefly
 
 The framework's flavor-sector machinery:
 
-- Substrate parameters: J (energy anchor), p = 104761 (structural prime), z = 6 (coordination), n_gen = 3 (generations from topology).
-- Boundary mode integers from (z, n_gen): l_u = 1, l_c = z(z−2) = 24, l_t = (z²−1)(z+n_gen+2−N_c) + n_gen = 283; l_d = 1, l_s = z−2 = 4, l_b = z(z−1) = 30.
+- Substrate parameters: J (energy anchor), p = 104761 (structural prime), z = 6 (coordination), n_gen = 3 (empirical input, not derived from topology).
+- Conjectural flavor-mode labels evaluated from (z, n_gen): l_u = 1, l_c = z(z−2) = 24, l_t = (z²−1)(z+n_gen+2−N_c) + n_gen = 283; l_d = 1, l_s = z−2 = 4, l_b = z(z−1) = 30.
 - Quark masses from boundary mode squared, anchored to v_EW for up-type (m_t = v_EW/√2) and to m_b via boundary coordination (factor 2 + 1/(3 ln p)) for down-type.
 - CKM angles from quark mass ratios using Gatto-Sartori-Tonin (Cabibbo) and Fritzsch-style relations (V_cb, V_ub), with a boundary-coordination suppression √(ln p + z/3).
 - CP phase from boundary geometry: δ_CP = π/2 − 1/√(z+1).
 - Doubly-heavy baryons: exact spin algebra + κ * (m_s − m_d) for SU(3) splittings + 3/2 × (1 + 2/z) for hyperfine; κ from mode-ratio ansatz at z = 6.
 
-No free continuous parameters in the chain from substrate to predictions
-(the m_τ anchor is the single dimensionful input, like the Planck mass in
-gravity). What's "fitted" was honestly flagged in the parameter-honesty
-pass: θ₂₃ coefficient 1.35 and θ₁₂ coefficient 3.5 are phenomenological,
-not derived; these are properly bracketed in `bpr/neutrino.py`.
+The numerical formulas and anchors are retained, including the m_τ anchor.
+The physical mode assignments and normalization prescriptions remain
+assumptions, so this is not a demonstrated parameter-free chain from the
+substrate. In the PMNS sector, θ₂₃ coefficient 1.35 and θ₁₂ coefficient 3.5
+are fitted, not derived. θ₁₃ additionally depends on the chosen Gaussian
+localization and mode-identification assumptions in `bpr/neutrino.py`.
 
 ## 3. Post-dictions (matches against measured values)
 
-| Observable | BPR value | PDG / measured | Residual | Source |
+| Observable | BPR value | Quoted empirical / literature reference | Residual | Source |
 |---|---|---|---|---|
 | m_u | 2.172 MeV | 2.16 ± 0.05 | 0.6% | `QuarkMassSpectrum` |
 | m_d | 4.733 MeV | 4.67 ± 0.07 | 1.4% | `QuarkMassSpectrum` |
@@ -58,18 +63,17 @@ not derived; these are properly bracketed in `bpr/neutrino.py`.
 | sin² θ_C (predicted from m_d/m_s) | 0.0504 | 0.0506 | 0.4% | GST + BPR masses |
 | Ωcc⁺ − Ξcc⁺ splitting | 105.2 MeV | 105.45 ± 5.02 | 0.05σ | κ × (m_s − m_d) |
 
-These are checked against established empirical values. They are **post-
-dictions**, and their accuracy reflects partly the framework's content and
-partly the fact that several of the underlying relations (Gatto-Sartori-
-Tonin, Fritzsch-style hierarchies) are established empirical patterns BPR
-uses. They are not the discriminating evidence — they are the framework
-demonstrating consistency with known measurements while using fewer free
-parameters than the bare SM.
+These are historical numerical comparisons with the quoted reference
+values. Their values and residuals are retained without a fresh source
+audit. Agreement with inherited empirical relations or a literature target
+does not independently validate the substrate, establish the physical mode
+assignments, or demonstrate fewer independently calibrated parameters.
 
 ## 4. Registered pre-dictions (BEFORE measurement)
 
-These are the discriminating content. Each is locked into code tests and
-dated. A future measurement at LHCb (or comparable) will resolve them.
+The following historical candidate targets and thresholds are retained
+without regrading. Their code tests and dates do not alone establish
+independent preregistration, uniqueness against alternatives or empirical success.
 
 ### Spin-3/2 doubly-charmed family (LHCb's announced next target)
 
@@ -95,8 +99,8 @@ dated. A future measurement at LHCb (or comparable) will resolve them.
 
 ### Other registered pre-dictions
 
-- **Σm_ν (neutrino sum)** ≈ 0.06 eV from `bpr/neutrino.py` — testable by KATRIN, DESI, future cosmological observations
-- **0νββ decay = null** because p ≡ 1 mod 4 gives Dirac neutrinos — confirmed by LEGEND-200 (vindicated as predicted)
+- **Σm_ν (neutrino sum)** ≈ 0.06 eV in the conditional mass ansatz of `bpr/neutrino.py`. Cosmological analyses constrain the sum subject to their model assumptions; beta-decay experiments constrain a different effective-mass observable.
+- **0νββ decay = null** under the model's p ≡ 1 mod 4 → Dirac prescription. The cited LEGEND-200 null result is compatible with this prescription, but does not establish Dirac neutrinos or validate the proposed mechanism.
 - **Strong CP θ_QCD = 0** without axion — testable by neutron EDM bounds tightening
 
 ## 5. Why this matters for comparative ranking

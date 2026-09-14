@@ -1,0 +1,451 @@
+{
+  "schema_version": 1,
+  "validation_scope": "record_structure_only",
+  "physics_validated": false,
+  "empirical_validation": false,
+  "sources": [
+    {
+      "id": "s_local",
+      "path": "doc/derivations/substrate_local_symmetry_2026-09-13.md",
+      "locator": "Theorem; Domain-safe proof; Self-adjoint realization; Counterexamples fix the scope. The opening records independent derivation and separate adversarial review of the bounded interval theorem."
+    },
+    {
+      "id": "s_graph",
+      "path": "doc/derivations/substrate_locality_dimension_2026-09-13.md",
+      "locator": "Theorem and proof; What the result does not establish. The opening records independent derivation and adversarial mathematical review of the graph-ball bound and its qualifications."
+    },
+    {
+      "id": "s_projection",
+      "path": "doc/derivations/substrate_constraint_algebra_2026-09-12.md",
+      "locator": "Model and scope; Reviewed identities and predetermined witnesses. Independent derivation and separate adversarial review of the exact-isometry multiplication identity are explicitly recorded."
+    },
+    {
+      "id": "s_encoding",
+      "path": "doc/derivations/substrate_gauge_encoding_2026-09-13.md",
+      "locator": "Independently cross-checked mathematical results; Observed bounded result. Reviewed Hamiltonian defect, leakage, target mismatch and Duhamel bounds concern the specified existing occupation-orbit encoding."
+    },
+    {
+      "id": "s_anomaly",
+      "path": "doc/derivations/chiral_parent_anomaly_2026-09-12.md",
+      "locator": "Frozen convention and scope; Derived formulas for independent verification; Status. Independent derivation and adversarial review of the supplied lone six-dimensional Weyl parent's polynomial and irreducible p2 coefficient."
+    },
+    {
+      "id": "s_observation",
+      "path": "doc/derivations/foundation_observation_gate_2026-09-13.md",
+      "locator": "Conventional alternative and indistinguishability; Decision and next prerequisite. Opening records independent read-only adversarial review of the scoped identical-distribution argument, not measurement certification."
+    },
+    {
+      "id": "s_claims",
+      "path": "doc/derivations/foundation_claims_2026-09-13.json",
+      "locator": "claims family_count, gravity_sources, gravity_normalization, sampled_numerics; depends_on fields are contextual rather than logical implication edges."
+    },
+    {
+      "id": "s_decision",
+      "path": "doc/derivations/foundation_decision_2026-09-13.md",
+      "locator": "Decision; Dependency decisions; Optional proposal-development direction; Completion requirements. Scoped missing-construction decision, not a universal impossibility or minimal-revision classification."
+    },
+    {
+      "id": "s_campaign",
+      "path": "doc/derivations/foundation_prerequisites_2026-09-13.md",
+      "locator": "First focused verification evidence; Selected-regression interruption. Separate 617 focused passes and eight algebra groups; interrupted regression has 1742 verified completed passes, not a completed full run or isolated-demo verification."
+    },
+    {
+      "id": "s_note",
+      "path": "doc/derivations/foundation_compatibility_2026-09-13.md",
+      "locator": "Sections 2 through 8. New deductions and all ten implications passed independent mathematical review recorded in section 8; structural validation is not proof verification."
+    }
+  ],
+  "propositions": [
+    {
+      "id": "p_ring",
+      "kind": "microscopic_assumption",
+      "statement": "Use the original unrestricted Bose ring H=(g/2) sum_x n_x(n_x-1)-C sum_x(a†_(x+1)a_x+a†_x a_(x+1)), with C>0, g>=0 and uniform cyclic couplings, as the self-adjoint direct sum of its complete fixed-number blocks; D is the finite occupation core.",
+      "domain": "L>=3; Hilbert space ell²(N_0) tensor-powered L times, without local occupation cutoffs.",
+      "quantifiers": "For every chosen integer L>=3 and real C>0,g>=0, all full-space local-generator statements use this same H and D.",
+      "sources": ["s_local", "s_campaign"],
+      "status": "assumed"
+    },
+    {
+      "id": "p_local_bridge",
+      "kind": "bridge_assumption",
+      "statement": "A proposed microscopic local conserved generator is self-adjoint G=g_S tensor I with S a nonempty cyclic contiguous interval of size at most L-2; exp(itG) exp(-isH)=exp(-isH) exp(itG) for all real s,t on the full unrestricted Hilbert space.",
+      "domain": "H from p_ring; self-adjoint tensor realization of g_S; no inference from an unspecified formal commutator.",
+      "quantifiers": "For each proposed pair (S,G), the support condition and the strong group-commutation equality hold for every real s and t, not only selected states or times.",
+      "sources": ["s_local", "s_note"],
+      "status": "assumed"
+    },
+    {
+      "id": "p_local_nontrivial",
+      "kind": "physical_target",
+      "statement": "The proposed G must be nonscalar on the full microscopic Hilbert space; there is no real alpha with G=alpha I. This target is a particular microscopic realization requirement, not a definition of every possible gauge redundancy.",
+      "domain": "The same self-adjoint G as in p_local_bridge and same unrestricted space as p_ring.",
+      "quantifiers": "Require at least one such proposed generator, with G unequal to alpha I for every real alpha.",
+      "sources": ["s_local", "s_note"],
+      "status": "open"
+    },
+    {
+      "id": "p_local_scalar",
+      "kind": "conditional_result",
+      "statement": "Under p_ring and p_local_bridge, G=alpha I for some real alpha. Each exp(itG) obeys the reviewed bounded interval theorem, and its continuous scalar character is exp(i alpha t); self-adjoint generator uniqueness determines G and its domain.",
+      "domain": "Unrestricted self-adjoint ring and short contiguous interval support with at least two exterior sites; exact strong group commutation.",
+      "quantifiers": "For every (H,S,G) obeying those hypotheses there exists a real alpha such that equality of the self-adjoint operators and their domains holds.",
+      "sources": ["s_local", "s_note"],
+      "status": "reviewed_result"
+    },
+    {
+      "id": "p_local_conflict",
+      "kind": "conditional_result",
+      "statement": "The conjunction p_ring, p_local_bridge and p_local_nontrivial has no simultaneous realization: excluded_under_premises. This does not exclude constrained, approximate, extended-support or trivially acting physical gauge descriptions.",
+      "domain": "Exactly the full-space nonscalar strongly commuting interval-generator requirement above; no support or domain broadening.",
+      "quantifiers": "No tuple (H,S,G) satisfies all three stated premises simultaneously; no assertion is made about tuples outside them.",
+      "sources": ["s_local", "s_note"],
+      "status": "reviewed_result"
+    },
+    {
+      "id": "p_graph_maps",
+      "kind": "bridge_assumption",
+      "statement": "For each member j there is an actual vertex assignment f_j from a nonempty unweighted source graph G_j to the simple cycle C_(L_j), with at most m_j source sites per target site and every source edge image of target distance at most K_j>=0. Set k_j=floor(K_j); n_j is the actual source radius-r_j ball size.",
+      "domain": "Integer L_j>=3,m_j>=1,r_j>=0,k_j>=0; graph-site fibers, not Hilbert-space information capacity; source boundaries and truncation retained.",
+      "quantifiers": "For every family member and every source edge/fiber the specified bounds hold; n_j=|B_(G_j)(v_j,r_j)| for a chosen source vertex v_j. A single-member case is also allowed for the integer inequalities.",
+      "sources": ["s_graph", "s_note"],
+      "status": "assumed"
+    },
+    {
+      "id": "p_graph_uniform",
+      "kind": "bridge_assumption",
+      "statement": "The graph-site family has uniformly bounded multiplicity and effective edge range: m_j<=M and k_j<=k_0 with fixed finite integers M>=1 and k_0>=0, independent of j.",
+      "domain": "The same family and parameters as p_graph_maps; L_j is allowed to vary without a uniform bound.",
+      "quantifiers": "There exist fixed M and k_0 such that both bounds hold for every member j.",
+      "sources": ["s_graph", "s_note"],
+      "status": "assumed"
+    },
+    {
+      "id": "p_graph_cubic",
+      "kind": "physical_target",
+      "statement": "For the claimed spatial regime the actual source balls have integer radii r_j>=1 tending to infinity and sizes n_j>=c r_j^3 for one c>0 independent of j. This is a quantified graph-growth target, not a deduction of physical space from a Bose site.",
+      "domain": "The family in p_graph_maps, with actual finite or interior balls rather than extrapolated counts beyond finite boundaries.",
+      "quantifiers": "There exists c>0 such that n_j>=c r_j^3 for every j and r_j tends to infinity along the family.",
+      "sources": ["s_graph", "s_note"],
+      "status": "open"
+    },
+    {
+      "id": "p_integer_costs",
+      "kind": "conditional_result",
+      "statement": "Every map in p_graph_maps obeys n<=m min(L,2kr+1), equivalently m>=ceil(n/min(L,2kr+1)); for r>=1 the counting inequality is equivalent to n<=mL and k>=max(0,ceil((ceil(n/m)-1)/(2r))). At r=0 it is n<=m and actual n=1. Under the cubic-family hypothesis, m_j(2k_j+1/r_j)>=c r_j^2 and m_j L_j>=c r_j^3, forcing at least quadratic range for uniformly bounded m, quadratic m for fixed positive range, and cubic m for zero range. These are necessary, not sufficient, graph-site costs.",
+      "domain": "Positive actual ball count, integer domains in p_graph_maps; r>=1 only where divided by r; saturation and finite boundaries retained.",
+      "quantifiers": "For every admissible map the integer statements hold; for every cubic-growth family the tradeoffs hold at every member. The bounded-m and fixed-range consequences are conditional on their respective additional bounds, as specified in section 2.",
+      "sources": ["s_graph", "s_note"],
+      "status": "reviewed_result"
+    },
+    {
+      "id": "p_graph_conflict",
+      "kind": "conditional_result",
+      "statement": "The conjunction p_graph_maps, p_graph_uniform and p_graph_cubic has no simultaneous realization: excluded_under_premises. Dividing c r_j^3<=M(2k_0 r_j+1) by r_j^3 contradicts c>0 as r_j tends to infinity, regardless of L_j.",
+      "domain": "Graph-site maps with both uniform costs and actual unbounded-radius cubic-growth balls; not arbitrary abstract Bose-site Hilbert-space encodings.",
+      "quantifiers": "No family satisfies all three premises simultaneously; the conclusion neither rules out nonuniform costs nor proves any such alternative map exists.",
+      "sources": ["s_graph", "s_note"],
+      "status": "reviewed_result"
+    },
+    {
+      "id": "p_finite_setup",
+      "kind": "bridge_assumption",
+      "statement": "In a finite ambient Hilbert space take a nonzero finite code and exact isometry V, V†V=I; set P=VV†, Q=I-P, A_c=V†AV for ambient operators, H_c=V†HV, R=QHV, and F_h=HV-Vh with H and supplied h self-adjoint in the same time/phase convention. For Bose applications the ambient space is a complete fixed-number sector or finite direct sum of complete sectors; no candidate V or h is selected here.",
+      "domain": "Finite-dimensional exact operator algebra; unrestricted finite A,B; the note's abstract small matrices illustrate algebra only and are not new ring models.",
+      "quantifiers": "For every such finite choice of spaces,V,A,B,H,h, the identities apply. No infinite-dimensional, approximate-isometry or physical-construction existence claim is included.",
+      "sources": ["s_projection", "s_encoding", "s_note"],
+      "status": "assumed"
+    },
+    {
+      "id": "p_multiplication",
+      "kind": "conditional_result",
+      "statement": "For the exact finite isometry, V†ABV-A_c B_c=V†AQBV. This is the existing general multiplication identity, reused rather than a new discovery or a statement that compression always preserves products.",
+      "domain": "Exact V†V=I, P=VV†, Q=I-P; finite ambient A,B, including non-Hermitian operators.",
+      "quantifiers": "For all A and B in p_finite_setup the displayed identity holds.",
+      "sources": ["s_projection"],
+      "status": "reviewed_result"
+    },
+    {
+      "id": "p_encoded_dynamics",
+      "kind": "conditional_result",
+      "statement": "Under p_finite_setup, V†H²V-H_c²=R†R and V†[H,A]V=[H_c,A_c]+R†QAV-V†AQR. F_h=R+V(H_c-h), F_h†F_h=R†R+(H_c-h)², and the finite Duhamel identity gives ||exp(-itH)V-V exp(-ith)||<=min(2,|t| ||F_h||). Exact intertwining for all real t holds iff F_h=0, equivalently R=0 and H_c=h. Therefore any specified candidate with a demonstrated nonzero R or H_c-h cannot meet exact all-time intertwining; no universal defect premise is asserted. Exact compressed algebra or commutators alone do not certify invariance or a supplied target's dynamics.",
+      "domain": "Finite exact isometry, self-adjoint H,h and matching phase/time convention; operator norm; commutator [H,A]=HA-AH. The counterexamples are abstract algebra, not new ring models.",
+      "quantifiers": "For every choice in p_finite_setup and every real t the identities and bound hold; all-time intertwining means equality for every t and every code vector. The counterexamples disprove general sufficiency, not every particular encoding.",
+      "sources": ["s_projection", "s_encoding", "s_note"],
+      "status": "reviewed_result"
+    },
+    {
+      "id": "p_parent_content",
+      "kind": "microscopic_assumption",
+      "statement": "Consider only the separately supplied six-dimensional parent: one complex Weyl field in Spin(10)'s 16 with commuting U(1) charge Q and chirality s=+1 or -1. Use I8=s[Ahat(T) ch_16(F) exp(QX)]_8, normalized curvature F/(2*pi*i), independent tangent Pontryagin symbols, no reality halving and no cancellation completion. This supplied parent is not derived from p_ring.",
+      "domain": "The formal local anomaly convention and lone field content in s_anomaly; no added fields, Green-Schwarz mechanism or inflow.",
+      "quantifiers": "For either allowed chirality and every charge in the stated convention, retain the full parent polynomial rather than only a reduced background restriction.",
+      "sources": ["s_anomaly", "s_claims"],
+      "status": "supplied_input"
+    },
+    {
+      "id": "p_parent_target",
+      "kind": "physical_target",
+      "statement": "The supplied lone parent is required to have a vanishing full local anomaly polynomial without adding a completion. Vanishing local polynomial is only this necessary consistency target, not a sufficient check of all global quantum consistency.",
+      "domain": "Exactly the field content, conventions and independent formal curvature invariants in p_parent_content.",
+      "quantifiers": "For a proposed chirality/charge choice the full I8 must vanish identically as a polynomial in the independent background invariants, not merely on a selected lower-dimensional restriction.",
+      "sources": ["s_anomaly", "s_decision"],
+      "status": "open"
+    },
+    {
+      "id": "p_parent_anomaly",
+      "kind": "conditional_result",
+      "statement": "For p_parent_content the p2 coefficient in I8 is -s/90, nonzero for either chirality, even at Q=0. A restricted lower-dimensional cancellation does not cancel this irreducible parent term. This is the existing independently reviewed anomaly result, not a new deduction of field content.",
+      "domain": "One complex six-dimensional Weyl Spin(10) 16 in the cited normalization and no cancellation completion.",
+      "quantifiers": "For each s in {+1,-1} and every allowed Q the coefficient is -s/90 and is nonzero.",
+      "sources": ["s_anomaly"],
+      "status": "reviewed_result"
+    },
+    {
+      "id": "p_parent_conflict",
+      "kind": "conditional_result",
+      "statement": "The conjunction p_parent_content and p_parent_target has no simultaneous realization: excluded_under_premises by its nonzero p2 coefficient. No conclusion excludes all future parents or establishes a particular cancellation completion.",
+      "domain": "The lone supplied parent and full local-polynomial target; not a universal BPR or chiral-matter no-go.",
+      "quantifiers": "No choice of its chirality and charge satisfies this full local-polynomial target without changing the stated content or completion premise.",
+      "sources": ["s_anomaly", "s_note"],
+      "status": "reviewed_result"
+    },
+    {
+      "id": "p_equal_distributions",
+      "kind": "bridge_assumption",
+      "statement": "The compared BPR and conventional Bose descriptions have identical Hamiltonian, Hilbert space, state/preparation, source/readout operators, parameter conventions and observation/noise maps; their joint observation distributions P_d and Q_d are equal for every allowed design d.",
+      "domain": "The specified response comparison in s_observation, with matched nuisance conventions and complete observed joint law; not a claim about every future physical extension.",
+      "quantifiers": "For every design d admitted by this comparison, P_d=Q_d as probability measures on the same observation space.",
+      "sources": ["s_observation"],
+      "status": "assumed"
+    },
+    {
+      "id": "p_observation_target",
+      "kind": "physical_target",
+      "statement": "For this paired comparison require at least one allowed design and statistical rejection rule with different rejection probabilities under the two descriptions. Extra precision within identical distributions is not itself such a rule.",
+      "domain": "The same P_d,Q_d and design class as p_equal_distributions; possibly randomized measurable rejection rules 0<=phi<=1.",
+      "quantifiers": "Require existence of an allowed d and measurable phi with integral phi dP_d unequal to integral phi dQ_d.",
+      "sources": ["s_observation", "s_note"],
+      "status": "open"
+    },
+    {
+      "id": "p_nondiscrimination",
+      "kind": "conditional_result",
+      "statement": "Under p_equal_distributions every rejection rule has equal expectation under the paired descriptions. This is the existing reviewed nondiscrimination result and does not certify any measurement, calibration or physical equivalence beyond the stated model and observation map.",
+      "domain": "Equal joint probability distributions for the declared design class; measurable bounded rejection rules.",
+      "quantifiers": "For every allowed design d and every measurable phi with 0<=phi<=1, integral phi dP_d=integral phi dQ_d.",
+      "sources": ["s_observation"],
+      "status": "reviewed_result"
+    },
+    {
+      "id": "p_observation_conflict",
+      "kind": "conditional_result",
+      "statement": "The conjunction p_equal_distributions and p_observation_target has no simultaneous realization: excluded_under_premises. Calibration or acquisition alone does not break the stipulated equality; a separately justified distinguishing consequence is needed.",
+      "domain": "The explicitly identical response-model distributions, not all conceivable BPR observations.",
+      "quantifiers": "There is no allowed design and rejection rule meeting the target while the equal-distribution premise remains true for that design.",
+      "sources": ["s_observation", "s_note"],
+      "status": "reviewed_result"
+    },
+    {
+      "id": "p_family_input",
+      "kind": "empirical_input",
+      "statement": "The retained three-family value is an empirical input, not a topological prediction. The cited foundation record qualifies LEP as constraining light neutrinos with the relevant Z coupling, not an exact universal count of all families. This note neither remeasures nor promotes that input.",
+      "domain": "The supplied family_count entry of the existing foundation claims; no inference from internal mode multiplicity to physical spacetime fermions.",
+      "quantifiers": "For this record the retained input is treated as supplied evidence context only and is not a premise of any new mathematical implication.",
+      "sources": ["s_claims"],
+      "status": "supplied_input"
+    },
+    {
+      "id": "p_relativistic_target",
+      "kind": "physical_target",
+      "statement": "Any proposed physical construction must supply an effective relativistic regime for the observables and scale domains where independently specified evidence requires it, with an explicit observable/clock map and controlled deviations. Fundamental microscopic Lorentz invariance is not assumed. No quantitative dataset or tolerance is supplied here.",
+      "domain": "A prospective physical interpretation, restricted to the independently justified observable, energy, distance and time domains of a future proposal.",
+      "quantifiers": "For every empirical requirement actually claimed by a future proposal, that proposal must specify its domain and uncertainty and meet it within controlled errors; no unqualified all-scale invariance is asserted.",
+      "sources": ["s_note", "s_decision"],
+      "status": "open"
+    },
+    {
+      "id": "p_graph_obligation",
+      "kind": "obligation",
+      "statement": "If uniform graph-fiber/range costs are relaxed, supply an actual graph-site and observable map, explicit scale-dependent multiplicity/range, state and limit, locality/energy interpretation, dynamics and error control. Satisfy both integer tradeoff and global capacity; counting alone is insufficient. No new graph or map is adopted.",
+      "domain": "Conditional route relaxing p_graph_uniform while retaining a stated physical spatial target.",
+      "quantifiers": "Every proposal using this route owes these data for its full claimed family and regime; the obligation asserts no such proposal exists.",
+      "sources": ["s_graph", "s_note", "s_decision"],
+      "status": "open"
+    },
+    {
+      "id": "p_effective_obligation",
+      "kind": "obligation",
+      "statement": "For constrained, low-energy or approximate dynamics, supply the constraints, physical space, state/limit, observable and support dictionary, target generator, and controlled dynamical errors on declared times/energies. Where exact finite assumptions apply, prove R=0 and H_c=h for exact intertwining; for an approximate claim provide controlled evolution error, for example through the sufficient residual bound, without asserting its converse.",
+      "domain": "Conditional replacement of full-space strong conservation in p_local_bridge; no constrained theory or effective isometry is selected.",
+      "quantifiers": "Every construction claiming this route must justify its map, dynamical regime and errors rather than treating removal of a premise as existence or physical validity.",
+      "sources": ["s_local", "s_encoding", "s_note", "s_decision"],
+      "status": "open"
+    },
+    {
+      "id": "p_dressed_obligation",
+      "kind": "obligation",
+      "statement": "For extended or dressed support supply explicit operators, actual support and algebra, state/limit and physical interpretation, induced locality, target dynamics and quantitative errors. Existing global/reflection/disconnected exceptions alone do not yield a local gauge theory.",
+      "domain": "Conditional replacement of the short contiguous interval support in p_local_bridge, without automatically relaxing other conflicts.",
+      "quantifiers": "Every use of an extended/dressed route must specify and control these objects in the regime it claims; no existence or consistency witness is furnished here.",
+      "sources": ["s_local", "s_note", "s_decision"],
+      "status": "open"
+    },
+    {
+      "id": "p_common_obligation",
+      "kind": "obligation",
+      "statement": "A common physical construction must supply an operator/dynamics dictionary, physical states and controlled limits, fermion spin/statistics and anomaly consistency, metric dynamics and a common action, independent scale and gravitational normalization accounting, the required relativistic regime, and a distinguishing calibrated prediction with uncertainty control. The reviewed sources do not supply this common construction; missing construction is not a universal impossibility theorem.",
+      "domain": "A prospective common-foundation claim across the otherwise separate ring, gauge, matter, gravitational and observation models; not an adopted new model.",
+      "quantifiers": "Every proposal claiming common physical validity owes these constructions and checks in its declared domains. No implication from absence of a supplied proof to nonexistence is asserted.",
+      "sources": ["s_claims", "s_decision", "s_observation", "s_note"],
+      "status": "open"
+    }
+  ],
+  "arguments": [
+    {
+      "id": "a_local_scalar",
+      "kind": "deduction",
+      "premises": ["p_ring", "p_local_bridge"],
+      "conclusion": "p_local_scalar",
+      "proof": {
+        "source": "s_note",
+        "locator": "Section 3, Proof B and B.1 Continuous character proof. Strong commutation supplies the bounded theorem's weak hypothesis; continuous scalar unitary character and self-adjoint generator uniqueness give G=alpha I."
+      },
+      "review_status": "independently_reviewed",
+      "minimality": "not_claimed"
+    },
+    {
+      "id": "a_local_conflict",
+      "kind": "claimed_incompatibility",
+      "premises": ["p_ring", "p_local_bridge", "p_local_nontrivial", "p_local_scalar"],
+      "conclusion": "p_local_conflict",
+      "proof": {
+        "source": "s_note",
+        "locator": "Section 3, B.2 Scope of the obstruction; section 5, local generator row. The universal scalar conclusion contradicts the required nonscalar G within exactly the same domain and support."
+      },
+      "review_status": "independently_reviewed",
+      "minimality": "not_claimed"
+    },
+    {
+      "id": "a_integer_costs",
+      "kind": "deduction",
+      "premises": ["p_graph_maps"],
+      "conclusion": "p_integer_costs",
+      "proof": {
+        "source": "s_note",
+        "locator": "Section 2, A.1 Exact rounding and boundary cases through A.3 Counting is not construction. The family consequences explicitly assume cubic growth and any additional fixed bounds rather than asserting them for all maps."
+      },
+      "review_status": "independently_reviewed",
+      "minimality": "not_claimed"
+    },
+    {
+      "id": "a_graph_conflict",
+      "kind": "claimed_incompatibility",
+      "premises": ["p_graph_maps", "p_graph_uniform", "p_graph_cubic", "p_integer_costs"],
+      "conclusion": "p_graph_conflict",
+      "proof": {
+        "source": "s_note",
+        "locator": "Section 2, A.2 Quantified family tradeoff, fixed M,k_0 contradiction after division by r_j^3; section 5 spatial-map family row. The actual unbounded-radius growth premise is indispensable to this proof."
+      },
+      "review_status": "independently_reviewed",
+      "minimality": "not_claimed"
+    },
+    {
+      "id": "a_multiplication",
+      "kind": "deduction",
+      "premises": ["p_finite_setup"],
+      "conclusion": "p_multiplication",
+      "proof": {
+        "source": "s_projection",
+        "locator": "Model and scope; Reviewed identities and predetermined witnesses. Existing independently derived and adversarially reviewed identity D(A,B)=V†AQBV, with exact-isometry hypotheses and arbitrary finite ambient operands."
+      },
+      "review_status": "independently_reviewed",
+      "minimality": "not_claimed"
+    },
+    {
+      "id": "a_encoded_dynamics",
+      "kind": "deduction",
+      "premises": ["p_finite_setup", "p_multiplication"],
+      "conclusion": "p_encoded_dynamics",
+      "proof": {
+        "source": "s_note",
+        "locator": "Section 4, C.1 Products and commutators through C.4 Explicit abstract algebra counterexamples, not new ring models. Finite identities, signed Duhamel integral for all real t, differentiation at zero, and abstract matrix counterexamples."
+      },
+      "review_status": "independently_reviewed",
+      "minimality": "not_claimed"
+    },
+    {
+      "id": "a_parent_anomaly",
+      "kind": "deduction",
+      "premises": ["p_parent_content"],
+      "conclusion": "p_parent_anomaly",
+      "proof": {
+        "source": "s_anomaly",
+        "locator": "Derived formulas for independent verification: pure tangent term s(7p1²-4p2)/360 gives p2 coefficient -s/90. Status explicitly records independent mathematical derivation and separate adversarial analytical review."
+      },
+      "review_status": "independently_reviewed",
+      "minimality": "not_claimed"
+    },
+    {
+      "id": "a_parent_conflict",
+      "kind": "claimed_incompatibility",
+      "premises": ["p_parent_content", "p_parent_target", "p_parent_anomaly"],
+      "conclusion": "p_parent_conflict",
+      "proof": {
+        "source": "s_note",
+        "locator": "Section 5 supplied chiral parent row and its qualification. Nonzero coefficient in independent formal invariants contradicts the target of an identically zero polynomial for this content without completion."
+      },
+      "review_status": "independently_reviewed",
+      "minimality": "not_claimed"
+    },
+    {
+      "id": "a_nondiscrimination",
+      "kind": "deduction",
+      "premises": ["p_equal_distributions"],
+      "conclusion": "p_nondiscrimination",
+      "proof": {
+        "source": "s_observation",
+        "locator": "Conventional alternative and indistinguishability: identical observation distributions give every statistical test the same rejection probability. The opening records independent read-only adversarial review of this scoped argument."
+      },
+      "review_status": "independently_reviewed",
+      "minimality": "not_claimed"
+    },
+    {
+      "id": "a_observation_conflict",
+      "kind": "claimed_incompatibility",
+      "premises": ["p_equal_distributions", "p_observation_target", "p_nondiscrimination"],
+      "conclusion": "p_observation_conflict",
+      "proof": {
+        "source": "s_note",
+        "locator": "Section 5 distinguishing-test row and integral-expectation explanation. Equality for every allowed design/rule contradicts the explicitly existential unequal-expectation target."
+      },
+      "review_status": "independently_reviewed",
+      "minimality": "not_claimed"
+    }
+  ],
+  "routes": [
+    {
+      "id": "r_graph_costs",
+      "changed_premises": ["p_graph_uniform"],
+      "affected_arguments": ["a_graph_conflict"],
+      "obligations": ["p_graph_obligation", "p_common_obligation"],
+      "assessment": "conditional_escape_obligations",
+      "explanation": "Allow scale-dependent graph multiplicity or range instead of uniform bounds. This changes one conflict premise only; integer costs and capacity remain necessary and counting still does not construct a map. Supply the dictionary, state/limit, dynamics and errors. No graph, physical solution, minimal revision or consistency witness is adopted."
+    },
+    {
+      "id": "r_effective_dynamics",
+      "changed_premises": ["p_local_bridge"],
+      "affected_arguments": ["a_local_scalar", "a_local_conflict"],
+      "obligations": ["p_effective_obligation", "p_common_obligation"],
+      "assessment": "conditional_escape_obligations",
+      "explanation": "Replace full unrestricted-space strong conservation by separately specified constrained, low-energy or approximate conditions. The original theorem remains true but no longer decides the altered premise set. Finite exact encoding identities continue to apply wherever their own hypotheses hold. No physical constrained construction or controlled approximation has been supplied."
+    },
+    {
+      "id": "r_dressed_support",
+      "changed_premises": ["p_local_bridge"],
+      "affected_arguments": ["a_local_scalar", "a_local_conflict"],
+      "obligations": ["p_dressed_obligation", "p_common_obligation"],
+      "assessment": "conditional_escape_obligations",
+      "explanation": "Drop the short contiguous interval support requirement by considering separately specified extended or dressed operators. This does not establish local gauge emergence, address the graph/anomaly/observation conflicts, or exhibit a common construction. State actual support, observable dictionary, physical states and limit, dynamics and quantitative errors before any compatibility claim."
+    }
+  ]
+}

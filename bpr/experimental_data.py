@@ -2,14 +2,17 @@
 Experimental Data Registry
 ===========================
 
-Structured database of measured physical quantities with uncertainties
-and citations.  Used by the benchmark runner to compare BPR predictions
-against published results from PDG, Planck, CODATA, and dedicated
-experiments.
+Structured registry of measurements, bounds, empirical inputs, exact
+reference relations, and literature targets with citations. Used by the
+benchmark runner for numerical comparisons. Entries are not uniformly
+independent experimental measurements or parameter-free BPR predictions.
+Legacy statuses outside the explicitly reviewed entries remain unaudited;
+current claim scope follows doc/CLOSED_AND_DEPRECATED.md and dated audits.
 
 Every entry carries:
-    value       – central measured value (SI or conventional units)
-    uncertainty – 1σ symmetric uncertainty (0.0 when exact or for bounds)
+    value       – central or reference value (SI or conventional units)
+    uncertainty – stored comparison uncertainty; some use theory precision;
+                  0.0 does not by itself establish exactness
     unit        – human-readable unit string
     source      – short citation
     year        – publication year
@@ -32,18 +35,18 @@ import math
 
 @dataclass(frozen=True)
 class Measurement:
-    """A single experimental measurement or bound."""
+    """A measurement, bound, empirical input, or literature reference target."""
     prediction_id: str          # matches key in predictions dict
     name: str                   # human-readable description
-    value: float                # central value (or bound value)
-    uncertainty: float          # 1σ symmetric; 0 for bounds / exact
+    value: float                # central or reference value (or bound)
+    uncertainty: float          # stored comparison uncertainty; may be theoretical
     unit: str
     source: str                 # short citation
     year: int
     is_upper_bound: bool = False
     is_lower_bound: bool = False
-    is_exact: bool = False      # fundamental definition (e.g. dimensions = 3)
-    bpr_status: str = "DERIVED" # DERIVED | FRAMEWORK | SUSPICIOUS | CONSISTENT | CONJECTURAL
+    is_exact: bool = False      # legacy exact-reference grading flag, not a proof
+    bpr_status: str = "DERIVED" # DERIVED | FRAMEWORK | SUSPICIOUS | CONSISTENT | CONJECTURAL | OPEN
 
     @property
     def has_uncertainty(self) -> bool:
@@ -94,21 +97,24 @@ _REGISTRY: list[Measurement] = [
         name="Neutrino mixing angle θ₁₂",
         value=33.41, uncertainty=0.8, unit="deg",
         source="PDG 2024", year=2024,
-        bpr_status="DERIVED",  # sin²θ₁₂ = 1/3 - 1/(3.5×ln(p))
+        bpr_status="FRAMEWORK",  # sin²θ₁₂ = 1/3 - 1/(3.5×ln(p))
+        # Uses fitted coefficient 3.5; not a parameter-free prediction.
     ),
     Measurement(
         prediction_id="P5.6_theta23_deg",
         name="Neutrino mixing angle θ₂₃",
         value=49.0, uncertainty=1.3, unit="deg",
         source="PDG 2024 (NO)", year=2024,
-        bpr_status="DERIVED",  # 1/2 + Δm²₂₁/Δm²₃₁×1.35 + charged-lepton
+        bpr_status="FRAMEWORK",  # 1/2 + Δm²₂₁/Δm²₃₁×1.35 + charged-lepton
+        # Uses fitted coefficient 1.35 and assumed flavor-mode inputs.
     ),
     Measurement(
         prediction_id="P5.7_theta13_deg",
         name="Neutrino mixing angle θ₁₃",
         value=8.54, uncertainty=0.15, unit="deg",
         source="PDG 2024", year=2024,
-        bpr_status="DERIVED",
+        bpr_status="CONJECTURAL",
+        # Conditional Gaussian-localization ansatz with supplied l3=3, z=6, n_gen=3.
     ),
     Measurement(
         prediction_id="P5.2_sum_masses_eV",
@@ -134,11 +140,13 @@ _REGISTRY: list[Measurement] = [
     ),
     Measurement(
         prediction_id="P5.10_number_of_generations",
-        name="Number of neutrino generations",
+        name="Empirical three-family input; LEP light-active-neutrino constraint",
         value=3, uncertainty=0.0, unit="",
-        source="LEP (Z width)", year=2006,
-        is_exact=True,
-        bpr_status="DERIVED",
+        source="LEP (Z width; light active neutrinos, not an exact universal family count)", year=2006,
+        is_exact=True,  # Legacy grading flag retained, not physical exactness.
+        bpr_status="FRAMEWORK",
+        # Retained rounded empirical input, not a topology-derived prediction.
+        # No measurement uncertainty is supplied by this retained integer entry.
     ),
 
     # ─── Vacuum Impedance Mismatch──────────────────────────

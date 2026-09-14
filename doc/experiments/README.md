@@ -1,7 +1,10 @@
 # BPR Experiments
 
-> Experiments and papers that can **confirm** or **falsify** BPR predictions.
-> Sourced from published literature with explicit verdicts.
+> Historical literature comparisons and candidate experimental tests.
+> Legacy verdicts are retained below; they do not uniformly constitute
+> independent confirmation or falsification of BPR-specific mechanisms.
+> Current claim status follows the [negative-findings registry](../CLOSED_AND_DEPRECATED.md)
+> and [foundation audit](../derivations/foundation_prerequisites_2026-09-13.md).
 
 ## Quick Links
 
@@ -13,7 +16,7 @@
 | [**evidence_queue.md**](evidence_queue.md) | Auto-generated queue of newly staged candidate evidence |
 | [**EXPERIMENTAL_ROADMAP.md**](../EXPERIMENTAL_ROADMAP.md) | Future tests and falsification criteria |
 
-## Summary (as of Feb 2026)
+## Historical summary (as of Feb 2026; legacy verdicts retained)
 
 | Verdict | Count | Tests |
 |---------|-------|-------|
@@ -22,6 +25,18 @@
 | **INCONCLUSIVE** | 11 | LIV, Casimir, mass ordering, Born rule, GUP, decoherence, Hubble tension, anyons, proton radius, muon g−2, GRB LIV, JWST H₀ |
 
 **Papers:** 250+ cited across 129 tests (see papers.md totals). **All 21 theories** have CONFIRM. Feb 2026: added papers for BPR-unique topics (Casimir superconducting, Born rule many-photon, decoherence mass scaling, LIV CTA/GRB, m_s/m_d lattice).
+
+The historical counts above have not been recomputed. They include inherited
+relations, fitted or assumed inputs, bounds, and literature comparisons.
+They are not a current tally of independent BPR confirmations and do not
+supersede subsequently recorded closures or withdrawals. In particular,
+the zero historical FALSIFY count does not erase the closed particle sector.
+
+The legacy benchmark grade is a numerical comparison heuristic, not a
+statistical hypothesis test. It mixes sigma thresholds, relative-error
+fallbacks, exact-reference checks and one-sided bound checks. A PASS does
+not establish independent predictive success or validate BPR's derivation.
+No historical scores have been regenerated for this qualification.
 
 ## How to Use
 
@@ -41,7 +56,10 @@ for k in ['P2.2_MOND_a0', 'P11.7_baryon_asymmetry_eta', 'P4.9_Tc_MgB2_K']:
 When adding a new paper:
 1. Add to `papers.md` with full citation
 2. State BPR prediction and experimental result
-3. Assign verdict: CONFIRM | FALSIFY | INCONCLUSIVE
+3. Assign verdict: CONFIRM | FALSIFY | INCONCLUSIVE, with explicit provenance:
+   measurement, bound, empirical/calibration input, inherited relation, or
+   literature target. State whether the comparison discriminates a BPR-specific
+   mechanism; numerical agreement alone is not confirmation.
 
 ## Continuous Intake
 
