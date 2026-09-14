@@ -1,8 +1,6 @@
 # Planck Length and Newton's Constant from the Substrate
 
-> **Status:** April 2026 — upgrades the Planck/Newton sector from "l_P is
-> an input" to "the M_Pl / Λ_boundary hierarchy is DERIVED; BPR still
-> requires one dimensionful anchor (see §Honest caveats)."
+> **Normalization corrected 2026-09-12:** the displayed induced Einstein coefficient defines a **reduced** Planck energy M_Pl. The conditional mass/cutoff ratio remains unchanged, but a/l_P gains sqrt(8pi). Absolute G/l_P remains an input. Bare terms, counterterms, regulator and field-content assumptions prevent treating the induced-only ratio as a model-independent prediction. See [action consistency and identifiability](gravity_consistency_2026-09-12.md).
 
 ## The gap
 
@@ -18,8 +16,7 @@ absolute dimensionful anchor (J, Λ_boundary, or equivalently l_P) remains
 one free parameter, but the Planck-to-boundary hierarchy becomes a
 prediction.
 
-Answer: **yes**, via the Sakharov induced-gravity mechanism applied to the
-p boundary anyon sectors of BPR's U(1)_p Chern-Simons UV completion.
+Conditional answer: the stated induced-only calculation relates these scales if the supplied boundary-to-bulk field identification, coefficient and absence of independent gravitational terms are assumed. Those assumptions are not established by the ratio calculation.
 
 ## Setup
 
@@ -58,7 +55,10 @@ Equivalently:
 
     M_Pl / Λ_b = √(p / (48π²))                                         (4)
 
-    a / l_P   = √(p / (48π²))                                          (5)
+    M_Pl² = 1/(8πG),  M_unreduced = √(8π) M_Pl
+    a / l_P = √(p / (6π))                                               (5)
+
+Here (2) defines reduced M_Pl, with energy units when hbar and c are restored. Physical l_P=hbar*c/(sqrt(8pi)*M_Pl), not hbar*c/M_Pl. The two ratios (4) and (5) are not equal.
 
 ## Numerical prediction
 
@@ -68,18 +68,14 @@ For p = 104,761:
 
 So:
 
-| Ratio | BPR prediction |
+| Ratio | Conditional induced-only conversion |
 |---|---|
-| M_Pl / Λ_b | 14.87 |
-| a / l_P | 14.87 |
-| Λ_b (with M_Pl = 1.22 × 10¹⁹ GeV) | 8.2 × 10¹⁷ GeV |
-| J (boundary energy per site, = ℏc/a) | 8.2 × 10¹⁷ GeV |
+| Reduced M_Pl / Λ_b | 14.87 |
+| a / l_P | 74.55 |
+| Λ_b (with reduced M_Pl approximately 2.435 × 10¹⁸ GeV) | approximately 1.64 × 10¹⁷ GeV |
+| J defined as boundary cutoff energy = ℏc/a | approximately 1.64 × 10¹⁷ GeV |
 
-The BPR boundary lattice scale Λ_b sits at ≈ 8 × 10¹⁷ GeV, about a factor
-of 40 above the conventional gauge-unification scale Λ_GUT ≈ 2 × 10¹⁶
-GeV, and a factor of 15 below M_Pl. This is the **physical meaning of J**
-in BPR: J is the energy per boundary lattice site, fixed by the
-Sakharov relation once M_Pl and p are specified.
+These values use an externally anchored physical Planck length and the stipulated induced-only coefficient. Identifying a substrate site energy J with this cutoff is an additional interpretation, not a measured or dynamically selected scale. The former 8.2 × 10¹⁷ GeV value mixed reduced and unreduced conventions and is superseded; no gauge-unification coincidence is derived.
 
 ## What is actually derived
 
@@ -87,16 +83,11 @@ Sakharov relation once M_Pl and p are specified.
 |---|---|---|
 | l_P (absolute value) | Input | Input — one dimensionful anchor remains |
 | Λ_b / M_Pl ratio | Not derivable | **Derived: √(48π²/p) ≈ 0.067** |
-| J (in GeV) | Assumed ≈ QCD/EW/GUT | **Derived: J = M_Pl × √(48π²/p) ≈ 8×10¹⁷ GeV** |
+| Cutoff energy (in GeV) | Independent scale | Conditional calibrated conversion: Λ_b = reduced M_Pl × √(48π²/p) ≈ 1.64×10¹⁷ GeV |
 | Newton's G | Input | Input equivalent to l_P |
 | M_Pl/Λ_b is parametrically large | Put in by hand | **Derived from p ≫ 1** |
 
-The core new content: BPR has **one** free dimensionful parameter (could
-be called M_Pl, or l_P, or J, or Λ_b — all equivalent via (3)), not two.
-Before this derivation, J and l_P appeared as independent inputs. After,
-they are related by (3) up to an O(1) factor depending on the exact
-boundary field content (scalar vs. Weyl-fermion vs. gauge contributions
-to the induced M_Pl²).
+Within the induced-only ansatz (3), one dimensionful anchor relates reduced M_Pl, physical l_P and Λ_b. This parameter-count statement assumes no independent bare Einstein coefficient or counterterm. More generally M_eff²=b+c+pΛ_b²/(48π²), and compensating changes in b,c,Λ_b leave the effective coefficient invariant. The module5 identifiability calculation exhibits those transformations explicitly. Field-content and regulator assumptions are not fixed by an observed gravitational coefficient.
 
 ## Connection to the inflation derivation
 
@@ -104,15 +95,13 @@ This result dovetails with `inflation_potential_from_boundary.md`: that
 document used the CS-induced R² term α = p κ² / (384π²). The Einstein
 term (coefficient M_Pl²/2) and the R² term (coefficient α/2) both come
 from the same heat-kernel expansion, with M_Pl² fixed by Λ_b² and α by
-logarithmic running. Consistency of the two fixes the overall normalization
-of the boundary spectrum and removes one O(1) ambiguity in the inflation
-amplitude A_s.
+logarithmic running in the supplied calculation. This does not fix independent counterterms or remove the scalar-amplitude calibration. For the displayed alpha/2 convention the action-consistent leading amplitude is A_s=Ne²/(144π² alpha), not the historical96π² formula; old numerical enhancement matches are superseded.
 
 ## Honest caveats
 
 1. **One dimensionful input remains.** BPR does not derive the absolute
    value of M_Pl (equivalently, of l_P or J). What is derived is the
-   hierarchy M_Pl / Λ_b = √(48π²/p). The absolute scale is an external
+   conditional hierarchy reduced M_Pl / Λ_b = √(p/(48π²)). The absolute scale is an external
    anchor.
 
 2. **Coefficient uncertainty.** The induced-gravity coefficient is
@@ -120,8 +109,7 @@ amplitude A_s.
    if the boundary modes are fermionic, gauge, or carry non-trivial
    representation content. The BPR boundary is a compact boson, so the
    scalar-dominant scaling should hold at leading order, but there is a
-   residual O(1) uncertainty on (4). The prediction Λ_b ≈ 8 × 10¹⁷ GeV
-   is therefore accurate to a factor of ~2.
+   regulator and field-content dependence in (4). No quantified factor-of-two uncertainty follows without specifying and bounding those choices. The corrected induced-only conversion is approximately1.64 × 10¹⁷ GeV, not a calibrated uncertainty interval.
 
 3. **No dynamical mechanism to set Λ_b.** Λ_b is the boundary lattice
    spacing set by the CS level k = p and the bulk UV completion, but
@@ -129,33 +117,22 @@ amplitude A_s.
    completion lives at this particular scale vs. another. Fixing J (or
    Λ_b) to a particular value is the remaining input.
 
-4. **The coefficient 1/(48π²) uses the convention M_Pl² = 1/(8πG).**
-   With the alternative convention M_Pl,reduced² = 1/(8πG_N), the
-   numerical value M_Pl = 2.4 × 10¹⁸ GeV replaces 1.22 × 10¹⁹ GeV, and
-   the predicted Λ_b shifts correspondingly. The ratio (4) is
-   convention-independent.
+4. **The coefficient 1/(48π²) defines reduced M_Pl² = 1/(8πG).**
+   The unreduced mass satisfies M_unreduced²=1/G=8π M_Pl². Reexpressing (3) using it changes the coefficient to p/(6π). A physical cutoff is convention-independent only when the coefficient and mass definition are converted together. The two definitions previously described here as alternatives were identical; the numerical examples had instead mixed reduced and unreduced energies.
 
 ## Net status change
 
 | Prediction class | Previous | Current |
 |---|---|---|
-| M_Pl / Λ_b hierarchy | INPUT (two anchors) | **DERIVED (one anchor)** |
+| Reduced M_Pl / Λ_b hierarchy | Independent scales | Conditional induced-only relation; bare/counterterm freedom remains |
 | l_P absolute value | INPUT | INPUT |
 | G_N absolute value | INPUT (= l_P² c³/ℏ) | INPUT |
-| Boundary GUT-scale coincidence | Not explained | **Derived: J = M_Pl √(48π²/p) ≈ 10¹⁸ GeV** |
+| Boundary cutoff | Independent input | Conditional conversion from reduced M_Pl; no GUT-scale coincidence established |
 
 ## Code integration
 
-Update `bpr/emergent_spacetime.py` to replace the current
-`newtons_constant_from_substrate(p, N, J, xi)` signature — which has too
-many parameters — with a cleaner `planck_mass_from_boundary_cutoff(p, Lambda_b)`
-returning M_Pl = Λ_b × √(p/(48π²)), and a `boundary_cutoff_from_planck_mass`
-inverse. The docstring of `planck_length_from_substrate` should reference
-this file for why l_P remains an input while the M_Pl/Λ_b hierarchy is
-derived.
+The existing `bpr/emergent_spacetime.py` helpers `planck_mass_from_boundary_cutoff(p, Lambda_b)` and `boundary_cutoff_from_planck_mass` use reduced energy units. `newtons_constant_from_substrate(p, Lambda_b)` uses joules and G=hbar*c^5/(8pi*M_Pl²). `planck_length_from_substrate` retains the external physical anchor. Module5 repairs boundary-spacing and direct caller conversions consistently; inverse matching remains calibration.
 
 ---
 
-*April 2026 — closes Task #3 of the April 2026 gap-closure pass. One
-dimensionful anchor remains; the Planck-to-boundary hierarchy is now
-derived.*
+*Original note April2026; normalization and claim scope corrected September12,2026. The ratio is conditional on the stated induced-only model, not a determination of gravitational dynamics or its absolute scale.*

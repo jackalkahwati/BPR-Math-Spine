@@ -1,96 +1,101 @@
 # Inflation Potential from the Boundary Action
 
-> **Status:** April 2026 — upgrades P11.2/P11.3 (n_s, r) from FRAMEWORK
-> to DERIVED (the potential form is now internal to BPR, not assumed).
+> **Normalization correction, 2026-09-12:** The operative formulas below follow
+> `gravity_consistency_2026-09-12.md`. For the stated action with reduced
+> `M_Pl`, the scalar mass is `M_Pl/sqrt(6α)`, the plateau is `M_Pl⁴/(8α)` and
+> `A_s = N²/(144π²α)` at leading large-`N` slow roll. This supersedes the
+> old `1/(2sqrt(α))`, `3/(16α)` and `96π²` normalization, the `5/3`
+> percent-level near-match, and any scalar-amplitude closure implication.
+> No parameter, enhancement candidate or comparison input is retuned.
 
 ## The gap
 
-P11.2 (n_s = 0.968) and P11.3 (r = 0.003) were FRAMEWORK: they use the
-formulas n_s = 1 − 2/N, r = 12/N² from Starobinsky inflation, with
-N_efolds = p^(1/3)(1 + 1/d) ≈ 63 derived from BPR but V(φ) imported.
+The April 2026 note promoted P11.2 (`n_s`) and P11.3 (`r`) from FRAMEWORK
+on the basis of the scalar dual of an induced `R²` action. The action-to-scalar
+map is exact within that supplied action. It does not by itself derive the
+boundary-to-bulk action, the inflationary history, or the scalar amplitude
+from the Bose ring. The existing e-fold estimate is retained:
+
+    N = p^(1/3)(1 + 1/d) ≈ 62.855   for p = 104761, d = 3
 
 ## The derivation
 
-The Starobinsky potential
+Write the Starobinsky potential using scalar mass `m_s` and reduced `M_Pl`:
 
-    V(φ) = (3 M² / 4) (1 − e^(−√(2/3) φ / M_Pl))²                        (1)
-
-can be reached from BPR's boundary action without assumption, via the
-standard scalar dual of R² gravity. The argument has three steps.
+    V(φ) = (3 m_s² M_Pl² / 4) (1 − e^(−√(2/3) φ / M_Pl))²                 (1)
 
 ### Step 1 — Induced R² term from boundary-mode integration
 
-The BPR bulk effective action is obtained by integrating out the
-boundary compact boson modes below the UV cutoff Λ = M_Pl √p (from CS
-level quantization). Each boundary mode contributes a Sakharov-type
-induced kinetic term for the bulk metric. The leading gravitational
-terms in the effective action are
+The inherited boundary calculation supplies the conditional effective action
 
     S_grav = ∫ d⁴x √(−g) [ (M_Pl²/2) R + (α/2) R² + O(R³) ]              (2)
 
-The coefficient α is set by the boundary mode spectrum:
+with the one-loop coefficient
 
-    α = (p / 384π²) × κ²                                                  (3)
+    α_min = (p / 384π²) × κ²,    κ = z/2                                  (3)
 
-(standard heat-kernel one-loop result summed over p boundary mode
-charges; κ = z/2 = 3 is the boundary rigidity from CS_UV_COMPLETION.md).
-For p = 104,761, κ = 3: α ≈ 249.
+For the unchanged `p = 104761`, `z = 6`, this gives `α_min ≈ 248.778`.
+The induced Einstein coefficient obeys `M_Pl² = p Λ_b²/(48π²)`, so
+`Λ_b = M_Pl sqrt(48π²/p)`, not the old `M_Pl sqrt(p)` cutoff statement.
+`M_Pl` here is reduced: `M_Pl² = 1/(8πG)` in natural units. With
+`a = ħc/Λ_b` and physical `l_P² = ħG/c³`, `a/l_P = sqrt(p/(6π))`.
+Matching the existing physical Planck anchor gives `Λ_b ≈ 1.64 × 10¹⁷ GeV`
+at default `p`; this inverse scale matching is calibration, not prediction.
+The induced coefficients remain conditional on field content, regulator and
+subtraction assumptions.
 
 ### Step 2 — Scalar dual of R² gravity
 
-By the textbook Weyl transformation, an R² action is classically
-equivalent to a canonically normalized scalar φ with exponential
-potential in the Einstein frame:
+Introduce an auxiliary field `χ` through `αR²/2 -> αχR − αχ²/2`.
+For `F = 1 + 2αχ/M_Pl² > 0`, take `g_E = F g_J` and
+`φ = sqrt(3/2) M_Pl log F`. Then
 
     S_scalar = ∫ d⁴x √(−g_E) [ (M_Pl²/2) R_E − (1/2) (∂φ)² − V(φ) ]      (4)
 
 with
 
-    V(φ) = (3 M_Pl⁴ / 16 α) (1 − e^(−√(2/3) φ / M_Pl))²                   (5)
+    V(φ) = (M_Pl⁴ / (8α)) (1 − e^(−√(2/3) φ / M_Pl))²                    (5)
 
-This is exactly the Starobinsky potential (1) with M² = M_Pl² / (4α).
+Expansion about `φ = 0` gives `m_s² = M_Pl²/(6α)`. Thus (5) is the
+Starobinsky shape (1), with its normalization fixed by the stated action.
 
 ### Step 3 — Scalar amplitude audit
 
-The normalization of the scalar power spectrum A_s ≈ 2.1 × 10⁻⁹ fixes α
-via the standard Starobinsky relation:
+Using `ε ≈ 3/(4N²)` and `A_s = V/(24π² M_Pl⁴ ε)` at leading large `N`,
 
-    A_s = (N²/24π²) × (M/M_Pl)²                                           (6)
+    A_s = (N²/24π²) × (m_s/M_Pl)² = N²/(144π²α)                           (6)
 
-With N ≈ 63 from step 2 of the original BPR derivation and α from (3):
+At the unchanged parameters above,
 
-    M/M_Pl = √(1/(4α)) = 1/(2√249) = 0.0317
-    A_s = (63² / 24π²) × (0.0317)² ≈ 1.68 × 10⁻²
+    m_s/M_Pl ≈ 0.02588
+    V0/M_Pl⁴ ≈ 5.025 × 10⁻⁴
+    A_s,min ≈ 1.117 × 10⁻²
 
-which is about 8 × 10⁶ too large. The observed value requires:
+Retaining the existing comparison input `A_s,obs = 2.1 × 10⁻⁹` gives the
+inverse calibration
 
-    α_required = N² / (96π² A_s) ≈ 2.0 × 10⁹                              (7)
+    α_required = N² / (144π² A_s,obs) ≈ 1.324 × 10⁹                        (7)
+    α_required / α_min ≈ 5.321 × 10⁶                                      (8)
 
-relative to α_min ≈ 249. So the remaining suppression must come from a large
-winding/anyon-loop normalization:
-
-    α_full / α_min ≈ 8.0 × 10⁶                                            (8)
-
-The earlier qualitative claim remains: an additional boundary-sector
-normalization is needed. The sharper May 2026 audit is that this is not an
-order-one effect; it is a large coefficient that still has to be derived from
-the finite-p winding/anyon sector. The old estimate
-`1 + sqrt(z/2)/sqrt(log p) ≈ 1.51` is far too small; matching the observed
-amplitude requires an effective enhancement of `≈ 7.98 × 10⁶`.
-The compact-boson square-lattice diagnostic gives
-`((2 floor(sqrt(p)) + 1)^2 - 1) log(p) ≈ 4.84 × 10⁶`, about `61%` of the
-required factor, but this is still a mode-count diagnostic rather than a
-derived loop coefficient.
+This required enhancement is `2/3` of the old `≈ 7.98 × 10⁶` gap. All
+fixed candidate/required ratios grow by `3/2`. The old estimate
+`1 + sqrt(z/2)/sqrt(log p) ≈ 1.51` remains far too small. The unchanged
+compact-boson square-lattice count gives
+`418608 log(p) ≈ 4.84 × 10⁶`, or `0.9094` of the corrected requirement.
+It remains a mode-count diagnostic, not a derived loop coefficient.
 
 ### Result
 
-With α derived from the boundary mode count, the Starobinsky potential
-(1) is an *output* of BPR, not an *input*. The predictions
+The conditional pure-`R²` potential shape still gives the leading slow-roll
+relations
 
     n_s = 1 − 2/N,        r = 12/N²                                       (9)
 
-follow from the potential shape at slow-roll. N itself is derived from
-p: N = p^(1/3)(1 + 1/d) ≈ 63. So:
+Their normalization independence does not establish an absolute amplitude or
+validate the assumed e-fold estimate.
+
+The following April 2026 comparison table is preserved as historical raw
+benchmark material, not a newly evaluated or validated prediction table:
 
 | Quantity | Formula | Value | Observed |
 |---|---|---|---|
@@ -98,43 +103,30 @@ p: N = p^(1/3)(1 + 1/d) ≈ 63. So:
 | n_s | 1 − 2/N | 0.968 | 0.9649 ± 0.004 (+0.78σ) |
 | r | 12/N² | 0.003 | < 0.044 ✓ |
 
-## Status change
+## Status correction
 
-| Prediction | Previous | After this derivation |
-|---|---|---|
-| P11.2 n_s | FRAMEWORK (Starobinsky assumed) | **DERIVED** (potential form from induced R²) |
-| P11.3 r | FRAMEWORK (Starobinsky assumed) | **DERIVED** (same) |
+The historical April promotion of P11.2/P11.3 to DERIVED and “closes Task #10”
+is not an unconditional inflation or amplitude closure. The exact result here
+is the scalar dual of the supplied action; `n_s` and `r` use leading slow roll
+and the existing assumed e-fold prescription. The boundary coefficient and
+physical realization remain conditional.
 
-## Honest caveats
+## Open normalization and other caveats
 
-1. The winding/anyon-loop contribution in equation (8) is motivated but not
-   computed from first principles. The scalaron-sector audit in
-   `scalaron_sector_from_boundary_r2.md` shows that the missing normalization
-   is large: α_full / α_min ≈ 8 × 10⁶ for the default BPR parameters. The
-   finite compact-boson lattice gives `418608 log(p) ≈ 4.84e6`, leaving a
-   residual factor `≈ 1.649`. A compact-boson heat-kernel current insertion
-   gives `1 + 2/R² = 5/3`, which brings the amplitude to `1.010` times the
-   observed requirement. The abelian CS/WZW boundary symmetry makes this
-   operator family compatible but not yet proven: neutral scalar curvature
-   insertions exclude charged vertex operators, one-sided chiral currents, and
-   higher descendants. The remaining open steps are the doubled/non-chiral
-   completion that justifies a `J_L`, `J_R` pair, and the absolute finite-`p`
-   bulk normalization of that boundary insertion.
+1. The winding/anyon-loop contribution in (8) is not derived from first
+   principles. The unchanged full lattice leaves a corrected residual factor
+   `≈ 1.0996`, not `1.649`. The existing current-insertion candidate
+   `1 + 2/R² = 5/3` gives a coefficient/required ratio `≈ 1.5157`, not
+   `1.010`. The former percent-level near-match and candidate closure are
+   explicitly superseded; no replacement factor is selected. The CS/WZW
+   operator-compatibility argument does not prove either the doubled/non-chiral
+   completion or the absolute finite-`p` bulk coefficient.
 
-2. Step 1 uses the one-loop induced-gravity approximation. Higher-loop
-   corrections in the boundary theory could modify α by O(1) factors.
+2. Step 1 uses the conditional one-loop induced-gravity approximation.
+   Higher-loop corrections, the regulator and subtraction prescription require
+   independent control; inverse matching of `α` to `A_s` is calibration.
 
-3. The potential (5) is the minimal pure-R² result. Within that sector,
-   changing α rescales the amplitude but leaves the leading `n_s` and `r`
-   shape predictions unchanged. Additional boundary-mode contributions
-   (e.g. R_μν R^μν, Weyl-squared) would need their own suppression or
+3. The potential (5) is the minimal pure-`R²` result. Changing `α` rescales its
+   amplitude but leaves leading `n_s` and `r` unchanged. Additional
+   `R_μν R^μν` or Weyl-squared contributions need a separate suppression or
    decoupling argument before claiming the same single-field plateau.
-
-With these caveats, the Starobinsky form (1) is the leading-order
-prediction of BPR, and n_s, r are DERIVED in the same sense that mixing
-angles are DERIVED (from the boundary structure, with computable
-higher-order corrections that do not change the leading prediction).
-
----
-
-*April 2026 — closes Task #10 of the gap-closure pass.*

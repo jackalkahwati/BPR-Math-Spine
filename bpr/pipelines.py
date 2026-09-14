@@ -1015,7 +1015,8 @@ def pipeline_substrate_to_spacetime(
       1. Create SubstrateState on Z_p
       2. Evolve with SymplecticEvolution -> trajectory
       3. Extract emergent dimension (should be ~3+1)
-      4. Derive Newton's G from EmergentNewton (newtons_constant_from_substrate)
+      4. Round-trip the measured G through a calibrated reduced Planck cutoff
+         (newtons_constant_from_substrate), not predict its absolute value
       5. Get H_0 from cosmology (InflationaryParameters for reference)
       6. Compute GW dispersion correction at 100 Hz
 
@@ -1067,14 +1068,13 @@ def pipeline_substrate_to_spacetime(
     ed = EmergentDimensions(geometry="sphere")
     emergent_dim = ed.total_dimensions  # should be 4
 
-    # Step 4: Derive Newton's G via Sakharov induced gravity
-    # M_Pl^2 = p * Lambda_b^2 / (48 pi^2) at the BPR boundary cutoff Lambda_b.
-    # Absolute l_P remains one dimensionful anchor; the M_Pl / Lambda_b
-    # hierarchy is derived. See derivations/planck_length_from_substrate.md.
+    # Step 4: Calibrate the cutoff to observed G, then round-trip G.
+    # Reduced M_Pl^2 = p * Lambda_b^2 / (48 pi^2) at the boundary cutoff.
+    # This uses a supplied physical anchor, not an absolute prediction.
     l_P = planck_length_from_substrate(p=p)
-    # Boundary lattice energy cutoff: Lambda_b = M_Pl * sqrt(48 pi^2 / p)
+    # Boundary cutoff: Lambda_b = reduced M_Pl * sqrt(48 pi^2 / p)
     C_LIGHT = 299792458.0
-    M_Pl_energy = np.sqrt(_HBAR * C_LIGHT ** 5 / 6.67430e-11)  # [J]
+    M_Pl_energy = np.sqrt(_HBAR * C_LIGHT ** 5 / (8.0 * np.pi * 6.67430e-11))  # [J]
     Lambda_b = M_Pl_energy * np.sqrt(48.0 * np.pi ** 2 / p)
     G_derived = newtons_constant_from_substrate(p=p, Lambda_b=Lambda_b)
     G_measured = 6.67430e-11  # m^3 kg^-1 s^-2

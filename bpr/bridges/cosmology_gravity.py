@@ -1732,17 +1732,18 @@ def planck_to_newton(
     p: int = P_DEFAULT,
     n_sites: int = 32,
 ) -> Dict[str, Any]:
-    r"""Derive Newton's G from Planck-scale substrate parameters.
+    r"""Round-trip the physical Planck-length anchor through induced gravity.
 
     Bridge chain:
-        l_P        = sqrt(hbar G / c^3)             one dimensionful anchor
-        a_boundary = l_P * sqrt(p / (48 pi^2))      Sakharov boundary spacing
-        Lambda_b   = hbar c / a_boundary            boundary UV cutoff
-        M_Pl^2     = p Lambda_b^2 / (48 pi^2)       induced gravity
+        l_P        = sqrt(hbar G / c^3)             supplied physical anchor
+        a_boundary = l_P * sqrt(p / (6 pi))         Sakharov boundary spacing
+        Lambda_b   = hbar c / a_boundary            cutoff energy [J]
+        M_red^2    = p Lambda_b^2 / (48 pi^2)       reduced energy squared [J²]
+        G          = hbar c^5 / (8pi M_red^2) = l_P^2 c^3 / hbar
 
-    BPR derivation:
-        M_Pl^2 = p Lambda_b^2 / (48 pi^2)
-        G = hbar * c / M_Pl^2 = l_P^2 * c^3 / hbar
+    This inverse cutoff matching is not an absolute prediction of G.
+    The returned M_Pl_derived_kg is separately reconstructed as the unreduced
+    Planck mass sqrt(hbar c/G), for comparison with M_PLANCK.
 
     Cross-check: G_derived vs G_measured = 6.674e-11 m^3 kg^-1 s^-2
 
@@ -1759,32 +1760,31 @@ def planck_to_newton(
         G_derived : float -- Newton's constant from substrate [m^3 kg^-1 s^-2]
         G_measured : float -- measured Newton's constant
         relative_error : float -- |G_derived - G_measured| / G_measured
-        M_Pl_derived_kg : float -- derived Planck mass [kg]
+        M_Pl_derived_kg : float -- separately reconstructed unreduced Planck mass [kg]
         l_P_m : float -- Planck length [m]
         description : str
     """
     # Planck length as the fundamental substrate lattice spacing
     l_P = L_PLANCK  # 1.616255e-35 m
 
-    # Boundary lattice spacing: a = l_P * sqrt(p / (48 pi^2))
-    # (Sakharov induced gravity; see derivations/planck_length_from_substrate.md)
-    a_boundary = l_P * np.sqrt(p / (48.0 * np.pi ** 2))
+    # Boundary spacing matched to the reduced induced Planck coefficient.
+    a_boundary = l_P * np.sqrt(p / (6.0 * np.pi))
 
     # Boundary UV cutoff Lambda_b = hbar c / a_boundary
     Lambda_b = HBAR * C / a_boundary
 
-    # Newton's constant from Sakharov relation M_Pl^2 = p Lambda_b^2 / (48 pi^2)
+    # Newton's constant from the reduced Sakharov coefficient.
     if newtons_constant_from_substrate is not None:
         G_derived = newtons_constant_from_substrate(p=p, Lambda_b=Lambda_b)
     else:
-        # Direct: G = 48 pi^2 hbar c / (p * Lambda_b^2 / c^4) = ...
-        M_Pl_kg = np.sqrt(p / (48.0 * np.pi ** 2)) * Lambda_b / C ** 2
-        G_derived = HBAR * C / M_Pl_kg ** 2
+        # Convert the reduced Planck mass to G with the required 1/(8pi).
+        M_red_kg = np.sqrt(p / (48.0 * np.pi ** 2)) * Lambda_b / C ** 2
+        G_derived = HBAR * C / (8.0 * np.pi * M_red_kg ** 2)
 
     G_meas = 6.67430e-11  # m^3 kg^-1 s^-2
     rel_err = abs(G_derived - G_meas) / G_meas
 
-    # Derived Planck mass: M_Pl = sqrt(hbar * c / G)
+    # Separately reconstructed unreduced Planck mass for M_PLANCK comparison.
     M_Pl_derived = np.sqrt(HBAR * C / G_derived)
 
     # Alternative derivation: G from l_P directly
@@ -1804,10 +1804,11 @@ def planck_to_newton(
         "p": p,
         "n_sites": n_sites,
         "description": (
-            f"Newton's G derived from BPR substrate: "
-            f"M_Pl^2 = p Lambda_b^2 / (48 pi^2). "
+            f"Newton's G round-tripped from the supplied Planck-length anchor: "
+            f"reduced M_red^2 = p Lambda_b^2 / (48 pi^2), "
+            f"G = hbar c^5/(8pi M_red^2). "
             f"With l_P = {l_P:.4e} m, "
-            f"a_boundary = l_P sqrt(p/(48 pi^2)) = {a_boundary:.4e} m, "
+            f"a_boundary = l_P sqrt(p/(6 pi)) = {a_boundary:.4e} m, "
             f"Lambda_b = hbar c / a_boundary = {Lambda_b:.4e} J, p = {p}: "
             f"G_derived = {G_derived:.4e} vs G_measured = {G_meas:.4e} "
             f"(relative error = {rel_err:.2e}). "

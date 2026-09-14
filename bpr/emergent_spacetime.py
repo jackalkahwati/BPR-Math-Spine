@@ -92,13 +92,15 @@ class EmergentDimensions:
 class HolographicEntropy:
     """Entanglement entropy from the induced BPR Einstein-Hilbert term.
 
-    The Ryu-Takayanagi formula:
-        S_EE(A) = |∂A| / (4 G_N)
+    The Einstein-Hilbert Wald contribution (or Einstein-frame area entropy):
+        S_EE(A) = |∂A| / (4 G_N)             (natural units)
 
+    This is not the full Jordan-frame R² Wald entropy at nonzero curvature.
     In BPR, the coefficient-level route is Sakharov induced gravity:
 
-        M_Pl^2 = p Lambda_b^2 / (48 pi^2)
-        S      = |∂A| M_Pl^2 / 4 = |∂A| / (4 l_P²)
+        M_Pl^2 = p Lambda_b^2 / (48 pi^2), reduced M_Pl² = 1/(8pi G_N)
+        S      = 2pi |∂A| M_Pl^2                 (natural units)
+               = 2pi |∂A| M_Pl_energy²/(hbar c)² = |∂A|/(4 l_P²) (SI)
 
     Raw p-state winding counts remain useful as a microscopic heuristic,
     but the induced Einstein-Hilbert normalization is what fixes the
@@ -185,9 +187,10 @@ class BekensteinBound:
 # ---------------------------------------------------------------------------
 
 def planck_mass_from_boundary_cutoff(p: int, Lambda_b: float) -> float:
-    """Planck mass from Sakharov-induced gravity at BPR boundary.
+    """Reduced Planck energy from Sakharov-induced gravity at BPR boundary.
 
-    M_Pl² = p × Λ_b² / (48π²)
+    M_Pl² = p × Λ_b² / (48π²), the reduced coefficient of M_Pl² R/2.
+    This is conditional on the supplied boundary field content and cutoff.
 
     Derivation: integrating out the p boundary anyon sectors below the
     boundary UV cutoff Λ_b generates an Einstein-Hilbert term via the
@@ -203,7 +206,7 @@ def planck_mass_from_boundary_cutoff(p: int, Lambda_b: float) -> float:
 
     Returns
     -------
-    float – Planck mass in the same energy units as Lambda_b
+    float – reduced Planck energy in the same units as Lambda_b
     """
     return Lambda_b * np.sqrt(p / (48.0 * np.pi ** 2))
 
@@ -211,10 +214,10 @@ def planck_mass_from_boundary_cutoff(p: int, Lambda_b: float) -> float:
 def boundary_cutoff_from_planck_mass(p: int, M_Pl: float) -> float:
     """Inverse of planck_mass_from_boundary_cutoff.
 
-    Given the observed M_Pl and substrate prime p, predict the boundary
-    lattice cutoff Λ_b = M_Pl × √(48π²/p).
-
-    For p = 104761, M_Pl = 1.22×10¹⁹ GeV ⇒ Λ_b ≈ 8.2×10¹⁷ GeV.
+    Given a reduced Planck energy M_Pl and substrate prime p, calibrate the
+    boundary lattice cutoff Λ_b = M_Pl × √(48π²/p), in the same energy units.
+    This inverse matching does not predict an absolute scale.  An unreduced
+    Planck energy must first be divided by √(8pi).
     """
     return M_Pl * np.sqrt(48.0 * np.pi ** 2 / p)
 
@@ -222,7 +225,9 @@ def boundary_cutoff_from_planck_mass(p: int, M_Pl: float) -> float:
 def newtons_constant_from_substrate(p: int, Lambda_b: float) -> float:
     """Derive Newton's constant G from (p, Λ_b) via Sakharov induced gravity.
 
-    G = ℏ c / M_Pl² = 48π² ℏ c / (p × Λ_b²)
+    For reduced Planck energy M_Pl and cutoff Λ_b in joules,
+    G = ℏ c^5 / (8pi M_Pl²) = 6pi ℏ c^5 / (p × Λ_b²).
+    This conditional conversion requires a supplied absolute cutoff.
 
     Note: unlike the earlier signature (p, N, J, ξ), this depends on only
     one dimensionful scale Λ_b — the boundary lattice cutoff — because the
@@ -241,7 +246,7 @@ def newtons_constant_from_substrate(p: int, Lambda_b: float) -> float:
     """
     M_Pl_energy = planck_mass_from_boundary_cutoff(p, Lambda_b)  # [J]
     M_Pl_kg = M_Pl_energy / _C ** 2
-    return _HBAR * _C / M_Pl_kg ** 2
+    return _HBAR * _C / (8.0 * np.pi * M_Pl_kg ** 2)
 
 
 # ---------------------------------------------------------------------------
@@ -255,10 +260,10 @@ def planck_length_from_substrate(xi: float = None, p: int = 104761) -> float:
     that anchor; what BPR *derives* is the hierarchy between l_P and the
     boundary lattice spacing a:
 
-        a / l_P = √(p / (48π²)) ≈ 14.87   (for p = 104761)
+        a / l_P = √(p / (6pi))
 
-    via the Sakharov induced-gravity relation
-    M_Pl² = p Λ_b² / (48π²). See
+    via the Sakharov induced-gravity relation with reduced Planck energy
+    M_Pl² = p Λ_b² / (48π²) and G = ℏ c^5/(8pi M_Pl²). See
     doc/derivations/planck_length_from_substrate.md for the derivation.
 
     Parameters
@@ -277,12 +282,12 @@ def planck_length_from_substrate(xi: float = None, p: int = 104761) -> float:
 def boundary_lattice_spacing(p: int = 104761) -> float:
     """Boundary lattice spacing a from Sakharov relation.
 
-    a = l_P × √(p / (48π²))
+    a = l_P × √(p / (6pi))
 
-    For p = 104761, a ≈ 14.87 × l_P ≈ 2.40 × 10⁻³⁴ m,
-    corresponding to J = ℏc/a ≈ 8.2 × 10¹⁷ GeV.
+    The fixed physical l_P anchor and the reduced induced Planck coefficient
+    set this spacing by inverse cutoff matching, not an absolute prediction.
     """
-    return _L_PLANCK * np.sqrt(p / (48.0 * np.pi ** 2))
+    return _L_PLANCK * np.sqrt(p / (6.0 * np.pi))
 
 
 # ---------------------------------------------------------------------------

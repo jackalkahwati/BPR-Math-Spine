@@ -126,8 +126,8 @@ class CurvatureSquaredCorrection:
 
     @property
     def scalaron_mass_over_planck(self) -> float:
-        """Scalaron mass M/M_Pl from the action convention alpha/2 * R²."""
-        return 1.0 / (2.0 * np.sqrt(self.alpha_R2_minimal))
+        """Scalaron m/M_Pl = 1/sqrt(6 alpha), with reduced M_Pl in M_Pl² R/2."""
+        return 1.0 / (np.sqrt(6.0) * np.sqrt(self.alpha_R2_minimal))
 
 
 @dataclass(frozen=True)
@@ -143,13 +143,13 @@ class ScalaronSector:
 
     @property
     def scalaron_mass_over_planck(self) -> float:
-        """Starobinsky mass parameter ``M / M_Pl`` in the repo convention."""
-        return 1.0 / (2.0 * np.sqrt(self.alpha_R2_minimal))
+        """Scalaron m/M_Pl = 1/sqrt(6 alpha) for reduced M_Pl² R/2 + alpha R²/2."""
+        return 1.0 / (np.sqrt(6.0) * np.sqrt(self.alpha_R2_minimal))
 
     @property
     def potential_plateau_over_planck4(self) -> float:
-        """Einstein-frame plateau height ``V0 / M_Pl^4``."""
-        return 3.0 / (16.0 * self.alpha_R2_minimal)
+        """Einstein-frame plateau V0/M_Pl^4 = 1/(8 alpha), reduced M_Pl."""
+        return 1.0 / (8.0 * self.alpha_R2_minimal)
 
     @property
     def trace_coupling_over_planck(self) -> float:
@@ -158,14 +158,14 @@ class ScalaronSector:
 
     @property
     def scalar_amplitude_minimal(self) -> float:
-        """Slow-roll scalar amplitude from the minimal boundary R² term."""
-        return self.n_efolds ** 2 / (96.0 * np.pi ** 2 * self.alpha_R2_minimal)
+        """Leading large-Ne amplitude As = Ne²/(144 pi² alpha)."""
+        return self.n_efolds ** 2 / (144.0 * np.pi ** 2 * self.alpha_R2_minimal)
 
     @property
     def alpha_required_for_observed_amplitude(self) -> float:
-        """R² coefficient required to match the observed scalar amplitude."""
+        """Inverse leading-slow-roll calibration alpha = Ne²/(144 pi² As)."""
         return self.n_efolds ** 2 / (
-            96.0 * np.pi ** 2 * self.observed_scalar_amplitude
+            144.0 * np.pi ** 2 * self.observed_scalar_amplitude
         )
 
     @property
@@ -650,9 +650,11 @@ def scalaron_sector_from_boundary_r2(
     """Derive scalaron-sector quantities from the BPR boundary R² term.
 
     This uses the same action convention as ``curvature_squared_correction``:
-    ``S includes (M_Pl²/2) R + (alpha/2) R²``.  It deliberately reports the
-    minimal boundary ``alpha`` separately from the ``alpha`` required by the
-    observed scalar amplitude, because the latter still depends on the open
+    ``S includes (M_Pl²/2) R + (alpha/2) R²``, with reduced ``M_Pl²=1/(8pi G)``.
+    This gives ``V=M_Pl^4/(8 alpha) [1-exp(-sqrt(2/3) phi/M_Pl)]²``.
+    It reports the conditional minimal boundary ``alpha`` separately from the
+    inverse leading-slow-roll calibration to the supplied scalar amplitude.
+    The calibration is not a prediction or a derivation of the open
     winding/anyon-loop normalization.
     """
     if p <= 0:
@@ -798,9 +800,9 @@ def compact_boson_heat_kernel_loop_weight(
     contractions, each weighted by the inverse compactification metric
     ``G^{theta theta} = 1/R²``.  Thus ``F_R = 1 + 2/R²``.
 
-    This evaluates the percent-level ``5/3`` candidate within the stated
-    current ansatz; the full CS/WZW holographic dictionary is still marked
-    open.
+    This evaluates the unchanged ``5/3`` candidate at z=6.  With the
+    action-consistent scalar amplitude it no longer gives the former
+    percent-level match.  The full CS/WZW holographic dictionary remains open.
     """
     residual_diagnostic = compact_boson_residual_loop_weight_diagnostic(
         p=p,
@@ -1124,10 +1126,10 @@ class BoundaryGravitonPropagator:
 
     @property
     def boundary_spacing_m(self) -> float:
-        """Boundary lattice spacing from the Sakharov relation."""
+        """Spacing hbar*c/Lambda_b, or l_P sqrt(p/(6pi)) at the fixed anchor."""
         if self.Lambda_b_J is not None:
             return self.hbar_c_J_m / self.Lambda_b_J
-        return L_PLANCK * np.sqrt(self.p / (48.0 * np.pi ** 2))
+        return L_PLANCK * np.sqrt(self.p / (6.0 * np.pi))
 
     @property
     def boundary_cutoff_J(self) -> float:
@@ -1136,7 +1138,7 @@ class BoundaryGravitonPropagator:
 
     @property
     def planck_energy_J(self) -> float:
-        """Induced Planck energy from M_Pl = Lambda_b sqrt(p/(48 pi^2))."""
+        """Induced reduced Planck energy M_Pl = Lambda_b sqrt(p/(48 pi^2))."""
         return self.boundary_cutoff_J * np.sqrt(self.p / (48.0 * np.pi ** 2))
 
     @property
