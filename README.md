@@ -52,6 +52,8 @@
 >
 > **COMPOSITE-STATISTICS AUDIT (2026-09-12):** [algebra, string support and neutrality](doc/derivations/substrate_composite_statistics_2026-09-12.md). Independently reviewed formulas distinguish Jordan–Wigner exchange grading, full-space canonical algebra, original-site parity strings and modular neutrality. Bounded verification passed393 focused and2698 combined tests with independent code/numerical review. Complete Bose ladder controls retain repeated creation that binary truncation would remove. None of these algebraic properties establishes binding or physical spin/statistics.
 >
+> **LONG-WAVE/CONDENSATE AUDIT (2026-09-12):** [preregistered classical limit and quantum trial-state bridge](doc/derivations/substrate_longwave_limit_2026-09-12.md). Independent review confirms the classical propagator/response envelopes and quantum condensate variance with its required phase correction. Bounded verification passed155 focused and2853 combined tests; trivial and loose error bounds remain explicit. A controlled classical Hessian limit and a bounded quantum trial-state approximation remain separate; neither establishes emergent spacetime.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
