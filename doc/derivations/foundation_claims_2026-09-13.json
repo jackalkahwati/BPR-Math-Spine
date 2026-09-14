@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "baseline_commit": "d9bccda2dfa64f8a17e094ecc420b6e64a80245f",
+  "scope": "Selected foundation dependencies, not a complete repository audit or proof score",
+  "empirical_validation": false,
+  "review_status": "scoped_record_review_complete_verification_in_progress",
+  "claims": [
+    {
+      "id": "bose_substrate",
+      "model": "Complete one-dimensional Bose ring",
+      "assumptions": ["Supplied ring geometry", "C > 0 and g >= 0", "Complete occupation sectors"],
+      "status": "stipulated_microscopic_model",
+      "result": "The Hamiltonian and its Hilbert space define the current substrate; separate target models are not outputs merely because their labels match.",
+      "sources": ["bpr/substrate_vacuum_selection.py", "doc/derivations/substrate_extensive_stability_2026-09-13.md"],
+      "depends_on": [],
+      "limitation": "No physical observation map or three-dimensional spacetime has been derived from these declarations.",
+      "next_decision": "Test scoped local-operator and graph-locality prerequisites."
+    },
+    {
+      "id": "local_symmetry",
+      "model": "Bounded interval-local operators on unrestricted Bose Fock space",
+      "assumptions": ["Nonzero nearest-neighbor hopping", "Contiguous proper support with at least two exterior sites", "Explicit weak commutation on the finite occupation core"],
+      "status": "bounded_interval_theorem_reviewed_focused_verification_passed",
+      "result": "A bounded operator with the stipulated interval support and full-core weak conservation is scalar; independent derivation and adversarial proof review agree.",
+      "sources": ["doc/derivations/substrate_local_symmetry_2026-09-13.md", "doc/derivations/substrate_constraint_algebra_2026-09-12.md"],
+      "depends_on": ["bose_substrate"],
+      "limitation": "One-exterior reflection and disconnected opposite-site SWAP are counterexamples outside the support hypotheses. This is not a no-go for constrained, dressed or low-energy gauge physics.",
+      "next_decision": "First focused run passed 235 tests after independent source/test review; finish isolated demos and selected inherited-plus-new verification."
+    },
+    {
+      "id": "spatial_locality",
+      "model": "Graph-site maps from source neighborhoods to ring cells",
+      "assumptions": ["Uniform bounded edge dilation", "Uniform bounded fiber multiplicity", "Actual source-graph neighborhood counts"],
+      "status": "conditional_theorem_reviewed_contract_frozen",
+      "result": "A source ball maps into a ring ball of at most min(L,2*floor(K)*r+1) cells. Fiber multiplicity limits its preimages. Superlinear source growth obstructs uniformly bounded maps of this class.",
+      "sources": ["doc/derivations/substrate_locality_dimension_2026-09-13.md"],
+      "depends_on": ["bose_substrate"],
+      "limitation": "Bounded graph fibers are not implied by an abstract encoding in infinite-dimensional Bose sites; counting feasibility is not map existence.",
+      "next_decision": "First focused run passed 366 tests after independent source/test review; complete selected inherited-plus-new verification without treating finite controls as the theorem."
+    },
+    {
+      "id": "gauge_connection",
+      "model": "Bose ring and separately supplied finite-group gauge target",
+      "assumptions": ["Explicit encoding and target electric/magnetic operators"],
+      "status": "tested_encoding_not_dynamically_invariant",
+      "result": "An algebraic regular-representation encoding does not by itself provide invariant gauge dynamics or microscopic Gauss constraints.",
+      "sources": ["doc/derivations/toe_connection_campaign_2026-09-13.md", "bpr/substrate_gauge_encoding.py"],
+      "depends_on": ["bose_substrate", "local_symmetry", "spatial_locality"],
+      "limitation": "The failed particular encoding is not an exclusion of every dressed or low-energy construction.",
+      "next_decision": "Require a constructive local operator/dynamics map before a derived-gauge claim."
+    },
+    {
+      "id": "family_count",
+      "model": "Legacy flavor relations and supplied sphere index",
+      "assumptions": ["Empirical n_gen=3", "Supplied charge and flux in sphere constructions"],
+      "status": "empirical_input_not_topological_prediction",
+      "result": "The retained three-family input is not derived from topology. LEP constrains light neutrinos with the relevant Z coupling, not an exact universal count of all families.",
+      "sources": ["doc/CLOSED_AND_DEPRECATED.md", "doc/derivations/generations_from_CFT.md", "bpr/experimental_data.py"],
+      "depends_on": [],
+      "limitation": "The registry's is_exact flag remains a legacy grading behavior, explicitly not scientific exactness. Numeric value and stored zero uncertainty are preserved.",
+      "next_decision": "Do not promote the input into a prediction; grading changes require a separate scoped repair."
+    },
+    {
+      "id": "flavor_parameters",
+      "model": "Phenomenological neutrino and quark flavor formulas",
+      "assumptions": ["Conjectural physical mode assignments", "Supplied normalizations", "Fitted PMNS coefficients 3.5 and 1.35", "Conditional Gaussian localization for theta13"],
+      "status": "fits_and_conditional_ansatz",
+      "result": "Numerically specified relations are not a derived physical fermionic Hamiltonian or a complete independent parameter count.",
+      "sources": ["doc/CLOSED_AND_DEPRECATED.md", "bpr/neutrino.py", "bpr/qcd_flavor.py", "doc/BPR_FLAVOR_SECTOR.md"],
+      "depends_on": ["family_count"],
+      "limitation": "Only four registry statuses are reconciled in this tranche. Other mass, CKM and legacy GUE labels are retained, not newly endorsed.",
+      "next_decision": "Require physical operator maps and an independently selected source before predictive flavor claims."
+    },
+    {
+      "id": "chiral_parent",
+      "model": "Supplied six-dimensional complex Weyl Spin(10) 16 with U(1)_X",
+      "assumptions": ["Single chiral parent", "Specified local anomaly polynomial and sphere reduction"],
+      "status": "irreducible_parent_anomaly_obstruction",
+      "result": "The p2 coefficient is -s/90. Restricted reduction discards parent information; lower-dimensional cancellation does not establish consistency of this parent.",
+      "sources": ["bpr/chiral_parent_anomaly.py", "bpr/chiral_content_constraints.py"],
+      "depends_on": [],
+      "limitation": "An identical opposite-chirality partner cancels the polynomial but yields vectorlike reduction on the same background; a local polynomial check alone is not all global consistency.",
+      "next_decision": "No claim of this parent as a consistent common foundation without a separately approved completion."
+    },
+    {
+      "id": "gravity_sources",
+      "model": "Externally supplied density, Peierls and local-energy sources",
+      "assumptions": ["Declared source partition and contacts", "Ground-state source Hessian"],
+      "status": "external_consistency_not_metric_dynamics",
+      "result": "Contact-completed Ward identities hold for the stipulated source family; alternative energy partitions and source-dependent identity terms prevent a unique metric-action inference.",
+      "sources": ["doc/derivations/substrate_source_integrability_2026-09-13.md", "doc/derivations/substrate_joint_source_kernel_2026-09-12.md", "doc/derivations/substrate_energy_response_2026-09-12.md"],
+      "depends_on": ["bose_substrate"],
+      "limitation": "No dynamical metric, physical helicity-two pole or universal coupling follows from an external-source identity.",
+      "next_decision": "Require an explicit metric/source map and a dynamical common action."
+    },
+    {
+      "id": "gravity_normalization",
+      "model": "Supplied R+R^2 effective gravitational action",
+      "assumptions": ["Specified bulk species and curvature coupling", "Regulator, bare terms and counterterms", "Independent physical scale matching"],
+      "status": "conditional_and_nonidentifiable",
+      "result": "Effective coefficients do not uniquely identify bare, counterterm and cutoff contributions; a finite Hamiltonian offset is not covariant vacuum density.",
+      "sources": ["bpr/gravity_consistency.py", "doc/derivations/toe_constructive_extension_2026-09-12.md"],
+      "depends_on": ["gravity_sources"],
+      "limitation": "Internal/topological multiplicity is not automatically a count of four-dimensional bulk scalar fields. Legacy cosmology normalization inconsistencies remain unrepaired.",
+      "next_decision": "Consume these ambiguities in the common-foundation decision, without new fits."
+    },
+    {
+      "id": "sampled_numerics",
+      "model": "Sampled connected two-source response",
+      "assumptions": ["Frozen schedules, arithmetic and supplemental sign criterion"],
+      "status": "scientific_acceptance_unestablished",
+      "result": "The selected regression passed 4945 tests with 10 platform skips; the separate fixed supplemental acquisition failed four nonzero/sign assertions.",
+      "sources": ["doc/derivations/substrate_sampled_response_verification_2026-09-13.md"],
+      "depends_on": ["bose_substrate"],
+      "limitation": "Publication does not waive the failed criterion, certify numerical errors or erase the older one-ULP repeatability failure.",
+      "next_decision": "Preserve failure unchanged; any numerical revision is separately approved and versioned."
+    },
+    {
+      "id": "experimental_discrimination",
+      "model": "Joint response ratio with factorized readout/source gains",
+      "assumptions": ["Same Hamiltonian, state, operators and noise map as conventional Bose alternative", "Resolved denominator", "Independently constrained additive backgrounds"],
+      "status": "no_distinguishing_prediction",
+      "result": "Identical model and observation distributions cannot be distinguished by a statistical test. Unrestricted independent additive backgrounds also eliminate response identifiability.",
+      "sources": ["doc/derivations/foundation_observation_gate_2026-09-13.md", "doc/derivations/substrate_prediction_contract_2026-09-13.md"],
+      "depends_on": ["bose_substrate", "sampled_numerics"],
+      "limitation": "Calibration and real data remain missing, but acquiring them alone would not break this model equivalence.",
+      "next_decision": "Require a separately derived distinguishing consequence before a BPR-discrimination data campaign."
+    }
+  ]
+}
