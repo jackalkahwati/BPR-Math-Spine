@@ -269,3 +269,38 @@ def test_demonstration_report_is_strict_json():
     assert report["limitations"] == g.LIMITATIONS
     for comparison in report["low_energy_comparison"]:
         assert comparison["third_order_error_ratio"] > comparison["second_order_error_ratio"]
+
+
+def test_gauss_commutator_vanishes_only_without_degree_two_neighbours():
+    star = g.make_graph(["c", "a", "b", "d"], [("c", "a"), ("c", "b"), ("c", "d")],
+                        {"c": 1, "a": 1, "b": 0, "d": 0})
+    norms = g.gauss_commutator_norms(star, 0.3, 1.0)
+    assert norms[0] == 0.0  # every neighbour of the centre has degree 1
+    assert all(x > 0 for x in norms[1:])
+
+
+def test_component_balance_and_empty_manifold_are_rejected():
+    with pytest.raises(ValueError):
+        g.make_graph([0, 1, 2, 3], [(0, 1), (2, 3)], {0: 1, 1: 0, 2: 0, 3: 1})
+    with pytest.raises(TypeError):
+        g.make_graph([0, 1], [(0, 1)], [1, 1])
+
+
+def test_richardson_extrapolation_recovers_second_order_spectrum():
+    graph = g.open_cubes(1)
+    summary = g.compare_low_energy(graph, 1.0, (0.005, 0.01))
+    scale = max(abs(x) for x in summary["records"][0]["second_order"]) / 0.005 ** 2
+    assert summary["richardson_second_order_gap"] < 1e-3 * scale
+    with pytest.raises(ValueError):
+        g.compare_low_energy(graph, 1.0, (0.01, 0.03))
+    with pytest.raises(ValueError):
+        g.compare_low_energy(graph, 1.0, (0.01,))
+
+
+def test_report_carries_third_order_couplings():
+    report_status = "proposed_amendment_third_order_gauge_structure"
+    graph = g.cubic_torus(6)
+    t, U = 0.1, 1.0
+    square = g.four_cycles(graph)[0]
+    assert g.third_order_plaquette_shift(graph, square, t, U) / (t ** 3 / U ** 2) == pytest.approx(12.0)
+    assert report_status.endswith("gauge_structure")

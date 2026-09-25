@@ -21,6 +21,7 @@ MODEL_ID = "hard-core-link-boson-emergent-u1-v1"
 MAX_LINKS = 62
 MAX_SECTOR_DIMENSION = 200000
 MAX_ICE_DIMENSION = 20000
+MAX_SEARCH_NODES = 5_000_000
 DENSE_LIMIT = 800
 
 LIMITATIONS = [
@@ -77,7 +78,12 @@ def make_graph(vertices, links, targets):
     for l, (a, b) in enumerate(clean):
         incident[a].append(l)
         incident[b].append(l)
-    q = [targets[v] if isinstance(targets, dict) else targets for v in vertices]
+    if isinstance(targets, dict):
+        q = [targets[v] for v in vertices]
+    elif type(targets) is int:
+        q = [targets] * len(vertices)
+    else:
+        raise TypeError("targets must be an int or a dict keyed by vertex")
     for qv, inc in zip(q, incident):
         if type(qv) is not int or not 0 <= qv <= len(inc):
             raise ValueError("charge targets must be ints between 0 and the degree")
@@ -85,21 +91,51 @@ def make_graph(vertices, links, targets):
         raise ValueError("the sum of charge targets must be even (each link has two ends)")
     graph = {"vertices": vertices, "links": clean, "incident": incident, "targets": q,
              "particles": sum(q) // 2}
-    coloring = _two_coloring(graph)
-    if coloring is not None:
-        side = [sum(qv for qv, c in zip(q, coloring) if c == k) for k in (0, 1)]
-        if side[0] != side[1]:
-            raise ValueError("bipartite graph: targets must sum equally on both sublattices")
+    for component in _components(graph):
+        sub = _two_coloring(graph, component)
+        if sub is not None:
+            side = [sum(q[v] for v in component if sub[v] == k) for k in (0, 1)]
+            if side[0] != side[1]:
+                raise ValueError("bipartite component: targets must sum equally on both sublattices")
+        elif sum(q[v] for v in component) % 2:
+            raise ValueError("each connected component needs an even target sum")
     return graph
 
 
-def _two_coloring(graph):
-    color = [None] * len(graph["vertices"])
+def _components(graph):
     nbrs = [[] for _ in graph["vertices"]]
     for a, b in graph["links"]:
         nbrs[a].append(b)
         nbrs[b].append(a)
-    for start in range(len(color)):
+    seen = set()
+    out = []
+    for start in range(len(nbrs)):
+        if start in seen:
+            continue
+        stack, comp = [start], []
+        seen.add(start)
+        while stack:
+            v = stack.pop()
+            comp.append(v)
+            for w in nbrs[v]:
+                if w not in seen:
+                    seen.add(w)
+                    stack.append(w)
+        out.append(sorted(comp))
+    return out
+
+
+def _two_coloring(graph, restrict=None):
+    color = {} if restrict is not None else [None] * len(graph["vertices"])
+    nbrs = [[] for _ in graph["vertices"]]
+    for a, b in graph["links"]:
+        nbrs[a].append(b)
+        nbrs[b].append(a)
+    starts = restrict if restrict is not None else range(len(graph["vertices"]))
+    if restrict is not None:
+        for v in restrict:
+            color[v] = None
+    for start in starts:
         if color[start] is not None:
             continue
         color[start] = 0
@@ -264,10 +300,12 @@ def ice_basis(graph):
     out = []
     remaining = [len(inc) for inc in incident]
     charge = [0] * len(incident)
+    nodes = [0]
 
     def extend(position, mask):
-        if len(out) > MAX_ICE_DIMENSION:
-            raise ValueError("ice manifold exceeds the allocation cap")
+        nodes[0] += 1
+        if len(out) > MAX_ICE_DIMENSION or nodes[0] > MAX_SEARCH_NODES:
+            raise ValueError("ice manifold search exceeds the allocation cap")
         if position == L:
             if charge == targets:
                 out.append(mask)
@@ -352,6 +390,8 @@ def schrieffer_wolff(graph, t, U):
     charges = _charge_array(graph, basis)
     h0 = U * np.sum((charges - np.array(graph["targets"])) ** 2, axis=1).astype(float)
     ice = np.nonzero(h0 == 0)[0]
+    if len(ice) == 0:
+        raise ValueError("empty ice manifold: no configuration meets every vertex target")
     V = -t * _hopping_matrix(graph, basis)
     VP = V[:, ice]
     if abs(VP[ice, :]).max() != 0:
@@ -478,6 +518,8 @@ def flippable(mask, cycle):
 def effective_hamiltonian(graph, t, U, rk=0.0):
     """H_eff = C - K sum_p (F_p + F_p^dagger) + rk * sum_p P_flippable on the ice manifold."""
     basis = ice_basis(graph)
+    if not basis:
+        raise ValueError("empty ice manifold: no configuration meets every vertex target")
     index = {m: i for i, m in enumerate(basis)}
     cycles = four_cycles(graph)
     K = ring_exchange_coefficient(t, U)
@@ -516,6 +558,8 @@ def compare_low_energy(graph, U=1.0, ratios=(0.01, 0.02), levels=4):
     analytic second-order spectrum divided by t^2. Third-order check: residual
     after adding the numerical third-order term should scale as t^4.
     """
+    if len(ratios) != 2 or not abs(ratios[1] - 2 * ratios[0]) < 1e-15 * max(1.0, ratios[1]):
+        raise ValueError("ratios must be (r, 2r) for the Richardson and scaling checks")
     records = []
     scaled_full = []
     eff_scaled = None
@@ -537,7 +581,7 @@ def compare_low_energy(graph, U=1.0, ratios=(0.01, 0.02), levels=4):
         })
         scaled_full.append(full / t ** 2)
         eff_scaled = eff / t ** 2
-    extrapolated = 2 * scaled_full[0] - scaled_full[1] if ratios[1] == 2 * ratios[0] else scaled_full[0]
+    extrapolated = 2 * scaled_full[0] - scaled_full[1]
     summary = {
         "records": records,
         "richardson_second_order_gap": float(np.max(np.abs(extrapolated - eff_scaled))),
@@ -604,7 +648,7 @@ def cluster_summary(name, graph):
 
 def demonstration_report():
     clusters = [("square_torus_3", square_torus(3)), ("open_cube", open_cubes(1)),
-                ("two_open_cubes", open_cubes(2))]
+                ("two_open_cubes", open_cubes(2)), ("adamantane", adamantane())]
     summaries = []
     comparisons = []
     for name, graph in clusters:
@@ -615,7 +659,7 @@ def demonstration_report():
     report = {
         "schema_version": 1,
         "model_id": MODEL_ID,
-        "status": "proposed_amendment_second_order_gauge_structure",
+        "status": "proposed_amendment_third_order_gauge_structure",
         "empirical_validation": False,
         "coulomb_phase_established": False,
         "controls": {"U": 1.0, "t_over_U": [0.01, 0.02], "levels": 4},
@@ -624,9 +668,19 @@ def demonstration_report():
         "gauss_commutator_norms_open_cube_t_0_1": commutator,
         "rk_point": rk,
         "cubic_lattice_effective_couplings": {
-            "ring_exchange_K_over_t2_U": 2.0,
-            "constant_per_vertex_over_t2_U": -4.5,
+            "plaquette_K_second_order_over_t2_U": 2.0,
+            "plaquette_delta_K_third_order_over_t3_U2": 12.0,
+            "hexagon_K6_third_order_over_t3_U2": 3.0,
+            "constant_per_vertex_second_order_over_t2_U": -4.5,
+            "constant_per_vertex_third_order_over_t3_U2": -9.0,
             "note": "q=3 of 6 links per vertex; all link pairs at a vertex hop.",
+        },
+        "diamond_lattice_effective_couplings": {
+            "plaquette_K": 0.0,
+            "hexagon_K6_third_order_over_t3_U2": 3.0,
+            "constant_per_vertex_second_order_over_t2_U": -2.0,
+            "constant_per_vertex_third_order_over_t3_U2": -2.0,
+            "note": "q=2 of 4; no 4-cycles; equals pyrochlore hard-core bosons with NN repulsion V=2U.",
         },
         "limitations": list(LIMITATIONS),
     }

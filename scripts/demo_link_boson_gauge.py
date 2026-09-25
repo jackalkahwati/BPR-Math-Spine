@@ -38,8 +38,12 @@ def main(argv=None):
     for rk in report["rk_point"]:
         print("  {}: {} zero modes, {} sectors".format(rk["name"], rk["zero_energy_states"], rk["components"]))
     cubic = report["cubic_lattice_effective_couplings"]
-    print("Cubic lattice: K = {} t^2/U; constant {} t^2/U per vertex".format(
-        cubic["ring_exchange_K_over_t2_U"], cubic["constant_per_vertex_over_t2_U"]))
+    print("Cubic lattice: K = {} t^2/U + {} t^3/U^2 (plaquette), K6 = {} t^3/U^2 (hexagon)".format(
+        cubic["plaquette_K_second_order_over_t2_U"], cubic["plaquette_delta_K_third_order_over_t3_U2"],
+        cubic["hexagon_K6_third_order_over_t3_U2"]))
+    diamond = report["diamond_lattice_effective_couplings"]
+    print("Diamond lattice: no plaquettes; K6 = {} t^3/U^2 (pyrochlore hard-core bosons, V=2U)".format(
+        diamond["hexagon_K6_third_order_over_t3_U2"]))
     print("Coulomb (photon) phase established here: {}".format(report["coulomb_phase_established"]))
     print("Limitations")
     for limitation in report["limitations"]:

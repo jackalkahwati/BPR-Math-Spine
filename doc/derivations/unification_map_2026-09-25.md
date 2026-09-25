@@ -106,16 +106,19 @@ published numerics.
 
 **Light-cone obstruction.**
 [`common_light_cone_2026-09-25.md`](common_light_cone_2026-09-25.md) shows:
-- two interacting condensate species share one cone only under a
-  codimension-two tuning that no symmetry protects; SU(2) symmetry even turns
-  one branch quadratic;
-- the photon and the condensate phonon live in different phases of the same
-  bosons;
-- literature radiative arguments (Collins et al. 2004) mean tree-level tuning
-  would not survive loops.
+- at Bogoliubov level, density-coupled condensate species never share a light
+  cone, and decoupled species share one only under an unprotected tuning;
+  SU(2) symmetry even turns one branch quadratic;
+- within one species of link bosons, the photon and the superfluid mode occupy
+  different phases; photons and phonons from different bosons have unrelated
+  speeds;
+- the emergent charges outrun their own photon by a factor of order (U/t)²;
+- literature radiative and renormalization-group arguments (Collins et al.
+  2004; Anber–Donoghue 2011) say tree-level tuning does not survive, and
+  weak-coupling convergence of speeds is only logarithmic.
 
-Emergent Lorentz invariance for many fields from a preferred-frame lattice
-therefore needs a new principle. Candidates are one relativistic fixed point
+This is a naturalness obstruction, not a no-go. Emergent Lorentz invariance for
+many fields from a preferred-frame lattice therefore needs a new principle. Candidates are one relativistic fixed point
 for all fields, or a symmetry forbidding dimension-4 Lorentz violation. The
 alternative is to give up deriving spacetime from the substrate.
 

@@ -96,12 +96,12 @@
 > - On the diamond lattice this is the pyrochlore hard-core boson model, whose Coulomb (photon) phase at large U/t is reported by quantum Monte Carlo in the literature. On the cubic lattice the photon phase is undetermined.
 > - U(1) only; charges are bosonic; the amendment is a new input.
 >
-> **COMMON LIGHT CONE (2026-09-25):** [Bogoliubov-level criteria and the resulting obstruction](doc/derivations/common_light_cone_2026-09-25.md).
-> - Two interacting condensate species share one light cone only under a codimension-two tuning that no symmetry protects.
-> - The photon and the condensate phonon live in different phases.
-> - Literature radiative arguments say tuning would not survive loops.
+> **COMMON LIGHT CONE (2026-09-25, review-corrected):** [Bogoliubov-level criteria and the resulting obstruction](doc/derivations/common_light_cone_2026-09-25.md).
+> - Density-coupled condensate species never share a light cone. Decoupled species share one only under an unprotected tuning.
+> - Emergent photons, their charges and phonons have unrelated speeds.
+> - Literature radiative and renormalization-group arguments say tuning does not survive loops, and weak-coupling convergence of speeds is only logarithmic.
 >
-> This is the program's sharpest structural obstruction: emergent Lorentz invariance for many fields needs a new principle.
+> This is the program's sharpest structural obstruction. It is a naturalness problem, not a no-go: emergent Lorentz invariance for many fields needs a new principle.
 >
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
