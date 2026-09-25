@@ -84,7 +84,12 @@
 >
 > These results are kinematic and cover one scalar species. There is no thermodynamic limit, metric dynamics, photon or fermion.
 >
-> **CHIRAL PARENT COMPLETION (2026-09-25):** [minimal local-anomaly completion](doc/derivations/chiral_parent_completion_2026-09-25.md) of the excluded 6D Spin(10) parent. At least 36 added Weyl components are needed. Among minimal completions, exactly one has vanishing 4D abelian anomalies: I8=(1/8)S2(S2+8X²-p1), cancelled by one Green–Schwarz 2-form. At flux 3 it gives three chiral 16's that pass Spin(10)³, Witten and Z16 checks. The added fields are inputs; 48 sterile singlets remain; n_gen=3 is still chosen.
+> **CHIRAL PARENT COMPLETION (2026-09-25, review-corrected):** [minimal local-anomaly completion](doc/derivations/chiral_parent_completion_2026-09-25.md) of the excluded 6D Spin(10) parent.
+> - Adding one opposite-chirality Spin(10) spinor with zero U(1)_F charge is the unique completion with 16 added Weyl components; nothing smaller works.
+> - It leaves I8=(1/3)X²(3S2+2X²-p1), cancelled by one Green–Schwarz 2-form.
+> - At flux 3 its massless 4D content is exactly three chiral 16's, which pass the Spin(10)³, Witten and Z16 checks. The descended axion cancels the remaining U(1)_F anomalies.
+>
+> Caveats: the added spinor and 2-form are inputs; Ω7 bordism and 2-form quantization are not checked; n_gen=3 is still chosen. An independent review caught the first version's narrower 36-component result, which is kept as a secondary classification.
 >
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >

@@ -3,7 +3,8 @@
 See doc/derivations/chiral_parent_completion_2026-09-25.md. The added fields
 and the Green-Schwarz 2-form are new model inputs, not derived from BPR. Only
 local anomaly polynomials are treated; global anomalies, coupling
-quantization, flux stabilization and dynamics are not established.
+quantization, flux stabilization and dynamics are not established. The
+parent's commuting U(1) is called U(1)_F; its curvature symbol is X.
 """
 
 from fractions import Fraction
@@ -16,6 +17,7 @@ MODEL_ID = "supplied-6d-spin10-parent-minimal-completion-v1"
 # Computational enumeration caps, not physical bounds.
 MAX_CHARGE = 4
 MAX_EXTRA_COMPONENTS = 40
+MAX_CANDIDATES = 200000
 MAX_ABS_FLUX = 16
 
 S2, S4, X, p1, p2, X4 = sp.symbols("S2 S4 X p1 p2 X4")
@@ -28,10 +30,10 @@ CENTER_CHARGE = {"1": 0, "10": 2, "16": 1, "16bar": 3}
 SU2_DOUBLETS = {"1": 0, "10": 2, "16": 4, "16bar": 4}
 
 LIMITATIONS = [
-    "The parent, the added 10 and singlets, and the 2-form are supplied inputs, not BPR derivations.",
-    "Only local anomaly polynomials are checked; global anomalies and coupling quantization are not.",
+    "The parent, the added neutral 16 and the 2-form are supplied inputs, not BPR derivations.",
+    "Only local anomaly polynomials are checked; Omega_7 bordism and 2-form quantization are not.",
     "The flux m=3 (three families) is chosen, not derived.",
-    "Forty-eight massless sterile singlets remain and need masses or decoupling.",
+    "U(1)_F becomes Stuckelberg-massive and an axion and moduli remain; their dynamics is not derived.",
     "No symmetry breaking, Yukawa couplings or substrate realization is supplied.",
 ]
 
@@ -235,15 +237,20 @@ def pushforward(fields, flux):
 
 
 def four_d_ledger(modes):
-    """Local 4D anomalies of left-handed Weyl content plus two global counters."""
+    """Local 4D anomalies of left-handed Weyl content plus two global counters.
+
+    spin10_squared_u1_trace_sum is sum mult*Q*(tr_R F^2 / S2); the I6
+    coefficient of S2*X4 is half of it. The Z16 counter adds +dim for Spin(10)
+    center charge 1 and -dim for charge 3; it applies to the full massless
+    spectrum only if every mode has odd center charge.
+    """
     mixed = Fraction(0)
     cubic = 0
     gravity = 0
     spin10_cubic = 0
     doublets = 0
-    z16 = 0
-    z16_applicable = True
-    sm_embedded = 0
+    odd_center_count = 0
+    all_odd = True
     for mode in modes:
         dim, _, t2, t3, _, _ = representation_traces(mode["representation"])
         Q, mult = mode["charge"], mode["multiplicity"]
@@ -254,20 +261,19 @@ def four_d_ledger(modes):
         doublets += mult * SU2_DOUBLETS[mode["representation"]]
         center = CENTER_CHARGE[mode["representation"]]
         if center % 2 == 0:
-            z16_applicable = False
+            all_odd = False
         else:
-            contribution = mult * dim * (1 if center == 1 else -1)
-            z16 += contribution
-            sm_embedded += contribution
+            odd_center_count += mult * dim * (1 if center == 1 else -1)
     return {
         "spin10_cubic": spin10_cubic,
-        "spin10_squared_u1": _rational(mixed),
+        "spin10_squared_u1_trace_sum": _rational(mixed),
+        "spin10_squared_u1_I6_coefficient": _rational(mixed / 2),
         "u1_cubic": cubic,
         "gravity_u1": gravity,
         "su2_doublets": doublets,
         "witten_parity_even": doublets % 2 == 0,
-        "z16_spin10_charged_count_mod16": sm_embedded % 16,
-        "z16_full_spectrum_applicable": z16_applicable,
+        "z16_odd_center_count_mod16": odd_center_count % 16,
+        "z16_all_massless_modes_odd_center": all_odd,
     }
 
 
@@ -312,28 +318,58 @@ def _multisets(count, values):
             yield (first,) + rest
 
 
-def completion_search(q_max, extra_components=36):
-    """All completions in class C(q_max) with the given number of added Weyl components."""
+def _structures(extra_components, allow_neutral_spinors):
+    """Chirality counts of neutral 16s, neutral 10s and singlets obeying (C1)-(C2)."""
+    top16 = extra_components // 16 if allow_neutral_spinors else 0
+    for n16p in range(top16 + 1):
+        for n16m in range(top16 + 1 - n16p):
+            rest16 = extra_components - 16 * (n16p + n16m)
+            if rest16 < 0:
+                continue
+            for n10m in range(rest16 // 10 + 1):
+                n10p = n10m + 1 + n16p - n16m  # (C1)
+                if n10p < 0:
+                    continue
+                singlets = rest16 - 10 * (n10p + n10m)
+                if singlets < 0:
+                    continue
+                deficit = 16 * (1 + n16p - n16m) + 10 * (n10p - n10m)  # (C2): n1- - n1+ = deficit
+                if (singlets + deficit) % 2:
+                    continue
+                minus = (singlets + deficit) // 2
+                plus = singlets - minus
+                if minus < 0 or plus < 0:
+                    continue
+                yield n16p, n16m, n10p, n10m, plus, minus
+
+
+def completion_search(q_max, extra_components=16, allow_neutral_spinors=True):
+    """All completions with exactly the given number of added Weyl components.
+
+    allow_neutral_spinors=True is class C (neutral 16s, neutral 10s, singlets);
+    False is the narrower class C0 without added spinors.
+    """
     if type(q_max) is not int or not 0 <= q_max <= MAX_CHARGE:
         raise ValueError("q_max outside the enumeration cap")
     if type(extra_components) is not int or not 0 <= extra_components <= MAX_EXTRA_COMPONENTS:
         raise ValueError("extra_components outside the enumeration cap")
+    if type(allow_neutral_spinors) is not bool:
+        raise TypeError("allow_neutral_spinors must be a bool")
     values = list(range(q_max + 1))
+    structures = list(_structures(extra_components, allow_neutral_spinors))
+    from math import comb
+    planned = sum(comb(minus + q_max, q_max) * comb(plus + q_max, q_max)
+                  for *_, plus, minus in structures)
+    if planned > MAX_CANDIDATES:
+        raise ValueError("enumeration exceeds the candidate cap")
     solutions = []
     examined = 0
-    for tens_minus in range(extra_components // 20 + 1):
-        tens_plus = tens_minus + 1  # Lemma 1, (C1)
-        singlets = extra_components - 10 * (tens_plus + tens_minus)
-        if singlets < 0 or (singlets + 26) % 2:
-            continue
-        minus = (singlets + 26) // 2  # Lemma 1, (C2)
-        plus = singlets - minus
-        if plus < 0:
-            continue
+    for n16p, n16m, n10p, n10m, plus, minus in structures:
         for neg in _multisets(minus, values):
             for pos in _multisets(plus, values):
                 examined += 1
-                fields = [PARENT] + [(1, "10", 0)] * tens_plus + [(-1, "10", 0)] * tens_minus
+                fields = ([PARENT] + [(1, "16", 0)] * n16p + [(-1, "16", 0)] * n16m
+                          + [(1, "10", 0)] * n10p + [(-1, "10", 0)] * n10m)
                 for q, k in zip(values, neg):
                     fields += [(-1, "1", q)] * k
                 for q, k in zip(values, pos):
@@ -341,12 +377,14 @@ def completion_search(q_max, extra_components=36):
                 status = factorization_status(anomaly_coefficients(fields))
                 if status["status"] == "factorizable":
                     solutions.append({
-                        "tens_plus": tens_plus, "tens_minus": tens_minus,
+                        "spinors_plus": n16p, "spinors_minus": n16m,
+                        "tens_plus": n10p, "tens_minus": n10m,
                         "negative_singlet_charge_counts": {str(q): k for q, k in zip(values, neg) if k},
                         "positive_singlet_charge_counts": {str(q): k for q, k in zip(values, pos) if k},
                         "factors": status["factors"], "fields": [list(f) for f in fields],
                     })
-    return {"q_max": q_max, "extra_components": extra_components, "examined": examined,
+    return {"q_max": q_max, "extra_components": extra_components,
+            "allow_neutral_spinors": allow_neutral_spinors, "examined": examined,
             "solutions": solutions}
 
 
@@ -376,29 +414,49 @@ def completion_report(fields, flux=3):
 
 
 def minimal_completion():
+    """Theorem 3: the unique 16-component completion in class C."""
+    return [PARENT, (-1, "16", 0)]
+
+
+def restricted_minimal_completion():
+    """Theorem 4: the unique 36-component completion in class C0 with |Q|<=1."""
     return [PARENT, (1, "10", 0)] + [(-1, "1", 1)] * 16 + [(-1, "1", 0)] * 10
+
+
+def _strip_fields(search):
+    for solution in search["solutions"]:
+        fields = [tuple(f) for f in solution["fields"]]
+        ledger = four_d_ledger(zero_modes(fields, 3))
+        solution["massless_singlets_at_m3"] = sum(
+            m["multiplicity"] for m in zero_modes(fields, 3) if m["representation"] == "1")
+        solution["four_d_abelian_anomaly_free"] = ledger["u1_cubic"] == 0 and ledger["gravity_u1"] == 0
+        del solution["fields"]
+    return search
 
 
 def demonstration_report():
     parent_only = completion_report([PARENT])
     minimal = completion_report(minimal_completion())
-    searches = [completion_search(q) for q in (1, 2, 3)]
-    for search in searches:
-        for solution in search["solutions"]:
-            fields = [tuple(f) for f in solution["fields"]]
-            modes = zero_modes(fields, 3)
-            ledger = four_d_ledger(modes)
-            solution["four_d_abelian_anomaly_free"] = ledger["u1_cubic"] == 0 and ledger["gravity_u1"] == 0
-            del solution["fields"]
+    restricted = completion_report(restricted_minimal_completion())
+    budgets = []
+    for budget in range(0, 19):
+        search = completion_search(4, budget, True)
+        budgets.append({"extra_components": budget, "examined": search["examined"],
+                        "solutions": len(search["solutions"])})
+    extended = [_strip_fields(completion_search(4, budget, True)) for budget in (16, 17, 18)]
+    restricted_searches = [_strip_fields(completion_search(q, 36, False)) for q in (1, 2, 3)]
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "model_id": MODEL_ID,
         "status": "local_anomaly_completion_demonstrator",
         "empirical_validation": False,
         "derived_from_bpr": False,
         "parent_only": {key: parent_only[key] for key in ("I8", "status", "zero_modes", "four_d_ledger")},
         "minimal_completion": minimal,
-        "searches": searches,
+        "restricted_class_minimal_completion": restricted,
+        "class_C_budget_scan_q_max_4": budgets,
+        "class_C_solutions_q_max_4": extended,
+        "class_C0_searches_budget_36": restricted_searches,
         "standard_model_z16_controls": {
             "3_generations_0_nu": standard_model_z16(3, 0),
             "3_generations_3_nu": standard_model_z16(3, 3),

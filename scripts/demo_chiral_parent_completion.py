@@ -24,22 +24,28 @@ def main(argv=None):
         return 0
     print("Six-dimensional chiral parent: minimal local-anomaly completion")
     print("Parent alone: {} ({})".format(report["parent_only"]["I8"], report["parent_only"]["status"]))
-    minimal = report["minimal_completion"]
-    print("Minimal completion I8 = {}".format(minimal["I8_factored_sympy"]))
-    print("  status: {}; pushforward (m=3): {}".format(minimal["status"], minimal["pushforward"]))
-    for mode in minimal["zero_modes"]:
-        print("  4D zero modes: {} x ({}, X={})".format(
-            mode["multiplicity"], mode["representation"], mode["charge"]))
-    ledger = minimal["four_d_ledger"]
-    print("  4D ledger: Spin10^3={} Spin10^2 X={} X^3={} grav X={} doublets={} Z16(Spin10-charged)={}".format(
-        ledger["spin10_cubic"], ledger["spin10_squared_u1"]["numerator"], ledger["u1_cubic"],
-        ledger["gravity_u1"], ledger["su2_doublets"], ledger["z16_spin10_charged_count_mod16"]))
-    print("Exhaustive minimal-class searches (36 added Weyl components):")
-    for search in report["searches"]:
+    for label, key in (("Minimal completion (class C, 16 added components)", "minimal_completion"),
+                       ("Narrower class C0 minimum (36 added components)", "restricted_class_minimal_completion")):
+        case = report[key]
+        print("{}: I8 = {}".format(label, case["I8_factored_sympy"]))
+        print("  status: {}; pushforward (m=3): {}".format(case["status"], case["pushforward"]))
+        for mode in case["zero_modes"]:
+            print("  4D zero modes: {} x ({}, F-charge={})".format(
+                mode["multiplicity"], mode["representation"], mode["charge"]))
+        ledger = case["four_d_ledger"]
+        print("  4D ledger: Spin10^3={} Spin10^2F (I6 coeff)={} F^3={} grav F={} doublets={} Z16 odd-center count={}".format(
+            ledger["spin10_cubic"], ledger["spin10_squared_u1_I6_coefficient"]["numerator"],
+            ledger["u1_cubic"], ledger["gravity_u1"], ledger["su2_doublets"],
+            ledger["z16_odd_center_count_mod16"]))
+    print("Class C budget scan (|Q|<=4): components -> factorizable solutions")
+    print("  " + ", ".join("{}:{}".format(row["extra_components"], row["solutions"])
+                          for row in report["class_C_budget_scan_q_max_4"] if row["solutions"]))
+    print("Class C0 searches at 36 added components:")
+    for search in report["class_C0_searches_budget_36"]:
         print("  |Q|<={}: {} candidates, {} factorizable".format(
             search["q_max"], search["examined"], len(search["solutions"])))
         for solution in search["solutions"]:
-            print("    negative singlets by |Q|: {} abelian-anomaly-free in 4D: {}".format(
+            print("    negative singlets by |Q|: {} abelian-anomaly-free massless sector: {}".format(
                 solution["negative_singlet_charge_counts"], solution["four_d_abelian_anomaly_free"]))
     print("Standard Model Z16 controls (15 Weyl per generation + n_nu):")
     for key, value in report["standard_model_z16_controls"].items():

@@ -59,18 +59,24 @@ controlled approximations. Its limits are just as concrete:
 ## 3. New link B: an anomaly-consistent matter target
 
 [`chiral_parent_completion_2026-09-25.md`](chiral_parent_completion_2026-09-25.md)
-shows that the parent needs at least 36 added Weyl components. Among the
-minimal completions, exactly one has vanishing four-dimensional abelian
-anomalies:
+shows that the smallest local completion is one added opposite-chirality
+Spin(10) spinor with zero U(1)_F charge. It is the unique 16-component
+completion, and nothing smaller works:
 
-    16₊(Q=1) ⊕ 10₊ ⊕ 16×1₋(|Q|=1) ⊕ 10×1₋,    I8 = (1/8) S2 (S2 + 8X² − p1),
+    16₊(Q=1) ⊕ 16₋(Q=0),    I8 = (1/3) X² (3S2 + 2X² − p1),
 
-cancelled by one Green–Schwarz 2-form. At flux 3 it gives three chiral 16's.
-These pass the Spin(10)³, Witten SU(2) and Z16 (Spin(10)-charged) checks. Only
-a factorized Spin(10)²–U(1)_X anomaly remains for the descended axion.
+which one Green–Schwarz 2-form cancels. At flux 3 the massless four-dimensional
+content is exactly three chiral 16's. These pass the Spin(10)³, Witten SU(2)
+and Z16 checks. The remaining U(1)_F anomalies are all proportional to X4 and
+are cancelled by the descended axion, which makes U(1)_F massive.
 
-The added fields are inputs. Three problems remain: 48 massless sterile
-singlets, flux 3 is chosen, and no substrate realization exists.
+An independent review caught that the first version had excluded neutral
+spinors without justification and so reported a larger 36-component
+completion. That result is kept as a narrower-class classification.
+
+Open problems: the added spinor and 2-form are inputs, Ω7 bordism and 2-form
+quantization are unchecked, flux 3 is chosen, and no substrate realization
+exists.
 
 ## 4. The dependency graph
 
@@ -101,7 +107,7 @@ graph TD
   gauss --> egauge[emergent gauge field]:::open
   cubic --> egauge
   pathb[dihedral gauge proposal]:::stip --> glue[glueball benchmark: withdrawn]:::obst
-  parent[6D Spin10 parent]:::obst --> comp[minimal anomaly completion]:::exact
+  parent[6D Spin10 parent]:::obst --> comp[minimal anomaly completion: + neutral 16]:::exact
   comp --> ngen[n_gen = 3 input]:::stip
   comp --> latchi[lattice chiral fermions]:::open
   cubic --> latchi
@@ -149,7 +155,8 @@ concrete first calculation; none is authorized as physics by this map alone.
    stability of its Coulomb phase. This changes the substrate's degrees of
    freedom and requires explicit approval as a new model.
 3. **Chiral matter on the substrate (matter).** The completion supplies
-   3×(16 Weyl) per the Z16 count. Any lattice realization must evade
+   three chiral 16's, 16 Weyl fermions per generation, with Z16 count zero.
+   Any lattice realization must evade
    Nielsen–Ninomiya doubling. Possible routes are domain walls, or gapping a
    mirror sector by symmetric mass generation, for which sixteen Weyl fermions
    per generation is the content usually required. First calculation: the
