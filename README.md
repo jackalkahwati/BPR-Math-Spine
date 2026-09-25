@@ -74,6 +74,18 @@
 >
 > **FOUNDATION PREREQUISITES (2026-09-13):** [current campaign and verification state](doc/derivations/foundation_prerequisites_2026-09-13.md). Independently reviewed results restrict exact short-interval conserved operators and bounded local encodings of higher-dimensional graphs into the ring; neither is a universal emergence no-go. The [common-foundation decision](doc/derivations/foundation_decision_2026-09-13.md) stops unsupported construction, while the [observation gate](doc/derivations/foundation_observation_gate_2026-09-13.md) finds no distinguishing prediction for the specified conventional/BPR response pair. Verification is ongoing; no revised starting physics or empirical validation is claimed.
 >
+> **UNIFICATION MAP (2026-09-25):** [whole-repository dependency map](doc/derivations/unification_map_2026-09-25.md) with a [machine-readable graph](doc/derivations/unification_map_2026-09-25.json). The repository has four largely separate islands: bosonic substrates, a supplied 2D gauge proposal, a supplied 6D chiral parent and a supplied R+R² gravity action. Flavor formulas sit on top as phenomenology. The map records which links are proved, conditional, supplied, obstructed or open, and ranks the smallest well-posed problems that would connect them. It also records the legacy debt found in the review. **Everything does not yet tie together; no TOE completion is claimed.**
+>
+> **CUBIC CONDENSATE REGIME (2026-09-25):** [vacuum, Bogoliubov phonons and acoustic cones](doc/derivations/cubic_condensate_regime_2026-09-25.md) for the unchanged cubic lattice (g>=0). Results:
+> - an exact Perron–Frobenius sector vacuum, unique and invariant under all graph automorphisms;
+> - a self-contained mean-field theorem at fixed lattice size giving complete condensation and the Bogoliubov spectrum;
+> - exact bounds |e/(c_s|q|)-1| <= max(a²/12, ξ²)|q|² on the phonon's departure from a Lorentz-invariant cone;
+> - lattice stability criteria for uniform flows, whose long-wave cone is a Lorentzian acoustic metric exactly when the flow is dynamically stable.
+>
+> These results are kinematic and cover one scalar species. There is no thermodynamic limit, metric dynamics, photon or fermion.
+>
+> **CHIRAL PARENT COMPLETION (2026-09-25):** [minimal local-anomaly completion](doc/derivations/chiral_parent_completion_2026-09-25.md) of the excluded 6D Spin(10) parent. At least 36 added Weyl components are needed. Among minimal completions, exactly one has vanishing 4D abelian anomalies: I8=(1/8)S2(S2+8X²-p1), cancelled by one Green–Schwarz 2-form. At flux 3 it gives three chiral 16's that pass Spin(10)³, Witten and Z16 checks. The added fields are inputs; 48 sterile singlets remain; n_gen=3 is still chosen.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
