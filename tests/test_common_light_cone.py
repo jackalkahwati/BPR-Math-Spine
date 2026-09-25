@@ -1,7 +1,8 @@
 """Checks for doc/derivations/common_light_cone_2026-09-25.md (Bogoliubov level).
 
-The oracle builds the full two-species BdG matrix on the n^3 lattice in the
-site basis and diagonalizes it, independently of the module's 4x4 blocks.
+Two oracles: a site-basis BdG matrix (checks the Fourier block reduction), and
+a finite-difference Jacobian of the two-species lattice Gross-Pitaevskii
+equations at unequal densities (checks the linearization and G itself).
 """
 
 import itertools
@@ -28,7 +29,8 @@ def _site_bdg(n, C_pair, G):
             A[index[tuple(t)], index[s]] += 1
     blocks = []
     for i in range(2):
-        # h - mu_i + 2 G_ii with h = -C A and the Hartree chemical potential -6C + G_ii + G_ij.
+        # h - mu_i + (Hartree terms): with mu_i = -6C_i + sum_j G_ij-type shifts, the
+        # inter-species Hartree shift cancels, leaving -C_i A + 6C_i + G_ii on the diagonal.
         blocks.append(-C_pair[i] * A + 6 * C_pair[i] * np.eye(M))
     G = np.asarray(G, dtype=float)
     D = np.block([[blocks[0] + G[0, 0] * np.eye(M), G[0, 1] * np.eye(M)],
@@ -119,3 +121,92 @@ def test_input_validation():
         c.speed_matrix([1.0, -1.0], [[1, 0], [0, 1]])
     with pytest.raises(ValueError):
         c.speed_matrix([1.0, 1.0], [[1, 0.1], [0.2, 1]])
+
+
+def _gp_jacobian_frequencies(n, C_pair, g, nu, h=1e-6):
+    """Frequencies from a finite-difference Jacobian of the two-species lattice GP flow."""
+    sites = list(itertools.product(range(n), repeat=3))
+    index = {s_: i for i, s_ in enumerate(sites)}
+    M = len(sites)
+    A = np.zeros((M, M))
+    for s_ in sites:
+        for axis in range(3):
+            t = list(s_)
+            t[axis] = (t[axis] + 1) % n
+            A[index[s_], index[tuple(t)]] += 1
+            A[index[tuple(t)], index[s_]] += 1
+    g = np.asarray(g, dtype=float)
+    mu = [-6 * C_pair[i] + sum(g[i, j] * nu[j] for j in range(2)) for i in range(2)]
+
+    def flow(x):
+        psi = [x[0:M] + 1j * x[M:2 * M], x[2 * M:3 * M] + 1j * x[3 * M:4 * M]]
+        dens = [np.abs(p) ** 2 for p in psi]
+        out = []
+        for i in range(2):
+            F = -C_pair[i] * A @ psi[i] - mu[i] * psi[i] + sum(g[i, j] * dens[j] for j in range(2)) * psi[i]
+            d = -1j * F
+            out.extend([d.real, d.imag])
+        return np.concatenate(out)
+
+    x0 = np.concatenate([np.full(M, np.sqrt(nu[0])), np.zeros(M), np.full(M, np.sqrt(nu[1])), np.zeros(M)])
+    J = np.zeros((4 * M, 4 * M))
+    for k in range(4 * M):
+        e = np.zeros(4 * M)
+        e[k] = h
+        J[:, k] = (flow(x0 + e) - flow(x0 - e)) / (2 * h)
+    return np.sort(np.abs(np.linalg.eigvals(J).imag))
+
+
+@pytest.mark.parametrize("C_pair,g,nu", [((1.0, 1.7), [[1.0, 0.4], [0.4, 0.6]], (0.4, 2.3)),
+                                         ((0.8, 0.8), [[0.5, 0.3], [0.3, 2.0]], (1.5, 0.2))])
+def test_gp_jacobian_confirms_symmetric_hartree_matrix(C_pair, g, nu):
+    n = 3
+    G = c.hartree_matrix(g, nu)
+    expected = [0.0] * 4
+    for m in itertools.product(range(n), repeat=3):
+        if any(m):
+            k = [2 * math.pi * x / n for x in m]
+            for f in c.formula_frequencies(k, C_pair, G):
+                expected.extend([f, f])
+    numeric = _gp_jacobian_frequencies(n, C_pair, g, nu)
+    assert np.max(np.abs(np.sort(expected) - numeric)) < 1e-4
+    # The asymmetric "physical potential" form g_ij nu_j in both slots is wrong at unequal densities.
+    wrong = np.array([[g[0][0] * nu[0], g[0][1] * nu[1]], [g[0][1] * nu[1], g[1][1] * nu[1]]])
+    k = [2 * math.pi / n, 0.0, 0.0]
+    assert np.max(np.abs(np.array(c.formula_frequencies(k, C_pair, wrong))
+                         - np.array(c.formula_frequencies(k, C_pair, G)))) > 1e-3
+
+
+def test_tuned_manifold_gives_common_cone():
+    rng = np.random.default_rng(11)
+    for _ in range(50):
+        kappa = rng.uniform(0.5, 2.0, size=2)
+        mu_a = rng.uniform(0.1, 2.0)
+        G = [[mu_a, 0.0], [0.0, kappa[0] * mu_a / kappa[1]]]
+        assert c.common_cone(list(kappa), G)
+        coupled = [[G[0][0], 1e-3], [1e-3, G[1][1]]]
+        assert not c.common_cone(list(kappa), coupled)
+
+
+def test_unstable_or_degenerate_mixtures_never_report_a_common_cone():
+    assert not c.common_cone([1.0, 1.0], [[-1.0, 0.0], [0.0, -1.0]])
+    assert not c.common_cone([1.0, 1.0], [[0.0, 0.0], [0.0, 0.0]])
+    assert c.phonon_speeds([1.0, 1.0], [[1.0, 1.4], [1.4, 1.0]]) is None
+    assert c.z2_point(1.0, 1.0, 1.2) is None
+
+
+def test_finite_lattice_can_hide_long_wave_immiscibility():
+    G = [[1.0, 1.05], [1.05, 1.0]]
+    assert not c.miscible(G)
+    # Equal hopping: instability needs eps_* = 4 sin^2(pi/n) < 2|m_-| = 0.1.
+    assert 4 * math.sin(math.pi / 16) ** 2 > 0.1 > 4 * math.sin(math.pi / 20) ** 2
+    assert c.lattice_scan(16, (1.0, 1.0), G)["unstable_modes"] == 0
+    assert c.lattice_scan(20, (1.0, 1.0), G)["unstable_modes"] > 0
+
+
+def test_su2_rank_one_at_unequal_densities():
+    G = c.hartree_matrix([[1.0, 1.0], [1.0, 1.0]], (0.3, 1.7))
+    assert abs(np.linalg.det(G)) < 1e-12
+    k = [1e-3, 0.0, 0.0]
+    freqs = c.bdg_frequencies(k, (1.0, 1.0), G)
+    assert freqs[0] == pytest.approx(c.dispersion(k, 1.0), rel=1e-9)

@@ -3,7 +3,9 @@
 See doc/derivations/common_light_cone_2026-09-25.md. Two boson species on the
 supplied cubic lattice (a proposed extension) condense uniformly; their
 phonon speeds are the square roots of the eigenvalues of 2 D^(1/2) G D^(1/2),
-D = diag(kappa_i), G_ij = mu_ij. This module checks that formula against
+D = diag(kappa_i), with the symmetric Hartree matrix
+G = N^(1/2) g N^(1/2), i.e. G_ij = g_ij sqrt(nu_i nu_j) (see hartree_matrix).
+This module checks that formula against
 exact Bogoliubov-de Gennes blocks and records which symmetries do or do not
 force a single cone. It is Bogoliubov-level mathematics, not a
 thermodynamic-limit theorem or empirical validation.
@@ -21,6 +23,7 @@ LIMITATIONS = [
     "The second boson species is a proposed extension of the supplied cubic lattice.",
     "Results are at Bogoliubov (Hartree plus quadratic fluctuation) level.",
     "Radiative Lorentz-violation transmission is cited from the literature, not derived here.",
+    "This is a fine-tuning (naturalness) obstruction, not a no-go: tuned common cones exist.",
     "No mechanism forcing a universal limiting speed across species is supplied.",
 ]
 
@@ -52,6 +55,16 @@ def _matrix(G):
     return G
 
 
+def hartree_matrix(g, nu):
+    """Symmetric G_ij = g_ij sqrt(nu_i nu_j) from couplings g and densities nu."""
+    g = _matrix(g)
+    nu = np.asarray(nu, dtype=float)
+    if nu.shape != (2,) or np.any(nu <= 0):
+        raise ValueError("densities must be two positive numbers")
+    root = np.diag(np.sqrt(nu))
+    return root @ g @ root
+
+
 def miscible(G):
     """Uniform mixture is the Hartree minimizer (by convexity) when G is positive semidefinite."""
     G = _matrix(G)
@@ -68,14 +81,21 @@ def speed_matrix(kappa, G):
 
 
 def phonon_speeds(kappa, G):
-    values = np.linalg.eigvalsh(speed_matrix(kappa, G))
-    return [float(np.sqrt(v)) if v > 0 else 0.0 for v in values]
+    """Long-wave speeds; 0.0 marks a quadratic (non-acoustic) branch, None an unstable mixture."""
+    S = speed_matrix(kappa, G)
+    values = np.linalg.eigvalsh(S)
+    scale = max(1.0, float(np.max(np.abs(S))))
+    if values[0] < -TOLERANCE * scale:
+        return None
+    return [float(np.sqrt(v)) if v > TOLERANCE * scale else 0.0 for v in values]
 
 
 def common_cone(kappa, G):
-    """True iff both speeds coincide, i.e. S is a multiple of the identity."""
+    """True iff the mixture is stable and both speeds coincide and are nonzero (S = c^2 I, c > 0)."""
     S = speed_matrix(kappa, G)
     scale = max(1.0, float(np.max(np.abs(S))))
+    if not miscible(G) or np.linalg.eigvalsh(S)[0] <= TOLERANCE * scale:
+        return False
     return bool(abs(S[0, 1]) < TOLERANCE * scale and abs(S[0, 0] - S[1, 1]) < TOLERANCE * scale)
 
 
@@ -126,17 +146,22 @@ def lattice_scan(n, C_pair, G):
         k = [2 * pi * x / n for x in m]
         exact = bdg_frequencies(k, C_pair, G)
         formula = formula_frequencies(k, C_pair, G)
-        if exact is None or formula is None:
+        if (exact is None) != (formula is None):
+            raise ArithmeticError("exact and formula stability disagree")
+        if exact is None:
             unstable += 1
             continue
+        if len(exact) != len(formula):
+            raise ArithmeticError("frequency counts disagree")
         worst = max(worst, max(abs(a - b) for a, b in zip(exact, formula)))
     return {"n": n, "max_formula_error": worst, "unstable_modes": unstable}
 
 
 def z2_point(kappa, mu, mu_ab):
-    """Symmetric point: speeds sqrt(2 kappa (mu +- mu_ab)); split at first order in mu_ab."""
-    return sorted([sqrt(2 * kappa * (mu - mu_ab)) if mu >= mu_ab else 0.0,
-                   sqrt(2 * kappa * (mu + mu_ab))])
+    """Symmetric point: speeds sqrt(2 kappa (mu +- mu_ab)); None if the mixture is unstable."""
+    if mu < abs(mu_ab):
+        return None
+    return sorted([sqrt(2 * kappa * (mu - abs(mu_ab))), sqrt(2 * kappa * (mu + abs(mu_ab)))])
 
 
 def demonstration_report():
@@ -168,6 +193,11 @@ def demonstration_report():
         "z2_splitting_example": {"kappa": 1.0, "mu": 1.0, "mu_ab": 0.1,
                                  "speeds": z2_point(1.0, 1.0, 0.1)},
         "collider_speed_difference_bound_order": 1e-11,
+        "finite_lattice_immiscible_example": {
+            "G": [[1.0, 1.05], [1.05, 1.0]],
+            "unstable_modes_n16": lattice_scan(16, (1.0, 1.0), [[1.0, 1.05], [1.05, 1.0]])["unstable_modes"],
+            "unstable_modes_n20": lattice_scan(20, (1.0, 1.0), [[1.0, 1.05], [1.05, 1.0]])["unstable_modes"],
+        },
         "limitations": list(LIMITATIONS),
     }
     _finite(report)
