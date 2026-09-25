@@ -5,9 +5,9 @@ would need and what the repository actually supplies for each link. The
 machine-readable version is [`unification_map_2026-09-25.json`](unification_map_2026-09-25.json),
 and `tests/test_unification_map.py` checks its integrity. It is a dependency
 map, not a completion score. **BPR is not a completed theory of everything, and
-this review does not make it one.** It records two new links (sections 2–3) and
-names the smallest well-posed problems that stand between the current state and
-a connected theory (section 5).
+this review does not make it one.** It records the new links from two rounds of
+work (sections 2–3 and 3b) and names the smallest well-posed problems that stand
+between the current state and a connected theory (section 5).
 
 ## 1. The honest one-paragraph answer
 
@@ -30,6 +30,12 @@ conventional Bose physics. This session adds:
 - an anomaly-consistent completion of the matter parent.
 
 Neither bridge crosses between islands.
+
+A second round (section 3b) builds the first bridge from a bosonic substrate
+to a gauge field: an emergent compact U(1), via a proposed link-boson
+amendment. It then shows that emergent fields from this class of substrate
+generically do not share one light cone. That is now the program's sharpest
+obstruction.
 
 ## 2. New link A: substrate → vacuum → acoustic spacetime
 
@@ -78,6 +84,41 @@ Open problems: the added spinor and 2-form are inputs, Ω7 bordism and 2-form
 quantization are unchecked, flux 3 is chosen, and no substrate realization
 exists.
 
+## 3b. Second round: an emergent gauge field, and the light-cone obstruction
+
+**Emergent U(1).**
+[`emergent_gauge_link_bosons_2026-09-25.md`](emergent_gauge_link_bosons_2026-09-25.md)
+adds a proposed amendment: hard-core bosons on lattice links, with an energy
+cost U per unit squared deviation of each vertex charge. Equivalently, these
+are ordinary nearest-neighbour-repulsive bosons on the line graph. Results:
+- exact second- and third-order effective theories: a compact U(1) quantum link
+  model with emergent Gauss law, with K=2t²/U on plaquettes, δK and hexagon
+  terms at order t³/U², and constant diagonal terms;
+- checks against exact diagonalization on four clusters, and against an
+  independent dense oracle;
+- on the diamond lattice this is exactly the pyrochlore hard-core boson model.
+  Quantum Monte Carlo in the literature reports its Coulomb phase with an
+  emergent photon at large U/t;
+- on the cubic lattice the photon phase is undetermined.
+
+The route is U(1) only, the charges are bosonic, and the photon relies on
+published numerics.
+
+**Light-cone obstruction.**
+[`common_light_cone_2026-09-25.md`](common_light_cone_2026-09-25.md) shows:
+- two interacting condensate species share one cone only under a
+  codimension-two tuning that no symmetry protects; SU(2) symmetry even turns
+  one branch quadratic;
+- the photon and the condensate phonon live in different phases of the same
+  bosons;
+- literature radiative arguments (Collins et al. 2004) mean tree-level tuning
+  would not survive loops.
+
+Emergent Lorentz invariance for many fields from a preferred-frame lattice
+therefore needs a new principle. Candidates are one relativistic fixed point
+for all fields, or a symmetry forbidding dimension-4 Lorentz violation. The
+alternative is to give up deriving spacetime from the substrate.
+
 ## 4. The dependency graph
 
 ```mermaid
@@ -100,12 +141,14 @@ graph TD
   cubic --> lit[literal particle relativity]:::obst
   bec --> window[acoustic Lorentz window]:::ctrl
   window --> metric[acoustic metric, stability = signature]:::ctrl
-  metric --> speed[common cone for all species]:::open
+  metric --> speed[common cone for all species: obstructed in class]:::obst
   metric --> gdyn[metric dynamics / graviton]:::open
   grav[R+R^2 action]:::stip --> gdyn
   grav --> G[G, Planck length]:::stip
-  gauss --> egauge[emergent gauge field]:::open
-  cubic --> egauge
+  link[link-boson amendment]:::stip --> egauge[emergent U(1): conditional]:::ctrl
+  gauss --> egauge
+  egauge --> nonab[non-Abelian SU3 x SU2]:::open
+  egauge --> speed
   pathb[dihedral gauge proposal]:::stip --> glue[glueball benchmark: withdrawn]:::obst
   parent[6D Spin10 parent]:::obst --> comp[minimal anomaly completion: + neutral 16]:::exact
   comp --> ngen[n_gen = 3 input]:::stip
@@ -125,7 +168,9 @@ limitations for every node.
 These are ordered by how many open nodes each would unblock. Each has a
 concrete first calculation; none is authorized as physics by this map alone.
 
-1. **Common limiting speed (spacetime).** Add a second boson species to the
+1. **Common limiting speed (spacetime), analysed in round 2.** The analysis in
+   [common_light_cone_2026-09-25.md](common_light_cone_2026-09-25.md) confirms
+   and extends the reasoning below. Add a second boson species to the
    cubic lattice: a two-component Bose–Hubbard model with g11, g22, g12. At
    Bogoliubov level, with equal hopping, there are two phonon branches with
    c_i²=2κλ_i(G), where G=[[g11ν1, g12√(ν1ν2)],[g12√(ν1ν2), g22ν2]]. This is
@@ -146,7 +191,9 @@ concrete first calculation; none is authorized as physics by this map alone.
    renormalization-group flow in a gauge theory. If no such mechanism exists
    for a substrate, that substrate cannot underlie relativistic multi-field
    physics.
-2. **Emergent gauge field (gauge).** The ring theorem excludes exact bounded
+2. **Emergent gauge field (gauge), built in round 2 for U(1).** See
+   [emergent_gauge_link_bosons_2026-09-25.md](emergent_gauge_link_bosons_2026-09-25.md).
+   Still open: the cubic-lattice photon phase and any non-Abelian group. The ring theorem excludes exact bounded
    short-interval Gauss operators on unrestricted Fock space. The known escape
    is energetic: bosons on links with a large vertex-charging term, whose
    low-energy sector is a compact U(1) lattice gauge theory with a photon (the
@@ -228,9 +275,13 @@ low-energy limit contains, from the same degrees of freedom:
 
 It must also yield at least one prediction that differs from conventional
 physics and survives a preregistered test. Today:
-- the first and fourth are open;
+- the first is obstructed within the current substrate class;
+- the fourth is open;
 - the third has a consistent target but no substrate realization;
-- the second has no route beyond a supplied 2D proposal;
+- the second has a conditional substrate route for U(1) only;
 - the prediction requirement is unmet.
 
-The critical path in section 5 is the most direct honest route.
+The critical path in section 5 is the most direct honest route. Its first
+item is now a decision point, not a calculation. Either find a principle that
+gives every emergent field the same light cone, or stop deriving spacetime
+from a preferred-frame lattice.

@@ -91,6 +91,18 @@
 >
 > Caveats: the added spinor and 2-form are inputs; Ω7 bordism and 2-form quantization are not checked; n_gen=3 is still chosen. An independent review caught the first version's narrower 36-component result, which is kept as a secondary classification.
 >
+> **EMERGENT U(1) GAUGE FIELD (2026-09-25, proposed amendment):** [link bosons with a vertex charging term](doc/derivations/emergent_gauge_link_bosons_2026-09-25.md).
+> - The low-energy theory, exact to third order in t/U, is a compact U(1) quantum link model with an emergent Gauss law. It is checked against exact diagonalization and an independent dense oracle.
+> - On the diamond lattice this is the pyrochlore hard-core boson model, whose Coulomb (photon) phase at large U/t is reported by quantum Monte Carlo in the literature. On the cubic lattice the photon phase is undetermined.
+> - U(1) only; charges are bosonic; the amendment is a new input.
+>
+> **COMMON LIGHT CONE (2026-09-25):** [Bogoliubov-level criteria and the resulting obstruction](doc/derivations/common_light_cone_2026-09-25.md).
+> - Two interacting condensate species share one light cone only under a codimension-two tuning that no symmetry protects.
+> - The photon and the condensate phonon live in different phases.
+> - Literature radiative arguments say tuning would not survive loops.
+>
+> This is the program's sharpest structural obstruction: emergent Lorentz invariance for many fields needs a new principle.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap
