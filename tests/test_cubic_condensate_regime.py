@@ -144,11 +144,46 @@ def test_two_particle_ground_matches_first_quantized_oracle():
         assert c.sector_vacuum_report(3, 2, g)["ground_energy"] == pytest.approx(oracle, abs=1e-10)
 
 
-def test_vacuum_on_hypercube_lattice_uses_all_automorphisms():
+def test_vacuum_on_hypercube_lattice_is_simple_and_positive():
     # n=4 gives the 6-cube; the positive ground vector must still be unique.
     report = c.sector_vacuum_report(4, 1, 0)
     assert report["first_gap"] > 0.1
     assert report["min_component"] > 0
+
+
+def test_vacuum_invariant_under_non_product_hypercube_automorphism():
+    """C_4^3 is the 6-cube via a Gray code; swap bits across two coordinates."""
+    gray = {0: (0, 0), 1: (0, 1), 2: (1, 1), 3: (1, 0)}
+    inverse = {bits: i for i, bits in gray.items()}
+
+    def automorphism(site):
+        bits = [list(gray[x]) for x in site]
+        bits[0][1], bits[1][1] = bits[1][1], bits[0][1]
+        return tuple(inverse[tuple(b)] for b in bits)
+
+    sites = _sites(4)
+    index = {s: i for i, s in enumerate(sites)}
+    site_map = [index[automorphism(s)] for s in sites]
+    edges = {frozenset(e) for e in _neighbors(4)}
+    assert {frozenset((site_map[i], site_map[j])) for i, j in edges} == edges
+    # Not a product of per-coordinate cycle automorphisms.
+    assert automorphism((1, 0, 0))[0] != automorphism((1, 2, 0))[0]
+    import scipy.sparse.linalg as sla
+    basis, H = c.position_sector(4, 2, 3.0)
+    w, v = sla.eigsh(H, k=2, which="SA", tol=1e-13)
+    order = np.argsort(w)
+    ground = v[:, order[0]]
+    ground = ground if ground.sum() > 0 else -ground
+    assert w[order[1]] - w[order[0]] > 1e-6
+    assert ground.min() > 0
+    rows = {state: i for i, state in enumerate(basis)}
+    image = np.empty_like(ground)
+    for i, state in enumerate(basis):
+        moved = [0] * len(state)
+        for x, count in enumerate(state):
+            moved[site_map[x]] = count
+        image[rows[tuple(moved)]] = ground[i]
+    assert np.max(np.abs(image - ground)) < 1e-9
 
 
 def test_position_basis_rejects_oversized_sector():

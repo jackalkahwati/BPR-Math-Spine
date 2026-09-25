@@ -25,13 +25,18 @@ contact scattering is trivial in the continuum limit
 ([two-body scattering, eq. 11](cubic_two_body_scattering_2026-09-13.md)), so
 nothing here is a statement about that limit.
 
-What is new: (1) an exact vacuum-selection theorem inside every fixed-number
-sector; (2) a self-contained proof of complete condensation and of the
-Bogoliubov excitation spectrum in the mean-field regime at fixed lattice size;
-(3) exact inequalities for the window where the resulting phonon is
-Lorentz-invariant; (4) exact lattice stability criteria for current-carrying
-condensates, and the identification of their long-wave cone with a Lorentzian
-acoustic metric whose signature and ergoregion match those criteria. These
+What is new:
+1. An exact vacuum-selection theorem inside every fixed-number sector.
+2. A proof, with explicit constants, of complete condensation in the
+   mean-field regime at fixed lattice size.
+3. A proof sketch of convergence to the Bogoliubov excitation spectrum,
+   following the Lewin–Nam–Serfaty–Solovej localization method with
+   unoptimized constants.
+4. Exact inequalities bounding how far the resulting phonon departs from a
+   linear, isotropic (Lorentz-invariant) dispersion.
+5. Exact lattice stability criteria for current-carrying condensates, and the
+   identification of their long-wave cone with a Lorentzian acoustic metric
+   whose signature and ergoregion match those criteria. These
 results give the cubic line its first controlled interacting collective regime.
 They also show concretely what kinematic "emergent relativity" does and does
 not supply.
@@ -52,7 +57,8 @@ The one-body operator h=-CA has h φ_m=(ε_m-6C)φ_m, where
 
 The number of excitations is N_+=Σ_{m≠0} b_m†b_m. For the mean-field regime fix
 λ>=0 and set g=g_N=λ/(N-1) for N>=2, with μ:=λ/M. Then g_N N/M → μ, so μ is
-the mean-field interaction energy per particle.
+the Hartree potential shift g·ν. The mean-field interaction energy per particle
+is μ/2.
 
 ## 2. Exact sector vacuum (all N, all real g)
 
@@ -90,9 +96,11 @@ and T_j=-C Σ_x (a†_{x+e_j}a_x+h.c.). By inversion invariance of Ω_N,
 
     Σ_ν (E_ν-E_0) |<ν|ρ_q†|Ω_N>|² = Σ_j (1-cos q_j) <Ω_N,(-T_j)Ω_N>.      (F)
 
-The double commutator [ρ_q,[H,ρ_q†]] equals 2Σ_j (1-cos q_j)(-T_j): the
-interaction commutes with every n_x. Inversion equates the ρ_q and ρ_q†
-spectral sums, which produces the factor 1/2.
+Here q is a lattice momentum. The double commutator [ρ_q,[H,ρ_q†]] equals
+2Σ_j (1-cos q_j)(-T_j), because the interaction commutes with every n_x.
+Inversion equates the ρ_q and ρ_q† spectral sums, which produces the factor
+1/2. Reality of the Perron–Frobenius vector (time reversal) would serve
+equally well.
 
 ## 3. Hartree functional
 
@@ -124,7 +132,8 @@ nothing dropped, gives
 
 where:
 
-- Θ_N=sqrt((N-N_+)(N-N_+-1))/(N-1) is a function of N_+ in [0,1];
+- Θ_N=sqrt((N-N_+)(N-N_+-1))/(N-1) is a function of N_+ with
+  0<=Θ_N<=sqrt(N/(N-1))<=sqrt(2), and Θ_N<=1 for N_+>=1;
 - T_3=(μ/(N-1)) Σ'_{p,q} ( b_p†b_q† b_{p+q} sqrt(N-N_+) + h.c. ), with p, q
   and p+q all nonzero;
 - T_4=(g_N/2)Σ_x (c_x†)²c_x² >= 0, with c_x=Σ_{m≠0}φ_m(x)b_m.
@@ -146,12 +155,18 @@ Consequently every normalized vector with energy <= N e_H+E satisfies
 ket. So the interaction is at least (g_N/2)(N²/M-N)=Nμ/2-μN(M-1)/(2(N-1)),
 and N/(N-1)<=2. ∎
 
-By Theorem 1 the one-body density matrix of Ω_N commutes with translations, so
-it is diagonal in the φ_m. Its top eigenvector is φ_0, with eigenvalue <n_0>.
+By Theorem 1 the one-body density matrix γ(x,y)=<Ω_N,a_x†a_yΩ_N> commutes
+with translations, so it is diagonal in the φ_m, with eigenvalues <n_m>. It is
+also entrywise positive. Each a_x†a_y maps the positive vector Ω_N to a nonzero
+nonnegative vector, and Theorem 1(iv) applies. Hence for m≠0
+
+    <n_m>=Σ_x γ(0,x)e^{ik_m·x} < Σ_x γ(0,x) = <n_0>,
+
+so the top eigenvector is φ_0, with eigenvalue <n_0>.
 This is exact finite-volume Bose–Einstein condensation in the mean-field
 regime. It is not a thermodynamic phase transition.
 
-**Theorem 4 (Bogoliubov spectrum at fixed lattice size).** Let
+**Theorem 4 (Bogoliubov spectrum at fixed lattice size; proof sketch).** Let
 
     H_B = Σ_{m≠0}(ε_m+μ) n_m + (μ/2) Σ_{m≠0}(b_m† b_{-m}† + b_{-m} b_m)
 
@@ -159,20 +174,24 @@ on the full excitation Fock space F_+. Put
 e_m=sqrt(ε_m(ε_m+2μ)) and E_B=-(1/2)Σ_{m≠0}(ε_m+μ-e_m). The spectrum of H_B
 is E_B+Σ_{m≠0} ν_m e_m over ν_m∈{0,1,2,...}. For n even, self-conjugate modes
 (2k_m≡0) use single-mode squeezing and obey the same formulas. Let
-β_1<=β_2<=... be these values with multiplicity, and E_1(N)<=E_2(N)<=... the
-eigenvalues of H_N. Then for every fixed j,
+β_0<=β_1<=... be these values with multiplicity, so β_0=E_B. Let
+E_0(N)<=E_1(N)<=... be the eigenvalues of H_N. Then for every fixed j>=0,
 
     lim_{N→∞} [E_j(N) - N e_H] = β_j,        at fixed n, C, λ.           (3)
 
 In particular E_0(N)-N e_H → E_B, and the excitation energies converge to the
-sums Σν_m e_m.
+sums Σν_m e_m. U_N, N_+ and the localization functions below commute with
+translations, so (3) holds within each total-momentum sector too. In that form
+the excitation energies are the sums Σν_m e_m with Σν_m k_m equal to the sector
+momentum.
 
 *Proof.* Constants K depend only on n, C, λ and j, and are not optimized.
 
 Step 1 bounds each term of (1) against H_B, for ψ∈F_+^{<=N}:
 - (a) Pairs: ±(b_m†b_{-m}†+h.c.) <= n_m+n_{-m}+1 for distinct partners, and
   2n_m+1 for self-conjugate modes.
-- (b) Pairing remainder: 0<=Θ_N<=1 and |Θ_N-1|<=(N_++1)/(N-1). Cauchy–Schwarz
+- (b) Pairing remainder: 0<=Θ_N<=sqrt(2) and
+  |Θ_N-1|<=max(N_+,1)/(N-1)<=(N_++1)/(N-1). Cauchy–Schwarz
   then gives |<P_N-P_∞>| <= μ sqrt(M) <(N_++1)²>/(N-1), where P_N and P_∞ are
   the pairing terms of 𝔾_N and H_B.
 - (c) Cubic term:
@@ -188,16 +207,16 @@ N_+ by at most two. So the IMS identity
 most K(1/L+L^{-1/2}N^{-1/2}). The pairing term has size of order L in the
 transition region, and the double commutator brings L^{-2}.
 
-Step 3 is the lower bound. On the range of f_L we have N_+<=L. Drop T_4>=0 and
-use (b)–(c) to get f𝔾f >= f(H_B-δ_{N,L})f with δ_{N,L}=K(L+1)²/sqrt(N). On the
-range of h_L, (2) gives h𝔾h >= (ε_*L/2-μ(M-1))h². Write Π for the projection of
-H_B onto its first j-1 eigenvectors. Then H_B >= β_j-(β_j-β_1)Π, and a rank
-argument gives
+Step 3 is the lower bound. On the range of f_L we have N_+<=L. Drop T_4>=0.
+Bound the diagonal term of (1) by -3μL²/(2(N-1)), and use (b)–(c). This gives
+f𝔾f >= f(H_B-δ_{N,L})f with δ_{N,L}=K(L+1)²/sqrt(N). On the range of h_L, (2)
+gives h𝔾h >= (ε_*L/2-μ(M-1))h². Write Π for the projection of H_B onto its
+first j eigenvectors. Then H_B >= β_j-(β_j-β_0)Π, and a rank argument gives
 
     E_j(N)-N e_H >= min(β_j-δ_{N,L}, ε_*L/2-μ(M-1)) - K(1/L+(LN)^{-1/2}).
 
 Step 4 is the upper bound. Bogoliubov eigenvectors are finite excitations of a
-quasi-free state, so they have all moments of N_+. Use f_LΦ_1,...,f_LΦ_j as
+quasi-free state, so they have all moments of N_+. Use f_LΦ_0,...,f_LΦ_j as
 trial states. Their Gram matrix is I+O(1/L); H_B satisfies the same IMS bound;
 (b)–(d) with T_4 included bound the energy difference by K(L+1)²/sqrt(N).
 Min–max gives the matching upper bound.
@@ -205,14 +224,16 @@ Min–max gives the matching upper bound.
 Choosing L=N^{1/6} makes every error O(N^{-1/6}) and the h-range threshold
 diverge. ∎
 
-This is the Lewin–Nam–Serfaty–Solovej / Seiringer (CMP 306, 2011) method with
-explicit finite-dimensional constants. It establishes neither the optimal rate
+This is the Lewin–Nam–Serfaty–Solovej / Seiringer (CMP 306, 2011) method,
+specialized to a finite-dimensional one-body space. The constants K are finite
+but not computed, and Steps 2–4 are a sketch. It establishes neither the optimal rate
 nor uniformity in n; the numerics below suggest the gap error is O(1/N). The
 limit is taken at fixed lattice size: it is not the thermodynamic limit and not
 the dilute Gross–Pitaevskii regime.
 
-**Residue at Bogoliubov level.** In H_B, ρ_q†Ω maps to
-sqrt(N)(u_q-v_q)|one phonon at q>, with (u_q-v_q)²=ε_q/e_q. The one-phonon
+**Residue at Bogoliubov level.** To leading order in N, ρ_q†Ω maps to
+sqrt(N)(u_q-v_q)|one phonon at q>, with (u_q-v_q)²=ε_q/e_q. The remaining part
+Σ_{k≠0,-q} b†_{k+q}b_k contributes O(1) two-phonon terms. The one-phonon
 density residue per particle is therefore ε_q/e_q, and e_q·(ε_q/e_q)=ε_q
 saturates the leading term of (F). This residue statement is at Bogoliubov
 level; eigenvector convergence is not proved in this note. The bounded ED
@@ -253,12 +274,16 @@ a single linear branch with speed c_s as N→∞ at fixed n. This is the precise
 content of "emergent Lorentz invariance" here: one scalar mode, one speed,
 violations bounded by (6).
 
-**Link to the relativity gate's conditional Lagrangian.** At Hartree level the
-energy density is gρ²a³/2 (A=ga³>0). A twisted condensate φ_p costs Nκ|p|²
-(B=2κρ, with superfluid fraction one at this order). Then AB=2κgν→c_s². So
-the gate's L_2 with c_s²=AB is realized in this controlled regime, with A and B
-obtained rather than assumed. Depletion corrections to B are O(1/N) here and
-are not computed.
+**Link to the relativity gate's conditional Lagrangian.** The gate's
+coefficients can be given Hartree product-state values:
+- the Hartree energy density gρ²a³/2 gives A=ga³>0;
+- a twisted product condensate φ_p costs Nκ|p|², which gives B=2κρ.
+
+Their product AB=2κgν→c_s² matches the rigorously controlled Bogoliubov
+phonon speed of Theorem 4. This is a consistency statement at Hartree order.
+The gate asked for a proved stiffness/Ward relation for the actual state; no
+stiffness of Ω_N, nor its depletion correction, is proved here. In the
+mean-field scaling A→0 and B→∞ individually, with only the product fixed.
 
 ## 6. Current-carrying condensates, acoustic metric and stability
 
@@ -276,11 +301,16 @@ This covers the self-conjugate case 2k≡0 as well.
 
 **Theorem 6 (exact finite-lattice criteria, Hartree–Bogoliubov level).**
 (a) The condensate at p is linearly (dynamically) unstable if S(k)(S(k)+2μ)<0
-for some k≠0. It is linearly stable, with a diagonalizable real spectrum, if
-S(k)(S(k)+2μ)>0 for all k≠0. Equality cases are marginal and not classified.
-(b) The Hessian of E_H-(ε(p)-6C+μ)||u||² at φ_{m_p} is positive definite on the
-complement of φ_{m_p} (energetic or Landau stability) iff for every k≠0:
-S(k)>0 and D(k)²<S(k)(S(k)+2μ).
+for some k≠0. It is linearly stable if S(k)(S(k)+2μ)>0 for all k≠0. In that
+case the frequencies are real and the generator is diagonalizable on the
+complement of the k=0 block. That block, σ_z[[μ,μ],[μ,μ]], is the phase/number
+zero mode: for μ>0 it is a 2×2 Jordan block, neutral, with at most linear
+growth. Equality cases are marginal and not classified.
+(b) Consider the Hessian of E_H-(ε(p)-6C+μ)||u||² at φ_{m_p}, restricted to the
+complex orthogonal complement {w: <φ_{m_p},w>=0}. It is positive definite there
+(energetic or Landau stability) iff for every k≠0: S(k)>0 and
+D(k)²<S(k)(S(k)+2μ). Along the phase direction iφ the Hessian vanishes, and
+along φ it equals 2μ; a real complement is therefore not the right domain.
 (c) Energetic stability implies dynamical stability. The condensate at p=0 is
 energetically stable for all μ>=0.
 
@@ -296,14 +326,16 @@ W=μ·Hess ε(p)=2μC diag(cos p_j). For k→0, (7) gives the cone
 
 so that g^{μν}k_μk_ν=0 with k_μ=(-ω,k) is exactly the cone. Then:
 (i) the Schur complement of g^{00} is W, so g^{μν} has Lorentzian signature iff
-W is positive definite, i.e. iff cos p_j>0 for all j. In that case
+W is positive definite, i.e. iff μ>0 and cos p_j>0 for all j. In that case
 S(k)=2CΣ_j cos p_j(1-cos k_j)>0 for EVERY k≠0, so the condensate is
 dynamically stable at all lattice momenta, not only at long wavelength.
 Suppose instead cos p_j<0 for some j. Then S(k e_j)∈(-2μ,0) whenever
 2C|cos p_j|(1-cos k)<2μ, which gives a complex BdG pair and dynamical
 instability. The lattice resolves such a k whenever
 2C|cos p_j|(1-cos(2π/n))<2μ, and for every n large enough at fixed p/(2π)
-and μ. Cases with cos p_j=0 have a degenerate cone and are marginal.
+and μ. Suppose some cos p_j=0 and every other cos p_i>=0. Then the cone is
+degenerate and the case is marginal. If another cos p_i<0, the preceding
+instability statement applies.
 **At the resolution where the lattice supplies long-wave modes, the emergent
 cone is Lorentzian exactly when the condensate is dynamically stable.**
 (ii) For W>0 the covariant metric is g_00=-(1-v^TW^{-1}v), g_0i=-(W^{-1}v)_i,
@@ -319,7 +351,8 @@ Theorem 6(b), are different statements. On a coarse lattice the supercritical
 long-wave modes may not exist. For example, n=5, p=(2π/5,0,0), μ=4 has
 v^TW^{-1}v≈1.46, an acoustic ergoregion. Yet it satisfies 6(b) at every
 resolved k: at the smallest k, D²≈3.27<S(S+2μ)≈3.60. Refining the lattice
-exposes the instability. Exact marginal cases also occur: n=8,
+exposes the energetic (Landau) instability; dynamical stability persists
+because all cos p_j>0. Exact marginal cases also occur: n=8,
 p=(π/4,0,0), μ=1 has D²=S(S+2μ)=1 at k=(π/4,0,0), because
 (√2-1)(√2+1)=1. The implementation reports these as unresolved rather than
 classifying them.
@@ -363,29 +396,68 @@ or imported into a claim here.
 
 ## 8. Bounded numerical controls
 
-`bpr/cubic_condensate_regime.py` checks the following on n=3, with C=1 and
-fixed λ values. There are no fits or tuned tolerances beyond the stated
-floating allowances.
+`bpr/cubic_condensate_regime.py` implements the checks below, and
+`tests/test_cubic_condensate_regime.py` runs them. They use C=1 and fixed
+λ values, with no fits or tuned tolerances beyond the stated floating
+allowances.
 
-- **Theorem 1:** the position-basis ground vector is positive and simple, with
-  invariance residuals under translation, inversion and coordinate permutation.
-  N<=3, g∈{0,1,5}.
-- **Basis cross-check:** momentum-sector and position-basis spectra agree.
-- **Theorem 3:** the coercivity bound (2) holds in the tested sectors, and
-  depletion stays below its bound.
-- **Theorem 4:** ED is run for N=2..5 at λ∈{5,20} and compared with E_B and
-  e_(1,0,0). The same runs report the residue Z/N against ε/e and the exact
-  identity (F).
-- **Theorem 5:** inequalities (4)–(6) are checked for every mode, n=3..16.
+- **Theorem 1:** the position-basis ground vector is positive and simple,
+  with invariance residuals under translation, inversion, coordinate swap and
+  reflection. This is checked for n=3, N<=3 and g∈{0,1,5}. On n=4, where C_4³
+  is the 6-cube, invariance is also checked under a hypercube automorphism
+  that is not a product of cycle automorphisms.
+- **Basis cross-check:** momentum-sector and position-basis spectra agree for
+  N=2,3.
+- **Theorem 3:** the coercivity bound is checked in the K=0 sector. The
+  checked form is the sharper constant μN(M-1)/(2(N-1)), which implies (2).
+  Depletion stays below its bound.
+- **Theorem 4:** tests run ED for N=2..5 at λ=20 and for N=2..4 at λ=5, and
+  compare with E_B and e_(1,0,0). The same runs check the residue Z/N against
+  ε/e and the exact identity (F).
+- **Theorem 5:** inequalities (4)–(6) are checked for every mode, for
+  n∈{3,4,7,12,16}, μ∈{0.05,1,9} and a∈{1,0.25}.
 - **Theorems 6–7:** formula (7) is compared with direct diagonalization of the
   full 2M×2M BdG matrix. The stability and metric equivalences are checked for
-  every p on n=3..8, at several μ.
+  n=3..6, five flow momenta per lattice and μ∈{0,0.3,2}. Further lattices are
+  checked in the metric and supercritical-flow tests.
 
-At λ=20 the gap error E_1-E_0-e_(1,0,0) is -0.491, -0.373, -0.294, -0.239 and
--0.200 for N=2..6, so N×error is roughly -1.2. The residue Z/N is 0.924,
-0.888, 0.868 and 0.856 for N=2..5, against ε/e=0.818. These are finite
-diagnostics, not proofs of rate.
+The independent review in section 9 ran an exhaustive check over all p on
+n=3..8. The repository does not ship that check.
+
+At λ=20 the gap error E_1-E_0-e_(1,0,0) is -0.491, -0.373, -0.294 and -0.239
+for N=2..5. A prototype run with the sector cap removed gives -0.200 at N=6;
+the reviewer reproduced it independently. N×error is roughly -1.2. The residue
+Z/N is 0.924, 0.888, 0.868 and 0.856 for N=2..5, against ε/e=0.818. These are
+finite diagnostics, not proofs of rate.
 
 ## 9. Review record
 
-See the end of this file once the independent review is complete.
+An independent adversarial review (2026-09-25) found **no blockers**.
+
+What the reviewer checked:
+- It rebuilt 𝔾_N from (1) term by term and compared U_N H_N U_N* with
+  N e_H+𝔾_N, for n=3, N=2..4, λ∈{0.7,20} and K∈{0,(0,0,1),(0,1,1)}. They
+  agree entrywise to <=8e-14.
+- A direct real Hessian agrees with the Theorem 6(b) classification in 864/864
+  cases, and the Theorem 6–7 equivalences hold over all p on n=3..8.
+- It re-derived by hand Theorems 1, 3, 5–7, Corollary 1, Lemma 2, Step 1
+  (a)–(d), the IMS remainder, the rank argument and the residue identity, and
+  found them correct.
+
+Repairs applied after the review:
+- the range of Θ_N;
+- the Jordan block at k=0 in Theorem 6(a);
+- the complex complement in Theorem 6(b);
+- the μ>0 and mixed-sign cases in Theorem 7(i), and Landau (not dynamical)
+  wording in the n=5 example;
+- the positivity argument that φ_0 is the top eigenvector;
+- the meaning of μ;
+- the Hartree-order scope of the A, B link;
+- the eigenvalue indexing and momentum-resolved form of Theorem 4;
+- "leading order" for the residue;
+- the overclaims in section 0;
+- the description in section 8 of what the shipped tests cover.
+
+The reviewer judged Theorem 4 a valid sketch that needs more detail, not an
+error. This record is AI review of scoped mathematics, not certification or
+empirical validation.
