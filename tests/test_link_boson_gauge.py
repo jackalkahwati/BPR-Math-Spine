@@ -304,3 +304,21 @@ def test_report_carries_third_order_couplings():
     square = g.four_cycles(graph)[0]
     assert g.third_order_plaquette_shift(graph, square, t, U) / (t ** 3 / U ** 2) == pytest.approx(12.0)
     assert report_status.endswith("gauge_structure")
+
+
+def test_full_levels_resolve_degenerate_multiplets_independent_of_arpack_state():
+    # Regression: single-vector eigsh could drop a partner of the 4-fold multiplet on the 3x3 torus,
+    # depending on ARPACK's process-global start vector. The block solver must not.
+    from scipy import sparse as sp_sparse
+    from scipy.sparse import linalg as sp_linalg
+    graph = g.square_torus(3)
+    t = 0.01
+    first = g._lowest_full(graph, t, 1.0, 6)
+    dummy = sp_sparse.random(200, 200, density=0.05, random_state=3)
+    sp_linalg.eigsh(dummy + dummy.T, k=3, which="SA")  # advance ARPACK's internal state
+    second = g._lowest_full(graph, t, 1.0, 6)
+    assert np.allclose(first, second, atol=1e-11)
+    gaps = (first - first[0]) / t ** 2
+    assert gaps[1] == pytest.approx(0.443049, abs=1e-5)
+    assert np.allclose(gaps[2:6], gaps[2], atol=1e-6)  # the 4-fold multiplet is complete
+    assert gaps[2] == pytest.approx(3.412211, abs=1e-5)

@@ -248,6 +248,15 @@ The checks are:
 - Full exact diagonalization: the second-order error scales as t³ (ratio ≈8
   when t doubles). The third-order error scales as t⁴ (ratio ≈16) on the
   triangle-free clusters, where the analytic H^(3) is claimed.
+
+  *Update 2026-09-26.* The large clusters were first diagonalized with
+  single-vector Lanczos (`eigsh`). On the 3×3 torus it could drop a partner of
+  a 4-fold degenerate multiplet, depending on ARPACK's process-global start
+  vector, which made one full-suite run fail. The lowest levels now come from
+  block LOBPCG. It is seeded with the third-order eigenvectors plus their
+  first-order Schrieffer–Wolff correction and checked by residual. The ratios
+  are unchanged from the correct values (torus 17.5 and 8.5), and a
+  regression test pins the multiplet.
 - A Richardson extrapolation of the second-order spectrum.
 - The Gauss-commutator statement, including the star exception.
 - Validation of targets per connected component.

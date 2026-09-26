@@ -551,6 +551,42 @@ def _lowest(H, count):
     return np.sort(w)
 
 
+def _lowest_full(graph, t, U, count, extra=8, tol=1e-10, maxiter=500):
+    """Lowest levels of the full Hamiltonian, robust to degenerate multiplets.
+
+    Single-vector Lanczos (eigsh) can miss partners of a degenerate multiplet, and which one it
+    misses depends on ARPACK's process-global start vector. Instead: block LOBPCG seeded with the
+    third-order effective eigenvectors embedded in the full basis plus their first-order
+    Schrieffer-Wolff correction (psi + R V psi), block size count + extra, diagonal preconditioner,
+    and a residual check.
+    """
+    basis, H = full_hamiltonian(graph, t, U)
+    n = H.shape[0]
+    if n <= DENSE_LIMIT:
+        return np.sort(np.linalg.eigvalsh(H.toarray()))[:count]
+    t, U = float(t), float(U)
+    charges = _charge_array(graph, basis)
+    h0 = U * np.sum((charges - np.array(graph["targets"])) ** 2, axis=1).astype(float)
+    ice = np.nonzero(h0 == 0)[0]
+    _, H2, H3 = schrieffer_wolff(graph, t, U)
+    m = min(len(ice), count + extra)
+    _, vecs = np.linalg.eigh(H2 + H3)
+    embed = np.zeros((n, m))
+    embed[ice, :] = vecs[:, :m]
+    V = -t * _hopping_matrix(graph, basis)
+    inv = np.where(h0 > 0, -1.0 / np.where(h0 > 0, h0, 1.0), 0.0)
+    X0 = embed + inv[:, None] * (V @ embed)
+    d = H.diagonal()
+    precond = sparse.diags(1.0 / (d - d.min() + 1.0))
+    vals, X = sparse_linalg.lobpcg(H, X0, M=precond, largest=False, tol=tol, maxiter=maxiter)
+    order = np.argsort(vals)
+    vals, X = vals[order], X[:, order]
+    residual = np.linalg.norm(H @ X - X * vals[None, :], axis=0) / np.maximum(np.abs(vals), 1.0)
+    if residual[:count].max() > 1e-8:
+        raise ArithmeticError("LOBPCG did not converge on the lowest levels")
+    return vals[:count]
+
+
 def compare_low_energy(graph, U=1.0, ratios=(0.01, 0.02), levels=4):
     """Full-model levels versus second-order (analytic) and second+third-order (numerical) models.
 
@@ -565,11 +601,10 @@ def compare_low_energy(graph, U=1.0, ratios=(0.01, 0.02), levels=4):
     eff_scaled = None
     for ratio in ratios:
         t = ratio * U
-        _, H = full_hamiltonian(graph, t, U)
         _, Heff = effective_hamiltonian(graph, t, U)
         _, H2, H3 = schrieffer_wolff(graph, t, U)
         k = min(levels, Heff.shape[0])
-        full = _lowest(H, k)
+        full = _lowest_full(graph, t, U, k)
         eff = _lowest(Heff, k)
         numeric2 = np.sort(np.linalg.eigvalsh(H2))[:k]
         third = np.sort(np.linalg.eigvalsh(H2 + H3))[:k]
