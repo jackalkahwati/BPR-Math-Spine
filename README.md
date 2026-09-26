@@ -145,6 +145,14 @@
 > - Spin(10) flux keeps three net families, but the Green–Schwarz coupling makes hypercharge massive whenever SU(3)×SU(2) survives.
 > - S²/(ℤ₂×ℤ₂) orbifolds give non-uniform family numbers.
 > - Breaking to the Standard Model needs a supplied Higgs sector.
+>
+> **YUKAWA MECHANISMS (2026-09-26):** [brane and bulk Higgs fields](doc/derivations/yukawa_mechanisms_2026-09-26.md).
+> - A single point-brane Higgs never gives three distinct masses, for any J_z charge. Two branes give non-hierarchical spectra.
+> - A bulk vector Higgs needs a ~10⁻³⁰ tuning. There is no natural Yukawa mechanism.
+>
+> **COSMOLOGICAL CONSTANT (2026-09-26):** [no classical self-tuning](doc/derivations/cosmological_constant_2026-09-26.md).
+> - Brane tension does not drop out: flat tensions are discrete (one per flux quantum), and dH²/dT ≠ 0.
+> - The Λ tuning stands.
 > - Twisted global form Spin ×_ℤ₂ Spin(10) × U(1): here Ω₇ contains a ℤ/2, found by the independent review. The anomaly on its generator (S² × Wu manifold) is shown trivial by a reduction argument: an η product formula, the branching 16 = (4,4) and an order bound on Ω₅^{Spin×ℤ₂Spin(5)}. So no global anomaly for either global form.
 >
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*

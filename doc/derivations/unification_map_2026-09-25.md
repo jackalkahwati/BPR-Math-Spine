@@ -260,6 +260,24 @@ String-embeddability and that result pull in opposite directions.
 
 Spin(10) → Standard Model therefore needs a supplied Higgs sector.
 
+## 3g. Rounds 8–9: Yukawa mechanisms and the cosmological constant
+
+**Yukawa mechanisms.** See
+[yukawa_mechanisms_2026-09-26.md](yukawa_mechanisms_2026-09-26.md).
+- A single point-brane Higgs gives rank 1 or a degenerate pair, never three
+  distinct masses, whatever its J_z charge.
+- Two branes give generic spectra with no hierarchy.
+- A bulk internal-vector 10 or 126 works only with a Higgs-mass tuning of
+  about 10⁻³⁰ and a near-null orientation.
+
+BPR-6D therefore has no natural Yukawa mechanism.
+
+**Cosmological constant.** See
+[cosmological_constant_2026-09-26.md](cosmological_constant_2026-09-26.md).
+Classical brane self-tuning fails. Flux quantization on the reduced area makes
+the flat brane tensions discrete, and dH²/dT ≠ 0 at the flat point. The Λ
+tuning (about 10⁻¹²⁰) stands.
+
 ## 4. The dependency graph
 
 ```mermaid
