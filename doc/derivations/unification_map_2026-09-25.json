@@ -23,7 +23,8 @@
     {"date": "2026-09-26", "summary": "Round 4: characteristic-class Dirac quantization of the Green-Schwarz couplings; the minimal completion needs the parent charge in 3Z, so the family number is a multiple of three (family_count moves to conditional)."},
     {"date": "2026-09-26", "summary": "Round 5: Omega_7^Spin(B(Spin(10) x U(1))) = 0 by an exact Adams E2 computation over A(1); BPR-6D has no global anomaly for the Spin x Spin(10) x U(1) structure."},
     {"date": "2026-09-26", "summary": "Rounds 6-7: Morrison-Taylor tension resolved as a non-supersymmetric fork (SUSY analogues force 10 hypers and lose 3 | n_gen); geometric Spin(10) breaking obstructed (flux makes hypercharge massive via Green-Schwarz; S^2/(Z2xZ2) gives non-uniform families)."},
-    {"date": "2026-09-26", "summary": "Rounds 8-9: brane and bulk-vector Yukawa mechanisms (no single brane gives three distinct masses; no natural hierarchy); no classical brane self-tuning of the cosmological constant (discrete flat tensions)."}
+    {"date": "2026-09-26", "summary": "Rounds 8-9: brane and bulk-vector Yukawa mechanisms (no single brane gives three distinct masses; no natural hierarchy); no classical brane self-tuning of the cosmological constant (discrete flat tensions)."},
+    {"date": "2026-09-26", "summary": "Round 10: BPR-6D predictions - a Green-Schwarz QCD axion near the compactification scale (generic to GS models) and n_gen in 3Z (postdiction; excludes a fourth family); everything else is untestable or not predicted."}
   ],
   "nodes": [
     {"id": "ring_substrate", "layer": "substrate", "status": "stipulated",
@@ -245,6 +246,11 @@
      "claim": "Brane tensions on the BPR-6D sphere self-tune the 4D cosmological constant.",
      "sources": ["doc/derivations/cosmological_constant_2026-09-26.md", "bpr/cosmological_constant.py", "tests/test_cosmological_constant.py"],
      "depends_on": ["flux_vacuum"],
-     "limitation": "Classical football solutions: flux quantization on the reduced area makes flat tensions discrete (one per flux quantum) and dH^2/dT != 0 at the flat point, so brane vacuum energy is not absorbed (Garriga-Porrati). Supersymmetric SLED routes are cited, contested, and would cost 3 | n_gen."}
+     "limitation": "Classical football solutions: flux quantization on the reduced area makes flat tensions discrete (one per flux quantum) and dH^2/dT != 0 at the flat point, so brane vacuum energy is not absorbed (Garriga-Porrati). Supersymmetric SLED routes are cited, contested, and would cost 3 | n_gen."},
+    {"id": "bpr6d_predictions", "layer": "observation", "status": "conditional",
+     "claim": "BPR-6D predicts a QCD axion from the Green-Schwarz 2-form with f_a near the compactification scale (m_a ~ 1e-11 to 1e-8 eV) and n_gen in 3Z.",
+     "sources": ["doc/derivations/predictions_2026-09-26.md", "bpr/predictions.py", "tests/test_predictions.py"],
+     "depends_on": ["gs_quantization", "flux_vacuum"],
+     "limitation": "The axion is generic to Green-Schwarz/string models and its decay constant is an order-of-magnitude band; dark matter needs a small misalignment angle. n_gen in 3Z is a postdiction for the minimal non-supersymmetric completion. Masses, mixings, Higgs mass, GUT scale and the cosmological constant are not predicted. No test against data is made."}
   ]
 }

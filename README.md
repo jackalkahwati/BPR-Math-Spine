@@ -153,6 +153,11 @@
 > **COSMOLOGICAL CONSTANT (2026-09-26):** [no classical self-tuning](doc/derivations/cosmological_constant_2026-09-26.md).
 > - Brane tension does not drop out: flat tensions are discrete (one per flux quantum), and dH²/dT ≠ 0.
 > - The Λ tuning stands.
+>
+> **PREDICTIONS (2026-09-26):** [what BPR-6D says that could be checked](doc/derivations/predictions_2026-09-26.md).
+> - A QCD axion from the Green–Schwarz 2-form. It always couples to QCD after U(1)_F eats one axion combination. f_a is near the compactification scale (m_a ≈ 10⁻¹¹–10⁻⁸ eV). This is generic to Green–Schwarz models.
+> - n_gen ∈ 3ℤ: a postdiction that excludes a fourth family.
+> - Masses, mixings, the Higgs mass, the GUT scale and Λ are not predicted. No test against data has been made.
 > - Twisted global form Spin ×_ℤ₂ Spin(10) × U(1): here Ω₇ contains a ℤ/2, found by the independent review. The anomaly on its generator (S² × Wu manifold) is shown trivial by a reduction argument: an η product formula, the branching 16 = (4,4) and an order bound on Ω₅^{Spin×ℤ₂Spin(5)}. So no global anomaly for either global form.
 >
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
