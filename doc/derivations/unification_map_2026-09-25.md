@@ -207,6 +207,26 @@ moves family_count from stipulated to conditional. Why three rather than six
 remains a minimality or tuning statement, and torsion and Ω₇ anomalies are
 open.
 
+## 3e. Fifth round: no global anomalies
+
+[global_anomalies_2026-09-26.md](global_anomalies_2026-09-26.md) computes
+Ω₇^Spin(B(Spin(10)×U(1))) = 0. The route:
+- below degree 8, Spin bordism equals ko at the prime 2
+  (Anderson–Brown–Peterson), and there is no odd part;
+- the Adams E₂ page, Ext over A(1), is computed by an exact minimal
+  resolution. It is empty in stem 7 for every summand of the stably split
+  (BSpin(10) × ℂP^∞)₊.
+
+The same engine reproduces known results:
+- the ko chart;
+- Witten's SU(2) anomaly;
+- Lee–Tachikawa's Ω₇ = 0 for SU(2) and SU(3);
+- the absence of 4D anomalies for Spin(10).
+
+With the round-4 couplings, BPR-6D therefore has no global anomaly for the
+Spin × Spin(10) × U(1) structure. Its anomalies are cancelled locally, with
+quantization, and globally.
+
 ## 4. The dependency graph
 
 ```mermaid
@@ -254,6 +274,7 @@ graph TD
   fsel --> ngen
   comp --> gsq[GS Dirac quantization: parent charge in 3Z]:::exact
   gsq --> ngen
+  gsq --> glob[global anomalies: Omega_7 = 0]:::exact
   fvac --> fam[families = SU2 isometry triplet]:::exact
   fam --> yuk[Yukawa sector: none in minimal content]:::obst
 ```
@@ -421,7 +442,9 @@ as follows:
 - No prediction has been tested.
 
 Round 4 refines the chiral-matter item: Dirac quantization makes the family
-number a multiple of three, with three the minimal case.
+number a multiple of three, with three the minimal case. Round 5 shows there
+is no global anomaly, so the anomaly-free status is complete for the
+Spin × Spin(10) × U(1) structure.
 
 Every item is supplied or assumed rather than derived from one microscopic
 Hamiltonian. The four requirements are now consistent with each other, but

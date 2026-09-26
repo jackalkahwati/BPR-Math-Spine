@@ -13,7 +13,9 @@ Round 4 settles it at the characteristic-class level
 ([green_schwarz_quantization_2026-09-26.md](green_schwarz_quantization_2026-09-26.md)).
 The completion is quantizable iff the parent's U(1)_F charge is a multiple of
 3 in units of the smallest charge, which makes the family number a multiple
-of three. Global (Ω₇) anomalies remain open. An independent review (section 8) found
+of three. Round 5 shows that Ω₇^Spin(B(Spin(10)×U(1))) = 0, so there is no
+global anomaly for the Spin × Spin(10) × U(1) structure
+([global_anomalies_2026-09-26.md](global_anomalies_2026-09-26.md)). An independent review (section 8) found
 one blocker, six major and five minor issues; its repairs are applied.
 
 ## 0. The decision point
@@ -194,11 +196,12 @@ What BPR-6D adds is narrow:
 
 In priority order:
 
-1. **Global anomalies.** Characteristic-class quantization is settled in round
-   4: the parent charge must be a multiple of 3. Still open:
-   - the Ω₇ spin bordism of B(Spin(10)×U(1)) with parent charge 3;
-   - the 2-form's quadratic refinement;
-   - torsion classes.
+1. **Global anomalies: settled for Spin × Spin(10) × U(1).**
+   - Characteristic-class quantization (round 4) requires the parent charge
+     to be a multiple of 3.
+   - Ω₇^Spin(B(Spin(10)×U(1))) = 0 (round 5).
+   - Still open: the Spin ×_{ℤ₂} Spin(10) global form.
+   - The even lattice U needs no quadratic refinement.
 2. **Remove the Λ tuning.** Find an anomaly-free 6D (1,0) gauged supergravity
    with Spin(10) ⊂ G whose Salam–Sezgin vacuum gives exactly three chiral 16s,
    or show that none exists in a stated class. This is not a relabelling of

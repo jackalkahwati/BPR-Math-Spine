@@ -130,7 +130,12 @@
 > - By the index theorem the number of families is then a **multiple of three**. Three needs parent charge 3 and one flux quantum, both minimal choices. At its tuned Λ it is, classically, the only compactified flux vacuum.
 > - States carrying one third of the matter's U(1)_F charge must exist. They are massive in BPR-6D as defined; a Morrison–Taylor F-theory result suggests a string realization would normally make them massless.
 >
-> Caveats: characteristic-class level only (torsion and Ω₇ open); the result holds for the minimal completion within its class; the independent review found no blocker, and its scope repairs are applied.
+> Caveats: characteristic-class level only; the result holds for the minimal completion within its class; the independent review found no blocker, and its scope repairs are applied.
+>
+> **NO GLOBAL ANOMALIES (2026-09-26):** [Ω₇^Spin(B(Spin(10)×U(1))) = 0](doc/derivations/global_anomalies_2026-09-26.md).
+> - An exact Adams E₂ computation over A(1), via Spin bordism ≅ ko below degree 8, is empty in stem 7. No differentials are needed.
+> - The same engine reproduces the ko chart, Witten's SU(2) anomaly, Lee–Tachikawa's Ω₇ = 0 for SU(2) and SU(3), and the absence of 4D anomalies for Spin(10).
+> - With the quantized Green–Schwarz couplings, BPR-6D is therefore anomaly-free locally and globally for the Spin × Spin(10) × U(1) structure. The Spin ×_ℤ₂ Spin(10) global form is not computed.
 >
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >

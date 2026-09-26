@@ -117,3 +117,11 @@ def test_round_four_quantization_node(data):
     assert "bpr/green_schwarz_quantization.py" in gs["sources"]
     assert "gs_quantization" in nodes["family_count"]["depends_on"]
     assert "multiple of three" in nodes["family_count"]["claim"]
+
+
+def test_round_five_global_anomaly_node(data):
+    nodes = {node["id"]: node for node in data["nodes"]}
+    ga = nodes["global_anomalies"]
+    assert ga["status"] == "exact_theorem" and "gs_quantization" in ga["depends_on"]
+    assert "bpr/global_anomaly_bordism.py" in ga["sources"]
+    assert "global_anomalies" in nodes["bpr6d_architecture"]["depends_on"]

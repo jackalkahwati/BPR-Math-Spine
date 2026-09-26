@@ -20,7 +20,8 @@
   "architecture_decision": "doc/derivations/architecture_decision_2026-09-26.md",
   "revisions": [
     {"date": "2026-09-26", "summary": "Round 3: Lorentz invariance adopted as fundamental (BPR-6D); flux vacuum, flux landscape, family symmetry and Yukawa obstruction added; substrate nodes reclassified as analogue/regulator."},
-    {"date": "2026-09-26", "summary": "Round 4: characteristic-class Dirac quantization of the Green-Schwarz couplings; the minimal completion needs the parent charge in 3Z, so the family number is a multiple of three (family_count moves to conditional)."}
+    {"date": "2026-09-26", "summary": "Round 4: characteristic-class Dirac quantization of the Green-Schwarz couplings; the minimal completion needs the parent charge in 3Z, so the family number is a multiple of three (family_count moves to conditional)."},
+    {"date": "2026-09-26", "summary": "Round 5: Omega_7^Spin(B(Spin(10) x U(1))) = 0 by an exact Adams E2 computation over A(1); BPR-6D has no global anomaly for the Spin x Spin(10) x U(1) structure."}
   ],
   "nodes": [
     {"id": "ring_substrate", "layer": "substrate", "status": "stipulated",
@@ -158,6 +159,11 @@
      "sources": ["doc/derivations/green_schwarz_quantization_2026-09-26.md", "bpr/green_schwarz_quantization.py", "tests/test_green_schwarz_quantization.py"],
      "depends_on": ["chiral_parent_completion"],
      "limitation": "Torsion refinements and Omega_7 bordism not computed; minimal completion unique only in class C (16_+(1)+16_-(2) passes outside it); requires states of charge q/3, massive in BPR-6D as defined; Morrison-Taylor (2021) suggests F-theory realizations would normally make them massless; 2-form Green-Schwarz terms only."},
+    {"id": "global_anomalies", "layer": "matter", "status": "exact_theorem",
+     "claim": "Omega_7^Spin(B(Spin(10) x U(1))) = 0, so BPR-6D with its quantized Green-Schwarz couplings has no global gauge or gravitational anomaly (Spin x Spin(10) x U(1) structure).",
+     "sources": ["doc/derivations/global_anomalies_2026-09-26.md", "bpr/global_anomaly_bordism.py", "tests/test_global_anomaly_bordism.py"],
+     "depends_on": ["gs_quantization"],
+     "limitation": "Spin x Spin(10) x U(1) structure only (Spin x_Z2 Spin(10) not computed); Adams E2 computation conclusive because E2 vanishes in stem 7; assumes the Dai-Freed/Witten-Yonekura framework and the standard 7D Green-Schwarz term."},
     {"id": "family_count", "layer": "matter", "status": "conditional",
      "claim": "Three generations; the family number is a multiple of three.",
      "sources": ["doc/derivations/foundation_claims_2026-09-13.json", "doc/derivations/chiral_parent_completion_2026-09-25.md", "doc/derivations/flux_compactification_2026-09-26.md", "doc/derivations/green_schwarz_quantization_2026-09-26.md"],
@@ -196,8 +202,8 @@
     {"id": "bpr6d_architecture", "layer": "spacetime", "status": "stipulated",
      "claim": "BPR-6D: six-dimensional Lorentz-invariant spacetime with Einstein gravity, Spin(10) x U(1)_F, the minimal chiral completion and a Green-Schwarz 2-form, on M4 x S^2 with flux 3; the lattice substrate becomes an analogue/regulator.",
      "sources": ["doc/derivations/architecture_decision_2026-09-26.md"],
-     "depends_on": ["common_limiting_speed", "chiral_parent_completion", "gs_quantization"],
-     "limitation": "A decision, not a derivation: spacetime is no longer derived and the common light cone holds by assumption. The Green-Schwarz couplings are quantizable at the characteristic-class level only with the parent at charge 3 (gs_quantization); global anomalies are open. U(1)_F is Stueckelberg-massive."},
+     "depends_on": ["common_limiting_speed", "chiral_parent_completion", "gs_quantization", "global_anomalies"],
+     "limitation": "A decision, not a derivation: spacetime is no longer derived and the common light cone holds by assumption. Anomalies cancel locally, with Dirac-quantized Green-Schwarz couplings (parent charge 3; gs_quantization) and globally (global_anomalies) for the Spin x Spin(10) x U(1) structure. U(1)_F is Stueckelberg-massive."},
     {"id": "six_d_gravity", "layer": "gravity", "status": "stipulated",
      "claim": "Six-dimensional Einstein gravity (M^4/2) R_6 - Lambda; after compactification a massless 4D graviton with universal coupling.",
      "sources": ["doc/derivations/flux_compactification_2026-09-26.md", "bpr/six_dim_flux_vacuum.py"],

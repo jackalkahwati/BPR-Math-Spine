@@ -249,8 +249,9 @@ Local anomaly cancellation comes first; embedding the Green–Schwarz data in
 an integral unimodular lattice is one of the further conditions that string
 and F-theory compactifications satisfy. Passing it is necessary, not
 sufficient. The remaining conditions include:
-- global anomalies, the Ω₇ spin bordism of B(Spin(10)×U(1)), together with
-  the 2-form's quadratic refinement;
+- global anomalies. Round 5 settles these for the Spin × Spin(10) × U(1)
+  structure: Ω₇^Spin(B(Spin(10)×U(1))) = 0
+  ([global_anomalies_2026-09-26.md](global_anomalies_2026-09-26.md));
 - the existence of the required charge-1/3 states and magnetic 2-branes in an
   explicit completion;
 - an explicit string or F-theory realization, or a supersymmetric embedding
