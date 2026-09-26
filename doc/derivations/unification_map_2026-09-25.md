@@ -169,11 +169,13 @@ item 6 at the classical level.
 shows that the three families form one triplet of the sphere's gauged SU(2)
 isometry.
 
-**Negative result: Yukawas.** 6D chirality and SU(2) forbid every Yukawa
-coupling of the minimal content. The only channel is an F-charge −2
-internal-vector 10 in J=2. The SO(12) gauge–Higgs source of that field gives
-an even family number and a tachyonic J=2 level. Even with the channel, complex
-J=2 vevs reach every mass spectrum, so no mass ratio is predicted.
+**Negative result: Yukawas.** The minimal content has no field in 16⊗16, so
+it has no Yukawa at all. For extensions, an all-orders selection rule
+(perturbative in U(1)_F) leaves only an F-charge −2 internal one-form 10 or
+126 in J=2; scalars and the 120 never couple. The SO(12) gauge–Higgs source
+of that field gives paired, even families and a vacuum instability. Even with
+the channel, complex J=2 vevs reach every mass spectrum, so no mass ratio is
+predicted.
 
 ## 4. The dependency graph
 

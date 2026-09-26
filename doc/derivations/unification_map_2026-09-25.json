@@ -216,6 +216,6 @@
      "claim": "Yukawa couplings of the three flux families in BPR-6D.",
      "sources": ["doc/derivations/family_symmetry_from_flux_2026-09-26.md", "bpr/sphere_family_structure.py"],
      "depends_on": ["family_symmetry"],
-     "limitation": "Minimal content has none: 6D chirality and SU(2) leave only an F-charge -2 internal-vector 10 in the J=2 channel. The SO(12) gauge-Higgs route gives an even family number and a tachyonic J=2 level; complex J=2 vevs reach every spectrum, so no mass ratio is predicted."}
+     "limitation": "The minimal content has no field in 16x16 = 10+120+126, so no Yukawa at all. For extensions, an all-orders selection rule (perturbative in U(1)_F) leaves only an F-charge -2 internal one-form 10 or 126 in the J=2 channel; scalars and the 120 never couple. SO(12) gauge-Higgs gives paired, even families and a vacuum instability. 10-only Higgs gives M_d = M_e^T (excluded); complex J=2 vevs reach every spectrum, so no mass ratio is predicted."}
   ]
 }

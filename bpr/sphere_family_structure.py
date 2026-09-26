@@ -20,10 +20,11 @@ theta, phi = sp.symbols("theta phi", real=True)
 
 LIMITATIONS = [
     "The round S^2, the flux and the field content are supplied BPR-6D inputs.",
-    "The Higgs sector is not specified; minimal BPR-6D has no zero-mode Yukawa, and the J=2 channel assumes an internal vector-component 10 of F-charge -2.",
-    "The charged-vector level formula (rough Laplacian + Ricci + gyromagnetic term) is checked against the Atiyah-Bott negative-mode count, not by a full fluctuation calculation.",
-    "The minimal SO(12) gauge-Higgs embedding gives an even number of families; three families need a further projection.",
+    "The Higgs sector is not specified; minimal BPR-6D has no 16x16 field, and the J=2 channel assumes an internal one-form 10 or 126 of F-charge -2.",
+    "The charged-vector levels are checked against the Atiyah-Bott count and a finite-difference Yang-Mills Hessian, not by an analytic fluctuation calculation.",
+    "The minimal SO(12) gauge-Higgs embedding gives 2k families paired by the Yukawa; a projection to three leaves one massless, and its tachyonic level destabilizes the flux vacuum.",
     "The SU(2) isometry is a 4D gauge symmetry that must be broken far above the electroweak scale; no mechanism is supplied.",
+    "Selection rules assume perturbative U(1)_F; it is Stueckelberg-massive and broken by Spin(10) instantons to at most a discrete remnant.",
     "No fermion masses are predicted; only which structures are allowed.",
 ]
 
@@ -211,16 +212,16 @@ def chirality_lemma(samples=5, seed=0):
 # Selection rules, the J=2 channel and vev orientations
 # ---------------------------------------------------------------------------
 
-def higgs_lowest_isospin(k, charge, spin_weight):
-    """Lowest SU(2) spin of a field of U(1)_F charge q and spin weight s in flux k: |s - q k / 2|."""
-    return abs(sp.nsimplify(spin_weight) - sp.nsimplify(charge) * k / 2)
-
-
 def yukawa_channels(k=3):
-    """Which Higgs spin weights give an integrable, SU(2)-allowed Yukawa among the zero modes.
+    """Which Higgs components give an integrable, SU(2)-allowed Yukawa among the zero modes (no derivatives).
 
-    The zero modes have spin weight (1-k)/2 each; F-neutrality fixes the Higgs charge to -2.
+    The zero modes have spin weight (1-k)/2 each; perturbative F-neutrality fixes the Higgs charge to -2.
     The triple overlap needs total spin weight zero and J_H in j (x) j with j=(k-1)/2.
+
+    Robust form (any field, any number of derivatives): the zero-mode pair has total spin weight 1-k,
+    so the Higgs mode needs spin weight k-1, hence J >= k-1 = 2j; and j (x) j caps J at 2j. So J = 2j
+    exactly (J = 2 for three families). Derivatives (eth) raise spin weight at fixed J, so a field
+    reaches the channel iff it has an l = 2j mode with effective spin weight <= 2j.
     """
     s_psi, _ = zero_mode_spin_weights(k)
     j_psi = -s_psi
@@ -320,22 +321,66 @@ def vev_for_spectrum(sigmas):
 
 
 def charged_vector_lowest_level(n):
-    """Lowest 4D mass^2 (units 1/r^2) and degeneracy of internal gauge components with monopole number n.
+    """Lowest physical 4D mass^2 (units 1/r^2) of internal gauge components with monopole number n.
 
-    Rough Laplacian on effective spin weight s_e: l(l+1) - s_e^2, lowest l = |s_e|; plus Ricci (+1) and
-    the gyromagnetic term (-|n| aligned, +|n| anti-aligned). Aligned: |s_e| = ||n|/2 - 1|.
+    Background-gauge operator: rough Laplacian l(l+1) - s_e^2 on effective spin weight s_e, plus Ricci
+    (+1) and the gyromagnetic term (-|n| aligned, +|n| anti-aligned). Aligned: s_e = |n|/2 - 1.
+    Pure-gauge directions D(lambda) have l >= |n|/2, so for |n| >= 2 the aligned level l = |n|/2 - 1 is
+    physical; for |n| = 1 the aligned l = 1/2 mode is pure gauge and the lowest physical level is l = 3/2.
     """
     if type(n) is not int or n == 0:
         raise ValueError("n must be a nonzero int")
-    rows = []
-    for shift, moment in ((-1, -abs(n)), (1, abs(n))):
-        s_e = sp.Rational(abs(n), 2) + shift
-        rows.append({"effective_spin_weight": abs(s_e), "mass_squared": abs(s_e) + 1 + moment,
-                     "degeneracy": int(2 * abs(s_e) + 1)})
-    low = min(rows, key=lambda row: row["mass_squared"])
-    return {"n": n, "mass_squared": low["mass_squared"], "degeneracy": low["degeneracy"],
-            "tachyonic": bool(low["mass_squared"] < 0),
-            "isospin": low["effective_spin_weight"]}
+    a = abs(n)
+    if a == 1:
+        l = sp.Rational(3, 2)
+        return {"n": n, "mass_squared": l * (l + 1) - sp.Rational(1, 4), "degeneracy": 4,
+                "tachyonic": False, "isospin": l, "note": "l=1/2 aligned mode is pure gauge"}
+    s_e = sp.Rational(a, 2) - 1
+    return {"n": n, "mass_squared": s_e + 1 - a, "degeneracy": int(2 * s_e + 1),
+            "tachyonic": True, "isospin": s_e}
+
+
+def so12_family_pairing(k, rng=None):
+    """SO(12) gauge-Higgs: A_a (in 10_{-2}) maps 16_{+1} to 16bar_{-1}, so the Yukawa pairs the k families
+    from 16_{+1} with the k from 16bar_{-1}. The 2k x 2k Weyl mass matrix is [[0, M], [M^T, 0]]:
+    each singular value of M appears twice, and any projection keeping n_A + n_B families has rank
+    <= 2 min(n_A, n_B)."""
+    rng = np.random.default_rng(0) if rng is None else rng
+    Mk = rng.normal(size=(k, k)) + 1j * rng.normal(size=(k, k))
+    full = np.block([[np.zeros((k, k)), Mk], [Mk.T, np.zeros((k, k))]])
+    sv_full = sorted(np.linalg.svd(full, compute_uv=False).tolist(), reverse=True)
+    sv_M = sorted(np.linalg.svd(Mk, compute_uv=False).tolist(), reverse=True)
+    projections = {}
+    for n_a in range(0, 4):
+        n_b = 3 - n_a
+        if n_a > k or n_b > k:
+            continue
+        keep = list(range(n_a)) + list(range(k, k + n_b))
+        sub = full[np.ix_(keep, keep)]
+        projections["{}+{}".format(n_a, n_b)] = int(np.linalg.matrix_rank(sub, tol=1e-9))
+    return {"k": k, "singular_values_full": sv_full, "singular_values_M": sv_M,
+            "three_family_projection_ranks": projections}
+
+
+def higgs_representation_channels():
+    """16 x 16 = 10 + 120 + 126 (SO(10)-symmetric: 10, 126; antisymmetric: 120).
+
+    The same-chirality vector bilinear psi^T C Gamma^a psi is antisymmetric on the chiral subspace and
+    fermions anticommute, so the coupling is symmetric in (SO(10) x family): symmetric reps need
+    family-symmetric J (0, 2), the antisymmetric 120 needs J = 1. Spin weight forces J = 2.
+    """
+    G, chir = gamma6()
+    w, vecs = np.linalg.eigh(chir)
+    P = vecs[:, w > 0]
+    antisym = all(np.allclose(P.T @ C @ g @ P, -(P.T @ C @ g @ P).T)
+                  for C in charge_conjugations(G).values() for g in G)
+    Y2, Y1 = yukawa_tensor(1, 2), yukawa_tensor(1, 1)
+    family_symmetry = {"J2_symmetric": bool(np.allclose(Y2, Y2.transpose(1, 0, 2))),
+                       "J1_antisymmetric": bool(np.allclose(Y1, -Y1.transpose(1, 0, 2)))}
+    return {"vector_bilinear_antisymmetric_on_chiral_subspace": bool(antisym),
+            "family_symmetry_of_channels": family_symmetry,
+            "allowed": ["10", "126"], "excluded": ["120"],
+            "ten_only_relations": ["M_d = M_e^T", "M_u = M_nu_Dirac"]}
 
 
 def orientation_examples():
@@ -368,16 +413,25 @@ def gauge_higgs_family_count(k):
 
 
 def minimal_yukawa_status(k=3):
-    """Whether the minimal BPR-6D content (Spin(10) x U(1)_F, scalar Higgs) has zero-mode Yukawas."""
+    """Yukawa status of BPR-6D's flux families.
+
+    (i) Minimal content: no field in 16 x 16 = 10 + 120 + 126 exists, so there is no Yukawa at all.
+    (ii) Extensions (all orders in derivatives and flux insertions, perturbatively in U(1)_F): only an
+    F-charge -2 internal one-form 10 or 126 in the J=2 channel couples; a scalar 10 or 126 of F-charge
+    -2 has J >= 3 modes only and never couples; the 120 is excluded.
+    """
     channels = {row["higgs_spin_weight"]: row for row in yukawa_channels(k)}
     return {
         "families_share_one_6d_weyl_field": True,
+        "minimal_content_has_16x16_field": False,
         "scalar_higgs_channel": channels[0]["allowed_isospins"],
         "internal_vector_higgs_channel": channels[-1]["allowed_isospins"],
+        "representations": higgs_representation_channels(),
         "spin10_gauge_fields_contain_a_10": False,
         "so12_gauge_higgs": {
             "families": gauge_higgs_family_count(k),
             "higgs_level": charged_vector_lowest_level(2 * k),
+            "pairing": so12_family_pairing(k),
         },
         "status": "open_no_minimal_yukawa",
     }
@@ -389,6 +443,8 @@ def demonstration_report():
     minimal["so12_gauge_higgs"]["higgs_level"] = {
         key: (float(value) if isinstance(value, sp.Basic) else value)
         for key, value in minimal["so12_gauge_higgs"]["higgs_level"].items()}
+    minimal["so12_gauge_higgs"]["pairing"] = {
+        key: value for key, value in minimal["so12_gauge_higgs"]["pairing"].items() if key != "singular_values_M"}
     report = {
         "schema_version": 1,
         "model_id": MODEL_ID,

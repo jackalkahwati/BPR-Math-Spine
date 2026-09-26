@@ -109,8 +109,8 @@ would reintroduce Collins-type Lorentz violation and fermion doubling, so
 | 4D scales | M_Pl²=πm²/e², 1/r=2g4M_Pl/m; classical control needs g4 below an O(1), convention-dependent bound | exact relations |
 | Is m=3 selected? | No. At fixed Λ, one flux is flat, lower fluxes are AdS, the window m₀<m<(2/√3)m₀ is dS (empty for m₀=3), and higher fluxes have no vacuum. This is the known Einstein–Maxwell landscape applied to the family count. | exact (classical), negative |
 | Family symmetry | Three families = one SU(2) triplet of the sphere's isometry | exact |
-| Yukawas | Selection rule: only an F-charge −2 internal one-form 10 in J=2 can couple. The minimal content has none, and neither has a scalar or derivative-of-scalar Higgs. | exact, negative |
-| SO(12) gauge–Higgs fix | Even families (2k) and a tachyonic J=2 level | exact / index-checked |
+| Yukawas | The minimal content has no 16⊗16 field, so no Yukawa. Selection rule for extensions (all orders, perturbative in U(1)_F): only an F-charge −2 internal one-form 10 or 126 in J=2 couples. Scalar Higgs fields and the 120 never couple. | exact, negative |
+| SO(12) gauge–Higgs fix | Families come even (2k) and paired, so a projection to three leaves one massless; the J=2 level is tachyonic and destabilizes the flux vacuum | exact / Hessian- and index-checked |
 | Masses | Real J=2 vev ⇒ m₃=m₁+m₂ (excluded); complex vevs reach any spectrum | exact, no viable relation |
 
 ## 4. What survives and what is reclassified

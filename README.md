@@ -120,7 +120,7 @@
 >
 > **FAMILIES FROM FLUX (2026-09-26):** [SU(2) family symmetry and the Yukawa obstruction](doc/derivations/family_symmetry_from_flux_2026-09-26.md).
 > - The three families form one triplet of the sphere's gauged SU(2) isometry.
-> - **Negative:** 6D chirality and SU(2) forbid every Yukawa coupling of the minimal content. Only an F-charge −2 internal-vector 10 in the J=2 channel couples. The SO(12) gauge–Higgs source of that field gives an even family number and a tachyonic J=2 level.
+> - **Negative:** the minimal content has no 16⊗16 field, so no Yukawa coupling. For extensions, an all-orders selection rule leaves only an F-charge −2 internal one-form 10 or 126 in the J=2 channel. The SO(12) gauge–Higgs source of that field gives paired, even families and a vacuum instability.
 > - Complex J=2 vevs reach every mass spectrum, so no mass ratio is predicted.
 >
 > BPR-6D is an effective field theory, not a theory of everything. It is non-renormalizable, its Λ is tuned, it has no Yukawa sector, and it has no tested prediction.
