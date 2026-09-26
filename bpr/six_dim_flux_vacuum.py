@@ -14,9 +14,11 @@ derived; other fluctuations are cited, not computed.
 """
 
 from functools import lru_cache
+from itertools import combinations, permutations
 from math import isfinite, pi, sqrt
 
 import sympy as sp
+from sympy.combinatorics import Permutation
 
 MODEL_ID = "bpr6d-einstein-maxwell-flux-vacuum-v1"
 REDUCED_PLANCK_GEV = 2.435e18  # reduced Planck mass, used only for illustration
@@ -31,7 +33,7 @@ Omega = sp.symbols("Omega", positive=True)
 LIMITATIONS = [
     "Six-dimensional gravity, U(1)_F and the field content are supplied (fundamental), not derived from a substrate.",
     "Flat four-dimensional space requires one tuning of the six-dimensional cosmological constant.",
-    "Only the breathing-mode stability is derived; shape, vector and fermion-induced effects are cited or open.",
+    "Only the breathing-mode stability is derived; other Einstein-Maxwell modes are cited (RSS 1983); Spin(10), fermion and 2-form fluctuations are not covered.",
     "Quantum corrections (Casimir energy of the sphere, Green-Schwarz axion dynamics) are not included.",
     "Numerical scales use an unknown U(1)_F coupling and are illustrative, not predictions.",
 ]
@@ -84,12 +86,9 @@ def monopole_field(radius=r, field=B):
     return F
 
 
-@lru_cache(maxsize=1)
-def einstein_conditions():
-    """Einstein equations M^4 G_MN = T_MN - Lambda g_MN on flat M4 x S^2 with flux B."""
-    g = product_metric()
+def einstein_residual(g, F):
+    """E_MN = M^4 G_MN - (T_MN - Lambda g_MN) for metric g and Maxwell field F (module coordinates)."""
     ginv, Ric, Rs = _ricci(g)
-    F = monopole_field()
     Fup = ginv * F * ginv
     F2 = sp.simplify(sum(F[i, j] * Fup[i, j] for i in range(6) for j in range(6)))
     T = sp.zeros(6, 6)
@@ -97,7 +96,14 @@ def einstein_conditions():
         for b in range(6):
             T[a, b] = sp.simplify(sum(F[a, c] * F[b, d] * ginv[c, d] for c in range(6) for d in range(6))
                                   - g[a, b] * F2 / 4)
-    E = sp.simplify(M ** 4 * (Ric - g * Rs / 2) - (T - Lam * g))
+    return sp.simplify(M ** 4 * (Ric - g * Rs / 2) - (T - Lam * g)), Rs, F2
+
+
+@lru_cache(maxsize=1)
+def einstein_conditions():
+    """Einstein equations M^4 G_MN = T_MN - Lambda g_MN on flat M4 x S^2 with flux B."""
+    g = product_metric()
+    E, Rs, F2 = einstein_residual(g, monopole_field())
     four_d = sp.simplify(E[1, 1] / g[1, 1])
     sphere = sp.simplify(E[4, 4] / g[4, 4])
     offdiag = all(sp.simplify(E[i, j]) == 0 for i in range(6) for j in range(6) if i != j)
@@ -197,14 +203,49 @@ def radion_stability():
             "radion_mass_squared_times_r0_squared": sp.simplify(mass2 * sol["radius"] ** 2)}
 
 
+@lru_cache(maxsize=1)
+def planck_normalization():
+    """Reduce (M^4/2) sqrt(-G) R_6 for a curved 4D factor a(t)^2 eta: Z_g with M_Pl^2 = Z_g M^4.
+
+    Checks R_6 = R_4 + 2/r^2 for the product, then integrates sqrt(-G)/sqrt(-g4) over S^2.
+    """
+    a = sp.Function("a", positive=True)(t)
+    R4 = _ricci(sp.diag(-a ** 2, a ** 2, a ** 2, a ** 2, 1, 1))[2]
+    g6 = product_metric(radius=r, warp=a)
+    R6 = _ricci(g6)[2]
+    if sp.simplify(R6 - R4 - 2 / r ** 2) != 0:
+        raise ArithmeticError("product curvature does not split")
+    density = sp.simplify(sp.sqrt(-g6.det()) / a ** 4)
+    return sp.simplify(sp.integrate(sp.integrate(density, (theta, 0, sp.pi)), (phi, 0, 2 * sp.pi)))
+
+
+@lru_cache(maxsize=1)
+def gauge_normalization():
+    """Reduce -(1/4) sqrt(-G) F^2 for a 4D field F_tx = E on top of the monopole, with a 4D warp Omega.
+
+    Matching to -(Z/4) F_mu nu F^mu nu = Z E^2 / 2 gives Z; Omega drops out (4D Weyl invariance).
+    """
+    E = sp.Symbol("E", real=True)
+    g = product_metric(radius=r, warp=Omega)
+    ginv = g.inv()
+    F = monopole_field()
+    F[0, 1], F[1, 0] = E, -E
+    Fup = ginv * F * ginv
+    F2 = sum(F[i, j] * Fup[i, j] for i in range(6) for j in range(6))
+    lagr = sp.expand(sp.simplify(-sp.sqrt(-g.det()) * F2 / 4))
+    integrated = sp.integrate(sp.integrate(lagr, (theta, 0, sp.pi)), (phi, 0, 2 * sp.pi))
+    return sp.simplify(2 * sp.expand(integrated).coeff(E, 2))
+
+
 def four_d_relations():
-    """M_Pl^2 = 4 pi r0^2 M^4, g4^2 = e^2/(4 pi r0^2), and their vacuum values."""
+    """M_Pl^2 = Z_g M^4 and g4^2 = e^2 / Z from the reductions above, at the vacuum radius."""
     sol = vacuum_solution()
     rad = sol["radius"]
-    MPl2 = sp.simplify(4 * sp.pi * rad ** 2 * M ** 4)
-    g4sq = sp.simplify(e ** 2 / (4 * sp.pi * rad ** 2))
+    MPl2 = sp.simplify((planck_normalization() * M ** 4).subs(r, rad))
+    g4sq = sp.simplify((e ** 2 / gauge_normalization()).subs(r, rad))
     inverse_radius_over_MPl = sp.simplify(1 / (rad * sp.sqrt(MPl2)))
-    # Classical control: the sphere must be larger than the 6D Planck length, 1/r < M.
+    # Classical control needs r M >> 1. The O(1) threshold is convention-dependent:
+    # 1/r < M, or r > l6 with the 6D Planck length l6 = G6^(1/4), G6 = 1/(8 pi M^4).
     inverse_radius_over_M = sp.simplify(1 / (rad * M))
     g4 = sp.sqrt(g4sq)
     return {"M_Pl_squared": MPl2, "g4_squared": g4sq,
@@ -213,24 +254,90 @@ def four_d_relations():
             "inverse_radius_over_M": inverse_radius_over_M,
             "inverse_radius_over_M_in_terms_of_g4": sp.simplify(
                 inverse_radius_over_M - 2 * sp.pi ** sp.Rational(1, 4) * sp.sqrt(g4 / m)),
-            "control_bound_on_g4": m / (4 * sp.sqrt(sp.pi))}
+            "control_bound_on_g4": m / (4 * sp.sqrt(sp.pi)),
+            "control_bound_on_g4_planck_length_convention": m / sp.sqrt(2)}
 
 
+def wedge_two_forms(A, C):
+    """Components (A ^ C)_{ijkl}, i<j<k<l, of two 2-forms given as antisymmetric 6x6 matrices (up to a constant)."""
+    out = {}
+    for quad in combinations(range(6), 4):
+        val = 0
+        for perm in permutations(range(4)):
+            i, j, k, l = (quad[q] for q in perm)
+            val += Permutation(list(perm)).signature() * A[i, j] * C[k, l]
+        out[quad] = sp.simplify(val)
+    return out
+
+
+def wedge_one_two(A, C):
+    """Components (A ^ C)_{ijk}, i<j<k, of a 1-form (length-6 list) and a 2-form (up to a constant)."""
+    out = {}
+    for trip in combinations(range(6), 3):
+        val = 0
+        for perm in permutations(range(3)):
+            i, j, k = (trip[q] for q in perm)
+            val += Permutation(list(perm)).signature() * A[i] * C[j, k]
+        out[trip] = sp.simplify(val)
+    return out
+
+
+def curvature_two_forms(g):
+    """Riemann curvature 2-forms (R^a_b)_{cd} = R^a_{bcd} of a metric in the module coordinates."""
+    ginv = sp.simplify(g.inv())
+    Gam = _christoffel(g, ginv)
+    n = len(COORDS)
+    forms = {}
+    for a in range(n):
+        for b in range(n):
+            R = sp.zeros(n, n)
+            for c in range(n):
+                for d in range(n):
+                    val = sp.diff(Gam[a][d][b], COORDS[c]) - sp.diff(Gam[a][c][b], COORDS[d])
+                    for f in range(n):
+                        val += Gam[a][c][f] * Gam[f][d][b] - Gam[a][d][f] * Gam[f][c][b]
+                    R[c, d] = sp.simplify(val)
+            forms[(a, b)] = R
+    return forms
+
+
+def trace_r_wedge_r(g):
+    """Components of tr(R ^ R) = sum_ab R^a_b ^ R^b_a (proportional to the p1 density)."""
+    forms = curvature_two_forms(g)
+    total = {quad: 0 for quad in combinations(range(6), 4)}
+    for a in range(6):
+        for b in range(6):
+            for quad, val in wedge_two_forms(forms[(a, b)], forms[(b, a)]).items():
+                total[quad] += val
+    return {quad: sp.simplify(val) for quad, val in total.items()}
+
+
+@lru_cache(maxsize=1)
 def green_schwarz_background():
-    """Background values of the completion factors: X^2, S2 and p1 all vanish on M4 x S^2 with S^2 flux.
+    """Green-Schwarz sources evaluated on the background (1 = some component nonzero, 0 = all vanish).
 
-    X is a 2-form with legs only on S^2, so X^X = 0 (no 4-form on a 2D space);
-    no Spin(10) background gives S2 = 0; p1 vanishes for flat M4 times a round S^2.
-    Hence dH = 0 and the B-field is unsourced: no tadpole.
+    X is proportional to the U(1)_F field strength, so X^X ~ F^F; S2 = 0 with no Spin(10)
+    background; p1 ~ tr R^R; the U(1)_F Chern-Simons 3-form ~ A^F with the monopole potential.
     """
-    return {"X_wedge_X": 0, "S2": 0, "p1": 0, "B_field_source": 0}
+    F = monopole_field()
+    A = [0, 0, 0, 0, 0, B * r ** 2 * (1 - sp.cos(theta))]  # dA = F on the northern patch
+    if sp.simplify(sp.diff(A[5], theta) - F[4, 5]) != 0:
+        raise ArithmeticError("potential does not reproduce the monopole")
+    FF = wedge_two_forms(F, F)
+    trRR = trace_r_wedge_r(product_metric())
+    AF = wedge_one_two(A, F)
+    nonzero = lambda comps: int(any(value != 0 for value in comps.values()))  # noqa: E731
+    return {"X_wedge_X": nonzero(FF), "S2": 0, "p1": nonzero(trRR),
+            "chern_simons_A_wedge_F": nonzero(AF),
+            "B_field_source": int(nonzero(FF) or nonzero(trRR))}
 
 
 def flux_landscape(reference_flux=3, fluxes=(1, 2, 3, 4, 5, 6)):
-    """Vacua of the other flux sectors when Lambda is tuned flat for reference_flux (units M = e = 1).
+    """Vacua of the other flux sectors when Lambda > 0 is tuned flat for reference_flux (units M = e = 1).
 
     Stationary points solve 2 Lambda u^2 - 4 M^4 u + (3/4) m^2/e^2 = 0 with u = r^2; the smaller root
-    is the minimum. Vacua exist only for m^2 <= (8/3) M^8 e^2 / Lambda = (4/3) reference_flux^2.
+    is the minimum. Minima exist only for m^2 < (8/3) M^8 e^2 / Lambda = (4/3) reference_flux^2
+    (equality is an inflection point, unreachable for integer flux).
     """
     if type(reference_flux) is not int or reference_flux < 1:
         raise ValueError("reference_flux must be a positive int")
@@ -239,7 +346,7 @@ def flux_landscape(reference_flux=3, fluxes=(1, 2, 3, 4, 5, 6)):
     rows = []
     for flux in fluxes:
         disc = 16 - 6 * lam * flux ** 2
-        if disc < 0:
+        if disc <= 0:
             rows.append({"flux": flux, "vacuum": "none", "radius": None})
             continue
         u = (4 - sp.sqrt(disc)) / (4 * lam)

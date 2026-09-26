@@ -7,19 +7,27 @@ calculations are
 [flux_compactification_2026-09-26.md](flux_compactification_2026-09-26.md)
 and [family_symmetry_from_flux_2026-09-26.md](family_symmetry_from_flux_2026-09-26.md).
 
+The adoption is **provisional**. The Dirac quantization of the Green–Schwarz
+couplings is unsettled for the chosen completion (section 2), and resolving it
+is the first next problem (section 7). An independent review (section 8) found
+one blocker, six major and five minor issues; its repairs are applied.
+
 ## 0. The decision point
 
 Round 2 showed a naturalness obstruction
 ([common_light_cone_2026-09-25.md](common_light_cone_2026-09-25.md)).
-Emergent fields on a preferred-frame lattice do not share one light cone
-unless something forces them to. Tree-level tuning does not survive loops
-(Collins et al. 2004). Collider bounds require speed differences below about
-10⁻¹¹ (Hohensee et al. 2009). The program had to adopt one of three options:
+Emergent fields on the preferred-frame lattices studied here do not share one
+light cone unless something forces them to. Tree-level tuning does not survive
+loops (Collins et al. 2004). Collider bounds require isotropic photon–electron
+speed differences below about 10⁻¹¹ (Hohensee et al. 2009). The program had to
+adopt one of three options:
 1. **One relativistic fixed point.** Every low-energy field is an excitation
    of a single theory whose infrared is Lorentz-invariant.
-2. **A protecting symmetry.** For example, supersymmetry forbids
-   dimension-≤4 Lorentz violation (Groot Nibbelink–Pospelov 2005), and
-   sequestering adds further suppression (Pospelov–Shang 2012).
+2. **A protecting symmetry.** For example, supersymmetry pushes the lowest
+   Lorentz-violating operators to dimension five (Groot Nibbelink–Pospelov
+   2005), and sequestering suppresses them further (Pospelov–Shang 2012). Soft
+   supersymmetry breaking regenerates dimension-3 and dimension-4 Lorentz
+   violation, suppressed by the breaking scale.
 3. **Lorentz invariance fundamental.** Keep the "boundary" idea, but place it
    inside a Lorentz-invariant spacetime, as a compact internal space.
 
@@ -27,30 +35,40 @@ unless something forces them to. Tree-level tuning does not survive loops
 
 **Option 3 is chosen.** The reasons are ranked:
 
-1. **Every link in map section 7 then has a known consistent realization.**
-   - A common light cone is automatic.
+1. **It meets two section-7 links by assumption and gives consistent chiral
+   matter.**
+   - The common light cone is automatic.
    - A massless spin-2 field with universal coupling is ordinary 6D general
-     relativity. Weinberg's soft-graviton theorem then forces universality,
-     and Weinberg–Witten does not apply.
-   - Chiral matter comes from the anomaly-consistent completion already built
-     in round 1.
-   - Families come from flux.
+     relativity. Weinberg's soft-graviton theorem forces universality.
+     Weinberg–Witten is evaded because the graviton is elementary.
+   - Local-anomaly-consistent chiral matter comes from the round-1
+     completion.
+
+   It does not meet the rest of section 7:
+   - Three families come from a flux choice, which is equivalent to the Λ
+     tuning.
+   - The Standard Model group is not reached; Spin(10) is unbroken.
+   - It abandons section 7's single-microscopic-Hamiltonian standard.
+   - There is no tested prediction.
 
    Options 1 and 2 leave both the light cone and gravity open. Neither has a
    first calculation within this repository's reach:
    - Option 1 needs a lattice model with the Standard Model content at one
-     Lorentz-invariant fixed point; none is known.
-   - Option 2 needs a lattice with exact supersymmetry, which is a notoriously
-     hard lattice problem, and it still needs a graviton.
+     Lorentz-invariant fixed point, and none is known. Weinberg–Witten
+     obstructs the emergent graviton it would need.
+   - Option 2 needs a lattice with exact supersymmetry, a notoriously hard
+     lattice problem, and it still needs a graviton.
 2. **It reuses the program's strongest exact result.** The minimal completion
-   16₊(Q=1) ⊕ 16₋(Q=0) plus one Green–Schwarz 2-form, with three chiral 16s
-   at flux 3 and vanishing Z16 count, is the matter sector as it stands.
+   16₊(Q=1) ⊕ 16₋(Q=0) plus one Green–Schwarz 2-form gives three chiral 16s at
+   flux 3 with vanishing Z16 count. It is the matter sector as it stands.
 3. **It makes the program a definite effective field theory.** Its claims
    become checkable. Round 3 checked several of them, and some came out
-   negative (section 4).
+   negative (section 3).
 
 The cost is explicit. **BPR no longer claims to derive spacetime.** The
-substrate programme becomes analogue physics and a possible regulator.
+substrate programme becomes analogue physics. A lattice regulator of BPR-6D
+would reintroduce Collins-type Lorentz violation and fermion doubling, so
+"regulator" is a possibility to be examined, not an established role.
 
 ## 2. Definition of BPR-6D
 
@@ -62,38 +80,57 @@ substrate programme becomes analogue physics and a possible regulator.
   - 16 with charge 0 and chirality −.
 
   This is the unique minimal (16-component) local-anomaly completion
-  (`bpr/chiral_parent_completion.py`).
+  (`bpr/chiral_parent_completion.py`). Under a naive integrality test its
+  Green–Schwarz couplings need b_F·b_F = 4/3 and fail Dirac quantization. The
+  18-component alternative 16₊(1) ⊕ 16₋(0) ⊕ 1₊(0) ⊕ 1₋(4) passes (completion
+  note, section 5). Which completion BPR-6D uses is therefore open.
 - **Background.** U(1)_F monopole flux m=3 on a round S². The S² is the
   "boundary" of the Boundary Phase Resonance name.
+- **4D spectrum at tree level.**
+  - Three chiral 16s, forming a triplet of the sphere's SU(2) isometry.
+  - Massless Spin(10) × SU(2)_iso gauge bosons.
+  - A Stückelberg-massive U(1)_F boson (Green–Schwarz with flux). Its
+    coupling g4 therefore belongs to a massive vector, and
+    M_Pl² = πm²/e² is a relation, not a testable prediction.
+  - At least one axion from B that is not eaten.
+  - The radion, at mass 1/r.
+- **Scope of the U(1)_F selection rules.** The charge and spin-weight rules
+  of the family note apply to local 6D operators. Non-local, axion-dressed or
+  instanton-type contributions are not analysed.
 - **Not specified.** The Higgs sector, the Spin(10) → Standard Model
-  breaking, supersymmetry, and any UV completion.
+  breaking, SU(2)_iso breaking, supersymmetry, and any UV completion.
 
 ## 3. Round-3 results
 
 | Question | Answer | Status |
 |---|---|---|
-| Is M4 × S² with m=3 a vacuum? | Yes, with r=m/(2M²e), if Λ=2M⁸e²/m² | exact, one tuning |
-| Is the size stable? | Breathing mode yes, m_ψ=1/r0 exactly; other modes cited (RSS 1983) | exact / cited |
-| 4D scales | M_Pl²=πm²/e², 1/r=2g4M_Pl/m; control needs g4<m/(4√π) | exact relations |
-| Is m=3 selected? | No: fixing Λ makes one flux flat, lower flux AdS, and above (2/√3)m no vacuum | exact, negative |
+| Is M4 × S² with m=3 a vacuum? | Yes, with r=m/(2M²e), if Λ=2M⁸e²/m² | exact (classical), one tuning |
+| Is the size stable? | Classically, the breathing mode is, with m_ψ=1/r0 exactly; other Einstein–Maxwell modes are cited (RSS 1983) | exact / cited |
+| 4D scales | M_Pl²=πm²/e², 1/r=2g4M_Pl/m; classical control needs g4 below an O(1), convention-dependent bound | exact relations |
+| Is m=3 selected? | No. At fixed Λ, one flux is flat, lower fluxes are AdS, the window m₀<m<(2/√3)m₀ is dS (empty for m₀=3), and higher fluxes have no vacuum. This is the known Einstein–Maxwell landscape applied to the family count. | exact (classical), negative |
 | Family symmetry | Three families = one SU(2) triplet of the sphere's isometry | exact |
-| Yukawas | None in minimal content: 6D chirality + SU(2) leave only an internal-vector J=2 10 | exact, negative |
+| Yukawas | Selection rule: only an F-charge −2 internal one-form 10 in J=2 can couple. The minimal content has none, and neither has a scalar or derivative-of-scalar Higgs. | exact, negative |
 | SO(12) gauge–Higgs fix | Even families (2k) and a tachyonic J=2 level | exact / index-checked |
-| Masses | Real J=2 vev ⇒ m₃=m₁+m₂ (excluded); complex vevs reach any spectrum | exact, no prediction |
+| Masses | Real J=2 vev ⇒ m₃=m₁+m₂ (excluded); complex vevs reach any spectrum | exact, no viable relation |
 
 ## 4. What survives and what is reclassified
 
 | Earlier piece | New role |
 |---|---|
 | Ring and cubic substrate theorems, condensate regime, acoustic metric | Exact mathematics about lattice Bose systems. Analogue models, not the origin of spacetime. |
-| Link-boson emergent U(1) | An analogue of emergent gauge fields. Not the source of Standard Model gauge fields, which are fundamental in BPR-6D. |
-| Common-light-cone obstruction | Still true for its substrate class. It is resolved by assumption in BPR-6D, not solved. |
-| R+R² induced gravity with calibrated G | Superseded as the gravity sector by 6D Einstein gravity. M_Pl²=πm²/e² relates G to the U(1)_F coupling but does not predict it. |
+| Link-boson emergent U(1) | An analogue of emergent gauge fields. Not the source of the Standard Model gauge fields, which are fundamental in BPR-6D. |
+| Common-light-cone obstruction | Still true for its substrate class. BPR-6D resolves it by assumption, not by solving it. |
+| R+R² induced gravity and R+R² inflation | Superseded as the gravity sector by 6D Einstein gravity. |
+| Calibrated G | M_Pl²=πm²/e² relates G to the (Stückelberg-massive) U(1)_F coupling but does not predict it. |
 | Path B (dihedral 2D gauge) | Separate and unconnected. Its falsified predictions stay withdrawn. |
-| Chiral parent + completion | Adopted as the matter sector. |
-| Flavor formulas | Unconnected phenomenology. BPR-6D derives no mass or mixing relation (family note, section 4). |
-| Legacy Casimir and "boundary resonance" laboratory claims | Not supported by BPR-6D. The only boundary is a sphere within one or two orders of magnitude of the Planck length. |
-| Fine-structure constant | Still calibrated. |
+| Chiral parent + completion | Adopted as the matter sector, provisionally (2-form quantization). |
+| Flavor formulas, "205 predictions from (J,p,N)", "41 DERIVED" | Unconnected phenomenology. BPR-6D derives no mass or mixing relation (family note, section 4). The substrate parameters (J,p,N) have no BPR-6D counterpart. |
+| Emergent "3+1 dimensions", "Lorentz invariance to exp(−p^{1/3})", ξ₂=1/p dispersion, the GUP | Superseded. In BPR-6D spacetime is six-dimensional and exactly Lorentz-invariant, and p has no counterpart. |
+| Legacy Casimir claims, the phonon λ~10⁻⁸ result, the MEMS direction | Not supported by BPR-6D. The only boundary is the internal sphere, of radius r = (m/2g4)ℓ_P, and no laboratory-scale boundary field exists. |
+| Fine-structure constant | An inverse calibration in the substrate parameter p, with no BPR-6D counterpart. |
+
+The README's "CURRENT CLAIM (BPR 2.0)" header is superseded, for the
+architecture, by section 5 below. The README now says so.
 
 ## 5. The changed central claim
 
@@ -103,20 +140,20 @@ gauge fields, matter and gravity. That claim is withdrawn.
 The claim now is narrower:
 
 > BPR-6D is a six-dimensional, Lorentz-invariant effective field theory with
-> gravity, Spin(10)×U(1)_F, the minimal anomaly-free chiral completion and a
+> gravity, Spin(10)×U(1)_F, an anomaly-free chiral completion and a
 > Green–Schwarz 2-form. Compactified on a flux-carrying sphere, it gives:
 > - three chiral 16s forming a triplet of a gauged SU(2) family symmetry;
-> - a Minkowski vacuum with a stable breathing mode, after one tuning of the
->   6D cosmological constant.
+> - a classically stable Minkowski vacuum, after one tuning of the 6D
+>   cosmological constant.
 
 **It is not a theory of everything.**
 - 6D gravity and gauge theory are non-renormalizable, with a cutoff of order
-  M.
+  M. 1/r is within a factor of about 2 of M unless g4 is small.
 - The cosmological constant is tuned, and the flux number is equivalent to
   that tuning.
-- The Yukawa sector is absent at the minimal level.
+- The minimal content has no Yukawa couplings.
 - The Higgs sector, Spin(10) breaking and SU(2)_iso breaking are unspecified.
-- No prediction has been tested.
+- It makes no quantitative prediction yet.
 
 ## 6. Precedent
 
@@ -139,23 +176,68 @@ The architecture is not new. The following are cited, not re-derived:
 
 What BPR-6D adds is narrow:
 - the specific minimal completion;
-- the demonstration that its Yukawa sector is empty at the minimal level;
-- the demonstration that its flux number is not selected.
+- the Yukawa selection rule for its flux families;
+- the observation that the known landscape leaves its family number
+  unselected.
 
 ## 7. Next well-posed problems
 
-1. **Remove the Λ tuning.** Embed BPR-6D in Salam–Sezgin-type gauged
-   supergravity, with U(1)_F → U(1)_R. Then redo anomaly cancellation (the
-   gravitino and gaugini become charged) and the family count (the flux is
-   fixed by supersymmetry).
-2. **Higgs sector.** Find a field content that meets all of the following, or
+In priority order:
+
+1. **2-form quantization and global anomalies.** Settle the Dirac quantization
+   of the Green–Schwarz couplings and the Ω₇ bordism. The minimal completion
+   fails a naive integrality test and the 18-component alternative passes.
+   Decide which completion BPR-6D is.
+2. **Remove the Λ tuning.** Find an anomaly-free 6D (1,0) gauged supergravity
+   with Spin(10) ⊂ G whose Salam–Sezgin vacuum gives exactly three chiral 16s,
+   or show that none exists in a stated class. This is not a relabelling of
+   BPR-6D:
+   - hyperini have the opposite chirality to gaugini, so 16₊ and 16₋ cannot
+     both be matter;
+   - the gravitational anomaly condition n_H − n_V + 29n_T = 273 requires 290
+     hypermultiplets for Spin(10)×U(1)_R with n_T = 1;
+   - Salam–Sezgin fixes the monopole number at ±1, leaves a flat
+     dilaton–radius direction and leaves 4D N=1 unbroken.
+3. **Higgs sector.** Find a field content that meets all of the following, or
    prove that none exists in a stated class:
    - it supplies an F-charge −2 internal one-form 10;
    - it is stable at 1/r;
    - it keeps three families;
    - it breaks SU(2)_iso at a high scale.
-3. **Quantum radion potential.** Compute the one-loop Casimir energy on the
-   Planck-sized sphere, including the Green–Schwarz axion and the
-   Stückelberg-massive U(1)_F.
-4. **Global anomalies.** Check Ω₇ bordism and the 2-form quantization left
-   open by the completion note.
+4. **Quantum radion potential.** In D=6 the one-loop potential is
+   log-divergent (heat-kernel coefficient a₃). Dimension-6 counterterms scale
+   with r like the Casimir term, so the finite part is scheme-dependent.
+   Compute the scheme-independent log coefficient, including the
+   Green–Schwarz axion and the Stückelberg-massive U(1)_F. Then determine
+   whether a regime rM ≫ 1 keeps the classical minimum.
+
+## 8. Independent review
+
+An independent review read this note against the unification map, the
+round-2 and round-3 notes and the README. It confirmed the literature
+attributions:
+- Collins et al.;
+- Hohensee et al. (−5.8×10⁻¹² to 1.2×10⁻¹¹);
+- Groot Nibbelink–Pospelov (lowest Lorentz violation at dimension five);
+- Pospelov–Shang;
+- every citation in section 6.
+
+Its findings are repaired above:
+- **Blocker.** The earlier text claimed option 3 gives every section-7 link a
+  consistent realization. That is false: families, the Standard Model group,
+  the single-Hamiltonian standard and predictions are unmet.
+- **Major:**
+  - the Planck-sized-sphere statements are now conditional on g4;
+  - the 2-form quantization caveat now makes the adoption provisional;
+  - the 4D spectrum (Stückelberg U(1)_F, axion) is added, together with the
+    local-operator scope of the selection rules;
+  - the README legacy claims are reclassified;
+  - the supergravity next step is re-posed;
+  - the one-loop next step is re-posed as scheme-independent.
+- **Minor:**
+  - Weinberg–Witten wording;
+  - soft-breaking Lorentz violation;
+  - the dS window;
+  - the flux landscape is credited as known;
+  - the Yukawa statement is stated as a selection rule;
+  - wording fixes.

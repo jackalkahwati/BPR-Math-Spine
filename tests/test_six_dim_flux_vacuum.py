@@ -90,15 +90,70 @@ def test_classical_control_needs_a_weak_flux_coupling():
     assert below["inverse_radius_over_M6"] < 1 < above["inverse_radius_over_M6"]
 
 
-def test_green_schwarz_background_is_unsourced():
-    # X is a 2-form on S^2 only, so X wedge X is a 4-form on a 2D space: zero.
-    X = sp.Symbol("B0")
-    two_form = sp.zeros(6, 6)
-    two_form[4, 5], two_form[5, 4] = X, -X
-    # Any 4-form built from two copies needs four distinct indices among {4, 5}: impossible.
-    nonzero = [(a, b) for a in range(6) for b in range(a + 1, 6) if two_form[a, b] != 0]
-    assert all(set(p) <= {4, 5} for p in nonzero)
-    assert v.green_schwarz_background() == {"X_wedge_X": 0, "S2": 0, "p1": 0, "B_field_source": 0}
+def test_green_schwarz_sources_computed_from_the_background():
+    # F^F, tr R^R and A^F are computed from the monopole field, the product metric's
+    # curvature 2-forms and the monopole potential; all vanish on M4 x S^2.
+    assert v.green_schwarz_background() == {"X_wedge_X": 0, "S2": 0, "p1": 0,
+                                            "chern_simons_A_wedge_F": 0, "B_field_source": 0}
+    # Control: the same wedge routine detects a nonzero F^F (4D electric field times the monopole).
+    E = sp.Symbol("E", positive=True)
+    F = v.monopole_field()
+    F[0, 1], F[1, 0] = E, -E
+    nonzero = {quad: val for quad, val in v.wedge_two_forms(F, F).items() if val != 0}
+    assert set(nonzero) == {(0, 1, 4, 5)}
+    # Control: curvature 2-forms reproduce the round-sphere Riemann tensor R^theta_{phi theta phi} = sin^2.
+    forms = v.curvature_two_forms(v.product_metric())
+    assert sp.simplify(forms[(4, 5)][4, 5] - sp.sin(v.theta) ** 2) == 0
+
+
+def test_four_d_normalizations_are_derived_by_reduction():
+    # Coefficient of sqrt(-g4) R_4 and of -(1/4) F^2 after integrating over S^2: both the sphere area.
+    assert sp.simplify(v.planck_normalization() - 4 * sp.pi * v.r ** 2) == 0
+    Z = v.gauge_normalization()
+    assert sp.simplify(Z - 4 * sp.pi * v.r ** 2) == 0 and v.Omega not in Z.free_symbols
+
+
+def test_planck_length_convention_changes_the_bound_by_sqrt_8pi():
+    rel = v.four_d_relations()
+    ratio = rel["control_bound_on_g4_planck_length_convention"] / rel["control_bound_on_g4"]
+    assert sp.simplify(ratio - sp.sqrt(8 * sp.pi)) == 0
+    bound = float(rel["control_bound_on_g4_planck_length_convention"].subs(v.m, 3))
+    below, above = v.illustrative_scales(3, (0.99 * bound, 1.01 * bound))
+    threshold = (8 * math.pi) ** 0.25  # r = l6 = G6^(1/4) with G6 = 1/(8 pi M^4)
+    assert below["inverse_radius_over_M6"] < threshold < above["inverse_radius_over_M6"]
+
+
+def _six_d_equations(four_d_diag):
+    g = sp.diag(*four_d_diag, v.r ** 2, v.r ** 2 * sp.sin(v.theta) ** 2)
+    E, _, _ = v.einstein_residual(g, v.monopole_field(field=v.flux_field()))
+    return sp.simplify(E[1, 1] / g[1, 1]), sp.simplify(E[4, 4] / g[4, 4])
+
+
+def test_landscape_matches_full_six_dimensional_equations():
+    """Weyl-frame-independent oracle: solve the 6D equations on (A)dS4 x S^2 directly."""
+    h = sp.Symbol("h", real=True)
+    H = sp.Symbol("H", positive=True)
+    L = sp.Symbol("L", positive=True)
+    ds = _six_d_equations([-1, sp.exp(2 * H * v.t), sp.exp(2 * H * v.t), sp.exp(2 * H * v.t)])
+    ads = _six_d_equations([-(L / v.z) ** 2, (L / v.z) ** 2, (L / v.z) ** 2, (L / v.z) ** 2])
+    ds_h = [sp.simplify(eq.subs(H, sp.sqrt(h))) for eq in ds]
+    # The AdS equations are the dS ones continued to h = H^2 = -1/L^2.
+    for eq_ds, eq_ads in zip(ds_h, ads):
+        assert sp.simplify(eq_ds.subs(h, -1 / L ** 2) - eq_ads) == 0
+    for reference in (3, 7):
+        land = v.flux_landscape(reference, tuple(range(1, reference + 3)))
+        units = {v.M: 1, v.e: 1, v.Lam: sp.Rational(2, reference ** 2)}
+        for row in land["sectors"]:
+            eqs = [sp.numer(sp.together(eq.subs(units).subs(v.m, row["flux"]))) for eq in ds_h]
+            sols = [sol for sol in sp.solve(eqs, [h, v.r], dict=True)
+                    if sol[v.r].is_real and sol[v.r] > 0]
+            if row["vacuum"] == "none":
+                assert sols == []
+                continue
+            smallest = min(sols, key=lambda sol: float(sol[v.r]))
+            assert float(smallest[v.r]) == pytest.approx(row["radius"], rel=1e-12)
+            sign = {"Minkowski": 0, "de Sitter": 1, "anti-de Sitter": -1}[row["vacuum"]]
+            assert sp.sign(sp.nsimplify(smallest[h])) == sign
 
 
 def test_report_is_strict_json():

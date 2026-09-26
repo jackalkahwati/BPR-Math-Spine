@@ -4,6 +4,8 @@
 >
 > **CURRENT CLAIM (BPR 2.0):** a **flavor-sector organizing framework** + a proposed, untested particle sector (gauged dihedral point group, Postulate 0d). The original "theory of everything" claim was withdrawn after a sealed, blind glueball benchmark falsified the 1.0 particle sector (2026). Flavor formulas are numerically unchanged under gauging (a kinematic relabeling, not a proof of survival under the interacting dynamics). The proposed sector supplies 2D non-Abelian anyons only; 4D SU(3) color, chiral Standard Model matter, and the particle spectrum are NOT established. Flavor-mode labels are conjectural and n_gen=3 is an input (2026-09-10 foundation repair).
 >
+> **ARCHITECTURE UPDATE (2026-09-26):** the program now takes six-dimensional Lorentz invariance and gravity as fundamental ("BPR-6D"), [decision note](doc/derivations/architecture_decision_2026-09-26.md). Its section 5 supersedes the claim above for the architecture. Legacy claims below that assume a substrate-derived spacetime are superseded or unsupported, as that note's section 4 records: emergent 3+1 dimensions, Lorentz invariance to exp(-p^{1/3}), the GUP, laboratory boundary/Casimir and phonon-MEMS signatures, and "205 predictions from (J,p,N)". No theory of everything or empirical validation is claimed.
+>
 > **BPR 2.0 (Path B)** → [`viz/bpr2-status.html`](viz/bpr2-status.html) *(honest status page: what changed from 1.0, the sealed glueball benchmark that forced it, milestones, and the two open decision points)* | proposal: [`doc/BPR2_PATH_B_NONABELIAN_GAUGE.md`](doc/BPR2_PATH_B_NONABELIAN_GAUGE.md)
 >
 > **2026-09-12 THEORY AUDIT / REPAIR:** [audit](doc/derivations/toe_audit_2026-09-12.md) and [conditional construction](doc/derivations/toe_constructive_extension_2026-09-12.md). The original gauge electric operator is noncentral; the new central heat-kernel model is distinct from all historical Wilson runs. The chiral-flavor prototype uses supplied flux and scalar sources, not predicted masses. No completed TOE or new benchmark result is claimed.
@@ -106,7 +108,8 @@
 > **ARCHITECTURE DECISION: BPR-6D (2026-09-26):** [Lorentz invariance made fundamental](doc/derivations/architecture_decision_2026-09-26.md), in response to the light-cone obstruction.
 > - BPR-6D is 6D Einstein gravity with Spin(10)×U(1)_F, the minimal chiral completion and a Green–Schwarz 2-form, on M4 × S² with flux 3. The sphere is the "boundary".
 > - The lattice substrate results stay as exact lattice mathematics, reclassified as analogue/regulator physics. BPR no longer claims to derive spacetime.
-> - Legacy laboratory boundary/Casimir claims are not supported, because the only boundary is a near-Planckian sphere.
+> - Legacy laboratory boundary/Casimir claims are not supported: the only boundary is the internal sphere, of radius r=(m/2g4)ℓ_P. It is near-Planckian unless the unknown U(1)_F coupling g4 is tiny.
+> - Adoption is provisional: the minimal completion's Green–Schwarz couplings fail a naive Dirac-quantization test (an 18-component alternative passes).
 >
 > **FLUX VACUUM (2026-09-26):** [M4 × S² with U(1)_F flux](doc/derivations/flux_compactification_2026-09-26.md). Exact classical results:
 > - r=m/(2M²e), with one tuning Λ=2M⁸e²/m²;

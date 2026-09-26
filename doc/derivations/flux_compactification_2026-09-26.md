@@ -3,10 +3,13 @@
 2026-09-26. Status: exact classical symbolic algebra on a supplied
 six-dimensional action. It comes with an implementation
 (`bpr/six_dim_flux_vacuum.py`), tests (`tests/test_six_dim_flux_vacuum.py`)
-and a demo (`scripts/demo_six_dim_flux_vacuum.py`). The background and the
-breathing mode are derived here. Stability against the other fluctuations is
-cited from the literature (section 7), not re-derived. Quantum corrections are
-not included. The architecture this belongs to is described in
+and a demo (`scripts/demo_six_dim_flux_vacuum.py`). The background, the breathing mode and the
+4D normalizations are derived here. Stability against the other
+Einstein–Maxwell fluctuations is cited from the literature (section 7), not
+re-derived. Spin(10), fermion and 2-form fluctuations are not covered by that
+citation. Quantum corrections are not included. The independent review in
+section 8 found one blocker, three major and seven minor issues; its repairs
+are applied. The architecture this belongs to is described in
 [architecture_decision_2026-09-26.md](architecture_decision_2026-09-26.md).
 
 ## 0. Question
@@ -79,8 +82,11 @@ breathing-mode normalization n(n+2)/2 · M_Pl² for n=2 internal dimensions.
 - V = V′ = 0 and V″(ψ) = 16π M⁴ > 0;
 - the radion mass is m_ψ² = V″/K = 1/r0², exactly.
 
-The breathing mode is therefore stable, and it is as heavy as the first
-Kaluza–Klein level. It leaves no light modulus and no long-range scalar force.
+The breathing mode is therefore stable, with its mass at the Kaluza–Klein
+scale: the first nonconstant scalar harmonic (l=1) sits at m² = 2/r², a
+factor √2 higher. The breathing mode itself is not a light modulus and gives
+no long-range scalar force. Whether a Green–Schwarz axion stays light is a
+separate question (section 5).
 For m = 1, 2, 3, 5, the tests confirm by grid minimization that:
 - the minimum sits at r = m/(2M²e) with V = 0;
 - detuning Λ by ±1% makes the minimum de Sitter or anti-de Sitter.
@@ -89,37 +95,74 @@ For m = 1, 2, 3, 5, the tests confirm by grid minimization that:
 
 Reducing on S² gives
 
-    M_Pl² = 4π r² M⁴ = π m² / e²,     g4² = e² / (4π r²),
+    M_Pl² = 4π r² M⁴ = π m² / e²,     g4² = e² / (4π r²).
+
+Both normalizations are computed, not asserted:
+- `planck_normalization` reduces (M⁴/2)√(−G)R₆ for a curved 4D factor
+  a(t)²η. It checks R₆ = R₄ + 2/r² and integrates over S², giving Z_g = 4πr².
+- `gauge_normalization` reduces −¼√(−G)F² for a 4D field F_tx = E on top of
+  the monopole, with a 4D warp Ω. The result is Z = 4πr², independent of Ω.
+
+Together these give
 
 and therefore
 
     1/r = 2 g4 M_Pl / m,     (1/r)/M = 2 π^{1/4} (g4/m)^{1/2}.
 
-Here g4 is the 4D U(1)_F coupling. Classical 6D gravity is controlled only if
-the sphere is larger than the 6D Planck length, 1/r < M. This requires
+Here g4 is the 4D U(1)_F coupling. The 4D U(1)_F boson is Stückelberg-massive
+(section 5), but its coupling is still well-defined.
 
-    g4 < m / (4√π)   (≈ 0.42 for m=3).
+The relation g4 = m/(2rM_Pl) says that g4 is the unknown radius under another
+name. Classical control of 6D gravity needs rM ≫ 1. Where the O(1) threshold
+sits depends on convention:
 
-In the table, the coupling g4 is an assumption; only the relations above are
-derived:
+    1/r < M            ⇒  g4 < m/(4√π)  ≈ 0.42 for m=3,
+    r > ℓ6 = G6^{1/4}  ⇒  g4 < m/√2     ≈ 2.1  for m=3,
+
+with G6 = 1/(8πM⁴). The two bounds differ by a factor √(8π), and both are
+necessary O(1) conditions only. Real control needs g4 well below them.
+
+In the table, g4 is an assumption, and only the relations above are derived.
+The ratios near 1 mark the edge of the classical regime, not a sharp
+boundary:
 
 | g4 (assumed) | 1/r (GeV) | M6 (GeV) | (1/r)/M6 |
 |---|---|---|---|
 | 0.1 | 1.6e17 | 3.3e17 | 0.49 |
-| 0.5 | 8.1e17 | 7.5e17 | 1.09 (uncontrolled) |
-| 1.0 | 1.6e18 | 1.1e18 | 1.54 (uncontrolled) |
+| 0.5 | 8.1e17 | 7.5e17 | 1.09 |
+| 1.0 | 1.6e18 | 1.1e18 | 1.54 |
 
-**Consequence.** The internal sphere is within one or two orders of magnitude
-of the Planck length. BPR-6D therefore predicts no laboratory-scale boundary
-effects. The KK tower, the radion and the SU(2) isometry bosons all sit near
-10¹⁷ GeV unless g4 is very small.
+**Consequence, conditional on g4.** Since r = (m/2g4)ℓ_P, with ℓ_P the
+reduced Planck length:
+- If g4 is of order 0.02–0.4, the sphere lies within one or two orders of
+  magnitude of the Planck length. The KK tower and the radion then sit near
+  10¹⁶–10¹⁸ GeV, and BPR-6D gives no laboratory-scale boundary effect.
+- A large sphere needs a tiny and unexplained g4. For example, 1/r ≈ 1 TeV
+  needs g4 ≈ 10⁻¹⁵. Nothing derived here forbids that. Collider bounds on KK
+  excitations of the bulk Spin(10) fields would constrain it.
+
+The SU(2) isometry gauge bosons are **massless at tree level** in this
+vacuum, whatever the radius. They are the gauged family symmetry of the
+[family note](family_symmetry_from_flux_2026-09-26.md), section 6, and no
+breaking mechanism is supplied.
 
 ## 5. Green–Schwarz sector in the background
 
-The completion factor X is a 2-form with legs only on S². Hence X∧X=0. The
-background has S2=0 and p1=0 (flat M4 times a round S²). The Chern–Simons
-3-form of the background has legs only on S², so it also vanishes. The 2-form
-is therefore unsourced, and there is no tadpole.
+The completion factor X is proportional to the U(1)_F field strength, which
+is a 2-form with legs only on S², so X∧X=0. The background has no Spin(10)
+field, so S2=0. For flat M4 times a round S², p1=0. The Chern–Simons 3-form
+A∧F of the monopole potential also vanishes. The 2-form is therefore
+unsourced, and there is no tadpole.
+
+`green_schwarz_background` computes all of these from the fields:
+- F∧F from the monopole field;
+- tr R∧R from the curvature 2-forms of the product metric;
+- A∧F from the potential A_φ = Br²(1−cos θ).
+
+Two controls:
+- the same wedge routine finds a nonzero F∧F once a 4D electric field is
+  added;
+- the curvature 2-forms reproduce the round-sphere Riemann tensor.
 
 Fluctuations are a different matter. The Green–Schwarz coupling B∧X4
 together with the background flux gives the 4D U(1)_F gauge boson a
@@ -128,17 +171,18 @@ Its value, and whether any axion stays light, are not computed here.
 
 ## 6. Does anything select m=3? No.
 
-**Theorem 5 (flux landscape at fixed Λ).** Fix M, e and Λ, and consider all
-flux sectors m. Write u=r². Stationary points solve
+**Theorem 5 (flux landscape at fixed Λ>0).** Fix M, e and Λ>0, and consider
+all flux sectors m. Write u=r². Stationary points solve
 
     2Λ u² − 4M⁴ u + (3/4) m²/e² = 0.
 
-They exist only for m² ≤ (8/3) M⁸e²/Λ. The smaller root is a minimum, and the
-larger root is a barrier to decompactification.
+Minima exist only for m² < (8/3) M⁸e²/Λ. At equality there is an inflection
+point, which integer flux never reaches. The smaller root is a minimum, and
+the larger root is a barrier to decompactification.
 
 Tune Λ to make m₀ flat, Λ = 2M⁸e²/m₀². Then:
 - m < m₀ gives anti-de Sitter minima;
-- m₀ < m ≤ (2/√3) m₀ gives de Sitter minima;
+- m₀ < m < (2/√3) m₀ gives de Sitter minima;
 - larger m has no vacuum.
 
 For m₀ = 3:
@@ -146,8 +190,18 @@ For m₀ = 3:
 - m = 3 is Minkowski;
 - m ≥ 4 has no vacuum (4² > 12).
 
-`flux_landscape` computes this. Tests compare it with direct grid
-minimization for m₀ = 3 and m₀ = 7.
+`flux_landscape` computes this. The tests check it two ways, for m₀ = 3
+and m₀ = 7:
+- against direct grid minimization of the Einstein-frame potential;
+- against a frame-independent oracle suggested by the review: the full 6D
+  Einstein equations on dS₄ × S² (flat slicing) and AdS₄ × S² (Poincaré
+  patch).
+
+In that oracle the AdS equations are exactly the dS ones continued to
+H² = −1/L². Eliminating H² reproduces the stationary-point quadratic, and the
+sign of H² at the smaller root matches the vacuum type. The oracle matters
+because a grid test at the Minkowski point alone cannot detect a wrong Weyl
+factor: stationarity at V=0 is frame-independent.
 
 So "three families" is not selected by the vacuum. Choosing the flux is the
 same act as tuning the 6D cosmological constant: whichever flux is flat is
@@ -163,20 +217,54 @@ landscape and its transitions.
 ## 7. Cited, not derived
 
 - Full classical stability of the RSS vacuum against scalar, vector and
-  tensor fluctuations was established in the RSS literature (Randjbar-Daemi,
-  Salam, Strathdee, Nucl. Phys. B214 (1983) 491). Only the breathing mode is
-  re-derived here.
+  tensor fluctuations of the Einstein–Maxwell sector was established in the
+  RSS literature (Randjbar-Daemi, Salam, Strathdee, Nucl. Phys. B214 (1983)
+  491). Only the breathing mode is re-derived here. The citation does not
+  cover the Spin(10), fermion and 2-form fluctuations, nor the Green–Schwarz
+  mixing.
 - The massless 4D gauge symmetry includes the SU(2) isometry of the round
   sphere (RSS 1983).
 - Salam–Sezgin (Phys. Lett. B147 (1984) 47) is the supersymmetric version with
-  gauged U(1)_R. There, flat M4 × S² requires no tuning of Λ. That is a
-  candidate next step for removing the tuning. It would change the anomaly
-  bookkeeping (the gravitino and gaugini carry R-charge) and would fix the flux
-  by supersymmetry, so the family count would have to be redone.
+  gauged U(1)_R. There, flat M4 × S² requires no tuning of Λ. It is a
+  candidate route for removing the tuning, with three costs:
+  - The field equations fix the monopole number at ±1, so the family count
+    would have to be redone.
+  - The theory has a classically flat dilaton–radius direction, so removing
+    the tuning brings back a modulus.
+  - The anomaly bookkeeping changes, because the gravitino and gaugini carry
+    R-charge.
 
 ## 8. Independent review
 
-Pending. See the README entry for this date.
+An independent adversarial review re-derived, with its own scripts:
+- the Einstein equations;
+- the potential;
+- the kinetic term, for ψ(t,x) with the correct Lorentz structure;
+- V″ and the radion mass;
+- the 4D relations;
+- Theorem 5, by the full (A)dS₄ × S² solve now used as a test.
+
+It found one blocker, three major and seven minor issues. All are repaired
+above:
+- **Blocker.** The earlier text said the SU(2) isometry bosons sit near
+  10¹⁷ GeV. They are massless at tree level.
+- **Major:**
+  - "no laboratory-scale boundary effects" was unconditional; it is now
+    conditional on g4;
+  - the Green–Schwarz test was a tautology; the sources are now computed
+    from the fields, with controls;
+  - the g4 and M_Pl normalizations were hard-coded; they are now derived by
+    reduction.
+- **Minor:**
+  - the KK comparison;
+  - the scope of "no light modulus";
+  - the control criterion is O(1) and convention-dependent, and a second
+    convention is added;
+  - the scope of the RSS stability citation;
+  - the Salam–Sezgin flux and modulus;
+  - a strict inequality with the Λ>0 assumption, and the equality case now
+    treated as no vacuum;
+  - a Weyl-independent oracle for Theorem 5.
 
 ## 9. Limitations
 
@@ -190,5 +278,6 @@ Pending. See the README entry for this date.
   Stückelberg mass. They can shift the radion potential at the same order as
   its classical terms, because 1/r is close to M.
 - The numerical scales depend on an unknown coupling g4 and are illustrative.
+  The size of the sphere is not predicted.
 - 6D gravity and 6D gauge theory are non-renormalizable. This is an effective
   theory with cutoff of order M; it is not UV complete.

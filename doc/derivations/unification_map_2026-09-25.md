@@ -152,7 +152,10 @@ derives the Randjbar-Daemi–Salam–Strathdee vacuum:
 - a stable breathing mode with mass exactly 1/r0;
 - M_Pl² = πm²/e² and 1/r = 2g4M_Pl/m.
 
-Classical control needs g4 < m/(4√π), so the sphere is near-Planckian.
+The sphere radius is r = (m/2g4)ℓ_P with g4 unknown. It is near-Planckian
+unless g4 is tiny, and classical control needs g4 below an O(1),
+convention-dependent bound. The adoption is provisional, because the minimal
+completion's Green–Schwarz couplings fail a naive Dirac-quantization test.
 
 **Negative result: flux selection.** At fixed Λ:
 - only one flux sector is flat;
