@@ -163,6 +163,11 @@
 > - n_gen ∈ 3ℤ: a postdiction that excludes a fourth family.
 > - Masses, mixings, the Higgs mass, the GUT scale and Λ are not predicted. No test against data has been made.
 >
+> **PHASE 1: ONE DEFINITE MODEL (2026-09-26):** [the minimal BPR-6D model and its kill checks](doc/derivations/minimal_model_2026-09-26.md).
+> - Independent Higgs copies on each brane fail: no tree-level mixing across branes, and three light Δ_R break the one-loop running.
+> - The adopted version uses a single bulk F-charge −6 Higgs, coupled through ð̄ operators at four branes. It breaks Spin(10) exactly to the Standard Model, reaches generic Yukawas (four branes at the roots of a quartic), and unifies at one loop with proton decay 10³–10⁴ above the Super-K bound.
+> - Open: cited vacuum and fits, a seesaw tension, a non-robust compactification window, and five unstabilized brane moduli (potentially fatal). No fermion mass is predicted. The independent review found a blocker in the first version; it is repaired by the switch to a bulk Higgs.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap

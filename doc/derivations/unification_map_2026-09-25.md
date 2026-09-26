@@ -312,6 +312,33 @@ See [predictions_2026-09-26.md](predictions_2026-09-26.md).
   a fourth family.
 - **Everything else** is at 10¹⁶–10¹⁸ GeV or not predicted.
 
+## 3i. Phase 1: one definite model
+
+See [minimal_model_2026-09-26.md](minimal_model_2026-09-26.md). BPR-6D's
+supplied pieces are now written down as one model and kill-checked.
+
+**Two versions were tested:**
+- **Version A** put an independent Higgs copy on each brane. It fails: copies
+  on different branes do not mix at tree level (rank-1 Yukawas), and a
+  rank-3 neutrino Majorana matrix then needs three light Δ_R, for which the
+  one-loop running has no consistent intermediate scale.
+- **Version B** is adopted. It uses a single bulk F-charge −6 Higgs
+  (10 and 126bar), whose lowest level is a spin-3 multiplet, coupled to the
+  families through ð̄ operators at four branes. It passes every computed
+  check:
+  - exact breaking to the Standard Model;
+  - generic Yukawa pairs, modulo U(3) family redefinitions, from four branes
+    at the roots of a quartic;
+  - one-loop unification near 2–5×10¹⁶ GeV, with proton decay 10³–10⁴ above
+    the Super-K bound.
+
+**Open or conditional:**
+- the cited vacuum and fermion fits;
+- a seesaw tension;
+- a non-robust compactification window;
+- five brane-position moduli, unstabilized and potentially fatal;
+- no fermion mass is predicted.
+
 ## 4. The dependency graph
 
 ```mermaid
@@ -542,6 +569,8 @@ Rounds 6–10 settle the rest of the list:
 - **Cosmological constant:** tuned, with no classical self-tuning.
 - **Predictions:** U(1)_F is a Peccei–Quinn symmetry. A QCD axion is viable
   only with a supplied F-charged singlet, and n_gen ∈ 3ℤ.
+- **Phase 1:** the supplied pieces are now one definite model. Its computed
+  kill checks pass, and the brane moduli are the main open danger.
 
 Every item is supplied or assumed rather than derived from one microscopic
 Hamiltonian. The four requirements are now consistent with each other, but

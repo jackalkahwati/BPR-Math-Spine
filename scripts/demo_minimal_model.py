@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Print the minimal BPR-6D model (Phase 1a): field content, coupling rules, breaking pattern and brane Yukawas."""
+"""Print the minimal BPR-6D model (Phase 1a): field content, coupling rules, breaking pattern, brane Yukawas, and the
+failure of brane Higgs copies versus a single bulk Higgs."""
 
 import sys
 
@@ -34,6 +35,13 @@ def main(argv=None):
     print("Realizability rank modulo U(3) by number of branes (target 24): {}".format(report["realizability_rank_mod_U3"]))
     print("Three-brane Bargmann relation mismatch: {:.1e}".format(report["bargmann_relation_mismatch"]))
     print("Four-brane realization of a hierarchical pair: {}".format(report["hierarchical_example"]))
+    print("Version A (brane copies): tree-level Yukawa rank with one light doublet = {}".format(
+        report["version_A_brane_copies_light_yukawa_rank"]))
+    print("Version B (bulk Higgs): levels m^2 r^2 = {}; lowest-level checks: {}".format(
+        report["bulk_scalar_levels"], report["lowest_level_checks"]))
+    print("Version B light combination over random branes: {}".format(report["bulk_higgs_scan"]))
+    print("Degenerate light states with positive brane value terms only: {}".format(
+        report["positive_value_terms_degenerate_light_states"]))
     print("Family isometry left unbroken: {}".format(report["isometry_stabilizer"]))
     print("Limitations")
     for limitation in report["limitations"]:

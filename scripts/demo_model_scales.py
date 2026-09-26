@@ -28,12 +28,16 @@ def main(argv=None):
         r = report[label]
         print("{}: M_I = {:.2e}, M_GUT = {:.2e} GeV, 1/alpha_G = {:.1f}".format(
             label, r["M_I"], r["M_GUT"], r["alpha_G_inverse"]))
-        print("  proton lifetime ~ {:.1e} yr (Super-K bound 2.4e34 passed: {})".format(
-            r["proton_lifetime_yr"], r["super_k_ok"]))
+        print("  proton lifetime ~ {:.1e} yr (Super-K bound 2.4e34 passed: {}, margin {:.1e})".format(
+            r["proton_lifetime_yr"], r["super_k_ok"], r["super_k_margin"]))
         w = r["window_rM3"]
         print("  control window (rM >= 3, M_GUT <= 1/r): g_F in [{:.3f}, {:.3f}], 1/r in [{:.1e}, {:.1e}] GeV".format(
             w["g_F_min"], w["g_F_max"], *w["inverse_radius_range"]))
         print("  seesaw Dirac Yukawa needed at M_R = M_I: {:.1e}".format(r["seesaw_yD_needed_at_M_I"]))
+    print("Sensitivity to light Delta_R / bidoublet multiplicity:")
+    for row in report["multiplicity_scan"]:
+        print("  Delta_R {delta_R} bidoublets {bidoublets} doublets below {doublets_below}: M_I {M_I:.1e}, "
+              "M_GUT {M_GUT:.1e}, viable M_I {viable_M_I}, Super-K {super_k_ok}".format(**row))
     print("Limitations")
     for limitation in report["limitations"]:
         print("  " + limitation)

@@ -4,8 +4,9 @@ See doc/derivations/minimal_model_2026-09-26.md. One-loop gauge running for the 
 Spin(10) -> SU(3) x SU(2)_L x SU(2)_R x U(1)_B-L (at M_GUT, by the 45H) -> SM (at M_I, by the 126barH), with beta
 coefficients computed from the field content (extended survival hypothesis), then:
 - the proton lifetime against the Super-Kamiokande bound tau(p -> e+ pi0) > 2.4e34 yr;
-- the compactification window: M_GUT <= 1/r (a 4D description of the breaking) and r M large enough for classical
-  control, with 1/r = 2 g_F M_Pl / 3 and 1/(r M) = 2 pi^(1/4) sqrt(g_F / 3) (flux note, parent flux 3);
+- the compactification window: M_GUT <= 1/r (a validity condition for the 4D description of the breaking) and r M
+  large enough for classical control, with 1/r = 2 g4 M_Pl / 3 and 1/(r M) = 2 pi^(1/4) sqrt(g4 / 3) (flux module;
+  g4 is the U(1)_F coupling of the charge-1 parent unit, flux 3, so the coupling per unit F-charge is g4 / 3);
 - the type-I seesaw: the Dirac neutrino Yukawa needed for m_nu ~ 0.05 eV at M_R ~ M_I.
 Inputs at M_Z: alpha_em^-1 = 127.951, sin^2 theta_W = 0.23122 (MS-bar), alpha_s = 0.1180.
 """
@@ -25,8 +26,11 @@ GEV_INV_TO_YR = 6.582e-25 / 3.156e7
 HIGGS_VEV_GEV = 174.1  # v / sqrt(2)
 
 LIMITATIONS = [
-    "One-loop running without threshold corrections; thresholds and two-loop terms can move M_I by orders of "
-    "magnitude and M_GUT by a factor of a few.",
+    "One-loop running under the extended survival hypothesis, without threshold corrections; thresholds, two-loop "
+    "terms and the light 45 pseudo-Goldstones that the one-loop vacuum needs can move M_I by orders of magnitude "
+    "(Bertolini-Di Luzio-Malinsky 2012 find M_B-L up to ~1e14 GeV) and M_GUT by a factor of a few.",
+    "The results depend on how many Delta_R and bidoublets are light: brane copies of the Higgs need three Delta_R "
+    "for a rank-3 Majorana matrix, and then no consistent M_I exists at one loop.",
     "Only the 3221 chain is computed; the 421 chain of the same Higgs content is not.",
     "The proton lifetime uses the naive estimate M_GUT^4 / (alpha_G^2 m_p^5), uncertain by about an order of magnitude.",
     "Kaluza-Klein thresholds at 1/r, close to M_GUT, are not included.",
@@ -115,13 +119,14 @@ def _bl(BL):
     return Charge(F(3, 8) * BL * BL)
 
 
-def beta_3221():
-    """Three 16s: Q (3,2,1,1/3), Q^c (3b,1,2,-1/3), L (1,2,1,-1), L^c (1,1,2,+1); scalars: one complex bidoublet
-    (1,2,2,0) from the complex 10H and Delta_R (1,1,3,-2) from the 126barH (extended survival hypothesis)."""
+def beta_3221(n_delta_R=1, n_bidoublets=1):
+    """Three 16s: Q (3,2,1,1/3), Q^c (3b,1,2,-1/3), L (1,2,1,-1), L^c (1,1,2,+1); scalars: n_bidoublets complex
+    bidoublets (1,2,2,0) and n_delta_R copies of Delta_R (1,1,3,-2) (extended survival hypothesis; default one each)."""
     d = lambda n: (n, F(1, 2) if n in (2, 3) else 0)
     fam = [("weyl", [d(3), d(2), (1, 0), _bl(F(1, 3))]), ("weyl", [d(3), (1, 0), d(2), _bl(F(-1, 3))]),
            ("weyl", [(1, 0), d(2), (1, 0), _bl(F(-1))]), ("weyl", [(1, 0), (1, 0), d(2), _bl(F(1))])]
-    scalars = [("complex", [(1, 0), d(2), d(2), _bl(F(0))]), ("complex", [(1, 0), (1, 0), (3, F(2)), _bl(F(-2))])]
+    scalars = ([("complex", [(1, 0), d(2), d(2), _bl(F(0))])] * n_bidoublets
+               + [("complex", [(1, 0), (1, 0), (3, F(2)), _bl(F(-2))])] * n_delta_R)
     return beta_coefficients(G3221, fam * 3 + scalars)
 
 
@@ -129,14 +134,14 @@ def beta_3221():
 # Two-step unification
 # ---------------------------------------------------------------------------
 
-def unify_3221(higgs_doublets_below=1):
+def unify_3221(higgs_doublets_below=1, n_delta_R=1, n_bidoublets=1):
     """Solve 1/alpha_G, ln(M_I/M_Z), ln(M_G/M_Z) and the SU(2)_R, B-L couplings at M_I (linear one-loop system).
 
     Matching at M_I: 1/alpha_1 = (3/5)/alpha_2R + (2/5)/alpha_BL. Unification: alpha_3 = alpha_2L = alpha_2R = alpha_BL.
     """
     inv1, inv2, inv3 = low_energy_couplings()
     b1, b2, b3 = (float(x) for x in sm_beta(higgs_doublets_below))
-    c3, c2L, c2R, cBL = (float(x) for x in beta_3221())
+    c3, c2L, c2R, cBL = (float(x) for x in beta_3221(n_delta_R, n_bidoublets))
     tp = 2 * np.pi
     A = [[1, (b3 - c3) / tp, c3 / tp, 0, 0], [1, (b2 - c2L) / tp, c2L / tp, 0, 0],
          [1, -c2R / tp, c2R / tp, -1, 0], [1, -cBL / tp, cBL / tp, 0, -1], [0, b1 / tp, 0, 3 / 5, 2 / 5]]
@@ -144,7 +149,20 @@ def unify_3221(higgs_doublets_below=1):
     x = np.linalg.solve(np.array(A), np.array(y))
     return {"alpha_G_inverse": float(x[0]), "M_I": float(MZ * np.exp(x[1])), "M_GUT": float(MZ * np.exp(x[2])),
             "alpha_2R_inverse_at_MI": float(x[3]), "alpha_BL_inverse_at_MI": float(x[4]),
-            "ordered": bool(0 < x[1] < x[2])}
+            "ordered": bool(0 < x[1] < x[2]), "M_I_above_1TeV": bool(MZ * np.exp(x[1]) > 1e3)}
+
+
+def multiplicity_scan():
+    """Sensitivity of the one-loop scales to the light Delta_R and bidoublet multiplicities."""
+    rows = []
+    for nD in (1, 2, 3):
+        for nB in (1, 2):
+            for nd in (1, 2):
+                u = unify_3221(nd, nD, nB)
+                tau = proton_lifetime_years(u["M_GUT"], u["alpha_G_inverse"])
+                rows.append({"delta_R": nD, "bidoublets": nB, "doublets_below": nd, "M_I": u["M_I"],
+                             "M_GUT": u["M_GUT"], "viable_M_I": u["M_I_above_1TeV"], "super_k_ok": bool(tau > SUPER_K_TAU_YR)})
+    return rows
 
 
 def mssm_unification():
@@ -206,8 +224,10 @@ def demonstration_report():
         u = unify_3221(nd)
         tau = proton_lifetime_years(u["M_GUT"], u["alpha_G_inverse"])
         out[label] = {**u, "proton_lifetime_yr": tau, "super_k_ok": bool(tau > SUPER_K_TAU_YR),
+                      "super_k_margin": tau / SUPER_K_TAU_YR,
                       "min_M_GUT_for_super_k": minimum_gut_scale(u["alpha_G_inverse"]),
                       "window_rM3": control_window(u["M_GUT"], 3.0), "window_rM1": control_window(u["M_GUT"], 1.0),
                       "seesaw_yD_needed_at_M_I": seesaw_dirac_yukawa(u["M_I"])}
+    out["multiplicity_scan"] = multiplicity_scan()
     out["limitations"] = list(LIMITATIONS)
     return out

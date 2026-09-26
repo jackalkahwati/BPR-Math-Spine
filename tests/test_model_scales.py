@@ -62,6 +62,27 @@ def test_proton_lifetime_passes_super_k():
         assert ms.proton_lifetime_years(m_min, u["alpha_G_inverse"]) == pytest.approx(ms.SUPER_K_TAU_YR, rel=1e-9)
 
 
+def test_proton_lifetime_anchor():
+    # M_GUT = 1e16 GeV, 1/alpha_G = 40, m_p = 0.938 GeV: 1e64 * 1600 / 0.7275 GeV^-1 = 2.2e67 GeV^-1 = 4.6e35 yr.
+    assert ms.proton_lifetime_years(1e16, 40) == pytest.approx(4.6e35, rel=0.02)
+
+
+def test_brane_copy_content_has_no_consistent_intermediate_scale():
+    rows = ms.multiplicity_scan()
+    for r in rows:
+        if r["delta_R"] == 3:  # three condensing Delta_R, as brane copies need for a rank-3 Majorana matrix
+            assert not (r["viable_M_I"] and r["super_k_ok"])
+        if r["delta_R"] == 1 and r["bidoublets"] == 1:
+            assert r["viable_M_I"] and r["super_k_ok"]
+    # With two doublets below M_I, alpha_2 and alpha_3 run with the same coefficients above and below M_I
+    # (b3 = c3 = -7, b2 = c2L = -3), so M_GUT does not depend on the Delta_R multiplicity.
+    MG = {r["delta_R"]: r["M_GUT"] for r in rows if r["bidoublets"] == 1 and r["doublets_below"] == 2}
+    assert MG[1] == pytest.approx(MG[2]) == pytest.approx(MG[3])
+    # One extra bidoublet moves the one-doublet M_GUT from 4.5e16 to 1.4e16: the window is not robust.
+    extra = [r for r in rows if r["delta_R"] == 1 and r["bidoublets"] == 2 and r["doublets_below"] == 1][0]
+    assert 1.2e16 < extra["M_GUT"] < 1.6e16
+
+
 def test_r_times_M_matches_the_flux_module():
     import bpr.six_dim_flux_vacuum as v
     rel = v.four_d_relations()
