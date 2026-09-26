@@ -224,8 +224,16 @@ The same engine reproduces known results:
 - the absence of 4D anomalies for Spin(10).
 
 With the round-4 couplings, BPR-6D therefore has no global anomaly for the
-Spin × Spin(10) × U(1) structure. Its anomalies are cancelled locally, with
-quantization, and globally.
+Spin × Spin(10) × U(1) structure.
+
+For the twisted Spin ×_{ℤ₂} Spin(10) form, the independent review found a
+ℤ/2 in Ω₇. Its anomaly is shown trivial by a reduction argument:
+- the η product formula on S² × Wu;
+- the branching 16 = (4,4);
+- the order bound |Ω₅^{Spin×ℤ₂Spin(5)}| ≤ 4.
+
+The anomalies are therefore cancelled locally, with quantization, and
+globally, for both global forms.
 
 ## 4. The dependency graph
 
@@ -443,8 +451,8 @@ as follows:
 
 Round 4 refines the chiral-matter item: Dirac quantization makes the family
 number a multiple of three, with three the minimal case. Round 5 shows there
-is no global anomaly, so the anomaly-free status is complete for the
-Spin × Spin(10) × U(1) structure.
+is no global anomaly for either global form. For the twisted form this rests
+on a reduction argument.
 
 Every item is supplied or assumed rather than derived from one microscopic
 Hamiltonian. The four requirements are now consistent with each other, but

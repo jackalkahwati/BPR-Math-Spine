@@ -10,7 +10,9 @@ minimal free resolution over GF(2).
 
 Mod-2 cohomology: H^*(BSpin(10)) is the quotient of H^*(BSO(10)) by the
 Quillen ideal (w2, w3, w5, w9 below degree 17), i.e. F2[w4, w6, w7, w8, w10]
-below degree 32, with Sq^i from the Wu formula; H^*(CP^infty) = F2[x].
+below degree 17 (a relation w7 w10 = 0 appears in degree 17), with Sq^i from
+the Wu formula; H^*(CP^infty) = F2[x]. Twisted Spin x_Z2 Spin(n) structures use
+the Thom module U.H^*(BSO(n)) with Sq1 U = 0 and Sq2 U = w2 U.
 """
 
 from functools import lru_cache
@@ -22,9 +24,9 @@ import numpy as np
 MODEL_ID = "bpr6d-global-anomaly-bordism-v1"
 
 LIMITATIONS = [
-    "Spin x Spin(10) x U(1) structure only; Spin x_Z2 Spin(10) backgrounds are not included.",
-    "E2 of the Adams spectral sequence is computed; conclusions are drawn only where E2 vanishes, so no differentials are needed.",
-    "Uses the standard Dai-Freed framework: after local cancellation the anomaly is a bordism invariant.",
+    "The twisted Spin x_Z2 Spin(10) x U(1) group is at most Z2; its anomaly is shown trivial by a reduction argument (product formula, branching 16 = (4,4), order bound), not by computing an eta-invariant.",
+    "Only Adams E2 is computed: the untwisted verdict uses E2 = 0 in stem 7, the twisted order bound uses E2 as an upper bound; no differentials are needed.",
+    "Uses the standard Dai-Freed / Witten-Yonekura framework: after local cancellation the anomaly is a bordism invariant.",
     "The Green-Schwarz 7D term is assumed to be the standard well-defined term for integral Y (even lattice U, no refinement).",
     "Modules are truncated in degree; Ext is exact only for stems below the truncation degree.",
 ]
@@ -94,6 +96,7 @@ class PolyAlgebra:
         self.names, self.degrees, self.D = tuple(names), tuple(degrees), max_degree
         self.n = len(names)
         self._sq = {1: dict(sq1), 2: dict(sq2)}
+        self._cache = {}
         self.monomials = sorted((m for m in self._all_monomials() if self.deg(m) <= max_degree),
                                 key=lambda m: (self.deg(m), m))
 
@@ -116,9 +119,14 @@ class PolyAlgebra:
                 out ^= {tuple(x + y for x, y in zip(a, b))}
         return frozenset(out)
 
-    @lru_cache(maxsize=None)
     def sq(self, i, mono):
-        """Sq^i of a monomial (i in 0, 1, 2) by the Cartan formula."""
+        """Sq^i of a monomial (i in 0, 1, 2) by the Cartan formula (memoized per instance)."""
+        key = (i, mono)
+        if key not in self._cache:
+            self._cache[key] = self._sq_uncached(i, mono)
+        return self._cache[key]
+
+    def _sq_uncached(self, i, mono):
         if i == 0:
             return frozenset([mono])
         if sum(mono) == 0:
@@ -203,7 +211,9 @@ def tensor(M, N, D):
 # --- Named cohomology rings ---------------------------------------------------
 
 def wu(i, j, n):
-    """Sq^i w_j in H^*(BSO(n)) as a list of (a, b) meaning w_a w_b (w_0 = 1)."""
+    """Sq^i w_j in H^*(BSO(n)) as a list of (a, b) meaning w_a w_b (w_0 = 1); Sq^i w_j = 0 for i > j."""
+    if i > j:
+        return []
     terms = []
     for t in range(i + 1):
         c = 1 if (t == 0) else (comb(j - i + t - 1, t) if j - i + t - 1 >= 0 else 0)
@@ -283,6 +293,69 @@ def bsu_algebra(n, D):
             out ^= set(PolyAlgebra.mul(c_poly(a), c_poly(b)))
         sq2[nm] = frozenset(out)
     return PolyAlgebra(names, degrees, sq1, sq2, D)
+
+
+def thom_module_bso(n, D, with_cp=False):
+    """H^*(Thom(BSO(n); V - n)) = U . H^*(BSO(n)) with Sq1 U = 0, Sq2 U = w2 U (Cartan), optionally
+    tensored with the unreduced H^*(CP^infty) (i.e. smashed with BU(1)_+).
+
+    MSpin smashed with this Thom spectrum computes Spin x_Z2 Spin(n) bordism (w2(TM) = w2(V)).
+    """
+    alg = bso_algebra(n, D)
+    monos = list(alg.monomials)
+    index = {m: i for i, m in enumerate(monos)}
+    to_set = lambda poly: {index[m] for m in poly if m in index}  # noqa: E731
+    w2 = frozenset([alg.gen(0)])  # generators are w2, ..., wn
+    sq1 = [to_set(alg.sq(1, m)) for m in monos]
+    sq2 = [to_set(alg.sq(2, m)) ^ to_set(PolyAlgebra.mul(w2, frozenset([m]))) for m in monos]
+    thom = Module([alg.deg(m) for m in monos], sq1, sq2, "Thom(BSO({}))".format(n))
+    if not with_cp:
+        return thom
+    cp = module_from_poly(cp_infinity_algebra(D), reduced=False)
+    return tensor(thom, cp, D)
+
+
+def spinor_branching_16():
+    """Weights of the 16 of Spin(10) restricted to Spin(5) x Spin(5) (first two / next two Cartan
+    directions; the fifth plane is not in the subgroup's torus). Returns the multiplicity table."""
+    from itertools import product as prod
+    weights = [w for w in prod((0.5, -0.5), repeat=5) if sum(1 for c in w if c < 0) % 2 == 0]
+    restricted = {}
+    for w in weights:
+        key = (w[:2], w[2:4])
+        restricted[key] = restricted.get(key, 0) + 1
+    spinor5 = [w for w in prod((0.5, -0.5), repeat=2)]
+    expected = {(a, b): 1 for a in spinor5 for b in spinor5}
+    return {"is_4_times_4": restricted == expected, "dimension": len(weights)}
+
+
+def twisted_structure_analysis(D=12, s_max=10, T=18):
+    """Spin x_Z2 Spin(n) bordism: Omega_7 with U(1) for n=10, Omega_5 for n=10 and n=5."""
+    seven = ext_chart(thom_module_bso(10, D, with_cp=True), s_max, T)
+    five10 = ext_chart(thom_module_bso(10, D), s_max, T)
+    five5 = ext_chart(thom_module_bso(5, D), s_max, T)
+    total = lambda chart, stem: sum(dim for _, dim in chart.get(stem, []))  # noqa: E731
+    return {"omega7_spin10_u1_E2": [list(p) for p in seven.get(7, [])],
+            "omega7_order_bound": 2 ** total(seven, 7),
+            "omega5_spin10_E2": [list(p) for p in five10.get(5, [])],
+            "omega5_spin5_E2": [list(p) for p in five5.get(5, [])],
+            "omega5_spin5_order_bound": 2 ** total(five5, 5),
+            "branching": spinor_branching_16()}
+
+
+def twisted_anomaly_argument():
+    """alpha(S^2 x W, unit flux) = alpha_16(W)^3 (product formula; GS term pulled back from S^2 vanishes),
+    alpha_16(W) = alpha_4(W)^4 (16 = (4,4), second Spin(5) bundle trivial), and alpha_4 is a character of
+    Omega_5^{Spin x_Z2 Spin(5)}, whose order divides 4, so alpha_4^4 = 1."""
+    data = twisted_structure_analysis()
+    order = data["omega5_spin5_order_bound"]
+    return {"generator": "S^2 x SU(3)/SO(3), unit flux, V = TW + R^5",
+            "flux_index_16_plus": 3, "flux_index_16_minus": 0,
+            "branching_4x4": data["branching"]["is_4_times_4"],
+            "omega5_spin5_order_bound": order,
+            "fourth_power_trivial": bool(data["branching"]["is_4_times_4"] and 4 % order == 0),
+            "anomaly_on_generator": "trivial" if data["branching"]["is_4_times_4"] and 4 % order == 0
+            else "undetermined"}
 
 
 def point_module():
@@ -470,6 +543,8 @@ def global_anomaly_verdict(D=14, s_max=12, T=20):
 def demonstration_report():
     verdict = global_anomaly_verdict()
     checks = validation_checks()
+    twisted = twisted_anomaly_argument()
+    twisted_groups = twisted_structure_analysis()
     return {
         "schema_version": 1,
         "model_id": MODEL_ID,
@@ -482,6 +557,9 @@ def demonstration_report():
                             "E2_total_by_stem": {str(k): n for k, n in v["E2_total_by_stem"].items()},
                             "adem_relations_hold": v["adem_relations_hold"]}
                      for name, v in verdict["summands"].items()},
+        "twisted_structure": {"groups": twisted_groups, "argument": twisted,
+                              "global_anomaly": "none" if twisted["anomaly_on_generator"] == "trivial"
+                              else "undetermined"},
         "limitations": list(LIMITATIONS),
     }
 

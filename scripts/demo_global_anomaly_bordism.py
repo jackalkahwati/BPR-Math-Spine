@@ -31,7 +31,13 @@ def main(argv=None):
     for name, summary in report["summands"].items():
         print("{}: stem 7 E2 {}; E2 classes by stem (s<=12) {}".format(
             name, summary["E2_stem_7"], summary["E2_total_by_stem"]))
-    print("Verdict: {}".format(report["verdict"]))
+    print("Verdict (Spin x Spin(10) x U(1)): {}".format(report["verdict"]))
+    tw = report["twisted_structure"]
+    print("Twisted Spin x_Z2 Spin(10) x U(1): Omega_7 E2 {}, Omega_5(Spin(5)) order <= {}, 16 = (4,4): {}".format(
+        tw["groups"]["omega7_spin10_u1_E2"], tw["groups"]["omega5_spin5_order_bound"],
+        tw["groups"]["branching"]["is_4_times_4"]))
+    print("  anomaly on generator {}: {} -> global anomaly {}".format(
+        tw["argument"]["generator"], tw["argument"]["anomaly_on_generator"], tw["global_anomaly"]))
     print("Limitations")
     for limitation in report["limitations"]:
         print("  " + limitation)

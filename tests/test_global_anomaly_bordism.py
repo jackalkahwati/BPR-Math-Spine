@@ -108,3 +108,60 @@ def test_report():
     assert json.loads(json.dumps(report, allow_nan=False)) == report
     assert report["verdict"] == {"omega7_vanishes": True, "global_anomaly": "none"}
     assert report["empirical_validation"] is False
+
+
+def _wu_by_splitting_principle(i, j, n):
+    """Sq^i w_j from Sq(e) = e + e^2 on formal roots, re-expressed in elementary symmetric polynomials."""
+    import sympy as sp
+    from sympy.polys.polyfuncs import symmetrize
+    es = sp.symbols("e1:{}".format(n + 1))
+    from itertools import combinations
+    sigma = sum(sp.prod([es[k] + es[k] ** 2 for k in c]) for c in combinations(range(n), j))
+    poly = sp.Poly(sp.expand(sigma), *es)
+    part = sum(coeff * sp.prod([e ** p for e, p in zip(es, mono)])
+               for mono, coeff in poly.terms() if sum(mono) == j + i)
+    sym, rest, names = symmetrize(sp.expand(part), *es, formal=True)
+    assert rest == 0
+    out = set()
+    for term, coeff in sp.Poly(sym, *[nm for nm, _ in names]).terms():
+        if coeff % 2 == 0:
+            continue
+        idx = []
+        for (nm, _), power in zip(names, term):
+            idx += [int(str(nm)[1:])] * power
+        idx = sorted(idx)
+        if len(idx) == 1:
+            out ^= {(0, idx[0])}
+        elif len(idx) == 2:
+            out ^= {tuple(idx)}
+        else:
+            out ^= {tuple(idx)}
+    return out
+
+
+@pytest.mark.parametrize("i,j", [(1, 2), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (2, 6)])
+def test_wu_formula_matches_the_splitting_principle(i, j):
+    n = 6
+    expected = _wu_by_splitting_principle(i, j, n)
+    got = {tuple(sorted(pair)) for pair in g.wu(i, j, n)}
+    assert got == expected
+    assert g.wu(2, 1, n) == []  # Sq^i w_j = 0 for i > j
+
+
+def test_twisted_structure_bordism_groups():
+    data = g.twisted_structure_analysis()
+    # Spin x_Z2 Spin(10) x U(1): Omega_7 E2 is a single class at s = 0 (detected by c1 w2 w3).
+    assert data["omega7_spin10_u1_E2"] == [[0, 1]]
+    # Omega_5^{Spin x_Z2 Spin(10)} = Z2 (the w2 w3 class of Wang-Wen-Witten).
+    assert data["omega5_spin10_E2"] == [[0, 1]]
+    # Omega_5^{Spin x_Z2 Spin(5)} has order at most 4.
+    assert data["omega5_spin5_order_bound"] == 4
+    assert data["branching"] == {"is_4_times_4": True, "dimension": 16}
+    for n in (5, 10):
+        assert g.thom_module_bso(n, 12).check_adem()
+
+
+def test_twisted_anomaly_is_trivial_on_the_generator():
+    arg = g.twisted_anomaly_argument()
+    assert arg["flux_index_16_plus"] == 3 and arg["flux_index_16_minus"] == 0
+    assert arg["fourth_power_trivial"] and arg["anomaly_on_generator"] == "trivial"

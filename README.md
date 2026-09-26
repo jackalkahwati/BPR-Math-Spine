@@ -135,7 +135,8 @@
 > **NO GLOBAL ANOMALIES (2026-09-26):** [Ω₇^Spin(B(Spin(10)×U(1))) = 0](doc/derivations/global_anomalies_2026-09-26.md).
 > - An exact Adams E₂ computation over A(1), via Spin bordism ≅ ko below degree 8, is empty in stem 7. No differentials are needed.
 > - The same engine reproduces the ko chart, Witten's SU(2) anomaly, Lee–Tachikawa's Ω₇ = 0 for SU(2) and SU(3), and the absence of 4D anomalies for Spin(10).
-> - With the quantized Green–Schwarz couplings, BPR-6D is therefore anomaly-free locally and globally for the Spin × Spin(10) × U(1) structure. The Spin ×_ℤ₂ Spin(10) global form is not computed.
+> - With the quantized Green–Schwarz couplings, BPR-6D is therefore anomaly-free locally and globally for the Spin × Spin(10) × U(1) structure.
+> - Twisted global form Spin ×_ℤ₂ Spin(10) × U(1): here Ω₇ contains a ℤ/2, found by the independent review. The anomaly on its generator (S² × Wu manifold) is shown trivial by a reduction argument: an η product formula, the branching 16 = (4,4) and an order bound on Ω₅^{Spin×ℤ₂Spin(5)}. So no global anomaly for either global form.
 >
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >

@@ -15,7 +15,9 @@ The completion is quantizable iff the parent's U(1)_F charge is a multiple of
 3 in units of the smallest charge, which makes the family number a multiple
 of three. Round 5 shows that Ω₇^Spin(B(Spin(10)×U(1))) = 0, so there is no
 global anomaly for the Spin × Spin(10) × U(1) structure
-([global_anomalies_2026-09-26.md](global_anomalies_2026-09-26.md)). An independent review (section 8) found
+([global_anomalies_2026-09-26.md](global_anomalies_2026-09-26.md)). For the
+twisted Spin ×_{ℤ₂} Spin(10) form, the ℤ/2 in Ω₇ carries a trivial anomaly
+(reduction argument). An independent review (section 8) found
 one blocker, six major and five minor issues; its repairs are applied.
 
 ## 0. The decision point
@@ -200,7 +202,8 @@ In priority order:
    - Characteristic-class quantization (round 4) requires the parent charge
      to be a multiple of 3.
    - Ω₇^Spin(B(Spin(10)×U(1))) = 0 (round 5).
-   - Still open: the Spin ×_{ℤ₂} Spin(10) global form.
+   - The twisted Spin ×_{ℤ₂} Spin(10) form has Ω₇ ⊆ ℤ/2, and its anomaly is
+     trivial by the round-5 reduction argument.
    - The even lattice U needs no quadratic refinement.
 2. **Remove the Λ tuning.** Find an anomaly-free 6D (1,0) gauged supergravity
    with Spin(10) ⊂ G whose Salam–Sezgin vacuum gives exactly three chiral 16s,
