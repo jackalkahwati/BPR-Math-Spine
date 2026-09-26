@@ -27,17 +27,25 @@ def test_so10_nonabelian_conditions():
     minus4 = s.so10_on_curve(-4)
     assert minus4["consistent"] and minus4["n16"] == 0 and minus4["n10"] == 2
     assert minus4["a.b"] == 2 and minus4["b.b"] == -4
-    # On P^2 (T = 0, a = -3): only b = 1 (5 x 16, 7 x 10) and b = 2 (8 x 16, 10 x 10).
+    # On P^2 (T = 0, a = -3) without adjoint hypers: only b = 1 (5 x 16, 7 x 10) and b = 2 (8 x 16, 10 x 10).
     assert s.so10_t0_solutions(20) == [{"b": 1, "n16": 5, "n10": 7}, {"b": 2, "n16": 8, "n10": 10}]
+    # Known P^2 spectra: 5 x 16 + 7 x 10 on a line, 8 x 16 + 10 x 10 on a conic. Adjoint hypers add b = 3, 4.
+    with_adj = s.so10_t0_solutions(20, max_adjoints=6)
+    assert {"b": 3, "n16": 9, "n10": 9, "adjoints": 1} in with_adj
+    assert {"b": 4, "n16": 8, "n10": 4, "adjoints": 3} in with_adj
+    assert all(r["n10"] > 0 for r in with_adj)  # on T = 0, every solution still has 10s
     for n in range(-4, 3):
         row = s.so10_on_curve(n)
         assert row["consistent"] and row["n10"] == row["n16"] + 2  # the quartic condition
 
 
-def test_bpr6d_meets_the_conjecture_premise_but_not_its_conclusion():
+def test_bpr6d_premise_is_a_chirality_convention():
     mt = s.mt_quantities(s.minimal_fields(3))
     assert mt["minus_a_dot_btilde"] == 24  # = (1/6) * 16 * 9: Park-Taylor with b~ = 2 b_X
+    assert mt["premise_holds_in_hyperino_convention"]
     assert mt["charge_gcd"] == 3 and not mt["massless_charges_generate_lattice"]
+    swapped = s.mt_quantities([(-1, "16", 3), (1, "16", 0)])
+    assert swapped["minus_a_dot_btilde"] == -24 and not swapped["premise_holds_in_hyperino_convention"]
 
 
 def test_vectorlike_charge_one_pair_resolves_it_without_changing_anything_else():
@@ -50,8 +58,13 @@ def test_vectorlike_charge_one_pair_resolves_it_without_changing_anything_else()
 
 def test_supersymmetric_examples_and_gcd_reduction():
     ex = s.susy_examples()
-    assert ex["bpr_like"]["all_ok"] and ex["bpr_like"]["charge_gcd"] == 3
+    assert ex["three_net"]["all_ok"] and ex["three_net"]["charge_gcd"] == 3
     assert ex["rescaled"]["all_ok"] and ex["rescaled"]["charge_gcd"] == 1
+    # 3 | n_gen is allowed with gcd 1: three net 16s per unit flux and charge-1 singlets.
+    assert ex["gcd_one_three_net"]["all_ok"] and ex["gcd_one_three_net"]["charge_gcd"] == 1
+    assert ex["gcd_one_three_net"]["net_16_per_unit_flux"] == 3
+    # Negative neutral-hyper counts are rejected.
+    assert not s.so10_u1_t0_check(1, [3, 3, 3, -3, -3], [0] * 7, [6] * 70, -1)["all_ok"]
     # Independent recomputation for the rescaled spectrum: beta = 10.
     q16, s1 = [1, 1, 1, -1, -1], [2] * 70
     beta = Fraction(2 * (2 * sum(q * q for q in q16)), 2 * 1)  # b.b~ = lambda sum A_R q^2, lambda = 2, b = 1
@@ -96,6 +109,22 @@ def test_gcd_reduction_is_always_consistent_on_t0():
             assert s.gcd_reduction_always_consistent(2, list(q16), p10, sing, neutral)["reduced_all_ok"]
             checked += 1
     assert checked > 0
+
+
+def test_t1_supersymmetric_theory_can_force_charges_into_3z():
+    # T = 1 (lattice U, a = (-2, -2)) is the supersymmetric counterpart of one non-chiral 2-form.
+    three = s.t1_pure_u1(3)
+    assert three["consistent"] and three["btilde"] == ["72", "24"] and three["minus_a_dot_btilde"] == "192"
+    # Independent check of the equations with the U pairing.
+    x, y = 72, 24
+    assert -2 * x - 2 * y == -Fraction(128 * 9, 6) and 2 * x * y == Fraction(128 * 81, 3)
+    assert 128 + 117 - 1 + 29 == 273
+    one = s.t1_pure_u1(1)
+    assert not one["consistent"]  # a.b~ = -128/6 is not an integer
+
+
+def test_t0_integrality_lemma():
+    assert s.t0_integrality_lemma()["btilde_integral_whenever_3btilde2_integral"]
 
 
 def test_report_is_strict_json():

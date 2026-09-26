@@ -236,7 +236,7 @@
      "claim": "BPR-6D admits a string-theory (supersymmetric F-theory) embedding.",
      "sources": ["doc/derivations/string_embedding_2026-09-26.md", "bpr/string_embedding.py", "tests/test_string_embedding.py"],
      "depends_on": ["gs_quantization"],
-     "limitation": "The Morrison-Taylor massless-charge conjecture is supersymmetric; BPR-6D meets its premise but a massless vector-like charge-1 pair removes the tension at no cost. Supersymmetric SO(10) x U(1) analogues on T=0 force n10 = n16 + 2 hypers and always allow charge gcd 1 (Lemma 3), losing 3 | n_gen: a fork between string-embeddability and the family result. No vacuum or F-theory construction is given."},
+     "limitation": "The Morrison-Taylor massless-charge statement is supersymmetric, and BPR-6D meets its premise (-a.b~ = 24) only in a chirality convention (no gravitino). A massless vector-like charge-1 pair removes the tension without changing anomalies or families, but its masslessness is unprotected. Supersymmetric analogues: on T=0 the charge normalization is never forced (Lemma 3, any gauge group) and a gcd-1 spectrum still has 3 net families; on T=1 (the counterpart of one non-chiral 2-form) anomaly cancellation can force charges into 3Z. The fork is anomaly-forced 3 | n_gen vs F-theory embeddability. No vacuum or F-theory construction is given."},
     {"id": "spin10_breaking", "layer": "gauge", "status": "obstructed",
      "claim": "The compactification breaks Spin(10) to the Standard Model.",
      "sources": ["doc/derivations/gut_breaking_2026-09-26.md", "bpr/gut_breaking.py", "tests/test_gut_breaking.py"],

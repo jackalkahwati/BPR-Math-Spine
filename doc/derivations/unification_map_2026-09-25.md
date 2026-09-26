@@ -238,17 +238,22 @@ globally, for both global forms.
 ## 3f. Rounds 6–7: string embedding and Spin(10) breaking
 
 **String embedding.** See
-[string_embedding_2026-09-26.md](string_embedding_2026-09-26.md). The
-Morrison–Taylor massless-charge conjecture is supersymmetric. BPR-6D meets its
-premise (−a·b̃ = 24) with charge gcd 3, but one massless vector-like charge-1
-pair removes the tension without changing anomalies or families.
+[string_embedding_2026-09-26.md](string_embedding_2026-09-26.md).
+BPR-6D matches the Morrison–Taylor premise (−a·b̃ = 24) only formally: its
+sign is a chirality convention, since there is no gravitino. One massless
+vector-like charge-1 pair removes the tension without changing anomalies or
+families, though its masslessness is unprotected.
 
-Supersymmetric SO(10) × U(1) analogues on T=0 behave differently:
-- they force n₁₀ = n₁₆ + 2 hypermultiplets in the 10;
-- by an arithmetic lemma, they always allow charge gcd 1.
+Supersymmetric analogues:
+- On T=0, SO(10) × U(1) forces 10 hypermultiplets, and the charge
+  normalization is never forced (any gauge group). 3 | n_gen can still be
+  chosen: a gcd-1 spectrum has three net families.
+- On T=1, the true counterpart of one non-chiral 2-form, anomaly
+  cancellation can force the massless charges into 3ℤ, as in BPR-6D.
 
-So the multiple-of-three family number is intrinsically non-supersymmetric.
-String-embeddability and that result pull in opposite directions.
+So the fork is between anomaly-forced 3 | n_gen and F-theory embeddability
+(if Morrison–Taylor holds), not between supersymmetric and
+non-supersymmetric theories.
 
 **Spin(10) breaking.** See [gut_breaking_2026-09-26.md](gut_breaking_2026-09-26.md).
 - Every quantized Spin(10) flux on S² is unstable. Some root has |α·h| ≥ 2,
@@ -525,7 +530,8 @@ is no global anomaly for either global form. For the twisted form this rests
 on a reduction argument.
 
 Rounds 6–10 settle the rest of the list:
-- **String embedding:** a fork. Supersymmetric analogues lose 3 | n_gen.
+- **String embedding:** a fork between anomaly-forced 3 | n_gen and an
+  F-theory embedding (Morrison–Taylor).
 - **Spin(10) → Standard Model:** geometric breaking is obstructed (every
   flux is unstable; orbifolds lose families), so a Higgs sector must be
   supplied.

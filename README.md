@@ -139,8 +139,8 @@
 > - Twisted global form Spin ×_ℤ₂ Spin(10) × U(1): here Ω₇ contains a ℤ/2, found by the independent review. The anomaly on its generator (S² × Wu manifold) is shown trivial by a reduction argument: an η product formula, the branching 16 = (4,4) and an order bound on Ω₅^{Spin×ℤ₂Spin(5)}. So no global anomaly for either global form.
 >
 > **STRING EMBEDDING (2026-09-26):** [the Morrison–Taylor tension and supersymmetric analogues](doc/derivations/string_embedding_2026-09-26.md).
-> - BPR-6D meets the premise of the Morrison–Taylor massless-charge conjecture. That conjecture is supersymmetric, and one massless vector-like charge-1 pair removes the tension at no cost.
-> - Supersymmetric SO(10)×U(1) analogues force extra 10 hypermultiplets and always allow charge gcd 1, losing the multiple-of-three family number. This is a fork, not a resolution.
+> - BPR-6D matches the Morrison–Taylor premise only formally (its sign is a chirality convention). One massless vector-like charge-1 pair removes the tension, though nothing protects its masslessness.
+> - Supersymmetric analogues: on T=0 the charge normalization is never forced, while on T=1 anomaly cancellation can force charges into 3ℤ as in BPR-6D. The fork is between anomaly-forced 3 | n_gen and an F-theory embedding. The independent review found this blocker (the earlier "intrinsically non-supersymmetric" claim was a T=0 artifact); its repairs are applied.
 >
 > **SPIN(10) BREAKING (2026-09-26):** [geometric routes obstructed](doc/derivations/gut_breaking_2026-09-26.md).
 > - Every quantized Spin(10) flux on S² is unstable: some W boson sees monopole number ≥ 2 and is tachyonic.

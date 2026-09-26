@@ -142,8 +142,8 @@ extra massless Spin(10) matter (rounds 4 and 6):
 
 A fourth sequential chiral family is already excluded by Higgs and
 electroweak data, so this is a postdiction. The statement fails outside 𝒞:
-16₊(1) ⊕ 16₋(2) evades it (GS note, section 3). It is also lost in
-supersymmetric embeddings (round 6).
+16₊(1) ⊕ 16₋(2) evades it (GS note, section 3). In an F-theory embedding it
+would be allowed but not forced (round 6).
 
 ## 3. Things BPR-6D implies but that are not observable
 
