@@ -88,9 +88,10 @@ would reintroduce Collins-type Lorentz violation and fermion doubling, so
   Green–Schwarz couplings fail Dirac quantization, and they fail for every
   lattice. With the parent at charge 3 in units of the smallest U(1)_F charge
   they pass with one non-chiral 2-form (round 4). BPR-6D therefore takes:
-  - parent charge 3;
-  - massive states of charge 1, required by completeness;
-  - flux m=1, which gives three families. That is the same geometry as the
+  - parent charge 3, the minimal choice (any multiple of 3 passes);
+  - states of charge 1, required by completeness, which are massive in
+    BPR-6D as defined;
+  - flux |m|=1, which gives three families. That is the same geometry as the
     earlier "flux 3".
 - **Background.** U(1)_F monopole flux m=3 on a round S². The S² is the
   "boundary" of the Boundary Phase Resonance name.

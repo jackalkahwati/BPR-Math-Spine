@@ -32,12 +32,14 @@ LIMITATIONS = [
     "Backgrounds are spin manifolds with Spin(10) x U(1)_F bundles; the Wu-class shift is taken in lambda_T only.",
     "Charge normalization: the unit of U(1)_F charge must be carried by some state (completeness); here only massive states can carry it.",
     "The Green-Schwarz sector is non-chiral 2-forms (signature (n, n)); chiral tensors are outside the class.",
-    "A multiple-of-three family number is derived for the minimal completion only; near-minimal completions behave differently.",
+    "A multiple-of-three family number is derived for the minimal completion in class C only; q = 3 and |m| = 1 are further (minimal) choices.",
+    "Only 2-form Green-Schwarz terms: a 6D Stueckelberg axion is excluded because the flux vacuum needs a massless U(1)_F.",
 ]
 
 
 def minimal_fields(parent_charge):
-    """16_+(q) + 16_-(0): the unique minimal local completion, with the parent at charge q."""
+    """16_+(q) + 16_-(0): the unique minimal local completion in class C (no extra massless Spin(10)
+    matter), with the parent at charge q. Outside C, e.g. 16_+(1) + 16_-(2) also has 16 components."""
     if type(parent_charge) is not int or parent_charge < 1:
         raise ValueError("parent_charge must be a positive int")
     return [(1, "16", parent_charge), (-1, "16", 0)]
@@ -57,6 +59,16 @@ def integral_polynomial(fields):
     r = lambda value: sp.Rational(value.numerator, value.denominator)  # noqa: E731
     return sp.expand(r(k["VV"]) * lamV ** 2 + r(k["VX"]) * lamV * x2 + r(k["XX"]) * x2 ** 2
                      + r(k["VT"]) * lamV * lamT + r(k["XT"]) * x2 * lamT + r(k["TT"]) * lamT ** 2)
+
+
+def abelian_gram(fields):
+    """U(1)-dependent Gram entries only (no gravitational completeness assumed): b_X.b_X and b_X.a.
+
+    Anchor: for Weyl fermions of chirality +1, b_X.b_X = sum q^4 / 12 and b_X.a = -sum q^2 / 12, which are
+    Park-Taylor's conditions b_11.b_11 = sum q^4 / 3 and a.b_11 = -sum q^2 / 6 with b_11 = 2 b_X.
+    """
+    c = anomaly_coefficients(fields)
+    return {"bX.bX": 2 * c["gamma"], "bX.a": 4 * c["epsilon"]}
 
 
 def gram_requirements(fields):
@@ -123,7 +135,7 @@ def _coeff_vector(expr):
     return tuple(sp.nsimplify(p.coeff_monomial(mono)) for mono in (lamV, x2, lamT))
 
 
-def odd_lattice_solution(fields, bound=24):
+def odd_lattice_solution(fields):
     """One self-dual plus one anti-self-dual tensor, lattice I_{1,1} = diag(1, -1), a = (odd, odd).
 
     Y_i = b_i + (a_i/2) lambda_T and I8 = (Y_1^2 - Y_2^2)/2 = P R / 2 with P = Y_1 - Y_2, R = Y_1 + Y_2:
@@ -139,7 +151,7 @@ def odd_lattice_solution(fields, bound=24):
     if not target.is_integer:
         return {"exists": False, "reason": "2K = {} not an integer".format(target)}
     t = int(target)
-    for k1 in range(1, min(abs(t), bound) + 1):
+    for k1 in range(1, abs(t) + 1):
         if t % k1:
             continue
         for sign in (1, -1):
@@ -204,8 +216,9 @@ def family_number_statement():
 
 
 def unit_flux_landscape():
-    """With the parent at charge 3, three families = one flux quantum. Tune Lambda for it:
-    fluxes m >= 2 have no vacuum (m^2 < 4/3), and m = 0 has only a maximum (no flux stabilization)."""
+    """With the parent at charge 3, three families = one flux quantum (|m| = 1). Tune Lambda for it: a
+    vacuum needs m^2 < 4/3, so |m| >= 2 has none, and m = 0 has only a maximum (no flux stabilization).
+    Classical only."""
     try:
         from .six_dim_flux_vacuum import flux_landscape, reduced_potential, M, e, Lam, r0, r, m
     except ImportError:

@@ -126,11 +126,11 @@
 > BPR-6D is an effective field theory, not a theory of everything. It is non-renormalizable, its Λ is tuned, it has no Yukawa sector, and it has no tested prediction.
 >
 > **GREEN–SCHWARZ QUANTIZATION → FAMILY NUMBER ∈ 3ℤ (2026-09-26):** [Dirac quantization of the matter sector's Green–Schwarz couplings](doc/derivations/green_schwarz_quantization_2026-09-26.md).
-> - For every 2-form charge lattice, the minimal completion is quantizable iff the parent's U(1)_F charge is a multiple of 3 in units of the smallest charge. With parent charge 3 one non-chiral 2-form suffices (explicit lattice vectors); the odd lattice I₁,₁ is obstructed.
-> - By the index theorem the number of families is then a **multiple of three**. Three is one flux quantum, and at its tuned Λ it is the only compactified flux vacuum.
-> - Massive states carrying one third of the matter's U(1)_F charge must exist.
+> - For every integral 2-form charge lattice, the minimal completion is quantizable iff the parent's U(1)_F charge is a multiple of 3 in units of the smallest charge. With parent charge 3 one non-chiral 2-form suffices (explicit lattice vectors); the odd lattice I₁,₁ is obstructed. The U(1) normalization is anchored to the Park–Taylor supergravity conditions.
+> - By the index theorem the number of families is then a **multiple of three**. Three needs parent charge 3 and one flux quantum, both minimal choices. At its tuned Λ it is, classically, the only compactified flux vacuum.
+> - States carrying one third of the matter's U(1)_F charge must exist. They are massive in BPR-6D as defined; a Morrison–Taylor F-theory result suggests a string realization would normally make them massless.
 >
-> Caveats: characteristic-class level only (torsion and Ω₇ open); three rather than six or nine is the minimal case, not derived; the result is specific to the minimal completion.
+> Caveats: characteristic-class level only (torsion and Ω₇ open); the result holds for the minimal completion within its class; the independent review found no blocker, and its scope repairs are applied.
 >
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >

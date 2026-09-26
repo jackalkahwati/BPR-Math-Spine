@@ -184,19 +184,21 @@ tests the minimal completion against Dirac quantization of its Green–Schwarz
 couplings. It works at the characteristic-class level, with integral
 generators λ_V = S2/2, x² and λ_T = p₁/2.
 
-**Result.** For any unimodular lattice of 2-form charges, quantization holds
+**Result.** For any integral lattice of 2-form charges, quantization holds
 iff the parent's U(1)_F charge q is a multiple of 3 in units of the smallest
-charge. At q=3 one non-chiral 2-form suffices:
+charge. This holds for the minimal completion in class 𝒞, and the U(1)
+normalization is anchored to Park–Taylor. At q=3 one non-chiral 2-form suffices:
 - Y_e = 6x²;
 - Y_g = 3λ_V + 9x² − λ_T.
 
 The odd lattice I₁,₁ is obstructed.
 
 **Consequences.**
-- States with one third of the matter's charge must exist, and they must be
-  massive.
-- By the index theorem, n_gen = q|m| is a **multiple of three**. Three is one
-  flux quantum.
+- States with one third of the matter's charge must exist. In BPR-6D as
+  defined they are massive. Morrison–Taylor's F-theory result suggests that
+  realizations would normally make them massless.
+- By the index theorem, n_gen = q|m| is a **multiple of three**. Three needs
+  q=3 and |m|=1, both minimal choices.
 - With Λ tuned for it, the three-family vacuum is the only flux sector with a
   compactified minimum.
 

@@ -92,8 +92,32 @@ def test_parent_charge_one_fails_every_lattice():
     nec = g.necessary_conditions(fields)
     assert not nec["pass"] and nec["gram"]["bX.bX"] == "4/3"
     assert not g.hyperbolic_solution(fields)["exists"]
-    assert brute_force_U(g.integral_polynomial(fields)) == []
     assert not g.odd_lattice_solution(fields)["exists"]
+    # The integer brute force is vacuous here (non-integer target); show the failure rationally instead:
+    # I8 = (2/3) x2 L with L = 3 lambda_V + x2 - lambda_T primitive, so Y_e = k x2, Y_g = (2/(3k)) L.
+    poly = g.integral_polynomial(fields)
+    L = 3 * g.lamV + g.x2 - g.lamT
+    assert sp.expand(sp.Rational(2, 3) * g.x2 * L - poly) == 0
+    for num in range(1, 13):
+        for den in range(1, 13):
+            k = Fraction(num, den)
+            partner = Fraction(2, 3) / k
+            assert not (k.denominator == 1 and partner.denominator == 1)
+
+
+def test_abelian_normalization_matches_park_taylor():
+    # External anchor for the U(1) factors of 1/2: Park-Taylor (2011) give 3 b_11.b_11 = sum q^4 and
+    # a.b_11 = -(1/6) sum q^2 for charged fermions; with b_11 = 2 b_X these are the module's entries.
+    rng = np.random.default_rng(4)
+    for _ in range(20):
+        qs = [int(q) for q in rng.integers(-5, 6, size=int(rng.integers(1, 9)))]
+        gram = g.abelian_gram([(1, "1", q) for q in qs])
+        b11_sq, a_b11 = 4 * gram["bX.bX"], 2 * gram["bX.a"]
+        assert 3 * b11_sq == sum(q ** 4 for q in qs)
+        assert a_b11 == Fraction(-sum(q * q for q in qs), 6)
+    # 108 charge-1 fields: b_X = K-bar = 3H on P^2 (H.H = 1, a = K = -3H) meets both entries.
+    gram = g.abelian_gram([(1, "1", 1)] * 108)
+    assert gram == {"bX.bX": 9, "bX.a": -9}
 
 
 def test_parent_charge_three_has_an_explicit_U_lattice_solution():
@@ -145,11 +169,23 @@ def test_vectorlike_charge_one_states_do_not_change_the_anomaly():
 
 def test_near_minimal_alternatives():
     rows = {(r["parent_charge"], r["Qa"], r["Qb"]): r for r in g.near_minimal_scan()}
-    # At q = 1 only (Qa, Qb) = (0, 4) and (3, 1) pass, both adding four massless singlets per flux unit.
+    # For |Q| <= 4 at q = 1 only (Qa, Qb) = (0, 4) and (3, 1) pass, each adding four massless singlets
+    # per flux unit; larger charges add more, e.g. (0, 8) and (3, 5).
     passing_q1 = sorted((qa, qb) for (q, qa, qb), r in rows.items() if q == 1 and r["U"])
     assert passing_q1 == [(0, 4), (3, 1)]
     assert rows[(1, 0, 4)]["massless_singlets_per_unit_flux"] == 4
     assert all(r["necessary"] == r["U"] for r in rows.values())
+    for qa, qb in ((0, 8), (3, 5)):
+        assert g.hyperbolic_solution(g.minimal_fields(1) + [(1, "1", qa), (-1, "1", qb)])["exists"]
+
+
+def test_outside_class_c_a_charged_partner_passes_at_parent_charge_one():
+    # 16_+(1) + 16_-(2) has 16 added components and passes, but leaves massless Spin(10) matter
+    # (one 16 and two 16bar per flux unit), which class C excludes; its net chirality is (1 - 2) m.
+    fields = [(1, "16", 1), (-1, "16", 2)]
+    assert g.hyperbolic_solution(fields)["exists"]
+    modes = cpc.zero_modes(fields, 1)
+    assert {(md["representation"], md["multiplicity"]) for md in modes} == {("16", 1), ("16bar", 2)}
 
 
 def test_unit_flux_vacuum_is_the_only_compactified_minimum():
