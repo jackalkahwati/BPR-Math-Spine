@@ -24,7 +24,8 @@
     {"date": "2026-09-26", "summary": "Round 5: Omega_7^Spin(B(Spin(10) x U(1))) = 0 by an exact Adams E2 computation over A(1); BPR-6D has no global anomaly for the Spin x Spin(10) x U(1) structure."},
     {"date": "2026-09-26", "summary": "Rounds 6-7: Morrison-Taylor tension resolved as a non-supersymmetric fork (SUSY analogues force 10 hypers and lose 3 | n_gen); geometric Spin(10) breaking obstructed (flux makes hypercharge massive via Green-Schwarz; S^2/(Z2xZ2) gives non-uniform families)."},
     {"date": "2026-09-26", "summary": "Rounds 8-9: brane and bulk-vector Yukawa mechanisms (no single brane gives three distinct masses; no natural hierarchy); no classical brane self-tuning of the cosmological constant (discrete flat tensions)."},
-    {"date": "2026-09-26", "summary": "Round 10: BPR-6D predictions - a Green-Schwarz QCD axion near the compactification scale (generic to GS models) and n_gen in 3Z (postdiction; excludes a fourth family); everything else is untestable or not predicted."}
+    {"date": "2026-09-26", "summary": "Round 10: BPR-6D predictions - a Green-Schwarz QCD axion near the compactification scale (generic to GS models) and n_gen in 3Z (postdiction; excludes a fourth family); everything else is untestable or not predicted."},
+    {"date": "2026-09-26", "summary": "Independent-review repairs for rounds 6-10: T=1 supersymmetric analogues can force charges into 3Z (fork restated as anomaly-forced 3 | n_gen vs F-theory embeddability); every quantized Spin(10) flux on S^2 is unstable; brane Higgs J_z charge c = s_h + 3 (brane scalar never couples; J_z breaking gives the Froggatt-Nielsen form, no hierarchy predicted); CC flatness pins the deficit globally; U(1)_F acts as a Peccei-Quinn symmetry of the supplied Higgs, so a viable QCD axion needs a supplied F-charged singlet."}
   ],
   "nodes": [
     {"id": "ring_substrate", "layer": "substrate", "status": "stipulated",
@@ -246,7 +247,7 @@
      "claim": "Brane tensions on the BPR-6D sphere self-tune the 4D cosmological constant.",
      "sources": ["doc/derivations/cosmological_constant_2026-09-26.md", "bpr/cosmological_constant.py", "tests/test_cosmological_constant.py"],
      "depends_on": ["flux_vacuum"],
-     "limitation": "Classical football solutions: flux quantization on the reduced area makes flat tensions discrete (one per flux quantum) and dH^2/dT != 0 at the flat point, so brane vacuum energy is not absorbed (Garriga-Porrati). Supersymmetric SLED routes are cited, contested, and would cost 3 | n_gen."},
+     "limitation": "Classical football solutions with the flux quantum conserved: H = 0 forces u = M^4/(2 Lambda) and B^2 = 2 Lambda on either root, pinning the deficit, so flat tensions are discrete (one per flux quantum) and dH^2/dT = sqrt(2) e sqrt(Lambda)/(3 pi m M^4) > 0 at the flat point; brane vacuum energy is not absorbed (Navarro 2003; Garriga-Porrati). Unwarped, equal-tension ansatz; breathing-mode stability only. Supersymmetric SLED routes are cited and contested; in an F-theory embedding 3 | n_gen would be allowed but not forced."},
     {"id": "bpr6d_predictions", "layer": "observation", "status": "conditional",
      "claim": "With a supplied Higgs sector, U(1)_F acts as a Peccei-Quinn symmetry; given a supplied F-charged Standard-Model singlet, BPR-6D has an invisible QCD axion with f <~ f_b/3 (~1e14 to 1e17 GeV); n_gen in 3Z.",
      "sources": ["doc/derivations/predictions_2026-09-26.md", "bpr/predictions.py", "tests/test_predictions.py"],

@@ -154,8 +154,8 @@
 > - The independent review found one blocker (the brane Higgs's J_z charge); its repairs are applied.
 >
 > **COSMOLOGICAL CONSTANT (2026-09-26):** [no classical self-tuning](doc/derivations/cosmological_constant_2026-09-26.md).
-> - Brane tension does not drop out: flat tensions are discrete (one per flux quantum), and dH²/dT ≠ 0.
-> - The Λ tuning stands.
+> - Brane tension does not drop out. With the flux quantum conserved, flatness pins the deficit, so flat tensions are discrete (one per flux quantum), and dH²/dT > 0 at the flat point.
+> - The Λ tuning stands. The independent review confirmed the equations; its citation and scope repairs are applied.
 >
 > **PREDICTIONS (2026-09-26):** [what BPR-6D says that could be checked](doc/derivations/predictions_2026-09-26.md).
 > - U(1)_F acts as a Peccei–Quinn symmetry on any Higgs that gives Yukawas (F-charge −6). With only the Higgs doublets the axion is an excluded PQWW axion (f ≈ 41 GeV), so the minimal Higgs sector is not viable. A supplied F-charged singlet gives an invisible QCD axion with f ≲ f_b/3 ~ 10¹⁴–10¹⁷ GeV. Axion quality is unresolved.

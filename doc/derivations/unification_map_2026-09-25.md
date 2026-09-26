@@ -288,9 +288,11 @@ are free: **no hierarchy is predicted**.
 
 **Cosmological constant.** See
 [cosmological_constant_2026-09-26.md](cosmological_constant_2026-09-26.md).
-Classical brane self-tuning fails. Flux quantization on the reduced area makes
-the flat brane tensions discrete, and dH²/dT ≠ 0 at the flat point. The Λ
-tuning (about 10⁻¹²⁰) stands.
+Classical brane self-tuning fails. With the flux quantum conserved,
+flatness pins the deficit (u = M⁴/2Λ, B² = 2Λ on either root), so the flat
+brane tensions are discrete, and dH²/dT = √2·e√Λ/(3πmM⁴) > 0 at the flat
+point. The Λ tuning (about 10⁻¹²⁰) stands. This holds within the unwarped
+ansatz with equal tensions; warped solutions also need one flatness relation.
 
 ## 3h. Round 10: predictions
 
