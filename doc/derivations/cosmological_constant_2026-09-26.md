@@ -35,10 +35,10 @@ the flux m into m/α. Solving the full 6D equations on (A)dS₄ × football
 
 **What is held fixed.** As the tension varies, the flux quantum m is held
 fixed: dF = 0 conserves ∫F, and BPR-6D has no magnetically charged branes
-(flux note, section 6). Carroll and Guica (hep-th/0302067) hold the field
-strength B fixed instead, tuned against Λ, so that T only changes the
-deficit. That choice is not available when the flux is quantized and
-conserved.
+(flux note, section 6). Carroll and Guica (hep-th/0302067) study the same
+model holding the field strength B fixed instead, tuned against Λ, so that T
+only changes the deficit. When the tension changes dynamically, it is the
+conserved flux quantum, not B, that stays fixed.
 
 **Checks** (tested):
 - Solving the 6D Einstein equations directly on the football metric, with
