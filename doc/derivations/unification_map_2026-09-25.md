@@ -5,9 +5,11 @@ would need and what the repository actually supplies for each link. The
 machine-readable version is [`unification_map_2026-09-25.json`](unification_map_2026-09-25.json),
 and `tests/test_unification_map.py` checks its integrity. It is a dependency
 map, not a completion score. **BPR is not a completed theory of everything, and
-this review does not make it one.** It records the new links from two rounds of
-work (sections 2–3 and 3b) and names the smallest well-posed problems that stand
-between the current state and a connected theory (section 5).
+this review does not make it one.** It records the new links from three rounds of
+work (sections 2–3, 3b and 3c) and names the smallest well-posed problems that stand
+between the current state and a connected theory (section 5). Round 3
+(2026-09-26) resolved the section 7 decision point by making Lorentz invariance
+fundamental; see [architecture_decision_2026-09-26.md](architecture_decision_2026-09-26.md).
 
 ## 1. The honest one-paragraph answer
 
@@ -36,6 +38,15 @@ to a gauge field: an emergent compact U(1), via a proposed link-boson
 amendment. It then shows that emergent fields from this class of substrate
 generically do not share one light cone. That is now the program's sharpest
 obstruction.
+
+A third round (section 3c) takes the decision that obstruction forced. It
+makes six-dimensional Lorentz invariance and gravity fundamental ("BPR-6D"),
+with the lattice substrate reclassified as an analogue. The matter sector
+comes from the round-1 completion on a flux-carrying sphere. This connects
+the gravity, matter and flavor islands inside one effective theory. It does so
+by assumption rather than derivation, and with two new negative results:
+- the flux number, and hence three families, is not selected;
+- the minimal theory has no Yukawa couplings.
 
 ## 2. New link A: substrate → vacuum → acoustic spacetime
 
@@ -122,6 +133,45 @@ many fields from a preferred-frame lattice therefore needs a new principle. Cand
 for all fields, or a symmetry forbidding dimension-4 Lorentz violation. The
 alternative is to give up deriving spacetime from the substrate.
 
+## 3c. Third round: Lorentz invariance fundamental (BPR-6D)
+
+**Decision.** [architecture_decision_2026-09-26.md](architecture_decision_2026-09-26.md)
+chooses option 3 of section 7 over a single relativistic fixed point or a
+protecting symmetry. The definition of BPR-6D:
+- 6D Einstein gravity;
+- Spin(10)×U(1)_F;
+- 16₊(Q=1) ⊕ 16₋(Q=0) plus a Green–Schwarz 2-form;
+- M4 × S² with flux 3.
+
+The common light cone and a universally coupled graviton then hold by
+assumption. The substrate results remain true as lattice mathematics.
+
+**Flux vacuum.** [flux_compactification_2026-09-26.md](flux_compactification_2026-09-26.md)
+derives the Randjbar-Daemi–Salam–Strathdee vacuum:
+- r = m/(2M²e), which requires the tuning Λ = 2M⁸e²/m²;
+- a stable breathing mode with mass exactly 1/r0;
+- M_Pl² = πm²/e² and 1/r = 2g4M_Pl/m.
+
+Classical control needs g4 < m/(4√π), so the sphere is near-Planckian.
+
+**Negative result: flux selection.** At fixed Λ:
+- only one flux sector is flat;
+- lower fluxes are anti-de Sitter;
+- fluxes above (2/√3)m₀ have no vacuum.
+
+m=3 is therefore the Λ tuning, not a prediction. This answers critical-path
+item 6 at the classical level.
+
+**Family symmetry.** [family_symmetry_from_flux_2026-09-26.md](family_symmetry_from_flux_2026-09-26.md)
+shows that the three families form one triplet of the sphere's gauged SU(2)
+isometry.
+
+**Negative result: Yukawas.** 6D chirality and SU(2) forbid every Yukawa
+coupling of the minimal content. The only channel is an F-charge −2
+internal-vector 10 in J=2. The SO(12) gauge–Higgs source of that field gives
+an even family number and a tachyonic J=2 level. Even with the channel, complex
+J=2 vevs reach every mass spectrum, so no mass ratio is predicted.
+
 ## 4. The dependency graph
 
 ```mermaid
@@ -160,6 +210,15 @@ graph TD
   ngen --> flavor[flavor formulas]:::fit
   window --> lv[map phonon LV to real particles]:::open
   speed --> lv
+  speed --> arch[BPR-6D: Lorentz invariance fundamental]:::stip
+  comp --> arch
+  arch --> g6[6D Einstein gravity]:::stip
+  g6 --> fvac[M4 x S2 flux vacuum, radion stable]:::exact
+  comp --> fvac
+  fvac --> fsel[flux selects m=3: obstructed]:::obst
+  fsel --> ngen
+  fvac --> fam[families = SU2 isometry triplet]:::exact
+  fam --> yuk[Yukawa sector: none in minimal content]:::obst
 ```
 
 Colors: green = proved (exact or controlled), yellow = open, red = obstructed
@@ -171,7 +230,11 @@ limitations for every node.
 These are ordered by how many open nodes each would unblock. Each has a
 concrete first calculation; none is authorized as physics by this map alone.
 
-1. **Common limiting speed (spacetime), analysed in round 2.** The analysis in
+1. **Common limiting speed (spacetime), analysed in round 2 and decided in
+   round 3.** Round 3 made Lorentz invariance fundamental
+   ([architecture_decision_2026-09-26.md](architecture_decision_2026-09-26.md)),
+   so this item is bypassed for BPR-6D and remains open only for the substrate
+   as an analogue. The analysis in
    [common_light_cone_2026-09-25.md](common_light_cone_2026-09-25.md) confirms
    and extends the reasoning below. Add a second boson species to the
    cubic lattice: a two-component Bose–Hubbard model with g11, g22, g12. At
@@ -229,7 +292,21 @@ concrete first calculation; none is authorized as physics by this map alone.
    chiral section). First calculation:
    the moduli potential including the Green–Schwarz term and Casimir energies.
    It is possible that no minimum selects q=3; that outcome should be recorded
-   if found.
+   if found. **Round 3 found it at the classical level.** In the BPR-6D flux
+   vacuum at fixed Λ, one flux sector is flat, lower ones are AdS and higher
+   ones have no vacuum. Choosing q=3 is the Λ tuning
+   ([flux_compactification_2026-09-26.md](flux_compactification_2026-09-26.md),
+   Theorem 5). Quantum (Casimir) corrections and a supersymmetric
+   (Salam–Sezgin) embedding remain open.
+7. **Yukawa sector (flavor), added in round 3.** Minimal BPR-6D has no
+   zero-mode Yukawa
+   ([family_symmetry_from_flux_2026-09-26.md](family_symmetry_from_flux_2026-09-26.md)).
+   Find a Higgs sector that meets all of the following, or prove that none
+   exists in a stated class:
+   - it supplies an F-charge −2 internal one-form 10;
+   - it is stable at 1/r;
+   - it keeps three families;
+   - it breaks the SU(2) family symmetry at a high scale.
 
 ## 6. Recorded legacy debt found in this review
 
@@ -288,3 +365,20 @@ The critical path in section 5 is the most direct honest route. Its first
 item is now a decision point, not a calculation. Either find a principle that
 gives every emergent field the same light cone, or stop deriving spacetime
 from a preferred-frame lattice.
+
+**Round-3 update.** The decision was taken: BPR-6D stops deriving spacetime
+from a preferred-frame lattice. Measured against the list above, BPR-6D stands
+as follows:
+- The single light cone holds by assumption.
+- Gauge fields are supplied: Spin(10) is not yet broken to the Standard
+  Model group.
+- Chiral matter with three families is anomaly-free. The family number is
+  equivalent to the Λ tuning, not derived.
+- A dynamical metric with universal coupling is supplied by 6D gravity.
+- There are no Yukawa couplings at the minimal level.
+- No prediction has been tested.
+
+Every item is supplied or assumed rather than derived from one microscopic
+Hamiltonian. The four requirements are now consistent with each other, but
+BPR-6D does not meet the "one microscopic Hamiltonian" standard of this
+section.

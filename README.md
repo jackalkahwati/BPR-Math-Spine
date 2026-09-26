@@ -103,6 +103,25 @@
 >
 > This is the program's sharpest structural obstruction. It is a naturalness problem, not a no-go: emergent Lorentz invariance for many fields needs a new principle.
 >
+> **ARCHITECTURE DECISION: BPR-6D (2026-09-26):** [Lorentz invariance made fundamental](doc/derivations/architecture_decision_2026-09-26.md), in response to the light-cone obstruction.
+> - BPR-6D is 6D Einstein gravity with Spin(10)×U(1)_F, the minimal chiral completion and a Green–Schwarz 2-form, on M4 × S² with flux 3. The sphere is the "boundary".
+> - The lattice substrate results stay as exact lattice mathematics, reclassified as analogue/regulator physics. BPR no longer claims to derive spacetime.
+> - Legacy laboratory boundary/Casimir claims are not supported, because the only boundary is a near-Planckian sphere.
+>
+> **FLUX VACUUM (2026-09-26):** [M4 × S² with U(1)_F flux](doc/derivations/flux_compactification_2026-09-26.md). Exact classical results:
+> - r=m/(2M²e), with one tuning Λ=2M⁸e²/m²;
+> - a stable breathing mode of mass exactly 1/r0;
+> - M_Pl²=πm²/e² and 1/r=2g4M_Pl/m.
+>
+> **Negative:** at fixed Λ only one flux sector is flat, so three families are not selected; choosing m=3 is the Λ tuning.
+>
+> **FAMILIES FROM FLUX (2026-09-26):** [SU(2) family symmetry and the Yukawa obstruction](doc/derivations/family_symmetry_from_flux_2026-09-26.md).
+> - The three families form one triplet of the sphere's gauged SU(2) isometry.
+> - **Negative:** 6D chirality and SU(2) forbid every Yukawa coupling of the minimal content. Only an F-charge −2 internal-vector 10 in the J=2 channel couples. The SO(12) gauge–Higgs source of that field gives an even family number and a tachyonic J=2 level.
+> - Complex J=2 vevs reach every mass spectrum, so no mass ratio is predicted.
+>
+> BPR-6D is an effective field theory, not a theory of everything. It is non-renormalizable, its Λ is tuned, it has no Yukawa sector, and it has no tested prediction.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap

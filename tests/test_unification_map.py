@@ -88,3 +88,23 @@ def test_markdown_links_json_and_disclaims_completion():
     assert "not a completed theory of everything" in text
     assert "cubic_condensate_regime_2026-09-25.md" in text
     assert "chiral_parent_completion_2026-09-25.md" in text
+
+
+def test_round_three_architecture_nodes(data):
+    nodes = {node["id"]: node for node in data["nodes"]}
+    assert data["architecture_decision"] == "doc/derivations/architecture_decision_2026-09-26.md"
+    assert nodes["bpr6d_architecture"]["status"] == "stipulated"
+    assert nodes["six_d_gravity"]["status"] == "stipulated"
+    assert nodes["flux_vacuum"]["status"] == "exact_theorem"
+    assert nodes["family_symmetry"]["status"] == "exact_theorem"
+    # Negative round-3 results must stay recorded as obstructions, not silently dropped.
+    assert nodes["flux_selection"]["status"] == "obstructed"
+    assert nodes["yukawa_sector"]["status"] == "obstructed"
+    assert nodes["common_limiting_speed"]["status"] == "obstructed"
+    for key in ("flux_vacuum", "flux_selection", "six_d_gravity"):
+        assert "doc/derivations/flux_compactification_2026-09-26.md" in nodes[key]["sources"]
+    for key in ("family_symmetry", "yukawa_sector"):
+        assert "doc/derivations/family_symmetry_from_flux_2026-09-26.md" in nodes[key]["sources"]
+        assert "bpr/sphere_family_structure.py" in nodes[key]["sources"]
+    text = MAP_MD.read_text(encoding="utf-8")
+    assert "architecture_decision_2026-09-26.md" in text
