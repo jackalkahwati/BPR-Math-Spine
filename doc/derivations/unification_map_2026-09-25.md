@@ -235,6 +235,31 @@ For the twisted Spin ×_{ℤ₂} Spin(10) form, the independent review found a
 The anomalies are therefore cancelled locally, with quantization, and
 globally, for both global forms.
 
+## 3f. Rounds 6–7: string embedding and Spin(10) breaking
+
+**String embedding.** See
+[string_embedding_2026-09-26.md](string_embedding_2026-09-26.md). The
+Morrison–Taylor massless-charge conjecture is supersymmetric. BPR-6D meets its
+premise (−a·b̃ = 24) with charge gcd 3, but one massless vector-like charge-1
+pair removes the tension without changing anomalies or families.
+
+Supersymmetric SO(10) × U(1) analogues on T=0 behave differently:
+- they force n₁₀ = n₁₆ + 2 hypermultiplets in the 10;
+- by an arithmetic lemma, they always allow charge gcd 1.
+
+So the multiple-of-three family number is intrinsically non-supersymmetric.
+String-embeddability and that result pull in opposite directions.
+
+**Spin(10) breaking.** See [gut_breaking_2026-09-26.md](gut_breaking_2026-09-26.md).
+- Spin(10) flux is chirality-neutral: three net families survive.
+- But the Green–Schwarz coupling makes the flux U(1) massive, so no flux gives
+  SU(3) × SU(2) with a massless hypercharge. This is the sphere version of the
+  F-theory hypercharge-flux problem.
+- S²/(ℤ₂ × ℤ₂) orbifolds give the right gauge group but non-uniform family
+  numbers.
+
+Spin(10) → Standard Model therefore needs a supplied Higgs sector.
+
 ## 4. The dependency graph
 
 ```mermaid

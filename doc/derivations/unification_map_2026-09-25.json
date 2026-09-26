@@ -21,7 +21,8 @@
   "revisions": [
     {"date": "2026-09-26", "summary": "Round 3: Lorentz invariance adopted as fundamental (BPR-6D); flux vacuum, flux landscape, family symmetry and Yukawa obstruction added; substrate nodes reclassified as analogue/regulator."},
     {"date": "2026-09-26", "summary": "Round 4: characteristic-class Dirac quantization of the Green-Schwarz couplings; the minimal completion needs the parent charge in 3Z, so the family number is a multiple of three (family_count moves to conditional)."},
-    {"date": "2026-09-26", "summary": "Round 5: Omega_7^Spin(B(Spin(10) x U(1))) = 0 by an exact Adams E2 computation over A(1); BPR-6D has no global anomaly for the Spin x Spin(10) x U(1) structure."}
+    {"date": "2026-09-26", "summary": "Round 5: Omega_7^Spin(B(Spin(10) x U(1))) = 0 by an exact Adams E2 computation over A(1); BPR-6D has no global anomaly for the Spin x Spin(10) x U(1) structure."},
+    {"date": "2026-09-26", "summary": "Rounds 6-7: Morrison-Taylor tension resolved as a non-supersymmetric fork (SUSY analogues force 10 hypers and lose 3 | n_gen); geometric Spin(10) breaking obstructed (flux makes hypercharge massive via Green-Schwarz; S^2/(Z2xZ2) gives non-uniform families)."}
   ],
   "nodes": [
     {"id": "ring_substrate", "layer": "substrate", "status": "stipulated",
@@ -228,6 +229,16 @@
      "claim": "Yukawa couplings of the three flux families in BPR-6D.",
      "sources": ["doc/derivations/family_symmetry_from_flux_2026-09-26.md", "bpr/sphere_family_structure.py"],
      "depends_on": ["family_symmetry"],
-     "limitation": "The minimal content has no field in 16x16 = 10+120+126, so no Yukawa at all. For extensions, an all-orders selection rule (perturbative in U(1)_F) leaves only an F-charge -2 internal one-form 10 or 126 in the J=2 channel; scalars and the 120 never couple. SO(12) gauge-Higgs gives paired, even families and a vacuum instability. 10-only Higgs gives M_d = M_e^T (excluded); complex J=2 vevs reach every spectrum, so no mass ratio is predicted."}
+     "limitation": "The minimal content has no field in 16x16 = 10+120+126, so no Yukawa at all. For extensions, an all-orders selection rule (perturbative in U(1)_F) leaves only an F-charge -2 internal one-form 10 or 126 in the J=2 channel; scalars and the 120 never couple. SO(12) gauge-Higgs gives paired, even families and a vacuum instability. 10-only Higgs gives M_d = M_e^T (excluded); complex J=2 vevs reach every spectrum, so no mass ratio is predicted."},
+    {"id": "string_embedding", "layer": "matter", "status": "open",
+     "claim": "BPR-6D admits a string-theory (supersymmetric F-theory) embedding.",
+     "sources": ["doc/derivations/string_embedding_2026-09-26.md", "bpr/string_embedding.py", "tests/test_string_embedding.py"],
+     "depends_on": ["gs_quantization"],
+     "limitation": "The Morrison-Taylor massless-charge conjecture is supersymmetric; BPR-6D meets its premise but a massless vector-like charge-1 pair removes the tension at no cost. Supersymmetric SO(10) x U(1) analogues on T=0 force n10 = n16 + 2 hypers and always allow charge gcd 1 (Lemma 3), losing 3 | n_gen: a fork between string-embeddability and the family result. No vacuum or F-theory construction is given."},
+    {"id": "spin10_breaking", "layer": "gauge", "status": "obstructed",
+     "claim": "The compactification breaks Spin(10) to the Standard Model.",
+     "sources": ["doc/derivations/gut_breaking_2026-09-26.md", "bpr/gut_breaking.py", "tests/test_gut_breaking.py"],
+     "depends_on": ["family_symmetry", "gs_quantization"],
+     "limitation": "Spin(10) flux is chirality-neutral (3 net families survive) but the Green-Schwarz coupling makes the flux U(1) massive, and no flux keeps SU(3) x SU(2) with a massless hypercharge; S^2/(Z2 x Z2) orbifolds give non-uniform family numbers. Conventional Higgs breaking remains possible but is supplied, not derived."}
   ]
 }
