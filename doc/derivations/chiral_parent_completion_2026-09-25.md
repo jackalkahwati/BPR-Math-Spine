@@ -212,7 +212,20 @@ Not established:
   naive integrality test, (2) needs b_F·b_F=4/3 and fails, while the 18-component
   example above passes. The review also sketched an odd-lattice (I₁,₁)
   embedding of the 𝒞₀ solution. None of this is settled here.
+
+  **Update 2026-09-26.**
+  [green_schwarz_quantization_2026-09-26.md](green_schwarz_quantization_2026-09-26.md)
+  settles this at the characteristic-class level:
+  - (2) is quantizable, for any 2-form lattice, iff the parent's charge is a
+    multiple of 3 in units of the smallest U(1)_F charge;
+  - with parent charge 3, one non-chiral 2-form (lattice U) suffices;
+  - the odd lattice I₁,₁ is obstructed.
+
+  The failure recorded above is the parent-charge-1 convention. With the
+  parent at charge 3, "flux 3" is one flux quantum, and n_gen is a multiple of
+  three. Torsion and Ω₇ remain open.
 - **Flux and radius stabilization.** m=3, and hence n_gen=3, is still an input.
+  See the update above for what quantization adds: n_gen ∈ 3ℤ.
 - Yukawa couplings, breaking of Spin(10) to the Standard Model, and any
   realization of this parent on the bosonic substrate. Nielsen–Ninomiya-type
   doubling constraints on lattice realizations remain open.

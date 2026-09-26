@@ -79,7 +79,7 @@ def test_new_links_cite_their_derivations_and_modules(data):
         assert "bpr/cubic_condensate_regime.py" in nodes[key]["sources"]
     assert "bpr/chiral_parent_completion.py" in nodes["chiral_parent_completion"]["sources"]
     assert nodes["chiral_parent"]["status"] == "obstructed"
-    assert nodes["family_count"]["status"] == "stipulated"
+    assert nodes["family_count"]["status"] == "conditional"
 
 
 def test_markdown_links_json_and_disclaims_completion():
@@ -108,3 +108,12 @@ def test_round_three_architecture_nodes(data):
         assert "bpr/sphere_family_structure.py" in nodes[key]["sources"]
     text = MAP_MD.read_text(encoding="utf-8")
     assert "architecture_decision_2026-09-26.md" in text
+
+
+def test_round_four_quantization_node(data):
+    nodes = {node["id"]: node for node in data["nodes"]}
+    gs = nodes["gs_quantization"]
+    assert gs["status"] == "exact_theorem" and "chiral_parent_completion" in gs["depends_on"]
+    assert "bpr/green_schwarz_quantization.py" in gs["sources"]
+    assert "gs_quantization" in nodes["family_count"]["depends_on"]
+    assert "multiple of three" in nodes["family_count"]["claim"]

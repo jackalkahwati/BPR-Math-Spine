@@ -109,7 +109,7 @@
 > - BPR-6D is 6D Einstein gravity with Spin(10)×U(1)_F, the minimal chiral completion and a Green–Schwarz 2-form, on M4 × S² with flux 3. The sphere is the "boundary".
 > - The lattice substrate results stay as exact lattice mathematics, reclassified as analogue/regulator physics. BPR no longer claims to derive spacetime.
 > - Legacy laboratory boundary/Casimir claims are not supported: the only boundary is the internal sphere, of radius r=(m/2g4)ℓ_P. It is near-Planckian unless the unknown U(1)_F coupling g4 is tiny.
-> - Adoption is provisional: the minimal completion's Green–Schwarz couplings fail a naive Dirac-quantization test (an 18-component alternative passes).
+> - Green–Schwarz quantization is settled at the characteristic-class level in round 4 (below). Global anomalies remain open.
 >
 > **FLUX VACUUM (2026-09-26):** [M4 × S² with U(1)_F flux](doc/derivations/flux_compactification_2026-09-26.md). Exact classical results:
 > - r=m/(2M²e), with one tuning Λ=2M⁸e²/m²;
@@ -124,6 +124,13 @@
 > - Complex J=2 vevs reach every mass spectrum, so no mass ratio is predicted.
 >
 > BPR-6D is an effective field theory, not a theory of everything. It is non-renormalizable, its Λ is tuned, it has no Yukawa sector, and it has no tested prediction.
+>
+> **GREEN–SCHWARZ QUANTIZATION → FAMILY NUMBER ∈ 3ℤ (2026-09-26):** [Dirac quantization of the matter sector's Green–Schwarz couplings](doc/derivations/green_schwarz_quantization_2026-09-26.md).
+> - For every 2-form charge lattice, the minimal completion is quantizable iff the parent's U(1)_F charge is a multiple of 3 in units of the smallest charge. With parent charge 3 one non-chiral 2-form suffices (explicit lattice vectors); the odd lattice I₁,₁ is obstructed.
+> - By the index theorem the number of families is then a **multiple of three**. Three is one flux quantum, and at its tuned Λ it is the only compactified flux vacuum.
+> - Massive states carrying one third of the matter's U(1)_F charge must exist.
+>
+> Caveats: characteristic-class level only (torsion and Ω₇ open); three rather than six or nine is the minimal case, not derived; the result is specific to the minimal completion.
 >
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >

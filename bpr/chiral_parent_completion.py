@@ -31,8 +31,8 @@ SU2_DOUBLETS = {"1": 0, "10": 2, "16": 4, "16bar": 4}
 
 LIMITATIONS = [
     "The parent, the added neutral 16 and the 2-form are supplied inputs, not BPR derivations.",
-    "Only local anomaly polynomials are checked; Omega_7 bordism and 2-form quantization are not.",
-    "The flux m=3 (three families) is chosen, not derived.",
+    "Only local anomaly polynomials are checked here; characteristic-class 2-form quantization is in green_schwarz_quantization (it needs the parent charge in 3Z); Omega_7 bordism is not checked.",
+    "In parent-charge-1 units the flux m=3 is chosen; with quantized couplings (parent charge 3) it is one flux quantum and n_gen is a multiple of three.",
     "U(1)_F becomes Stuckelberg-massive and an axion and moduli remain; their dynamics is not derived.",
     "No symmetry breaking, Yukawa couplings or substrate realization is supplied.",
 ]

@@ -177,6 +177,34 @@ of that field gives paired, even families and a vacuum instability. Even with
 the channel, complex J=2 vevs reach every mass spectrum, so no mass ratio is
 predicted.
 
+## 3d. Fourth round: Green–Schwarz quantization and a multiple-of-three family number
+
+[green_schwarz_quantization_2026-09-26.md](green_schwarz_quantization_2026-09-26.md)
+tests the minimal completion against Dirac quantization of its Green–Schwarz
+couplings. It works at the characteristic-class level, with integral
+generators λ_V = S2/2, x² and λ_T = p₁/2.
+
+**Result.** For any unimodular lattice of 2-form charges, quantization holds
+iff the parent's U(1)_F charge q is a multiple of 3 in units of the smallest
+charge. At q=3 one non-chiral 2-form suffices:
+- Y_e = 6x²;
+- Y_g = 3λ_V + 9x² − λ_T.
+
+The odd lattice I₁,₁ is obstructed.
+
+**Consequences.**
+- States with one third of the matter's charge must exist, and they must be
+  massive.
+- By the index theorem, n_gen = q|m| is a **multiple of three**. Three is one
+  flux quantum.
+- With Λ tuned for it, the three-family vacuum is the only flux sector with a
+  compactified minimum.
+
+This is the program's first structural constraint on the family number. It
+moves family_count from stipulated to conditional. Why three rather than six
+remains a minimality or tuning statement, and torsion and Ω₇ anomalies are
+open.
+
 ## 4. The dependency graph
 
 ```mermaid
@@ -209,7 +237,7 @@ graph TD
   egauge --> speed
   pathb[dihedral gauge proposal]:::stip --> glue[glueball benchmark: withdrawn]:::obst
   parent[6D Spin10 parent]:::obst --> comp[minimal anomaly completion: + neutral 16]:::exact
-  comp --> ngen[n_gen = 3 input]:::stip
+  comp --> ngen[n_gen in 3Z; 3 = one flux quantum]:::ctrl
   comp --> latchi[lattice chiral fermions]:::open
   cubic --> latchi
   ngen --> flavor[flavor formulas]:::fit
@@ -222,6 +250,8 @@ graph TD
   comp --> fvac
   fvac --> fsel[flux selects m=3: obstructed]:::obst
   fsel --> ngen
+  comp --> gsq[GS Dirac quantization: parent charge in 3Z]:::exact
+  gsq --> ngen
   fvac --> fam[families = SU2 isometry triplet]:::exact
   fam --> yuk[Yukawa sector: none in minimal content]:::obst
 ```
@@ -303,6 +333,11 @@ concrete first calculation; none is authorized as physics by this map alone.
    ([flux_compactification_2026-09-26.md](flux_compactification_2026-09-26.md),
    Theorem 5). Quantum (Casimir) corrections and a supersymmetric
    (Salam–Sezgin) embedding remain open.
+   **Round 4.** Dirac quantization of the Green–Schwarz couplings forces
+   n_gen ∈ 3ℤ for the minimal completion
+   ([green_schwarz_quantization_2026-09-26.md](green_schwarz_quantization_2026-09-26.md)).
+   Three is one flux quantum, and at its tuned Λ it is the only compactified
+   vacuum.
 7. **Yukawa sector (flavor), added in round 3.** Minimal BPR-6D has no
    zero-mode Yukawa
    ([family_symmetry_from_flux_2026-09-26.md](family_symmetry_from_flux_2026-09-26.md)).
@@ -382,6 +417,9 @@ as follows:
 - A dynamical metric with universal coupling is supplied by 6D gravity.
 - There are no Yukawa couplings at the minimal level.
 - No prediction has been tested.
+
+Round 4 refines the chiral-matter item: Dirac quantization makes the family
+number a multiple of three, with three the minimal case.
 
 Every item is supplied or assumed rather than derived from one microscopic
 Hamiltonian. The four requirements are now consistent with each other, but

@@ -7,9 +7,13 @@ calculations are
 [flux_compactification_2026-09-26.md](flux_compactification_2026-09-26.md)
 and [family_symmetry_from_flux_2026-09-26.md](family_symmetry_from_flux_2026-09-26.md).
 
-The adoption is **provisional**. The Dirac quantization of the Green–Schwarz
-couplings is unsettled for the chosen completion (section 2), and resolving it
-is the first next problem (section 7). An independent review (section 8) found
+The adoption was **provisional**, because Dirac quantization of the
+Green–Schwarz couplings was unsettled for the chosen completion (section 2).
+Round 4 settles it at the characteristic-class level
+([green_schwarz_quantization_2026-09-26.md](green_schwarz_quantization_2026-09-26.md)).
+The completion is quantizable iff the parent's U(1)_F charge is a multiple of
+3 in units of the smallest charge, which makes the family number a multiple
+of three. Global (Ω₇) anomalies remain open. An independent review (section 8) found
 one blocker, six major and five minor issues; its repairs are applied.
 
 ## 0. The decision point
@@ -80,10 +84,14 @@ would reintroduce Collins-type Lorentz violation and fermion doubling, so
   - 16 with charge 0 and chirality −.
 
   This is the unique minimal (16-component) local-anomaly completion
-  (`bpr/chiral_parent_completion.py`). Under a naive integrality test its
-  Green–Schwarz couplings need b_F·b_F = 4/3 and fail Dirac quantization. The
-  18-component alternative 16₊(1) ⊕ 16₋(0) ⊕ 1₊(0) ⊕ 1₋(4) passes (completion
-  note, section 5). Which completion BPR-6D uses is therefore open.
+  (`bpr/chiral_parent_completion.py`). With the parent at charge 1 its
+  Green–Schwarz couplings fail Dirac quantization, and they fail for every
+  lattice. With the parent at charge 3 in units of the smallest U(1)_F charge
+  they pass with one non-chiral 2-form (round 4). BPR-6D therefore takes:
+  - parent charge 3;
+  - massive states of charge 1, required by completeness;
+  - flux m=1, which gives three families. That is the same geometry as the
+    earlier "flux 3".
 - **Background.** U(1)_F monopole flux m=3 on a round S². The S² is the
   "boundary" of the Boundary Phase Resonance name.
 - **4D spectrum at tree level.**
@@ -112,6 +120,7 @@ would reintroduce Collins-type Lorentz violation and fermion doubling, so
 | Yukawas | The minimal content has no 16⊗16 field, so no Yukawa. Selection rule for extensions (all orders, perturbative in U(1)_F): only an F-charge −2 internal one-form 10 or 126 in J=2 couples. Scalar Higgs fields and the 120 never couple. | exact, negative |
 | SO(12) gauge–Higgs fix | Families come even (2k) and paired, so a projection to three leaves one massless; the J=2 level is tachyonic and destabilizes the flux vacuum | exact / Hessian- and index-checked |
 | Masses | Real J=2 vev ⇒ m₃=m₁+m₂ (excluded); complex vevs reach any spectrum | exact, no viable relation |
+| Are the Green–Schwarz couplings Dirac-quantizable? (round 4) | Iff the parent charge is a multiple of 3; then n_gen ∈ 3ℤ, and three is one flux quantum | exact (characteristic-class) |
 
 ## 4. What survives and what is reclassified
 
@@ -184,10 +193,11 @@ What BPR-6D adds is narrow:
 
 In priority order:
 
-1. **2-form quantization and global anomalies.** Settle the Dirac quantization
-   of the Green–Schwarz couplings and the Ω₇ bordism. The minimal completion
-   fails a naive integrality test and the 18-component alternative passes.
-   Decide which completion BPR-6D is.
+1. **Global anomalies.** Characteristic-class quantization is settled in round
+   4: the parent charge must be a multiple of 3. Still open:
+   - the Ω₇ spin bordism of B(Spin(10)×U(1)) with parent charge 3;
+   - the 2-form's quadratic refinement;
+   - torsion classes.
 2. **Remove the Λ tuning.** Find an anomaly-free 6D (1,0) gauged supergravity
    with Spin(10) ⊂ G whose Salam–Sezgin vacuum gives exactly three chiral 16s,
    or show that none exists in a stated class. This is not a relabelling of
