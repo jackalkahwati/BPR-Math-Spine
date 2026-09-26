@@ -251,12 +251,15 @@ So the multiple-of-three family number is intrinsically non-supersymmetric.
 String-embeddability and that result pull in opposite directions.
 
 **Spin(10) breaking.** See [gut_breaking_2026-09-26.md](gut_breaking_2026-09-26.md).
-- Spin(10) flux is chirality-neutral: three net families survive.
-- But the Green–Schwarz coupling makes the flux U(1) massive, so no flux gives
-  SU(3) × SU(2) with a massless hypercharge. This is the sphere version of the
-  F-theory hypercharge-flux problem.
-- S²/(ℤ₂ × ℤ₂) orbifolds give the right gauge group but non-uniform family
-  numbers.
+- Every quantized Spin(10) flux on S² is unstable. Some root has |α·h| ≥ 2,
+  and its W boson is tachyonic (round 3); since π₁(Spin(10)) = 0, the flux
+  relaxes. This is the primary obstruction.
+- Even if stabilized, the Green–Schwarz coupling makes the flux U(1) massive,
+  so no flux gives SU(3) × SU(2) with a massless hypercharge (flipped or
+  standard). This is the sphere analogue of the F-theory hypercharge-flux
+  problem. Spin(10) flux would be chirality-neutral: three net families survive.
+- Rotation orbifolds give the right gauge group but cannot keep three
+  families of every multiplet (at most two for ℤ₂, one otherwise).
 
 Spin(10) → Standard Model therefore needs a supplied Higgs sector.
 

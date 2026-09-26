@@ -136,15 +136,17 @@
 > - An exact Adams E₂ computation over A(1), via Spin bordism ≅ ko below degree 8, is empty in stem 7. No differentials are needed.
 > - The same engine reproduces the ko chart, Witten's SU(2) anomaly, Lee–Tachikawa's Ω₇ = 0 for SU(2) and SU(3), and the absence of 4D anomalies for Spin(10).
 > - With the quantized Green–Schwarz couplings, BPR-6D is therefore anomaly-free locally and globally for the Spin × Spin(10) × U(1) structure.
+> - Twisted global form Spin ×_ℤ₂ Spin(10) × U(1): here Ω₇ contains a ℤ/2, found by the independent review. The anomaly on its generator (S² × Wu manifold) is shown trivial by a reduction argument: an η product formula, the branching 16 = (4,4) and an order bound on Ω₅^{Spin×ℤ₂Spin(5)}. So no global anomaly for either global form.
 >
 > **STRING EMBEDDING (2026-09-26):** [the Morrison–Taylor tension and supersymmetric analogues](doc/derivations/string_embedding_2026-09-26.md).
 > - BPR-6D meets the premise of the Morrison–Taylor massless-charge conjecture. That conjecture is supersymmetric, and one massless vector-like charge-1 pair removes the tension at no cost.
 > - Supersymmetric SO(10)×U(1) analogues force extra 10 hypermultiplets and always allow charge gcd 1, losing the multiple-of-three family number. This is a fork, not a resolution.
 >
 > **SPIN(10) BREAKING (2026-09-26):** [geometric routes obstructed](doc/derivations/gut_breaking_2026-09-26.md).
-> - Spin(10) flux keeps three net families, but the Green–Schwarz coupling makes hypercharge massive whenever SU(3)×SU(2) survives.
-> - S²/(ℤ₂×ℤ₂) orbifolds give non-uniform family numbers.
-> - Breaking to the Standard Model needs a supplied Higgs sector.
+> - Every quantized Spin(10) flux on S² is unstable: some W boson sees monopole number ≥ 2 and is tachyonic.
+> - Even if stabilized, the Green–Schwarz coupling makes hypercharge massive whenever SU(3)×SU(2) survives. Spin(10) flux does keep three net families.
+> - No rotation orbifold of S² keeps three families of every multiplet.
+> - Breaking to the Standard Model needs a supplied Higgs sector. The independent review found no blocker, and its repairs are applied.
 >
 > **YUKAWA MECHANISMS (2026-09-26):** [brane and bulk Higgs fields](doc/derivations/yukawa_mechanisms_2026-09-26.md).
 > - A single point-brane Higgs never gives three distinct masses, for any J_z charge. Two branes give non-hierarchical spectra.
@@ -158,7 +160,6 @@
 > - A QCD axion from the Green–Schwarz 2-form. It always couples to QCD after U(1)_F eats one axion combination. f_a is near the compactification scale (m_a ≈ 10⁻¹¹–10⁻⁸ eV). This is generic to Green–Schwarz models.
 > - n_gen ∈ 3ℤ: a postdiction that excludes a fourth family.
 > - Masses, mixings, the Higgs mass, the GUT scale and Λ are not predicted. No test against data has been made.
-> - Twisted global form Spin ×_ℤ₂ Spin(10) × U(1): here Ω₇ contains a ℤ/2, found by the independent review. The anomaly on its generator (S² × Wu manifold) is shown trivial by a reduction argument: an η product formula, the branching 16 = (4,4) and an order bound on Ω₅^{Spin×ℤ₂Spin(5)}. So no global anomaly for either global form.
 >
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >

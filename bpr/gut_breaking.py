@@ -19,9 +19,9 @@ MODEL_ID = "bpr6d-gut-breaking-v1"
 F = Fraction
 
 LIMITATIONS = [
-    "Only abelian (Cartan) fluxes on the round S^2 and S^2/(Z2 x Z2) orbifolds with commuting gauge twists are analysed.",
+    "Only Cartan fluxes on the round S^2 (exhaustive for Yang-Mills critical points on S^2 by Atiyah-Bott) and rotation orbifolds of S^2 are analysed.",
     "The Stueckelberg argument uses the round-4 Green-Schwarz coupling (coefficient 3 of lambda_V in Y_g); its 4D normalization is not computed, only that it is nonzero.",
-    "Fixed-point localized matter and localized anomalies on orbifolds are not included.",
+    "Fixed-point localized matter and localized anomalies on orbifolds are not included; P_SU5 is not an involution on spinors and its compensating discrete phase is not anomaly-checked.",
     "Conventional Higgs breaking of Spin(10) is possible in principle but requires field content that BPR-6D does not supply.",
 ]
 
@@ -51,9 +51,8 @@ def roots():
 
 
 def sm_label(w):
-    """Standard-Model multiplet of a 16 weight from (T3L, Y, colour)."""
+    """Standard-Model multiplet of a 16 weight from its hypercharge (unique within the 16)."""
     y = dot(Y, w)
-    colour = sum(1 for c in w[:3] if c > 0)
     labels = {F(1, 6): "Q", F(-2, 3): "u^c", F(1, 3): "d^c", F(-1, 2): "L", F(1): "e^c", F(0): "nu^c"}
     return labels[y]
 
@@ -96,7 +95,7 @@ def contains_sm(h):
 
 
 def centralizer_is_exactly_sm(h):
-    """Nonabelian part of the centralizer = SU(3) x SU(2)_L (8 + 2 = 8 roots: 6 + 2)."""
+    """Nonabelian part of the centralizer is exactly SU(3) x SU(2)_L: 6 + 2 = 8 roots."""
     return contains_sm(h) and len(centralizer(h)) == 8
 
 
@@ -118,15 +117,61 @@ def flux_scan(bound=3):
     return hits
 
 
+YFLIP = (F(1, 3), F(1, 3), F(1, 3), F(1, 2), F(1, 2))  # flipped hypercharge, also in span(Y, X)
+
+
+def max_root_monopole_number(h):
+    """max |alpha . h| over roots: the monopole number seen by the W bosons of the flux background."""
+    return max(abs(dot(r, h)) for r in roots())
+
+
+def flux_is_stable(h):
+    """Charged internal gauge components with |n| >= 2 are tachyonic (round 3, Prop. 5b: m^2 r^2 = -|n|/2,
+    checked against Atiyah-Bott and a Yang-Mills Hessian); pi_1(Spin(10)) = 0, so such a flux relaxes."""
+    return max_root_monopole_number(h) <= 1
+
+
+def stability_scan(bound=3):
+    """Every nonzero quantized Spin(10) flux (h in the D5 coroot lattice) with |h_i| <= bound is unstable."""
+    counts = {"quantized_nonzero": 0, "stable": 0}
+    for h in product(range(-bound, bound + 1), repeat=5):
+        hf = tuple(F(v) for v in h)
+        if any(h) and flux_quantized(hf):
+            counts["quantized_nonzero"] += 1
+            counts["stable"] += int(flux_is_stable(hf))
+    return counts
+
+
+def bf_vector(h, flux_F=1):
+    """4D BF coupling of B_4 from Y_g = 3 lambda_V + 9 x^2 - lambda_T with background x = flux_F w and Cartan
+    field strengths h_i w (w: unit S^2 class): the cross terms give B ^ (18 flux_F F_F + 3 sum_i h_i F_i)
+    (lambda_V = S2 / 2 = sum_i x_i^2 / 2). Returns the coefficient vector on (F_F, F_1..F_5)."""
+    import sympy as sp
+    w = sp.Symbol("w")
+    fF = sp.Symbol("fF")
+    fs = sp.symbols("f1:6")
+    xs = [sp.nsimplify(hi) * w + fi for hi, fi in zip(h, fs)]
+    lamV = sum(x * x for x in xs) / 2
+    x_F = flux_F * w + fF
+    Yg = sp.expand(3 * lamV + 9 * x_F ** 2)
+    cross = sp.expand(Yg).coeff(w, 1)
+    return [cross.coeff(fF)] + [cross.coeff(fi) for fi in fs]
+
+
 def flux_plane_theorem():
-    """h must lie in span(Y, X) to keep SU(3) x SU(2): h = (a,a,a,b,b). Y massless needs a = b, then SU(5) survives."""
-    h_generic = (F(1), F(1), F(1), F(3), F(3))
+    """h must lie in span(Y, X) to keep SU(3) x SU(2): h = (a,a,a,b,b). Y massless needs a = b, then SU(5) survives;
+    flipped Y' massless needs a = -b, then flipped SU(5) survives."""
+    h_generic = (F(2), F(2), F(2), F(1), F(1))
     h_x = X
     return {"generic_in_plane_is_sm": centralizer_is_exactly_sm(h_generic),
             "generic_in_plane_Y_massless": hypercharge_massless(h_generic),
             "X_direction_Y_massless": hypercharge_massless(h_x),
             "X_direction_centralizer_roots": len(centralizer(h_x)),  # 20 = roots of SU(5)
-            "Y_perp_X": dot(Y, X) == 0}
+            "Y_perp_X": dot(Y, X) == 0,
+            "generic_quantized": flux_quantized(h_generic),
+            "generic_stable": flux_is_stable(h_generic),
+            "flipped_massless_direction_roots": len(centralizer((F(1), F(1), F(1), F(-1), F(-1)))),
+            "flipped_generic_massless": dot(YFLIP, h_generic) == 0}
 
 
 # ---------------------------------------------------------------------------
@@ -191,6 +236,21 @@ def orbifold_family_counts(j):
             "counts": table, "uniform_choices": uniform}
 
 
+def max_families_per_multiplet_under_rotations(N_max=24, j=1):
+    """For S^2 / Z_N (rotation by 2 pi / N) the family triplet splits by the phases exp(-2 pi i m / N); a multiplet keeps
+    only the states with one phase. Z_2 keeps at most 2, N >= 3 at most 1; Z2 x Z2 at most 1 (d2_multiplicities)."""
+    out = {}
+    ms = [j - k for k in range(int(2 * j + 1))]
+    for N in range(2, N_max + 1):
+        phases = {}
+        for m in ms:
+            key = round((m % N) / N, 12)
+            phases[key] = phases.get(key, 0) + 1
+        out[N] = max(phases.values())
+    out["Z2xZ2"] = max(d2_multiplicities(j).values())
+    return out
+
+
 def demonstration_report():
     h_example = (0, 0, 0, 1, 1)  # T3R flux (integral on the 10; check the 16)
     idx = zero_mode_indices((F(0), F(0), F(0), F(1), F(1)))
@@ -204,7 +264,9 @@ def demonstration_report():
                              "net_per_multiplet": sorted({(r["multiplet"], str(r["net"])) for r in idx}),
                              "vectorlike_pairs": sum(r["vectorlike_pairs"] for r in idx)},
         "flux_plane_theorem": flux_plane_theorem(),
-        "flux_scan": flux_scan(2),
+        "flux_scan": flux_scan(3),
+        "stability_scan": stability_scan(3),
+        "max_families_per_multiplet_under_rotations": {str(k): v for k, v in max_families_per_multiplet_under_rotations().items()},
         "orbifold_classes": {k: list(v) for k, v in orbifold_classes().items()},
         "orbifold_j1": orbifold_family_counts(1),
         "orbifold_uniform_j_up_to_10": [j for j in range(1, 11) if orbifold_family_counts(j)["uniform_choices"]],

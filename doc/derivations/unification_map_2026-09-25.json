@@ -241,7 +241,7 @@
      "claim": "The compactification breaks Spin(10) to the Standard Model.",
      "sources": ["doc/derivations/gut_breaking_2026-09-26.md", "bpr/gut_breaking.py", "tests/test_gut_breaking.py"],
      "depends_on": ["family_symmetry", "gs_quantization"],
-     "limitation": "Spin(10) flux is chirality-neutral (3 net families survive) but the Green-Schwarz coupling makes the flux U(1) massive, and no flux keeps SU(3) x SU(2) with a massless hypercharge; S^2/(Z2 x Z2) orbifolds give non-uniform family numbers. Conventional Higgs breaking remains possible but is supplied, not derived."},
+     "limitation": "Every quantized Spin(10) flux on the round S^2 is unstable (a root with |alpha.h| >= 2 gives a tachyonic W; pi_1(Spin(10)) = 0). Even if stabilized, the Green-Schwarz BF vector (18m, 3h) makes the flux direction massive, so no flux keeps SU(3) x SU(2) with a massless hypercharge (standard or flipped); the flux would be chirality-neutral (3 net families). Rotation orbifolds of S^2 keep at most 2 (Z2) or 1 families per multiplet. Conventional Higgs breaking remains possible but is supplied, not derived."},
     {"id": "cc_self_tuning", "layer": "gravity", "status": "obstructed",
      "claim": "Brane tensions on the BPR-6D sphere self-tune the 4D cosmological constant.",
      "sources": ["doc/derivations/cosmological_constant_2026-09-26.md", "bpr/cosmological_constant.py", "tests/test_cosmological_constant.py"],

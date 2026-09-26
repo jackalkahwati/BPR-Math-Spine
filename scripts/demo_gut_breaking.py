@@ -25,7 +25,10 @@ def main(argv=None):
     print("16 content: {}".format(report["sm_dimensions"]))
     print("T3R flux example (chirality neutrality): {}".format(report["flux_example_T3R"]))
     print("Flux plane theorem: {}".format(report["flux_plane_theorem"]))
-    print("Flux scan |h_i| <= 2: {}".format(report["flux_scan"]))
+    print("Flux scan |h_i| <= 3: {}".format(report["flux_scan"]))
+    print("Stability scan (tachyonic W bosons): {}".format(report["stability_scan"]))
+    print("Max families per multiplet under rotation quotients: {}".format(
+        report["max_families_per_multiplet_under_rotations"]))
     print("Orbifold twist classes: {}".format(report["orbifold_classes"]))
     print("Orbifold j=1 family counts: {}".format(report["orbifold_j1"]["counts"]))
     print("Uniform orbifold choices for j <= 10: {}".format(report["orbifold_uniform_j_up_to_10"]))
