@@ -352,9 +352,31 @@ def test_tiny_leakage_has_stable_norm_or_explicit_resolution_failure():
 
 
 def test_mixed_scale_cubic_underflow_is_not_reported_as_closure():
-    for function in (s.projected_gradient, s.offband_coefficients, s.leakage_diagnostic):
-        with pytest.raises(ValueError, match="unresolved"):
-            function([0, 1, 1e-200], 7, g=1e300)
+    # The cubic monomial (1e-200)^2 underflows when long double is IEEE double (e.g. macOS arm64, MSVC) but
+    # is representable in x86-64 extended precision. Either way no false zero may be reported: the module must
+    # raise "unresolved", or return the exact value (checked here against exact rational arithmetic).
+    from fractions import Fraction
+    z, p, g = [0, 1, 1e-200], 7, 1e300
+    functions = (s.projected_gradient, s.offband_coefficients, s.leakage_diagnostic)
+    if np.longdouble(1e-200) ** 2 == 0:  # long double has only double range: the monomial underflows
+        for function in functions:
+            with pytest.raises(ValueError, match="unresolved"):
+                function(z, p, g=g)
+        return
+    n = [Fraction(0), Fraction(1), Fraction(1e-200)]  # normalized amplitudes (scale 1)
+    factor = Fraction(g) / p
+    cubic = {k: sum(n[i + 1] * n[j + 1] * n[l + 1] for i in s.MODES for j in s.MODES for l in s.MODES
+                    if i - j + l == k) for k in s.MODES}
+    gradient = s.projected_gradient(z, p, g=g)
+    for k in s.MODES:
+        # The kinetic term is at most 2 |z_k| and negligible against the cubic term here.
+        assert complex(gradient[k + 1]).real == pytest.approx(float(factor * cubic[k]), rel=1e-12)
+    coeffs = s.offband_coefficients(z, p, g=g)
+    exact_2 = float(factor * n[2] * n[2] * n[1])  # c^2 b* + 2 b c a*, with a = 0
+    assert complex(coeffs[2]).real == pytest.approx(exact_2, rel=1e-12) and exact_2 > 0
+    assert all(complex(coeffs[k]) == 0 for k in coeffs if k != 2)
+    diag = s.leakage_diagnostic(z, p, g=g)
+    assert diag["status"] == "resolved_nonzero" and diag["raw_norm"] == pytest.approx(exact_2, rel=1e-12)
 
 
 def test_uncapped_finite_time_bound_survives_large_exponential():
