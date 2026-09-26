@@ -290,13 +290,19 @@ tuning (about 10⁻¹²⁰) stands.
 ## 3h. Round 10: predictions
 
 See [predictions_2026-09-26.md](predictions_2026-09-26.md).
-- **A QCD axion.** The Green–Schwarz 2-form leaves one physical axion, after
-  U(1)_F eats one combination, and it always couples to QCD through λ_V.
-  BPR-6D therefore predicts a QCD axion with f_a near the compactification
-  scale: m_a ≈ 10⁻¹¹–10⁻⁸ eV, with dark matter requiring a small
-  misalignment angle. This is generic to Green–Schwarz models.
-- **The family number.** n_gen ∈ 3ℤ is a postdiction that excludes a fourth
-  family.
+- **U(1)_F is a Peccei–Quinn symmetry.** Any Higgs that gives Yukawas has
+  F-charge −6, so the gauge-invariant θ̄ = θ₀ + 3b + 3 arg(H_uH_d) + … holds
+  the Higgs phases and b, but not the dual axion a. The Green–Schwarz
+  coefficient 3 matches the U(1)_F–SU(3)² anomaly.
+  - With only the Higgs doublets, the axion has f ≈ 41 GeV, an excluded
+    PQWW axion: the minimal Higgs sector is not viable.
+  - An instanton-generated H_uH_d term pins θ̄ and leaves strong CP unsolved.
+  - A supplied F-charged singlet S with a DFSZ-type link gives an invisible
+    QCD axion with f ≈ min(f_b/3, f_S/c_S) ≲ 10¹⁴–10¹⁷ GeV.
+  - Axion quality is unresolved. Superradiance already disfavours the top of
+    the band.
+- **The family number.** n_gen ∈ 3ℤ (class 𝒞) is a postdiction that excludes
+  a fourth family.
 - **Everything else** is at 10¹⁶–10¹⁸ GeV or not predicted.
 
 ## 4. The dependency graph
@@ -520,11 +526,14 @@ on a reduction argument.
 
 Rounds 6–10 settle the rest of the list:
 - **String embedding:** a fork. Supersymmetric analogues lose 3 | n_gen.
-- **Spin(10) → Standard Model:** geometric breaking is obstructed, so a Higgs
-  sector must be supplied.
-- **Yukawas:** no natural mechanism.
+- **Spin(10) → Standard Model:** geometric breaking is obstructed (every
+  flux is unstable; orbifolds lose families), so a Higgs sector must be
+  supplied.
+- **Yukawas:** they can be supplied, and hierarchical forms arise, but no
+  hierarchy is predicted.
 - **Cosmological constant:** tuned, with no classical self-tuning.
-- **Predictions:** a Green–Schwarz QCD axion and n_gen ∈ 3ℤ.
+- **Predictions:** U(1)_F is a Peccei–Quinn symmetry. A QCD axion is viable
+  only with a supplied F-charged singlet, and n_gen ∈ 3ℤ.
 
 Every item is supplied or assumed rather than derived from one microscopic
 Hamiltonian. The four requirements are now consistent with each other, but

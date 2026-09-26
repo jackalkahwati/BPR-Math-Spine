@@ -158,7 +158,8 @@
 > - The Λ tuning stands.
 >
 > **PREDICTIONS (2026-09-26):** [what BPR-6D says that could be checked](doc/derivations/predictions_2026-09-26.md).
-> - A QCD axion from the Green–Schwarz 2-form. It always couples to QCD after U(1)_F eats one axion combination. f_a is near the compactification scale (m_a ≈ 10⁻¹¹–10⁻⁸ eV). This is generic to Green–Schwarz models.
+> - U(1)_F acts as a Peccei–Quinn symmetry on any Higgs that gives Yukawas (F-charge −6). With only the Higgs doublets the axion is an excluded PQWW axion (f ≈ 41 GeV), so the minimal Higgs sector is not viable. A supplied F-charged singlet gives an invisible QCD axion with f ≲ f_b/3 ~ 10¹⁴–10¹⁷ GeV. Axion quality is unresolved.
+> - The independent review found this blocker (the F-charged Higgs had been omitted); its repairs are applied.
 > - n_gen ∈ 3ℤ: a postdiction that excludes a fourth family.
 > - Masses, mixings, the Higgs mass, the GUT scale and Λ are not predicted. No test against data has been made.
 >

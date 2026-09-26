@@ -248,9 +248,9 @@
      "depends_on": ["flux_vacuum"],
      "limitation": "Classical football solutions: flux quantization on the reduced area makes flat tensions discrete (one per flux quantum) and dH^2/dT != 0 at the flat point, so brane vacuum energy is not absorbed (Garriga-Porrati). Supersymmetric SLED routes are cited, contested, and would cost 3 | n_gen."},
     {"id": "bpr6d_predictions", "layer": "observation", "status": "conditional",
-     "claim": "BPR-6D predicts a QCD axion from the Green-Schwarz 2-form with f_a near the compactification scale (m_a ~ 1e-11 to 1e-8 eV) and n_gen in 3Z.",
+     "claim": "With a supplied Higgs sector, U(1)_F acts as a Peccei-Quinn symmetry; given a supplied F-charged Standard-Model singlet, BPR-6D has an invisible QCD axion with f <~ f_b/3 (~1e14 to 1e17 GeV); n_gen in 3Z.",
      "sources": ["doc/derivations/predictions_2026-09-26.md", "bpr/predictions.py", "tests/test_predictions.py"],
      "depends_on": ["gs_quantization", "flux_vacuum"],
-     "limitation": "The axion is generic to Green-Schwarz/string models and its decay constant is an order-of-magnitude band; dark matter needs a small misalignment angle. n_gen in 3Z is a postdiction for the minimal non-supersymmetric completion. Masses, mixings, Higgs mass, GUT scale and the cosmological constant are not predicted. No test against data is made."}
+     "limitation": "theta-bar = theta_0 + 3b + 3 arg(H_u H_d) + ... is gauge invariant and the dual axion a does not enter. With only the Higgs doublets the axion is an excluded PQWW axion (f ~ 41 GeV); an instanton-generated H_u H_d term pins theta-bar; a viable axion needs a supplied singlet S (f ~ min(f_b/3, f_S/c_S)). The band depends on the unfixed 2-form coupling; axion quality is unresolved; superradiance disfavours f >~ 3e17 GeV. The axion is generic to Green-Schwarz models. n_gen in 3Z is a postdiction for class C. Masses, mixings, Higgs mass, GUT scale and the cosmological constant are not predicted. No test against data is made."}
   ]
 }

@@ -23,11 +23,19 @@ def main(argv=None):
         print(json.dumps(report, indent=2))
         return 0
     print("Stueckelberg charges: {}".format(report["stueckelberg_charges"]))
-    print("Physical axion QCD component vs f_a/f_b: {}".format(report["physical_axion_qcd_component_vs_fa_over_fb"]))
+    print("theta-bar (gauge invariant, a absent): {}".format(report["theta_bar"]))
+    print("Gauge-invariant phases: {}".format(report["gauge_invariant_phases"]))
+    print("Minimal Higgs: PQWW decay constant {:.1f} GeV (excluded)".format(report["pqww_decay_constant_gev"]))
+    print("With a heavy F-charged singlet (f_S = 1e12 GeV, c_S = 6): f = {:.2e} GeV".format(report["dfsz_like_example_gev"]))
+    print("Quality: needed action {:.0f}, wrapped-string estimate {}".format(
+        report["quality"]["required_action"], [round(x) for x in report["quality"]["wrapped_string_estimate"]]))
     band = report["axion_band"]
-    print("f_a {:.1e}-{:.1e} GeV, m_a {:.1e}-{:.1e} eV, DM needs theta_i {:.1e}-{:.1e}".format(
-        band["fa_gev"][0], band["fa_gev"][1], band["ma_ev"][0], band["ma_ev"][1],
-        band["theta_i_for_dm"][0], band["theta_i_for_dm"][1]))
+    print("Upper band (f_b/3, kappa ~ 1): f {:.1e}-{:.1e} GeV, m_a {:.1e}-{:.1e} eV, {:.0f} Hz-{:.1e} Hz".format(
+        band["f_gev"][0], band["f_gev"][1], band["ma_ev"][0], band["ma_ev"][1],
+        band["frequency_hz"][0], band["frequency_hz"][1]))
+    print("If dark matter: theta_i {:.1e}-{:.1e}; isocurvature {}; superradiance disfavours f in {}".format(
+        band["theta_i_for_dm"][0], band["theta_i_for_dm"][1], band["isocurvature_if_dm"],
+        band["superradiance_excluded_f"]))
     print("Family number: {}".format(report["family_number"]))
     print("Limitations")
     for limitation in report["limitations"]:
