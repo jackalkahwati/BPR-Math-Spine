@@ -149,8 +149,9 @@
 > - Breaking to the Standard Model needs a supplied Higgs sector. The independent review found no blocker, and its repairs are applied.
 >
 > **YUKAWA MECHANISMS (2026-09-26):** [brane and bulk Higgs fields](doc/derivations/yukawa_mechanisms_2026-09-26.md).
-> - A single point-brane Higgs never gives three distinct masses, for any J_z charge. Two branes give non-hierarchical spectra.
-> - A bulk vector Higgs needs a ~10⁻³⁰ tuning. There is no natural Yukawa mechanism.
+> - A brane Higgs has J_z charge c = s_h + 3, so a brane scalar never couples and a brane vector gives one heavy family. With J_z exact, one brane never gives three distinct masses.
+> - Clustered vector branes, or J_z broken at a brane (Heckman–Vafa), give the Froggatt–Nielsen form (1, ε², ε⁴). ε is free, so no hierarchy is predicted. Every route needs the ~10⁻³⁰ weak-scale tuning.
+> - The independent review found one blocker (the brane Higgs's J_z charge); its repairs are applied.
 >
 > **COSMOLOGICAL CONSTANT (2026-09-26):** [no classical self-tuning](doc/derivations/cosmological_constant_2026-09-26.md).
 > - Brane tension does not drop out: flat tensions are discrete (one per flux quantum), and dH²/dT ≠ 0.

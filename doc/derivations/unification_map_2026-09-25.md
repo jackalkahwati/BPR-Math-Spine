@@ -267,13 +267,19 @@ Spin(10) → Standard Model therefore needs a supplied Higgs sector.
 
 **Yukawa mechanisms.** See
 [yukawa_mechanisms_2026-09-26.md](yukawa_mechanisms_2026-09-26.md).
-- A single point-brane Higgs gives rank 1 or a degenerate pair, never three
-  distinct masses, whatever its J_z charge.
-- Two branes give generic spectra with no hierarchy.
-- A bulk internal-vector 10 or 126 works only with a Higgs-mass tuning of
-  about 10⁻³⁰ and a near-null orientation.
+- A brane Higgs of F-charge −6 has J_z charge c = s_h + 3. A brane scalar
+  therefore never couples, like the bulk scalar. A normal-bundle vector
+  (c = 2) gives rank 1: one heavy family.
+- With J_z exact, one brane never gives three distinct masses.
+- Two vector branes at separation γ give rank 2 with m₂/m₁ ≈ 0.2γ². Three
+  clustered vector branes, or J_z broken at a brane (the Heckman–Vafa point
+  Yukawa), give the Froggatt–Nielsen form (1, ε², ε⁴).
+- A bulk internal-vector 10 or 126 works with any spectrum. Its null J=2
+  vev is a natural ferromagnetic phase.
+- Every route needs the weak-scale Higgs tuning of about 10⁻³⁰.
 
-BPR-6D therefore has no natural Yukawa mechanism.
+Yukawa couplings can be supplied, and hierarchical forms arise, but ε and γ
+are free: **no hierarchy is predicted**.
 
 **Cosmological constant.** See
 [cosmological_constant_2026-09-26.md](cosmological_constant_2026-09-26.md).
