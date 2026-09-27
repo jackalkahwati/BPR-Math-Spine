@@ -91,3 +91,17 @@ def test_seesaw_scale_far_above_the_one_loop_intermediate_scale():
     tg = ff.targets(2e16)
     out = ff.seesaw_consistency(ff.BEST_FIT_GENERIC, tg)
     assert out["ratio"] > 100  # v_R >~ 3e12 GeV versus M_I ~ 1e9 GeV at one loop
+
+
+def test_best_pinned_point_satisfies_the_constraint_and_fits_badly():
+    tg = ff.targets(2e16)
+    x = ff.BEST_FIT_PINNED
+    assert np.sum(ff.reachability_residuals(x, tg) ** 2) < 1e-7  # (H, F) reachable with tetrahedral branes
+    assert ff.chi2(x[:18], tg) == pytest.approx(609.4, abs=0.5)
+    r = ff.residuals(x[:18], tg)
+    assert r[-1] < -10  # sin^2 theta_13 far too small: the dominant tension
+    # The generic best fit is not reachable with tetrahedral branes.
+    import bpr.brane_stabilization as b
+    tet = np.array([1, 0, 0, np.sqrt(2), 0], complex) / np.sqrt(3)
+    m = ff.build(ff.BEST_FIT_GENERIC, tg)
+    assert b.reachability_cost(m["H"], m["F"], b.zeros(tet), starts=15) > 1e-3

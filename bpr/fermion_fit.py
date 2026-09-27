@@ -310,11 +310,11 @@ def reachability_residuals(x, tg):
     return np.concatenate([q.real, q.imag])
 
 
-def pinned_residuals(x, tg, sigma):
-    return np.concatenate([residuals(x[:18], tg, True), reachability_residuals(x, tg) / sigma])
+def pinned_residuals(x, tg, sigma, with_nu=True):
+    return np.concatenate([residuals(x[:18], tg, with_nu), reachability_residuals(x, tg) / sigma])
 
 
-def pinned_fit(tg, starts, seed=0, sigmas=(1e-1, 1e-2, 1e-3, 1e-4), max_nfev=1500):
+def pinned_fit(tg, starts, seed=0, sigmas=(1e-1, 1e-2, 1e-3, 1e-4), max_nfev=1500, with_nu=True):
     """Fit with the reachability condition imposed by a penalty tightened in stages. Returns (chi^2, x, reach)."""
     from scipy.optimize import least_squares
     best = None
@@ -322,10 +322,10 @@ def pinned_fit(tg, starts, seed=0, sigmas=(1e-1, 1e-2, 1e-3, 1e-4), max_nfev=150
         x = np.asarray(x0, float)
         try:
             for sig in sigmas:
-                x = least_squares(pinned_residuals, x, args=(tg, sig), max_nfev=max_nfev).x
+                x = least_squares(pinned_residuals, x, args=(tg, sig, with_nu), max_nfev=max_nfev).x
         except (np.linalg.LinAlgError, ValueError):
             continue
-        c2 = chi2(x[:18], tg)
+        c2 = chi2(x[:18], tg, with_nu)
         reach = float(np.sum(reachability_residuals(x, tg) ** 2))
         if reach < 1e-7 and (best is None or c2 < best[0]):
             best = (c2, x, reach)
@@ -335,6 +335,12 @@ def pinned_fit(tg, starts, seed=0, sigmas=(1e-1, 1e-2, 1e-3, 1e-4), max_nfev=150
 # Best generic fit found (4 parallel basin-hopping searches, 3 of 4 converging to the same chi^2 = 36.18); the
 # parameter layout is that of build().
 BEST_FIT_GENERIC = np.array([0.2616521335832666, 1.4744426986444539, -1.5178254077264228, -4.424717708392939, 1.97179868171098, 2.338560093452189, 0.3958672357976122, -0.6871624208160981, 1.1159668956689268, 0.6451651668648914, 7.1078056769629505, -0.2630345335600711, 71.33576959992241, 9.245004635456368, 12.23553580073562, -0.10789607952920419, -0.2323544130704791, -0.11151441873034715])
+
+
+# Best pinned-model point found (branes fixed at the tetrahedron; 18 fit parameters then 9 for U). Two searches with
+# different start distributions (near the generic best fit, and fresh random starts; 4 workers each) reached
+# chi^2 = 609.4 and 618.6: not a proof of the global minimum, but a robust indication.
+BEST_FIT_PINNED = np.array([0.28345216418017766, -2.1580532979411307, 0.7981361805398945, -5.060490460573451, 10.335710317998855, -0.44652786483739554, 1.9678674698989527, -5.240274953334814, 3.607951004741262, 10.4153663383162, 8.218868076743831, 1.5657518875853642, 47.31809051589429, 5.5664107128226314, 15.338135553180228, 1.1521054562058903, -1.8301401247561937, 0.5095517003952318, -4.2204537543762255, 1.5010254439611834, 0.42213118113443715, 4.013791972627891, 3.370817106986978, -2.890727523426261, 0.5857992094237082, -3.349418386482481, -0.32664146790590426])
 
 
 # ---------------------------------------------------------------------------
@@ -373,3 +379,22 @@ def seesaw_consistency(p, tg, M_I=1.05e9):
     nu = neutrino_sector(p, tg)
     return {"vR_lower_bound_gev": nu["vR_lower_bound_gev"], "M_I_one_loop_gev": M_I,
             "ratio": nu["vR_lower_bound_gev"] / M_I}
+
+
+def demonstration_report():
+    tg = targets(2e16)
+    run = run_to(2e16)
+    names = ["m_u", "m_c", "m_t", "m_d", "m_s", "m_b", "s12", "s23", "s13", "delta", "m_e", "m_mu", "m_tau",
+             "m_e/m_tau", "m_mu/m_tau", "dm21/dm31", "s12^2 nu", "s23^2 nu", "s13^2 nu"]
+    out = {"schema_version": 1, "model_id": MODEL_ID, "status": "pinned_model_disfavoured_generic_strained",
+           "empirical_validation": False, "gut_scale_inputs": run,
+           "identical_brane_rule": identical_brane_selection_rule()}
+    for label, x in (("generic", BEST_FIT_GENERIC), ("pinned", BEST_FIT_PINNED)):
+        p = x[:18]
+        r = residuals(p, tg)
+        out[label] = {"chi2": chi2(p, tg), "pulls": dict(zip(names, [round(float(v), 2) for v in r])),
+                      "neutrino_sector": neutrino_sector(p, tg)}
+    out["pinned"]["reachability"] = float(np.sum(reachability_residuals(BEST_FIT_PINNED, tg) ** 2))
+    out["seesaw"] = seesaw_consistency(BEST_FIT_GENERIC, tg)
+    out["limitations"] = list(LIMITATIONS)
+    return out
