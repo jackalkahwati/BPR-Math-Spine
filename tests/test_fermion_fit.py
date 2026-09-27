@@ -70,3 +70,24 @@ def test_identical_branes_give_no_yukawa():
     rule = ff.identical_brane_selection_rule()
     assert rule["degeneracies"] == [3, 1, 3] or sorted(rule["degeneracies"]) == [1, 3, 3]
     assert rule["max_singlet_coupling"] < 1e-6
+
+
+def test_best_generic_fit_is_reproducible_and_strained():
+    tg = ff.targets(2e16)
+    p = ff.BEST_FIT_GENERIC
+    assert ff.chi2(p, tg) == pytest.approx(36.18, abs=0.05)
+    r = ff.residuals(p, tg)
+    assert r[3] < -3  # the down-quark mass is pulled more than 3 sigma low: the tension
+    assert np.all(abs(r[-4:]) < 1)  # the neutrino observables themselves fit within 1 sigma
+    nu = ff.neutrino_sector(p, tg)
+    m1, m2, m3 = nu["light_masses_ev"]
+    assert m1 < m2 < m3  # normal ordering
+    assert (m2 ** 2 - m1 ** 2) / (m3 ** 2 - m1 ** 2) == pytest.approx(7.41e-5 / 2.511e-3, rel=0.05)
+    assert m3 ** 2 - m1 ** 2 == pytest.approx(2.511e-3, rel=1e-6)  # the scale w is fixed by Delta m^2_31
+    assert 0.05 < nu["sum_ev"] < 0.1 and nu["m_betabeta_ev"] < 0.01
+
+
+def test_seesaw_scale_far_above_the_one_loop_intermediate_scale():
+    tg = ff.targets(2e16)
+    out = ff.seesaw_consistency(ff.BEST_FIT_GENERIC, tg)
+    assert out["ratio"] > 100  # v_R >~ 3e12 GeV versus M_I ~ 1e9 GeV at one loop

@@ -266,6 +266,11 @@ def fit(tg, with_nu=True, start=None, seed=0, n_starts=20, max_nfev=2000):
     return 2 * best.cost, best.x
 
 
+# Best generic fit found (4 parallel basin-hopping searches, 3 of 4 converging to the same chi^2 = 36.18); the
+# parameter layout is that of build().
+BEST_FIT_GENERIC = np.array([0.2616521335832666, 1.4744426986444539, -1.5178254077264228, -4.424717708392939, 1.97179868171098, 2.338560093452189, 0.3958672357976122, -0.6871624208160981, 1.1159668956689268, 0.6451651668648914, 7.1078056769629505, -0.2630345335600711, 71.33576959992241, 9.245004635456368, 12.23553580073562, -0.10789607952920419, -0.2323544130704791, -0.11151441873034715])
+
+
 # ---------------------------------------------------------------------------
 # 4. Derived quantities
 # ---------------------------------------------------------------------------
@@ -279,7 +284,26 @@ def neutrino_sector(x, tg):
     light_ev = mn / w * 1e9
     P = o["PMNS"]
     MR = np.sort(np.linalg.svd(o["F"], compute_uv=False)) * w
+    # m_betabeta in the charged-lepton mass basis. With Weyl fields (e^c^T M_e e_L, nu^T m_nu nu) the e_L rotation is
+    # the complex conjugate of the M_e M_e^dag eigenvectors, so m' = Ue^dag m_nu Ue^*.
+    m = o["matrices"]
+    Ue, _ = _left(m["Me"])
+    mnu = -m["MD"] @ np.linalg.solve(m["F"], m["MD"].T) / w
+    m_bb = abs((Ue.conj().T @ mnu @ Ue.conj())[0, 0]) * 1e9
+    s13 = abs(P[0, 2]) ** 2
+    s12 = abs(P[0, 1]) ** 2 / (1 - s13)
+    s23 = abs(P[1, 2]) ** 2 / (1 - s13)
+    J = np.imag(P[0, 0] * P[1, 1] * np.conj(P[0, 1]) * np.conj(P[1, 0]))
+    jmax = np.sqrt(s12 * (1 - s12) * s23 * (1 - s23) * s13) * (1 - s13)
     return {"w": float(w), "light_masses_ev": light_ev.tolist(), "sum_ev": float(light_ev.sum()),
+            "m_betabeta_ev": float(m_bb), "jarlskog_lepton": float(J), "sin_delta_cp": float(J / jmax),
             "M_R_gev": MR.tolist(),
             "vR_lower_bound_gev": float(MR[-1] / np.sqrt(4 * np.pi)),  # |Y126| <= sqrt(4 pi)
             "abs_Ue": np.abs(P[0]).tolist()}
+
+
+def seesaw_consistency(p, tg, M_I=1.05e9):
+    """Compare the B-L scale the fit needs (v_R >= M_R,max / sqrt(4 pi)) with the one-loop intermediate scale."""
+    nu = neutrino_sector(p, tg)
+    return {"vR_lower_bound_gev": nu["vR_lower_bound_gev"], "M_I_one_loop_gev": M_I,
+            "ratio": nu["vR_lower_bound_gev"] / M_I}
