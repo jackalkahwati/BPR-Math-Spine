@@ -42,7 +42,8 @@ LIMITATIONS = [
     "The Higgs content is chosen, not derived: it is the smallest content found that meets the constraints of rounds 7, 8 and 10.",
     "The Spin(10)-breaking potential is not minimized here; for 45 + 126 a viable vacuum needs one-loop effects and light 45 pseudo-Goldstones (cited).",
     "Fits of the charged-fermion and neutrino data with generic 10 + 126bar Yukawas are cited, not redone.",
-    "Brane positions are classical moduli (five physical ones after the family gauge bosons eat three); they couple to fermions through position-dependent Yukawas, and their stabilization is not addressed: potentially fatal.",
+    "Brane positions: without chi they are classical moduli coupled to fermions (potentially fatal); Phase 1d "
+    "(brane_stabilization) pins them at a regular tetrahedron with a chi vortex condensate.",
     "Brane-localized fermion kinetic terms and the tension distortion of the zero modes add J = 0 pieces; Proposition 1 holds at leading order.",
     "SO(10) invariants are hand-coded from standard tensor-product tables (Slansky 1981), not recomputed.",
     "Forbidden terms are forbidden perturbatively only: e^{ib} carries F = 12, so terms such as 10H 10H e^{ib} are gauge invariant (the axion-quality question).",
@@ -66,6 +67,8 @@ FIELDS = {
     "126barH@b": ("brane", "126bar", -6, 0, N_BRANES, "value of the bulk 126barH at a brane"),
     "dbar126barH@b": ("brane", "126bar", -6, -1, N_BRANES, "eth-bar of the bulk 126barH at a brane (Yukawa, Majorana)"),
     "S": ("brane", "1", 6, 0, 1, "Peccei-Quinn singlet on brane 1; DFSZ link S^2 10H 10H there"),
+    "chi": ("bulk", "1", -4, None, 1, "vortex condensate (Phase 1d): four zeros at a regular tetrahedron pin the branes"),
+    "chi@b": ("brane", "1", -4, 0, N_BRANES, "value of chi at a brane (pinning term kappa |chi|^2)"),
 }
 
 FIELDS_BRANE_COPIES = {
@@ -86,6 +89,7 @@ SO10_INVARIANTS = {
     ("45", "45"),
     ("10", "10", "126", "126"),                          # Sym^2(10) and Sym^2(126) share the 54
     ("10", "126bar", "45", "45"),                        # 10 x 126bar contains 210, as does Sym^2(45)
+    ("1", "1", "1", "10", "10"),                         # chi*^3 10 10: singlets times Sym^2(10)
 }
 
 
@@ -133,6 +137,9 @@ def coupling_table():
         "brane mass |dbar 10H|^2": [("dbar10H@b", True), ("dbar10H@b", False)],
         "breaking 126barH^dag 45H 126barH": [("126barH", True), ("45H", False), ("126barH", False)],
         "10-126 doublet mixing 10H^dag 126barH 45H 45H": [("10H", True), ("126barH", False), ("45H", False), ("45H", False)],
+        "brane pinning kappa |chi|^2 (Phase 1d)": [("chi@b", True), ("chi@b", False)],
+        "Peccei-Quinn link chi*^3 10H 10H (bulk, higher dimension)": [("chi", True), ("chi", True), ("chi", True),
+                                                                     ("10H", False), ("10H", False)],
     }
     dangerous = {
         "Yukawa with the undifferentiated value 16 16 10H@brane (c = 3)": [("16+", False), ("16+", False), ("10H@b", False)],
