@@ -299,12 +299,12 @@ tension, not a failure.
 | 2 | Vevs leave exactly the SM, with the right hypercharge | pass | **pass** (computed) |
 | 3 | Breaking potential has that minimum | conditional | conditional (one loop, light 45 states; cited) |
 | 4 | Yukawas reach generic mass matrices | **fail** (rank 1 at tree level) | **pass** (single light combination feeds four branes; exact construction) |
-| 5 | Those mass matrices fit the data | — | conditional (non-SUSY 10+126bar fits, e.g. Boucenna–Ohlsson–Pernow 2019, as found by the review; not redone) |
+| 5 | Those mass matrices fit the data | — | computed in Phase 2 ([phase2_fermion_fit_2026-09-27.md](phase2_fermion_fit_2026-09-27.md)): **pass** with free brane positions (χ² 2.9, −1 dof, normal ordering only); **fail** with the branes pinned at the Phase 1d tetrahedron (best found χ² ≈ 124; m_s about 3.6× too large), at leading order |
 | 6 | Viable invisible QCD axion | — | pass with S at brane 1 (the link exists only there); quality unresolved; domain-wall number > 1 if S breaks U(1)_F after inflation; λS²H_uH_d needs λ ≲ (v/f_S)² |
 | 7 | Family gauge bosons heavy | pass | pass (estimate) |
 | 8 | Unification and proton decay | **fail** (three Δ_R) | **pass** at one loop, survival hypothesis |
 | 9 | Compactification control with M_GUT ≤ 1/r | — | pass narrowly; not robust |
-| 10 | Seesaw neutrino masses | — | **tension** (possibly an artifact) |
+| 10 | Seesaw neutrino masses | — | **tension**, quantified in Phase 2: the fit needs v_R ≳ 4×10¹¹ GeV, 400–1000 times the one-loop M_I (possibly an artifact of one-loop running) |
 | 11 | Brane positions stabilized | open | **conditional** after Phase 1d ([brane_positions_2026-09-27.md](brane_positions_2026-09-27.md)): a charge −4 vortex condensate χ pins the branes metastably at a regular tetrahedron; stacking and one-loop brane forces are unresolved, and fixed positions constrain the Yukawas |
 | 12 | Multi-brane background exists | conditional | conditional (constant-curvature spheres with cone points exist for small deficits: Troyanov 1991, Luo–Tian 1992) |
 | 13 | Higgs mass, M_I hierarchy and Λ | tuned | tuned: one Higgs-mass tuning per bulk Higgs, plus the M_I/M_GUT hierarchy, as in 4D minimal SO(10) |
@@ -313,7 +313,9 @@ tension, not a failure.
 - **Version A** fails checks 4 and 8.
 - **Version B** passes every check that was computed: 1, 2, 4 and 8, plus
   the pass-level estimates 7 and 9.
-- Checks 3, 5, 6 and 12 rest on cited results.
+- Checks 3, 6 and 12 rest on cited results. Check 5 is now computed
+  (Phase 2): it passes with free brane positions and fails with the pinned
+  tetrahedron, so checks 5 and 11 conflict at leading order.
 - There is one tension (10) and one potentially fatal open problem, the
   brane moduli (11).
 

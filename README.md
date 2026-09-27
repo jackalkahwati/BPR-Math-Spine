@@ -168,6 +168,15 @@
 > - The adopted version uses a single bulk F-charge −6 Higgs, coupled through ð̄ operators at four branes. It breaks Spin(10) exactly to the Standard Model, reaches generic Yukawas (four branes at the roots of a quartic), and unifies at one loop with proton decay 10³–10⁴ above the Super-K bound.
 > - Open: cited vacuum and fits, a seesaw tension, a non-robust compactification window, and five unstabilized brane moduli (potentially fatal). No fermion mass is predicted. The independent review found a blocker in the first version; it is repaired by the switch to a bulk Higgs.
 >
+> **PHASE 1d: BRANE POSITIONS (2026-09-27):** [pinning the branes with a vortex condensate](doc/derivations/brane_positions_2026-09-27.md).
+> - A bulk scalar of U(1)_F charge −4 has exactly four zeros in its lowest level; its type-II quartic minimum puts them at a regular tetrahedron, and brane terms pin the branes there.
+> - Kill check 11 is conditional, not passed: the pinning is metastable (stacking costs nothing, low barrier), one-loop brane forces are uncomputed, and fixed positions restrict the Yukawas to a proper subset. The independent review's two blockers are repaired.
+>
+> **PHASE 2: FERMION DATA (2026-09-27):** [the minimal model against quark, lepton and neutrino data](doc/derivations/phase2_fermion_fit_2026-09-27.md).
+> - With free brane positions the 10 + 126bar model fits: χ² = 2.9 for 17 observables and 18 parameters (−1 dof, so consistency, not a test). Normal ordering only; Σm_ν ≈ 0.06–0.07 eV and m_ββ ≈ 0.4 meV are stable across fits. It needs v_R ≳ 4×10¹¹ GeV, far above the one-loop M_I ≈ 10⁹ GeV.
+> - With the branes pinned at the tetrahedron it fails the charged sector: best found χ² ≈ 124 (73 for charged fermions alone), with m_s about 3.6 times too large. This is leading order; brane kinetic terms could change it.
+> - The independent review's two blockers reversed the first version's numbers (χ² 36 and 609); both are repaired. No empirical validation is claimed.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap

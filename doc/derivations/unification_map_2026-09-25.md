@@ -339,6 +339,42 @@ supplied pieces are now written down as one model and kill-checked.
 - five brane-position moduli, unstabilized and potentially fatal;
 - no fermion mass is predicted.
 
+## 3j. Phase 1d: pinning the brane positions
+
+See [brane_positions_2026-09-27.md](brane_positions_2026-09-27.md). A bulk
+SO(10)-singlet scalar χ of U(1)_F charge −4 has a spin-2 lowest level whose
+profiles have exactly four zeros. In the type-II regime its quartic is
+minimized by the tetrahedral state, and brane terms κ|χ(z_a)|² pin the four
+branes at its zeros, a regular tetrahedron.
+
+Kill check 11 is **conditional**, not passed:
+- the pinning is metastable at best: stacking costs nothing and the barrier
+  is low;
+- the one-loop brane forces are not computed;
+- the window for the condensate is narrow;
+- identical branes give zero Yukawas, so A4 must be broken at O(1);
+- fixed positions restrict the Yukawas to a proper subset.
+
+## 3k. Phase 2: the model against fermion data
+
+See [phase2_fermion_fit_2026-09-27.md](phase2_fermion_fit_2026-09-27.md).
+One-loop SM running to 2×10¹⁶ GeV, with assumed GUT-scale errors.
+
+- **Free brane positions: the model fits.** The minimal 10 + 126bar sector
+  with a type-I seesaw reaches χ² = 2.9 for 17 observables and 18 physical
+  parameters (−1 dof), so this is consistency, not a test. Normal ordering
+  only; inverted ordering gives χ² ≈ 4×10⁴. Stable consequences:
+  Σm_ν ≈ 0.06–0.07 eV and m_ββ ≈ 0.4 meV. It needs v_R ≳ 4×10¹¹ GeV,
+  400–1000 times the one-loop M_I.
+- **Pinned tetrahedron: the model fails the charged sector.** Pinning
+  requires a family basis in which H and F are pure J = 2 and annihilated by
+  the pinning condensate χ. The best fits found have χ² ≈ 124 with neutrinos
+  and 73 for the charged sector alone, with m_s about 3.6 times too large.
+  This is leading order: brane kinetic terms and the tension distortion add
+  J = 0 pieces that could matter.
+- The independent review's two blockers reversed the first version's numbers
+  (χ² 36 and 609); both are repaired.
+
 ## 4. The dependency graph
 
 ```mermaid
@@ -571,6 +607,12 @@ Rounds 6–10 settle the rest of the list:
   only with a supplied F-charged singlet, and n_gen ∈ 3ℤ.
 - **Phase 1:** the supplied pieces are now one definite model. Its computed
   kill checks pass, and the brane moduli are the main open danger.
+- **Phase 1d:** a vortex condensate pins the branes metastably at a regular
+  tetrahedron (conditional).
+- **Phase 2:** with free brane positions the model fits the fermion data
+  (χ² 2.9, −1 dof). With the branes pinned it fails the charged sector
+  (best found χ² ≈ 124; m_s about 3.6 times too large). Pinning and the
+  fermion fit are in conflict at leading order.
 
 Every item is supplied or assumed rather than derived from one microscopic
 Hamiltonian. The four requirements are now consistent with each other, but

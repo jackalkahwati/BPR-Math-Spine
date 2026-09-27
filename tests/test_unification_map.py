@@ -125,3 +125,16 @@ def test_round_five_global_anomaly_node(data):
     assert ga["status"] == "exact_theorem" and "gs_quantization" in ga["depends_on"]
     assert "bpr/global_anomaly_bordism.py" in ga["sources"]
     assert "global_anomalies" in nodes["bpr6d_architecture"]["depends_on"]
+
+
+def test_phase_1d_and_phase_2_nodes(data):
+    nodes = {node["id"]: node for node in data["nodes"]}
+    bp, ff = nodes["brane_positions"], nodes["fermion_fit"]
+    assert bp["status"] == "conditional" and "bpr6d_minimal_model" in bp["depends_on"]
+    assert "bpr/brane_stabilization.py" in bp["sources"]
+    # Phase 2 is a fit, never a validation; the pinned failure must stay recorded.
+    assert ff["status"] == "phenomenological_fit" and "brane_positions" in ff["depends_on"]
+    assert "bpr/fermion_fit.py" in ff["sources"]
+    assert "No empirical validation" in ff["limitation"] and "pinned" in ff["claim"]
+    text = MAP_MD.read_text(encoding="utf-8")
+    assert "brane_positions_2026-09-27.md" in text and "phase2_fermion_fit_2026-09-27.md" in text

@@ -25,19 +25,24 @@ def main(argv=None):
         print(json.dumps(report, indent=2, default=str))
         return 0
     run = report["gut_scale_inputs"]
-    print("GUT-scale inputs (one-loop SM at 2e16 GeV): up {} down {} lepton {}; |Vus| {:.4f} |Vcb| {:.4f} |Vub| {:.5f}".format(
+    print("GUT-scale inputs (one-loop SM at 2e16 GeV): up {} down {} lepton {}; CKM (s12, s23, s13, delta) {}".format(
         [float("{:.4g}".format(x)) for x in run["up"]], [float("{:.4g}".format(x)) for x in run["down"]],
-        [float("{:.4g}".format(x)) for x in run["lepton"]], run["Vus"], run["Vcb"], run["Vub"]))
+        [float("{:.4g}".format(x)) for x in run["lepton"]], [float("{:.4g}".format(x)) for x in run["ckm"]]))
     print("Identical branes: {}".format(report["identical_brane_rule"]))
-    for label in ("generic", "pinned"):
+    print("Generic parametrization rank modulo U(3) and arg r: {} (full model: 18)".format(
+        report["generic"]["parametrization_rank"]))
+    for label in ("generic", "pinned", "pinned_charged_only"):
         r = report[label]
-        print("{} model: chi^2 = {:.1f}".format(label, r["chi2"]))
+        print("{}: chi^2 = {:.2f}".format(label, r["chi2"]))
         print("  pulls: {}".format(r["pulls"]))
-        nu = r["neutrino_sector"]
-        print("  neutrinos: masses {} eV, sum {:.3f} eV, m_bb {:.1e} eV, sin(delta_CP) {:.2f}; M_R {} GeV".format(
-            [float("{:.3g}".format(x)) for x in nu["light_masses_ev"]], nu["sum_ev"], nu["m_betabeta_ev"],
-            nu["sin_delta_cp"], [float("{:.2g}".format(x)) for x in nu["M_R_gev"]]))
-    print("Pinned reachability residual: {:.1e}".format(report["pinned"]["reachability"]))
+        if "neutrino_sector" in r:
+            nu = r["neutrino_sector"]
+            print("  neutrinos: masses {} eV, sum {:.4f} eV, m_bb {:.2e} eV, sin(delta_CP) {:.2f}; M_R {} GeV".format(
+                [float("{:.3g}".format(x)) for x in nu["light_masses_ev"]], nu["sum_ev"], nu["m_betabeta_ev"],
+                nu["sin_delta_cp"], [float("{:.2g}".format(x)) for x in nu["M_R_gev"]]))
+    print("Prediction ranges over the generic minima within Delta chi^2 = 4:")
+    for key, value in report["prediction_ranges"].items():
+        print("  {}: {}".format(key, [float("{:.3g}".format(x)) for x in value]))
     print("Seesaw: {}".format(report["seesaw"]))
     print("Limitations")
     for limitation in report["limitations"]:
