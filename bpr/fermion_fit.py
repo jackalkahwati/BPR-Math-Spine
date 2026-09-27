@@ -266,6 +266,72 @@ def fit(tg, with_nu=True, start=None, seed=0, n_starts=20, max_nfev=2000):
     return 2 * best.cost, best.x
 
 
+# ---------------------------------------------------------------------------
+# 3b. The pinned model: branes fixed at the tetrahedron (Phase 1d)
+# ---------------------------------------------------------------------------
+
+_W_BASIS = None
+
+
+def tetrahedral_basis():
+    """Orthonormal basis (as 9-vectors) of W, the span of the four brane matrices at the tetrahedral zeros."""
+    global _W_BASIS
+    if _W_BASIS is None:
+        try:
+            from .brane_stabilization import zeros
+            from .minimal_model import brane_matrix
+        except ImportError:
+            from brane_stabilization import zeros
+            from minimal_model import brane_matrix
+        tet = np.array([1, 0, 0, np.sqrt(2), 0], complex) / np.sqrt(3)
+        zs = [np.tan(np.arccos(np.clip(v[2], -1, 1)) / 2) * np.exp(1j * np.arctan2(v[1], v[0])) for v in zeros(tet)]
+        _W_BASIS, _ = np.linalg.qr(np.array([brane_matrix(z).ravel() for z in zs]).T)
+    return _W_BASIS
+
+
+def _u3(t):
+    try:
+        from .minimal_model import _U3
+    except ImportError:
+        from minimal_model import _U3
+    return expm(sum(a * g for a, g in zip(t, _U3)))
+
+
+def reachability_residuals(x, tg):
+    """Components of U^T H U and U^T F U outside W (normalized); x = (18 fit parameters, 9 for U)."""
+    Q = tetrahedral_basis()
+    m = build(x[:18], tg)
+    U = _u3(x[18:])
+    out = []
+    for M in (m["H"], m["F"]):
+        v = (U.T @ M @ U).ravel()
+        out.append((v - Q @ (Q.conj().T @ v)) / np.linalg.norm(M))
+    q = np.concatenate(out)
+    return np.concatenate([q.real, q.imag])
+
+
+def pinned_residuals(x, tg, sigma):
+    return np.concatenate([residuals(x[:18], tg, True), reachability_residuals(x, tg) / sigma])
+
+
+def pinned_fit(tg, starts, seed=0, sigmas=(1e-1, 1e-2, 1e-3, 1e-4), max_nfev=1500):
+    """Fit with the reachability condition imposed by a penalty tightened in stages. Returns (chi^2, x, reach)."""
+    from scipy.optimize import least_squares
+    best = None
+    for x0 in starts:
+        x = np.asarray(x0, float)
+        try:
+            for sig in sigmas:
+                x = least_squares(pinned_residuals, x, args=(tg, sig), max_nfev=max_nfev).x
+        except (np.linalg.LinAlgError, ValueError):
+            continue
+        c2 = chi2(x[:18], tg)
+        reach = float(np.sum(reachability_residuals(x, tg) ** 2))
+        if reach < 1e-7 and (best is None or c2 < best[0]):
+            best = (c2, x, reach)
+    return best
+
+
 # Best generic fit found (4 parallel basin-hopping searches, 3 of 4 converging to the same chi^2 = 36.18); the
 # parameter layout is that of build().
 BEST_FIT_GENERIC = np.array([0.2616521335832666, 1.4744426986444539, -1.5178254077264228, -4.424717708392939, 1.97179868171098, 2.338560093452189, 0.3958672357976122, -0.6871624208160981, 1.1159668956689268, 0.6451651668648914, 7.1078056769629505, -0.2630345335600711, 71.33576959992241, 9.245004635456368, 12.23553580073562, -0.10789607952920419, -0.2323544130704791, -0.11151441873034715])
