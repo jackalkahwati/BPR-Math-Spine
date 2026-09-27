@@ -6,16 +6,22 @@ couplings attracts (collapse would make the Yukawas rank 1); one-loop Casimir fo
 computable mechanism is needed.
 
 Mechanism: a bulk SO(10)-singlet scalar chi of U(1)_F charge -4. In unit flux its lowest level is a spin-2 multiplet
-(spin weight s = 2, m^2 r^2 = 2), and every lowest-level configuration is, up to a gauge phase and a positive factor,
-a quartic polynomial in the stereographic coordinate: exactly four zeros (vortices), forced by the flux topology.
-With a slightly tachyonic bulk mass, chi condenses in this level; its quartic self-interaction selects the profile
-minimizing int |chi|^4 at fixed int |chi|^2, which has its four zeros at a regular tetrahedron. Brane couplings
-kappa |chi(z_a)|^2 with kappa > 0 pin one brane to each zero.
+(spin weight s = 2, m^2 r^2 = 2, next level 8), and every lowest-level configuration is (1 + |zeta|^2)^-2 times a
+quartic polynomial in zeta, up to a gauge phase: exactly four zeros (vortices), forced by the flux topology. With a
+bulk mass between -8/r^2 and -2/r^2, chi condenses in this level. For a type-II quartic (lambda above the critical,
+BPS value of order q_chi^2, q_chi = (4/3) g4) the condensate minimizes int |chi|^4 at fixed int |chi|^2: the
+tetrahedral state, whose zeros form a regular tetrahedron (at critical coupling the zeros are exact moduli, and below
+it they coalesce). Brane couplings kappa |chi(z_a)|^2 with kappa > 0 pin branes to zeros.
 
-Checks: the lowest level and the zero count; the global minimizer and its zeros; its Hessian (three rotations,
-five positive modes); the pinning stiffness; the residual family symmetry; the Yukawa consequence (fixed tetrahedral
-positions still reach generic Yukawa pairs modulo U(3)); and the scale window in which pinning dominates Casimir
-forces, the flux stays uniform and the lowest-level description holds.
+The pinning is metastable, not established as a vacuum: kappa |chi|^2 vanishes for any assignment of branes to zeros,
+including several branes on one zero (which attractive scalar exchange favours and which makes the Yukawas rank
+deficient); the barrier to leave a zero is only |chi|^2 at an edge midpoint, 5/(16 pi) in normalized units; and
+one-loop forces from the Higgs brane terms may be comparable.
+
+Checks: the lowest level and the zero count; the global minimizer (exact energies 25/(84 pi), 5/(14 pi), 25/(36 pi));
+its Hessian (three rotations; 10/(21 pi) twice, 100/(63 pi) three times); the pinning stiffness 5/(3 pi) and barrier
+5/(16 pi); stacking; the residual A4 x Z4 of the chi-plus-geometry sector; the Yukawa consequence (fixed tetrahedral
+positions reach only a proper subset of Yukawa pairs modulo U(3): a constraint); and the scale window.
 """
 
 from itertools import combinations
@@ -32,12 +38,17 @@ except ImportError:  # loaded as a top-level module by the demo script
     from minimal_model import spin_matrices, brane_matrix, _vec, _U3
     from sphere_family_structure import swsh, eth, _is_zero, theta, phi
 
-MODEL_ID = "bpr6d-brane-stabilization-v1"
+MODEL_ID = "bpr6d-brane-stabilization-v2"
 CHI_F_CHARGE = -4
 SPIN = 2  # s = -F/2 in unit flux (fermions: F = 3 gives -3/2 from the monopole)
 
 LIMITATIONS = [
     "chi is an added field, chosen because U(1)_F charge 4 forces exactly four vortices; it is not derived.",
+    "The one-brane-per-vortex configuration is metastable at best: stacking several branes on one zero costs no "
+    "pinning energy, the barrier is small (5/(16 pi) kappa (v r)^2 / r^4), and one-loop forces from the Higgs brane "
+    "terms (estimated up to ~0.3 / r^4) are not computed; kill check 11 is conditional, not passed.",
+    "The tetrahedral minimum needs a type-II quartic (lambda above the critical coupling); at critical coupling the "
+    "vortex positions are exact moduli (Bradlow; Baptista-Manton 2003), below it they coalesce.",
     "The lowest-level (Abrikosov-like) description needs lambda (v r)^2 below the level gap and a nearly uniform flux; "
     "outside that regime vortex cores localize the flux and the zero-mode profiles change.",
     "One-loop Casimir forces between the branes are estimated only by dimensional analysis, not computed.",
@@ -59,22 +70,29 @@ def lowest_level_checks(s=SPIN):
 
 
 _GRID = None
+_HARMONICS = None
 
 
-def _harmonics(s=SPIN):
-    return [sp.lambdify((theta, phi), swsh(sp.Integer(s), sp.Integer(s), sp.Integer(m)), "numpy")
-            for m in range(s, -s - 1, -1)]  # basis order m = s, ..., -s
+def _harmonics():
+    """Lambdified lowest-level harmonics sY_{s,m}, basis order m = s, ..., -s (cached)."""
+    global _HARMONICS
+    if _HARMONICS is None:
+        _HARMONICS = [sp.lambdify((theta, phi), swsh(sp.Integer(SPIN), sp.Integer(SPIN), sp.Integer(m)), "numpy")
+                      for m in range(SPIN, -SPIN - 1, -1)]
+    return _HARMONICS
 
 
-def _quadrature(n_theta=16, n_phi=32, s=SPIN):
+def _quadrature():
+    """Gauss-Legendre x uniform grid (16 x 32), exact for the polynomial degrees used here (cached)."""
     global _GRID
     if _GRID is None:
+        n_theta, n_phi = 16, 32
         xs, ws = np.polynomial.legendre.leggauss(n_theta)
         th = np.arccos(xs)
         ph = np.linspace(0, 2 * np.pi, n_phi, endpoint=False)
         T, P = np.meshgrid(th, ph, indexing="ij")
         W = np.outer(ws, np.full(n_phi, 2 * np.pi / n_phi))
-        Y = np.array([np.asarray(f(T, P), dtype=complex) * np.ones_like(T) for f in _harmonics(s)])
+        Y = np.array([np.asarray(f(T, P), dtype=complex) * np.ones_like(T) for f in _harmonics()])
         _GRID = (T, P, W, Y)
     return _GRID
 
@@ -133,6 +151,30 @@ def zeros(c):
     while len(pts) < 2 * SPIN:
         pts.append(np.array([0.0, 0.0, -1.0]))
     return pts
+
+
+def normalized_density(c, point):
+    """|chi|^2 at a unit vector for the profile normalized to int |chi|^2 dOmega = 1."""
+    c = np.asarray(c, complex)
+    _, _, W, Y = _quadrature()
+    norm = np.sum(W * abs(np.tensordot(c, Y, axes=1)) ** 2)
+    v = np.asarray(point, float) / np.linalg.norm(point)
+    return float(abs(profile(c, np.arccos(np.clip(v[2], -1, 1)), np.arctan2(v[1], v[0]))) ** 2 / norm)
+
+
+def pinning_barrier(c):
+    """Energy (per kappa, normalized) at an edge midpoint between two zeros: the saddle a pinned brane must cross to
+    move to a neighbouring vortex. Exact value for the tetrahedral state: 5/(16 pi)."""
+    pts = zeros(c)
+    return normalized_density(c, pts[0] + pts[1])
+
+
+def stacking_pinning_energy(c):
+    """Pinning energy (per kappa) of four branes with two stacked on one zero and one zero left empty: zero, the same
+    as one brane per zero. The pinning term does not prevent stacking."""
+    pts = zeros(c)
+    stacked = [pts[0], pts[0], pts[1], pts[2]]
+    return float(sum(normalized_density(c, p) for p in stacked))
 
 
 def tetrahedron_test(points):
@@ -265,7 +307,8 @@ def _irreducible(mats):
 
 def tetrahedral_yukawa_rank(points, trials=3, seed=0):
     """Branes fixed at the four points; couplings c_a (10H) and d_a (126barH) free, plus U(3). Real rank of the map
-    to (Y10, Y126) (target 24) and the span of the four brane matrices."""
+    to (Y10, Y126) (target 24) and the span of the four brane matrices. Full rank only means the image contains an
+    open set; it is a proper subset (reachability_cost), so fixed positions do constrain the Yukawas."""
     zs = [np.tan(np.arccos(np.clip(v[2], -1, 1)) / 2) * np.exp(1j * np.arctan2(v[1], v[0])) for v in points]
     span = int(np.linalg.matrix_rank(np.array([_vec(brane_matrix(z)) for z in zs]), tol=1e-10))
 
@@ -288,17 +331,75 @@ def tetrahedral_yukawa_rank(points, trials=3, seed=0):
     return {"span": span, "rank_mod_U3": max(ranks)}
 
 
-def scale_window(kappa=1.0, deficit=0.1, rM=3.5, g4=0.03, lam=1.0, n_dof=100):
-    """Dimensionless conditions for v r (chi vev times radius):
-    - pinning beats one-loop Casimir: kappa (v r)^2 >> n_dof deficit^2 / (16 pi^2);
-    - flux nearly uniform: the U(1)_F mass from chi, g4 (4/3) v, below 1/r;
+def reachability_cost(Y10, Y126, points, starts=40, seed=0):
+    """How far a target pair (Y10, Y126) is from the Yukawas of branes fixed at the four points, modulo U(3).
+
+    The four brane matrices span W, of complex codimension 2 in the symmetric matrices, so a pair is reachable iff some
+    U in U(3) puts both U^T Y U in W: 8 real conditions on U(3)/U(1). Returns the smallest normalized squared distance
+    found (reachable pairs reach ~0; the minimum over U is a lower bound for any search, so a large value is robust).
+    """
+    from scipy.optimize import least_squares
+    zs = [np.tan(np.arccos(np.clip(v[2], -1, 1)) / 2) * np.exp(1j * np.arctan2(v[1], v[0])) for v in points]
+    Q, _ = np.linalg.qr(np.array([brane_matrix(z).ravel() for z in zs]).T)
+
+    def perp(M):
+        v = M.ravel()
+        return v - Q @ (Q.conj().T @ v)
+
+    n1, n2 = np.linalg.norm(Y10), np.linalg.norm(Y126)
+
+    def res(t):
+        U = expm(sum(x * g for x, g in zip(t, _U3)))
+        r = np.concatenate([perp(U.T @ Y10 @ U) / n1, perp(U.T @ Y126 @ U) / n2])
+        return np.concatenate([r.real, r.imag])
+
+    rng = np.random.default_rng(seed)
+    return float(min(2 * least_squares(res, rng.normal(size=9) * 2).cost for _ in range(starts)))
+
+
+def reachability_fraction(points, n_pairs=20, starts=40, seed=0, tol=1e-10):
+    """Fraction of random complex-symmetric pairs reachable with branes fixed at the points."""
+    rng = np.random.default_rng(seed)
+    hits = 0
+    for k in range(n_pairs):
+        A = rng.normal(size=(3, 3)) + 1j * rng.normal(size=(3, 3))
+        B = rng.normal(size=(3, 3)) + 1j * rng.normal(size=(3, 3))
+        hits += reachability_cost(A + A.T, B + B.T, points, starts=starts, seed=seed + k) < tol
+    return hits / n_pairs
+
+
+def type_ii(lam=1.0, g4=0.03):
+    """Type-II (repulsive-vortex) condition lambda > lambda_c ~ q_chi^2 / 2, q_chi = (4/3) g4 (order of magnitude)."""
+    q = 4 / 3 * g4
+    return {"lambda_critical_estimate": q * q / 2, "type_II": bool(lam > q * q / 2)}
+
+
+def scale_window(kappa=1.0, deficit=0.1, rM=3.5, g4=0.03, lam=1.0, n_dof=100, higgs_brane_force=0.3):
+    """Dimensionless conditions for v r (chi vev times radius); lam is the quartic of the lowest-mode amplitude:
+    - pinning beats one-loop forces with a factor-10 margin: kappa (v r)^2 > 10 x (one-loop force r^4), where the
+      one-loop force is the Casimir estimate n_dof deficit^2 / (16 pi^2) alone, or that plus the Higgs brane-term
+      estimate higgs_brane_force (~0.3, a crude estimate of the derivative brane terms);
+    - flux nearly uniform: the U(1)_F mass sqrt(2) (4/3) g4 v below 1/r;
     - lowest-level regime: lam (v r)^2 below the level gap (next level m^2 r^2 = 8 vs 2, gap 6).
-    Also the brane-modulus mass m r ~ sqrt(kappa) (v r) / (sqrt(deficit) (r M)^2) (order of magnitude)."""
+    Also the brane-modulus mass m r ~ sqrt(kappa x 5/(3 pi)) (v r) / (sqrt(deficit) (r M)^2) (order of magnitude)."""
     casimir = n_dof * deficit ** 2 / (16 * np.pi ** 2)
-    v_min = np.sqrt(10 * casimir / kappa)  # a factor 10 margin
-    v_max = min(1 / (g4 * 4 / 3), np.sqrt(6 / lam))
-    return {"vr_min": float(v_min), "vr_max": float(v_max), "window_open": bool(v_min < v_max),
-            "modulus_mass_times_r_at_vr_1": float(np.sqrt(kappa) / (np.sqrt(deficit) * rM ** 2))}
+    v_max = min(1 / (np.sqrt(2) * g4 * 4 / 3), np.sqrt(6 / lam))
+    v_min_casimir = np.sqrt(10 * casimir / kappa)
+    v_min_all = np.sqrt(10 * (casimir + higgs_brane_force) / kappa)
+    stiffness = 5 / (3 * np.pi)
+    return {"vr_min_casimir_only": float(v_min_casimir), "vr_min_with_higgs_brane_terms": float(v_min_all),
+            "vr_max": float(v_max), "window_open_casimir_only": bool(v_min_casimir < v_max),
+            "window_open_with_higgs_brane_terms": bool(v_min_all < v_max),
+            "flux_bound_vr": float(1 / (np.sqrt(2) * g4 * 4 / 3)),
+            "modulus_mass_times_r_at_vr_1": float(np.sqrt(kappa * stiffness) / (np.sqrt(deficit) * rM ** 2))}
+
+
+def _phase1_example_cost(points, starts=30):
+    """The hierarchical pair of the Phase 1 note (Takagi values (1e-5, 3e-3, 1) and a generic 0.02 Y126, seed 5):
+    realizable with free brane positions, but not with the positions fixed at the tetrahedron."""
+    rng = np.random.default_rng(5)
+    A = rng.normal(size=(3, 3)) + 1j * rng.normal(size=(3, 3))
+    return reachability_cost(np.diag([1e-5, 3e-3, 1.0]).astype(complex), 0.02 * (A + A.T), points, starts=starts)
 
 
 def demonstration_report():
@@ -308,7 +409,7 @@ def demonstration_report():
     return {
         "schema_version": 1,
         "model_id": MODEL_ID,
-        "status": "brane_positions_fixed_at_tetrahedron_by_vortex_condensate",
+        "status": "tetrahedral_vortex_pinning_metastable",
         "empirical_validation": False,
         "lowest_level": lowest_level_checks(),
         "quartic_minimum": min(values), "spread_of_local_minima": float(max(values) - min(values)),
@@ -318,7 +419,10 @@ def demonstration_report():
         "pinning_stiffness": [float(x) for x in pinning_stiffness(c, pts[0])],
         "residual_family_group": {k: v for k, v in group.items() if k != "rotation_phases"},
         "rotation_phases": sorted(set(round(x, 6) for x in group["rotation_phases"])),
+        "pinning_barrier": pinning_barrier(c), "stacking_pinning_energy": stacking_pinning_energy(c),
         "tetrahedral_yukawa": tetrahedral_yukawa_rank(pts),
+        "phase1_example_reachability_cost": _phase1_example_cost(pts),
+        "type_II": type_ii(),
         "scale_window": scale_window(),
         "limitations": list(LIMITATIONS),
     }

@@ -35,7 +35,7 @@ try:
 except ImportError:  # loaded as a top-level module by the demo script
     from yukawa_mechanisms import brane_jz_charge
 
-MODEL_ID = "bpr6d-minimal-model-v2"
+MODEL_ID = "bpr6d-minimal-model-v3"
 N_BRANES = 4
 
 LIMITATIONS = [
@@ -43,7 +43,7 @@ LIMITATIONS = [
     "The Spin(10)-breaking potential is not minimized here; for 45 + 126 a viable vacuum needs one-loop effects and light 45 pseudo-Goldstones (cited).",
     "Fits of the charged-fermion and neutrino data with generic 10 + 126bar Yukawas are cited, not redone.",
     "Brane positions: without chi they are classical moduli coupled to fermions (potentially fatal); Phase 1d "
-    "(brane_stabilization) pins them at a regular tetrahedron with a chi vortex condensate.",
+    "(brane_stabilization) pins them metastably at a regular tetrahedron with a chi vortex condensate (conditional).",
     "Brane-localized fermion kinetic terms and the tension distortion of the zero modes add J = 0 pieces; Proposition 1 holds at leading order.",
     "SO(10) invariants are hand-coded from standard tensor-product tables (Slansky 1981), not recomputed.",
     "Forbidden terms are forbidden perturbatively only: e^{ib} carries F = 12, so terms such as 10H 10H e^{ib} are gauge invariant (the axion-quality question).",

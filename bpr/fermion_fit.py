@@ -4,9 +4,10 @@ See doc/derivations/phase2_fermion_fit_2026-09-27.md. The model (Phase 1 and 1d)
 the non-supersymmetric SO(10) relations of a complex 10_H and a 126bar_H with a type-I seesaw:
     M_d = H + F,  M_e = H - 3 F,  M_u = r (H + s F),  M_D = r (H - 3 s F),  M_R = w F,
     m_nu = - M_D M_R^{-1} M_D^T,
-where H and F are complex symmetric (H = Y10 v_d^10, F = Y126 v_d^126) and r, s, w are constants. With the four
-branes pinned at a regular tetrahedron and non-identical brane couplings, every pair (H, F) is reachable modulo U(3)
-(brane_stabilization.tetrahedral_yukawa_rank), so the fit is over generic (H, F).
+where H and F are complex symmetric (H = Y10 v_d^10, F = Y126 v_d^126) and r, s, w are constants. With free brane
+positions every pair (H, F) is reachable modulo U(3) (Phase 1); with the branes pinned at a regular tetrahedron
+(Phase 1d) only a proper subset is (brane_stabilization.reachability_cost), so the generic fit here is a necessary
+condition, and the pinned model adds the reachability of the fitted (H, F) as a further condition.
 
 This module provides:
 1. one-loop Standard-Model running of the gauge and Yukawa couplings from M_Z to the unification scale (inputs:

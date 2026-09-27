@@ -43,6 +43,7 @@ The adopted content:
 | 10_H | bulk | 10 (complex) | −6 | Higgs doublets; couples at the branes through ð̄10_H |
 | 126bar_H | bulk | 126bar | −6 | breaks B−L at M_I; Yukawas and ν^c masses through ð̄126bar_H |
 | S | brane 1 | 1 | +6 | Peccei–Quinn singlet; DFSZ link S²·10_H·10_H at brane 1 |
+| χ (Phase 1d) | bulk | 1 | −4 | vortex condensate; its four zeros pin the branes at a regular tetrahedron |
 
 There are four codimension-2 branes of small tension. Each carries the
 brane-localized operators 16·16·(ð̄10_H)(z_a) and 16·16·(ð̄126bar_H)(z_a),
@@ -304,7 +305,7 @@ tension, not a failure.
 | 8 | Unification and proton decay | **fail** (three Δ_R) | **pass** at one loop, survival hypothesis |
 | 9 | Compactification control with M_GUT ≤ 1/r | — | pass narrowly; not robust |
 | 10 | Seesaw neutrino masses | — | **tension** (possibly an artifact) |
-| 11 | Brane positions stabilized | open | **open, potentially fatal** (five moduli coupled to fermions) |
+| 11 | Brane positions stabilized | open | **conditional** after Phase 1d ([brane_positions_2026-09-27.md](brane_positions_2026-09-27.md)): a charge −4 vortex condensate χ pins the branes metastably at a regular tetrahedron; stacking and one-loop brane forces are unresolved, and fixed positions constrain the Yukawas |
 | 12 | Multi-brane background exists | conditional | conditional (constant-curvature spheres with cone points exist for small deficits: Troyanov 1991, Luo–Tian 1992) |
 | 13 | Higgs mass, M_I hierarchy and Λ | tuned | tuned: one Higgs-mass tuning per bulk Higgs, plus the M_I/M_GUT hierarchy, as in 4D minimal SO(10) |
 

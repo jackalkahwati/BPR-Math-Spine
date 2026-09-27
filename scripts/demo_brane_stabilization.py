@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Print how the chi vortex condensate fixes the four brane positions of BPR-6D-M (Phase 1d)."""
+"""Print how the chi vortex condensate pins the four brane positions of BPR-6D-M (Phase 1d), metastably."""
 
 import sys
 
@@ -31,7 +31,12 @@ def main(argv=None):
     print("Pinning stiffness at a zero: {}".format([round(x, 4) for x in report["pinning_stiffness"]]))
     print("Residual family symmetry: {} (rotation phases {})".format(
         report["residual_family_group"], report["rotation_phases"]))
-    print("Yukawas with branes fixed at the tetrahedron: {}".format(report["tetrahedral_yukawa"]))
+    print("Pinning barrier (edge midpoint) {:.4f}; stacking pinning energy {:.1e} (metastable)".format(
+        report["pinning_barrier"], report["stacking_pinning_energy"]))
+    print("Yukawas with branes fixed at the tetrahedron: {}; Phase 1 example reachability cost {:.1e} "
+          "(unreachable: fixed positions constrain the Yukawas)".format(
+              report["tetrahedral_yukawa"], report["phase1_example_reachability_cost"]))
+    print("Type II: {}".format(report["type_II"]))
     print("Scale window for v r: {}".format(report["scale_window"]))
     print("Limitations")
     for limitation in report["limitations"]:
