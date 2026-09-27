@@ -33,19 +33,37 @@ def test_known_features_of_sm_yukawa_running(run):
     assert run["lepton"][2] == pytest.approx(1.7, rel=0.05)
 
 
-def test_parametrization_identities(run):
+def test_charged_sector_construction_is_exact(run):
     tg = ff.targets(2e16)
     rng = np.random.default_rng(0)
-    x = np.concatenate([rng.normal(size=6) * 0.1, rng.normal(size=9), rng.normal(size=4)])
-    m = ff.build(x, tg)
-    r, s = x[15] + 1j * x[16], x[17] + 1j * x[18]
-    # M_u is a combination of M_d and M_e; all matrices symmetric; M_d, M_e have the target spectra up to pulls.
-    assert np.allclose(m["Mu"], r / 4 * ((3 + s) * m["Md"] + (1 - s) * m["Me"]))
-    assert np.allclose(m["MD"], r / 4 * ((3 - 3 * s) * m["Md"] + (1 + 3 * s) * m["Me"]))
-    for M in m.values():
+    p = np.concatenate([rng.normal(size=10) * 0.3, rng.uniform(0, 6, 2), [30.0, -20.0], [0.7], rng.normal(size=3) * 0.3])
+    m = ff.build(p, tg)
+    # Up masses and |V_CKM| are reproduced exactly (independent recomputation from the matrices).
+    Uu, mu = ff._left(m["Mu"])
+    Ud, md = ff._left(m["Md"])
+    assert np.allclose(mu, tg["up"] * np.exp(p[0:3] * ff.SIGMA["up"]), rtol=1e-9)
+    assert np.allclose(md, tg["down"] * np.exp(p[3:6] * ff.SIGMA["down"]), rtol=1e-12)
+    V = Uu.conj().T @ Ud
+    assert np.allclose(abs(V), abs(ff._ckm_from(p[6:10], tg)), atol=1e-9)
+    # The SO(10) relations hold identically.
+    a, b = p[12] + 1j * p[13], m["r"] - (p[12] + 1j * p[13])
+    assert np.allclose(m["Mu"], a * m["Md"] + b * m["Me"])
+    assert np.allclose(m["Md"], m["H"] + m["F"]) and np.allclose(m["Me"], m["H"] - 3 * m["F"])
+    assert np.allclose(m["Mu"], m["r"] * (m["H"] + m["s"] * m["F"]))
+    for M in (m["Mu"], m["Me"], m["MD"], m["F"]):
         assert np.allclose(M, M.T)
-    assert np.allclose(np.sort(np.linalg.svd(m["Me"], compute_uv=False)),
-                       np.sort(tg["lepton"] * np.exp(x[3:6] * ff.SIGMA["lepton"])))
+    # m_tau is exact; the other lepton masses are fit conditions.
+    assert np.sort(np.linalg.svd(m["Me"], compute_uv=False))[2] == pytest.approx(
+        tg["lepton"][2] * np.exp(p[17] * ff.SIGMA["lepton"][2]))
+
+
+def test_charged_sector_fits_exactly():
+    tg = ff.targets(2e16)
+    c, p = ff.fit(tg, with_nu=False, n_starts=4)
+    assert c < 1e-6
+    m = ff.build(p, tg)
+    me = np.sort(np.linalg.svd(m["Me"], compute_uv=False))
+    assert np.allclose(me, tg["lepton"], rtol=1e-4)
 
 
 def test_identical_branes_give_no_yukawa():

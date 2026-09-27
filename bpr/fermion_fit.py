@@ -13,7 +13,8 @@ This module provides:
    running masses at M_Z from Xing-Zhang-Zhou 2008, CKM from PDG; anchors: b-tau non-unification, V_cb growth);
 2. the identical-brane selection rule: with A4-symmetric brane couplings the unique light Higgs is the A4 singlet,
    whose eth-bar value vanishes at every vertex (3-fold selection rule), so identical branes give no Yukawas;
-3. the fit in the basis where M_d is diagonal (M_e = W^T D_e W), residuals, and the stored best fits;
+3. the fit: an exact construction of the charged sector in the basis where M_d is diagonal (only the two lepton mass
+   ratios remain as conditions), neutrino observables from the type-I seesaw, and the stored best fits;
 4. derived quantities: neutrino masses, M_R and the implied lower bound on the B-L scale.
 """
 
@@ -173,74 +174,90 @@ def targets(mu=2e16):
             "nu": np.array([nu["dm21"] / nu["dm31"], nu["s12sq"], nu["s23sq"], nu["s13sq"]])}
 
 
-def _herm(p):
-    A = np.zeros((3, 3), complex)
-    k = 0
-    for i in range(3):
-        A[i, i] = p[k]
-        k += 1
-    for i in range(3):
-        for j in range(i + 1, 3):
-            A[i, j] = p[k] + 1j * p[k + 1]
-            A[j, i] = np.conj(A[i, j])
-            k += 2
-    return A
+CKM_SIGMA = np.array([0.01, 0.03, 0.05, 0.10])  # relative, on s12, s23, s13, delta
+DELTA_GUT = 1.2  # CKM phase at the unification scale (the SM running of delta is small)
 
 
-def build(x, tg):
-    """Parameters: 3 + 3 pulls of the down and lepton masses, 9 for W = exp(i A), r (2), s (2).
-    M_d = diag(m_d) exactly (a U(3) basis choice), M_e = W^T diag(m_e) W; then F = (M_d - M_e)/4, H = (3 M_d + M_e)/4."""
-    Dd = np.diag(tg["down"] * np.exp(x[0:3] * SIGMA["down"])).astype(complex)
-    De = np.diag(tg["lepton"] * np.exp(x[3:6] * SIGMA["lepton"]))
-    W = expm(1j * _herm(x[6:15]))
-    r, s = x[15] + 1j * x[16], x[17] + 1j * x[18]
-    Me = W.T @ De @ W
-    F = (Dd - Me) / 4
-    H = (3 * Dd + Me) / 4
-    return {"Md": Dd, "Me": Me, "Mu": r * (H + s * F), "MD": r * (H - 3 * s * F), "F": F, "H": H}
+def _ckm_from(pulls, tg):
+    s12, s23, s13, _ = tg["ckm"]
+    return ckm_matrix(s12 * (1 + CKM_SIGMA[0] * pulls[0]), s23 * (1 + CKM_SIGMA[1] * pulls[1]),
+                      s13 * (1 + CKM_SIGMA[2] * pulls[2]), DELTA_GUT * (1 + CKM_SIGMA[3] * pulls[3]))
 
 
-def observables(x, tg):
-    m = build(x, tg)
-    Uu, mu = _left(m["Mu"])
-    Ud, _ = _left(m["Md"])
+def build(p, tg):
+    """Exact construction of the charged sector (18 parameters).
+
+    p[0:3], p[3:6], p[15:18]: pulls of the up, down and lepton masses; p[6:10]: CKM pulls; p[10:12]: two Majorana-like
+    phases of M_u; p[12:14]: a (complex); p[14]: arg b.
+    In the basis M_d = diag(m_d) (a U(3) choice), M_u = V^dag diag(m_u e^{i alpha}) V^* reproduces the up masses and
+    the CKM matrix exactly. The SO(10) relation M_u = a M_d + b M_e (a = r (3+s)/4, b = r (1-s)/4) then gives
+    M_e = (M_u - a M_d)/b, with |b| fixed by m_tau; the only charged-sector conditions left are the two lepton mass
+    ratios. Then r = a + b, s = 4a/r - 3, F = (M_d - M_e)/4, H = (3 M_d + M_e)/4, M_D = r (H - 3 s F).
+    """
+    Du = tg["up"] * np.exp(p[0:3] * SIGMA["up"])
+    Dd = tg["down"] * np.exp(p[3:6] * SIGMA["down"])
+    De = tg["lepton"] * np.exp(p[15:18] * SIGMA["lepton"])
+    V = _ckm_from(p[6:10], tg)
+    Mu = V.conj().T @ np.diag(Du * np.exp(1j * np.array([0.0, p[10], p[11]]))) @ V.conj()
+    Md = np.diag(Dd).astype(complex)
+    a = p[12] + 1j * p[13]
+    X = Mu - a * Md
+    sX = np.sort(np.linalg.svd(X, compute_uv=False))
+    b = sX[2] / De[2] * np.exp(1j * p[14])
+    Me = X / b
+    r = a + b
+    s = 4 * a / r - 3
+    F = (Md - Me) / 4
+    H = (3 * Md + Me) / 4
+    return {"Mu": Mu, "Md": Md, "Me": Me, "MD": r * (H - 3 * s * F), "F": F, "H": H, "r": r, "s": s,
+            "lepton_ratios": (sX[0] / sX[2], sX[1] / sX[2]), "lepton_targets": (De[0] / De[2], De[1] / De[2])}
+
+
+def observables(p, tg):
+    m = build(p, tg)
     Ue, _ = _left(m["Me"])
-    V = Uu.conj().T @ Ud
-    ckm = np.array([abs(V[0, 1]), abs(V[1, 2]), abs(V[0, 2]),
-                    abs(np.imag(V[0, 1] * V[1, 2] * np.conj(V[0, 2]) * np.conj(V[1, 1])))])
     mnu_unit = -m["MD"] @ np.linalg.solve(m["F"], m["MD"].T)  # m_nu for M_R = F (w = 1)
     Un, mn = _left(mnu_unit)
     P = Ue.conj().T @ Un
     s13 = abs(P[0, 2]) ** 2
     nu = np.array([(mn[1] ** 2 - mn[0] ** 2) / (mn[2] ** 2 - mn[0] ** 2), abs(P[0, 1]) ** 2 / (1 - s13),
                    abs(P[1, 2]) ** 2 / (1 - s13), s13])
-    return {"up": mu, "ckm": ckm, "nu": nu, "mnu_unit": mn, "PMNS": P, "F": m["F"]}
+    return {"nu": nu, "mnu_unit": mn, "PMNS": P, "F": m["F"], "matrices": m}
 
 
-def residuals(x, tg, with_nu=True):
-    o = observables(x, tg)
-    r = [x[0:6], np.log(o["up"] / tg["up"]) / SIGMA["up"], (o["ckm"] - tg["ckm"]) / (SIGMA["ckm"] * tg["ckm"])]
+def residuals(p, tg, with_nu=True):
+    o = observables(p, tg)
+    m = o["matrices"]
+    lep = [np.log(m["lepton_ratios"][k] / m["lepton_targets"][k]) / 0.01 for k in range(2)]
+    r = [p[0:10], p[15:18], lep]
     if with_nu:
         r.append((o["nu"] - tg["nu"]) / (SIGMA["nu"] * tg["nu"]))
-    return np.concatenate(r)
+    return np.concatenate([np.ravel(x) for x in r])
 
 
-def chi2(x, tg, with_nu=True):
-    return float(np.sum(residuals(x, tg, with_nu) ** 2))
+def chi2(p, tg, with_nu=True):
+    return float(np.sum(residuals(p, tg, with_nu) ** 2))
 
 
-def fit(tg, with_nu=True, starts=None, seed=0, n_starts=20, max_nfev=800):
-    """Multi-start least squares (optionally seeded by previous solutions). Returns (chi^2, x) of the best."""
+def _random_start(rng):
+    return np.concatenate([np.zeros(10), rng.uniform(0, 2 * np.pi, 2), rng.normal(size=2) * np.exp(rng.uniform(0, 5)),
+                           [rng.uniform(0, 2 * np.pi)], np.zeros(3)])
+
+
+def fit(tg, with_nu=True, start=None, seed=0, n_starts=20, max_nfev=2000):
+    """Multi-start least squares with basin hopping around the best point. Returns (chi^2, p)."""
     from scipy.optimize import least_squares
     rng = np.random.default_rng(seed)
     best = None
     for k in range(n_starts):
-        if starts is not None and k % 2 == 0:
-            x0 = starts[rng.integers(len(starts))] + rng.normal(size=19) * rng.choice([0.05, 0.2, 0.5])
+        if best is not None and k % 2 == 1:
+            p0 = best.x + rng.normal(size=18) * rng.choice([0.1, 0.3, 1.0])
+        elif start is not None and k % 3 == 0:
+            p0 = np.asarray(start) + rng.normal(size=18) * 0.1
         else:
-            x0 = np.concatenate([np.zeros(6), rng.normal(size=9) * 2, rng.normal(size=2) * 80, rng.normal(size=2) * 2])
+            p0 = _random_start(rng)
         try:
-            sol = least_squares(residuals, x0, args=(tg, with_nu), max_nfev=max_nfev)
+            sol = least_squares(residuals, p0, args=(tg, with_nu), max_nfev=max_nfev)
         except (np.linalg.LinAlgError, ValueError):
             continue
         if best is None or sol.cost < best.cost:
