@@ -44,7 +44,8 @@ LIMITATIONS = [
     "Fits of the charged-fermion and neutrino data with generic 10 + 126bar Yukawas are cited, not redone.",
     "Brane positions: without chi they are classical moduli coupled to fermions (potentially fatal); Phase 1d "
     "(brane_stabilization) pins them metastably at a regular tetrahedron with a chi vortex condensate (conditional).",
-    "Brane-localized fermion kinetic terms and the tension distortion of the zero modes add J = 0 pieces; Proposition 1 holds at leading order.",
+    "Proposition 1 holds at leading order: brane kinetic terms and the tension distortion change the family kinetic matrix, "
+    "and a one-derivative brane vertex adds rank-2 pieces, both at relative order 1/(rM)^2 (Phase 2b, kinetic_corrections).",
     "SO(10) invariants are hand-coded from standard tensor-product tables (Slansky 1981), not recomputed.",
     "Forbidden terms are forbidden perturbatively only: e^{ib} carries F = 12, so terms such as 10H 10H e^{ib} are gauge invariant (the axion-quality question).",
 ]

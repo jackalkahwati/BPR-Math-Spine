@@ -14,8 +14,9 @@ both repaired here. They reversed its headline numbers:
   strained χ² ≈ 36.
 - The stored pinned point sat slightly off the tetrahedral subspace, so its
   χ² ≈ 609 was not a pinned-model χ². In an exact parametrization the best
-  pinned point found has χ² ≈ 124, and the charged sector alone gives 73. The
-  failure is in the **charged sector** (m_s about 3.6 times too large), not in
+  pinned point found has χ² ≈ 120 (lowered by the Phase 2b review), and the
+  charged sector alone gives 73. The failure is in the **charged sector**
+  (m_s about 3.6–3.9 times too large), not in
   θ₁₃ as first reported.
 
 ## 0. Question
@@ -165,7 +166,7 @@ of the 18 parameters rather than removing any.
 | free positions, m_d error 10% instead of 30% | 8.1 | m_d −1.8σ, sin²θ₂₃ −1.7σ | fits, strained |
 | free positions, inverted ordering | 4.4×10⁴ | the neutrino observables | **excluded** |
 | **pinned tetrahedron**, charged sector only | **73** | m_s +7.5σ, m_b −3.8σ | **fails** |
-| **pinned tetrahedron** + neutrinos | **124** (best found) | m_s +7.5σ, m_u +6.2σ, m_b −3.9σ, m_d −3.0σ; neutrinos within 1σ | **fails** |
+| **pinned tetrahedron** + neutrinos | **120.5** (best found) | m_s +8.1σ, m_u +6.0σ, m_b −3.2σ, m_d −2.3σ; neutrinos within 1σ | **fails** |
 
 **Free positions.** The fit is good. The only pull above 0.6σ is m_d,
 about 37% below its central value at the unification scale. This agrees
@@ -185,7 +186,7 @@ the fixed point, not to a refit.
 agrees with Ohlsson–Pernow.
 
 **Pinned tetrahedron.** Every search fails in the same way:
-- **Charged sector:** m_s comes out about 3.6 times too large, while m_d
+- **Charged sector:** m_s comes out about 3.6–3.9 times too large, while m_d
   and m_b are pulled low. With neutrinos, m_u is also pulled up, about 7
   times too large.
 - **Neutrinos:** these observables fit.
@@ -197,7 +198,9 @@ agrees with Ohlsson–Pernow.
     other two at about 460. This minimum looks global, but that is not
     proved.
   - *With neutrinos:* the 9 searches end at χ² ≈ 129–166, and extended basin
-    hopping lowers the best to 123.5. This number is not converged.
+    hopping lowers the best to 123.5. This number is not converged: the
+    Phase 2b review found 121.55 from a random start, 120.45 after
+    polishing, and that point is now stored.
   - *Floor:* the charged part of any pinned fit is at least the charged-only
     minimum. If that minimum is global, the full pinned χ² cannot fall below
     73.
@@ -243,21 +246,25 @@ find M_B−L up to about 10¹⁴ GeV in this Higgs content.
 - **Pinned tetrahedron: the model fails the charged sector.** BPR-6D-M as
   specified in Phases 1 and 1d (tetrahedral branes, minimal 10 + 126bar,
   type-I seesaw) does not fit the data in these searches. The best χ² found is
-  124 with neutrinos and 73 for the charged sector alone. In every search m_s
-  comes out about 3.6 times too large.
-  - This holds at leading order only. Brane-localized fermion kinetic terms
-    and the tension distortion of the zero modes add J = 0 pieces that
-    enlarge W. At O(δ) ~ 10% they could matter, since the needed changes are
-    O(1) factors in light masses.
-- **The model's two key structural choices conflict.** Pinning, which Phase
-  1d needed for kill check 11, is what spoils the charged-fermion fit.
+  120.5 with neutrinos and 73 for the charged sector alone. In every search
+  m_s comes out about 3.6–3.9 times too large.
+  - This holds at leading order only. Phase 2b
+    ([kinetic_corrections_2026-10-01.md](kinetic_corrections_2026-10-01.md))
+    finds that normalization corrections (brane kinetic terms, tension
+    distortion) do not repair it at natural size, but a one-derivative brane
+    vertex of the same order can.
+- **The model's two key structural choices conflict at leading order.**
+  Pinning, which Phase 1d needed for kill check 11, is what spoils the
+  charged-fermion fit. Phase 2b finds that a one-derivative brane vertex
+  near the top of its natural size removes the conflict.
 
 Ways forward, in order of economy:
 1. Compute the leading J = 0 corrections (brane kinetic terms, tension
    distortion) and refit the pinned model. This is decisive, and cheap
    relative to the others. **Done in Phase 2b**
-   ([kinetic_corrections_2026-10-01.md](kinetic_corrections_2026-10-01.md)):
-   at natural size they do not rescue the pinned model.
+   ([kinetic_corrections_2026-10-01.md](kinetic_corrections_2026-10-01.md)).
+   Normalization corrections do not rescue the pinned model at natural size;
+   the one-derivative brane vertex does, at |δ| ≈ 0.3.
 2. Try a different stabilized configuration. Unequal couplings or tensions
    move the vortices off the regular tetrahedron at O(δ), which changes W
    through χ.
@@ -277,7 +284,7 @@ Ways forward, in order of economy:
 - The fits are multi-start local optimizations, so better minima may exist.
   The pinned verdict rests on 9 searches in each setting. The
   charged-only minimum (73.26) is reproduced by 7 of them; the value with
-  neutrinos (123.5) is not converged.
+  neutrinos (120.45, from the Phase 2b review) is not converged.
 - The pinned constraint is leading order in the brane kinetic terms and the
   tension distortion.
 - The inputs at M_Z and the neutrino data are recalled values; the web proxy

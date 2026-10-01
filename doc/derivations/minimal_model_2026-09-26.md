@@ -120,8 +120,11 @@ contributes Y ∝ u(z_a)u(z_a)ᵀ, where u(z) is the spin-1 coherent state
 **Proposition 1 (spin 2 only).** These matrices span only a
 five-dimensional subspace of the six-dimensional space of symmetric Yukawa
 matrices. They have no J=0 component, since Sym²(spin 1) = J0 ⊕ J2 (tested).
-This holds at leading order: brane-localized fermion kinetic terms and the
-tension distortion of the zero modes add J=0 pieces.
+This holds at leading order. Normalization corrections (brane kinetic
+terms, the tension distortion) act as a non-unitary family congruence
+Y → AYAᵀ that does not preserve J = 2, and a one-derivative brane vertex
+adds rank-2 pieces (Phase 2b,
+[kinetic_corrections_2026-10-01.md](kinetic_corrections_2026-10-01.md)).
 
 **The way out.** In the 4D theory, a U(3) rotation of the three 16s is a
 field redefinition. The Spin(10) interactions are U(3) invariant, and only
@@ -299,7 +302,7 @@ tension, not a failure.
 | 2 | Vevs leave exactly the SM, with the right hypercharge | pass | **pass** (computed) |
 | 3 | Breaking potential has that minimum | conditional | conditional (one loop, light 45 states; cited) |
 | 4 | Yukawas reach generic mass matrices | **fail** (rank 1 at tree level) | **pass** (single light combination feeds four branes; exact construction) |
-| 5 | Those mass matrices fit the data | — | computed in Phase 2 ([phase2_fermion_fit_2026-09-27.md](phase2_fermion_fit_2026-09-27.md)): **pass** with free brane positions (χ² 2.9, −1 dof, normal ordering only); **fail** with the branes pinned at the Phase 1d tetrahedron (best found χ² ≈ 124; m_s about 3.6× too large), at leading order, and natural-size brane kinetic terms, tension distortions and displacements do not repair it (Phase 2b, [kinetic_corrections_2026-10-01.md](kinetic_corrections_2026-10-01.md)) |
+| 5 | Those mass matrices fit the data | — | computed in Phase 2 ([phase2_fermion_fit_2026-09-27.md](phase2_fermion_fit_2026-09-27.md)): **pass** with free brane positions (χ² 2.9, −1 dof, normal ordering only); **fail** with the branes pinned at the Phase 1d tetrahedron (best found χ² ≈ 120; m_s about 3.6–3.9× too large), at leading order, → **conditional** after Phase 2b ([kinetic_corrections_2026-10-01.md](kinetic_corrections_2026-10-01.md)): a one-derivative brane vertex near the top of its natural size gives χ² = 4.5; normalization corrections at natural size do not. Flavour is not predicted either way |
 | 6 | Viable invisible QCD axion | — | pass with S at brane 1 (the link exists only there); quality unresolved; domain-wall number > 1 if S breaks U(1)_F after inflation; λS²H_uH_d needs λ ≲ (v/f_S)² |
 | 7 | Family gauge bosons heavy | pass | pass (estimate) |
 | 8 | Unification and proton decay | **fail** (three Δ_R) | **pass** at one loop, survival hypothesis |
@@ -315,7 +318,8 @@ tension, not a failure.
   the pass-level estimates 7 and 9.
 - Checks 3, 6 and 12 rest on cited results. Check 5 is now computed
   (Phase 2): it passes with free brane positions and fails with the pinned
-  tetrahedron, so checks 5 and 11 conflict at leading order.
+  tetrahedron at leading order. Phase 2b makes it conditional for the
+  pinned model (a one-derivative brane vertex near natural size).
 - There is one tension (10) and one potentially fatal open problem, the
   brane moduli (11).
 

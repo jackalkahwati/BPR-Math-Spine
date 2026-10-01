@@ -145,4 +145,5 @@ def test_phase_2b_node(data):
     kc = nodes["kinetic_corrections"]
     assert kc["status"] == "phenomenological_fit" and "fermion_fit" in kc["depends_on"]
     assert "bpr/kinetic_corrections.py" in kc["sources"] and "not a proof" in kc["limitation"]
+    assert "vertex" in kc["claim"] and "not predicted" in kc["claim"]
     assert "kinetic_corrections_2026-10-01.md" in MAP_MD.read_text(encoding="utf-8")

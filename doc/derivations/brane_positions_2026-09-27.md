@@ -137,8 +137,9 @@ has to fit with the branes fixed, not over generic Yukawas.
 Phase 2 ([phase2_fermion_fit_2026-09-27.md](phase2_fermion_fit_2026-09-27.md))
 identifies W exactly: the pure J = 2 matrices annihilated by χ itself. It
 finds that the pinned model fails the charged-fermion data at leading order
-(best found χ² ≈ 124; m_s about 3.6 times too large), while free positions
-fit.
+(best found χ² ≈ 120; m_s about 3.6–3.9 times too large), while free positions
+fit. Phase 2b finds that a one-derivative brane vertex of the same order as the
+other corrections, near the top of its natural size, removes the conflict.
 
 **The A4 × Z4 symmetry of the χ sector.** Rotations of the tetrahedron,
 combined with the compensating U(1)_F phase, leave χ invariant. On the

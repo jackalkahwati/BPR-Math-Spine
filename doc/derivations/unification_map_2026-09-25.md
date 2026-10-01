@@ -368,32 +368,33 @@ One-loop SM running to 2×10¹⁶ GeV, with assumed GUT-scale errors.
   400–1000 times the one-loop M_I.
 - **Pinned tetrahedron: the model fails the charged sector.** Pinning
   requires a family basis in which H and F are pure J = 2 and annihilated by
-  the pinning condensate χ. The best fits found have χ² ≈ 124 with neutrinos
-  and 73 for the charged sector alone, with m_s about 3.6 times too large.
-  This is leading order: brane kinetic terms and the tension distortion add
-  J = 0 pieces that could matter.
+  the pinning condensate χ. The best fits found have χ² ≈ 120 with neutrinos
+  and 73 for the charged sector alone, with m_s about 3.6–3.9 times too large.
+  This is leading order; Phase 2b (section 3l) tests the next order.
 - The independent review's two blockers reversed the first version's numbers
   (χ² 36 and 609); both are repaired.
 
-## 3l. Phase 2b: the leading corrections do not rescue pinning
+## 3l. Phase 2b: the next-order corrections
 
 See [kinetic_corrections_2026-10-01.md](kinetic_corrections_2026-10-01.md).
 
-**How the corrections enter.** Brane kinetic terms and the geometry
-distortion from unequal tensions act only through the family kinetic matrix.
-The brane Yukawas stay rank 1, because a brane couples to the value of a
-holomorphic zero mode. Every Yukawa then transforms as Y → AYAᵀ.
+**Normalization corrections do not rescue pinning at natural size.** Brane
+kinetic terms and unequal-tension distortions act only through the family
+kinetic matrix, Y → AYAᵀ. Equal or A4-symmetric corrections do nothing (a
+tight frame and Schur's lemma). At natural size, these corrections together
+with brane displacements leave χ² ≳ 40 for the charged sector and ≳ 90 with
+neutrinos. An O(1) kinetic matrix would erase pinning altogether.
 
-**Only differences between branes matter.** Equal brane kinetic terms, and
-any A4-symmetric correction, do nothing (a tight frame and Schur's lemma).
+**The one-derivative brane vertex does.** It is allowed by the same J_z rule
+and is of the same order. Its pieces are pure J = 2 but lie outside the
+pinned subspace. It fits:
+- the charged sector at |δ| ≤ 0.1;
+- all the data at |δ| ≤ 0.3 (χ² = 4.5), at or just above the top of its
+  natural range of 0.07–0.25.
 
-**The pinned fit is not rescued.** All corrections together at natural size
-leave χ² = 40.6 for the charged sector alone and 94.2 with neutrinos:
-- the charged sector needs at least 3× the natural size;
-- with neutrinos, nothing in the scanned ranges fits.
-
-So pinning at the tetrahedron and the fermion data are incompatible in the
-minimal model. The result rests on bounded searches, not a proof.
+**So pinning is not excluded at next-to-leading order, but it no longer
+predicts flavour.** The independent review found the vertex, which reversed
+the first version's verdict. The results rest on bounded searches.
 
 ## 4. The dependency graph
 
@@ -631,11 +632,11 @@ Rounds 6–10 settle the rest of the list:
   tetrahedron (conditional).
 - **Phase 2:** with free brane positions the model fits the fermion data
   (χ² 2.9, −1 dof). With the branes pinned it fails the charged sector
-  (best found χ² ≈ 124; m_s about 3.6 times too large). Pinning and the
+  (best found χ² ≈ 120; m_s about 3.6–3.9 times too large). Pinning and the
   fermion fit are in conflict at leading order.
-- **Phase 2b:** the conflict survives next-to-leading order. Natural-size
-  brane kinetic terms, tension distortions and brane displacements together
-  leave χ² ≈ 41 (charged) and 94 (with neutrinos).
+- **Phase 2b:** at next-to-leading order a one-derivative brane vertex near
+  the top of its natural size removes the conflict (χ² 4.5). Normalization
+  corrections alone do not. Pinned or not, flavour is not predicted.
 
 Every item is supplied or assumed rather than derived from one microscopic
 Hamiltonian. The four requirements are now consistent with each other, but

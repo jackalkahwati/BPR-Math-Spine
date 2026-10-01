@@ -27,9 +27,9 @@ def main(argv=None):
         report["zero_mode_gram_deviation"], report["tight_frame"]))
     print("A4-averaged kinetic matrix is a multiple of 1 (Schur): {}".format(report["schur"]))
     nat = report["natural_sizes"]
-    print("Natural sizes: BKT eps {:.3f}-{:.3f} (rM {:.1f}-{:.1f}); general K and displacement ~ {} (deficit spread)".format(
+    print("Natural sizes: BKT eps {:.3f}-{:.3f} (rM {:.1f}-{:.1f}); vertex delta {:.2f}-{:.2f}; bounds used {}".format(
         nat["bkt_eps_range"][0], nat["bkt_eps_range"][1], nat["rM_range"][0], nat["rM_range"][1],
-        nat["tension_estimate"]))
+        nat["vertex_delta_range"][0], nat["vertex_delta_range"][1], nat["bounds_used"]))
     for kind, settings in report["scans"].items():
         print("{} (bound: {})".format(kind, report["bound_meaning"][kind]))
         for setting, rows in settings.items():

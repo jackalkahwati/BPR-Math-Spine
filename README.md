@@ -174,12 +174,13 @@
 >
 > **PHASE 2: FERMION DATA (2026-09-27):** [the minimal model against quark, lepton and neutrino data](doc/derivations/phase2_fermion_fit_2026-09-27.md).
 > - With free brane positions the 10 + 126bar model fits: χ² = 2.9 for 17 observables and 18 parameters (−1 dof, so consistency, not a test). Normal ordering only; Σm_ν ≈ 0.06–0.07 eV and m_ββ ≈ 0.4 meV are stable across fits. It needs v_R ≳ 4×10¹¹ GeV, far above the one-loop M_I ≈ 10⁹ GeV.
-> - With the branes pinned at the tetrahedron it fails the charged sector: best found χ² ≈ 124 (73 for charged fermions alone), with m_s about 3.6 times too large. This is leading order; brane kinetic terms could change it.
+> - With the branes pinned at the tetrahedron it fails the charged sector: best found χ² ≈ 120 (73 for charged fermions alone), with m_s about 3.6–3.9 times too large. This is leading order; brane kinetic terms could change it.
 > - The independent review's two blockers reversed the first version's numbers (χ² 36 and 609); both are repaired. No empirical validation is claimed.
 >
-> **PHASE 2b: LEADING CORRECTIONS (2026-10-01):** [can brane kinetic terms or tension distortions rescue the pinned branes?](doc/derivations/kinetic_corrections_2026-10-01.md)
-> - These corrections act only through the family kinetic matrix (Y → AYAᵀ); equal or A4-symmetric corrections do nothing (tight frame, Schur's lemma).
-> - Not at natural size: all of them together leave χ² ≈ 41 for charged fermions and 94 with neutrinos. The charged sector needs at least 3× the natural size, and nothing scanned fits with neutrinos. Pinning and the fermion data are incompatible in the minimal model (search-based, not a proof).
+> **PHASE 2b: NEXT-ORDER CORRECTIONS (2026-10-01):** [do the next-order corrections rescue the pinned branes?](doc/derivations/kinetic_corrections_2026-10-01.md)
+> - Brane kinetic terms and unequal-tension distortions act only through the family kinetic matrix (Y → AYAᵀ); equal or A4-symmetric ones do nothing (tight frame, Schur's lemma). At natural size they do not rescue the pinned fit (χ² ≳ 40 charged, ≳ 90 with neutrinos).
+> - A one-derivative brane vertex, allowed by the same J_z rule and of the same order, does: χ² = 4.5 for all data at |δ| ≤ 0.3, at or just above the top of its natural range. So pinning is not excluded at next-to-leading order, but it no longer predicts flavour.
+> - The independent review found this vertex, which reversed the first version's verdict. The results rest on bounded searches.
 >
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
