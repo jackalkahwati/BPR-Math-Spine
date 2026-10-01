@@ -299,7 +299,7 @@ tension, not a failure.
 | 2 | Vevs leave exactly the SM, with the right hypercharge | pass | **pass** (computed) |
 | 3 | Breaking potential has that minimum | conditional | conditional (one loop, light 45 states; cited) |
 | 4 | Yukawas reach generic mass matrices | **fail** (rank 1 at tree level) | **pass** (single light combination feeds four branes; exact construction) |
-| 5 | Those mass matrices fit the data | — | computed in Phase 2 ([phase2_fermion_fit_2026-09-27.md](phase2_fermion_fit_2026-09-27.md)): **pass** with free brane positions (χ² 2.9, −1 dof, normal ordering only); **fail** with the branes pinned at the Phase 1d tetrahedron (best found χ² ≈ 124; m_s about 3.6× too large), at leading order |
+| 5 | Those mass matrices fit the data | — | computed in Phase 2 ([phase2_fermion_fit_2026-09-27.md](phase2_fermion_fit_2026-09-27.md)): **pass** with free brane positions (χ² 2.9, −1 dof, normal ordering only); **fail** with the branes pinned at the Phase 1d tetrahedron (best found χ² ≈ 124; m_s about 3.6× too large), at leading order, and natural-size brane kinetic terms, tension distortions and displacements do not repair it (Phase 2b, [kinetic_corrections_2026-10-01.md](kinetic_corrections_2026-10-01.md)) |
 | 6 | Viable invisible QCD axion | — | pass with S at brane 1 (the link exists only there); quality unresolved; domain-wall number > 1 if S breaks U(1)_F after inflation; λS²H_uH_d needs λ ≲ (v/f_S)² |
 | 7 | Family gauge bosons heavy | pass | pass (estimate) |
 | 8 | Unification and proton decay | **fail** (three Δ_R) | **pass** at one loop, survival hypothesis |

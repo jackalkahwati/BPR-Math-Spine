@@ -138,3 +138,11 @@ def test_phase_1d_and_phase_2_nodes(data):
     assert "No empirical validation" in ff["limitation"] and "pinned" in ff["claim"]
     text = MAP_MD.read_text(encoding="utf-8")
     assert "brane_positions_2026-09-27.md" in text and "phase2_fermion_fit_2026-09-27.md" in text
+
+
+def test_phase_2b_node(data):
+    nodes = {node["id"]: node for node in data["nodes"]}
+    kc = nodes["kinetic_corrections"]
+    assert kc["status"] == "phenomenological_fit" and "fermion_fit" in kc["depends_on"]
+    assert "bpr/kinetic_corrections.py" in kc["sources"] and "not a proof" in kc["limitation"]
+    assert "kinetic_corrections_2026-10-01.md" in MAP_MD.read_text(encoding="utf-8")

@@ -177,6 +177,10 @@
 > - With the branes pinned at the tetrahedron it fails the charged sector: best found χ² ≈ 124 (73 for charged fermions alone), with m_s about 3.6 times too large. This is leading order; brane kinetic terms could change it.
 > - The independent review's two blockers reversed the first version's numbers (χ² 36 and 609); both are repaired. No empirical validation is claimed.
 >
+> **PHASE 2b: LEADING CORRECTIONS (2026-10-01):** [can brane kinetic terms or tension distortions rescue the pinned branes?](doc/derivations/kinetic_corrections_2026-10-01.md)
+> - These corrections act only through the family kinetic matrix (Y → AYAᵀ); equal or A4-symmetric corrections do nothing (tight frame, Schur's lemma).
+> - Not at natural size: all of them together leave χ² ≈ 41 for charged fermions and 94 with neutrinos. The charged sector needs at least 3× the natural size, and nothing scanned fits with neutrinos. Pinning and the fermion data are incompatible in the minimal model (search-based, not a proof).
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap

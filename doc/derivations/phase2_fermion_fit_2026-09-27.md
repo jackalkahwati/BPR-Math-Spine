@@ -255,7 +255,9 @@ find M_B−L up to about 10¹⁴ GeV in this Higgs content.
 Ways forward, in order of economy:
 1. Compute the leading J = 0 corrections (brane kinetic terms, tension
    distortion) and refit the pinned model. This is decisive, and cheap
-   relative to the others.
+   relative to the others. **Done in Phase 2b**
+   ([kinetic_corrections_2026-10-01.md](kinetic_corrections_2026-10-01.md)):
+   at natural size they do not rescue the pinned model.
 2. Try a different stabilized configuration. Unequal couplings or tensions
    move the vortices off the regular tetrahedron at O(δ), which changes W
    through χ.

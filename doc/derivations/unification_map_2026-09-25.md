@@ -375,6 +375,26 @@ One-loop SM running to 2×10¹⁶ GeV, with assumed GUT-scale errors.
 - The independent review's two blockers reversed the first version's numbers
   (χ² 36 and 609); both are repaired.
 
+## 3l. Phase 2b: the leading corrections do not rescue pinning
+
+See [kinetic_corrections_2026-10-01.md](kinetic_corrections_2026-10-01.md).
+
+**How the corrections enter.** Brane kinetic terms and the geometry
+distortion from unequal tensions act only through the family kinetic matrix.
+The brane Yukawas stay rank 1, because a brane couples to the value of a
+holomorphic zero mode. Every Yukawa then transforms as Y → AYAᵀ.
+
+**Only differences between branes matter.** Equal brane kinetic terms, and
+any A4-symmetric correction, do nothing (a tight frame and Schur's lemma).
+
+**The pinned fit is not rescued.** All corrections together at natural size
+leave χ² = 40.6 for the charged sector alone and 94.2 with neutrinos:
+- the charged sector needs at least 3× the natural size;
+- with neutrinos, nothing in the scanned ranges fits.
+
+So pinning at the tetrahedron and the fermion data are incompatible in the
+minimal model. The result rests on bounded searches, not a proof.
+
 ## 4. The dependency graph
 
 ```mermaid
@@ -613,6 +633,9 @@ Rounds 6–10 settle the rest of the list:
   (χ² 2.9, −1 dof). With the branes pinned it fails the charged sector
   (best found χ² ≈ 124; m_s about 3.6 times too large). Pinning and the
   fermion fit are in conflict at leading order.
+- **Phase 2b:** the conflict survives next-to-leading order. Natural-size
+  brane kinetic terms, tension distortions and brane displacements together
+  leave χ² ≈ 41 (charged) and 94 (with neutrinos).
 
 Every item is supplied or assumed rather than derived from one microscopic
 Hamiltonian. The four requirements are now consistent with each other, but
