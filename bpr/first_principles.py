@@ -285,7 +285,12 @@ class SubstrateDerivedTheories:
     # Universal Phase Transition Taxonomy
     # ------------------------------------------------------------------
     def critical_exponents(self) -> dict:
-        """Substrate critical exponents for d=3 Class B transitions."""
+        """Substrate critical exponents for d=3 Class B transitions.
+
+        These are the stipulated Class B values, not derived exponents (see
+        the LIMITATION block in bpr.phase_transitions); they reproduce
+        neither 3-D percolation nor 3-D Ising.
+        """
         return th4.class_b_critical_exponents(d=3)
 
     def kibble_zurek(self, tau_quench: float, d: int = 3) -> float:
@@ -652,6 +657,10 @@ class SubstrateDerivedTheories:
         preds["P3.4_cryo_deviation_from_linear_T"] = "Γ(T) sub-linear below T_quantum"
 
         # ── Universal Phase Transition Taxonomy──
+        # STATUS: P4.1 values are the stipulated Class B formula at d = 3, not a
+        # derived or falsifiable prediction (bpr.phase_transitions, LIMITATION;
+        # architecture_decision_2026-09-26.md §4 demotes this prediction list).
+        # Pure SU(3) deconfinement is first order, so it has no such exponents.
         preds["P4.1_QCD_deconf_nu"] = exps["nu"]
         preds["P4.1_QCD_deconf_beta"] = exps["beta"]
         preds["P4.1_QCD_deconf_gamma"] = exps["gamma"]

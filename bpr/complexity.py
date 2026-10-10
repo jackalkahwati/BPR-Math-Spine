@@ -10,7 +10,15 @@ Key objects
 -----------
 * ``SubstrateComplexity``     – complexity class as substrate property
 * ``TopologicalParallelism``  – quantum advantage from winding
-* ``ComplexityBound``         – topological lower bound (physical P ≠ NP argument)
+* ``ComplexityBound``         – topological counting comparison (heuristic P ≠ NP argument)
+
+STATUS: interpretive. Nothing here proves a complexity lower bound or bears
+on P versus NP. ``TopologicalComplexityBound`` compares a count of winding
+sectors (p^n) with a polynomial depth budget (n^k); that one search strategy
+needs exponentially many steps does not show that every algorithm does.
+The "substrate processes" it describes are classical and efficiently
+simulable by a Turing machine, except where a quantum substrate is assumed,
+and then the relevant class is BQP, not P.
 
 References: Al-Kahwati (2026), *Ten Adjacent Theories*, §10
 """
@@ -106,15 +114,18 @@ class PolynomialHierarchy:
 
 @dataclass
 class TopologicalComplexityBound:
-    """Physical argument for P ≠ NP based on substrate topology.
+    """Heuristic counting comparison motivated by P ≠ NP (not a proof).
 
-    No substrate computation can solve an NP-complete problem in poly
-    depth without either:
+    The proposed argument: no substrate computation can solve an
+    NP-complete problem in poly depth without either
         (a) maintaining exponential winding (exponential energy), or
-        (b) accessing boundary oracle injections (observer intervention).
+        (b) accessing boundary oracle injections (observer intervention),
+    because distinct winding configurations cannot be connected by local
+    substrate updates in polynomial time.
 
-    Distinct winding configurations cannot be connected by local substrate
-    updates in polynomial time.
+    LIMITATION: neither the premise about local updates nor the conclusion
+    is proved. The methods below only compare p^n with n^k, which bounds
+    exhaustive search over winding sectors, not every algorithm.
     """
     n: int = 10              # problem input size
     p: int = 7               # substrate modulus

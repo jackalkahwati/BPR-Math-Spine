@@ -332,11 +332,16 @@ def bpr_substrate_analog_scaling(
     Hilbert space, computes half-half bipartite entanglement entropy, and
     reports the ratio to log 2 × n_A (the bare-density baseline).
 
-    Discriminating signal:
-      ratio < 1   → multiplicative correlations present (number-theoretic
-                    content beyond bare density)
-      ratio ≈ 1   → Bernoulli-like, no extra structure (prime substrate is
-                    decorative for entanglement)
+    The intended reading was: ratio < 1 means multiplicative correlations
+    carry number-theoretic content; ratio ≈ 1 means Bernoulli-like.
+
+    NULL MODEL (2026-10): that reading is wrong. A density-matched random
+    subset of [1, p), embedded the same way, gives the same ratio
+    (≈ 0.61-0.70 for these primes; ``random_subset_null_model``). The ratio
+    below 1 comes from the density and the zero padding, not from quadratic
+    residuosity, and the QR values lie within 2.3 standard deviations of the
+    null mean, with deviations of both signs. Classically the Legendre symbol's two-point
+    correlations are exactly -1/p.
     """
     results = []
     log2 = float(np.log(2.0))
@@ -362,9 +367,33 @@ def bpr_substrate_analog_scaling(
         "scan": results,
         "ratio_slope_vs_log_p": slope,
         "interpretation": (
-            "ratio → 1 with negligible slope → Bernoulli; prime substrate is "
-            "decorative for entanglement. ratio bounded < 1 with structure → "
-            "multiplicative correlations carry quantum-information content "
-            "(BPR's prime claim has teeth)."
+            "ratio < 1, but density-matched random subsets give the same ratio "
+            "(see random_subset_null_model): consistent with density alone, "
+            "not evidence of number-theoretic structure."
         ),
     }
+
+
+def random_subset_null_model(
+    p: int, n_samples: int = 200, seed: int = 0,
+) -> dict:
+    """Null model for ``bpr_substrate_analog_scaling``.
+
+    Draws ``n_samples`` uniformly random subsets of {1, ..., p-1} with the
+    same size as QR_p, builds the same uniform superposition in the same
+    2^n_qubits embedding, and returns the mean and standard deviation of the
+    half-half entanglement entropy as a ratio to log 2 × n_A.
+    """
+    rng = np.random.default_rng(seed)
+    n = int(np.ceil(np.log2(p)))
+    n_A = n // 2
+    size = (p - 1) // 2
+    ratios = []
+    for _ in range(n_samples):
+        psi = np.zeros(2 ** n)
+        psi[rng.choice(np.arange(1, p), size=size, replace=False)] = 1.0
+        psi /= np.linalg.norm(psi)
+        ratios.append(bipartite_entanglement_entropy(psi, n, n_A=n_A) / (np.log(2.0) * n_A))
+    ratios = np.array(ratios)
+    return {"p": p, "n_qubits": n, "n_A": n_A,
+            "mean_ratio": float(ratios.mean()), "sd_ratio": float(ratios.std(ddof=1))}

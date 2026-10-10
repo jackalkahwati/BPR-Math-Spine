@@ -42,6 +42,10 @@ class TransitionClass(Enum):
 
 TRANSITION_CATALOG = [
     # Class A – Winding transitions (ΔW ≠ 0, first-order)
+    # Caveat: "Consciousness onset" as first-order conflicts with Speculation II
+    # (bpr.rpst_extensions.BKTCoherenceTransition), which models it as an
+    # infinite-order BKT transition in 2-D; P4.4-P4.6 in first_principles.py
+    # also default to d = 3. Both are speculative; neither is derived.
     {"name": "Consciousness onset",      "class": TransitionClass.A, "order_parameter": "W (winding)"},
     {"name": "Superfluid He-4",          "class": TransitionClass.A, "order_parameter": "W (vortex)"},
 
@@ -109,7 +113,43 @@ class SubstrateCriticalExponents:
     γ  = 2(d + 1) / (d + 2)
 
     For d = 3:  ν ≈ 0.80, β ≈ 0.20, γ ≈ 1.60
-    For d = 2:  β = 0   (boundary case; Class B formula breaks down in 2-D).
+
+    LIMITATION (2026-10). These are stipulated values, not derived exponents.
+    (a) No derivation: the three formulas are derived nowhere in this
+        repository or the papers it cites.
+    (b) Wrong in 2-D. Read as Bernoulli percolation (the docstring's
+        "percolation / graph topology"), d = 2 gives (ν, β, γ) = (1, 0, 3/2),
+        against (4/3, 5/36, 43/18) for 2-D percolation (triangular-lattice
+        site percolation: Smirnov and Werner 2001; Lawler, Schramm and Werner
+        2002; Kesten 1987). [Z² bond values are also claimed in an
+        unrefereed, not Lean-formalized OpenAI-model preprint, index entry
+        omath:223:z2-bond-exponents; not needed here.]
+    (c) β = 0 in 2-D is excluded: θ(1/2) = 0 (Harris 1960; p_c = 1/2 by
+        Kesten 1980) and right-continuity rule out a jump, and Kesten's 1987
+        polynomial bounds rule out exponent 0 on a log scale.
+    (d) Hyperscaling d·ν = 2β + γ fails by exactly 2/(d+2) for every d.
+        Hyperscaling is a theorem for 2-D percolation (Kesten's 1987
+        scaling relations with the triangular-lattice exponents above), is
+        expected but unproven for 3 ≤ d < 6, and is false above d = 6.
+    (e) d = 3 defaults (0.8, 0.2, 1.6) have no rigorous or derived support.
+        Monte Carlo estimates for 3-D percolation are ≈ (0.876, 0.42, 1.79)
+        (numerical, not rigorous), and 3-D Ising is ≈ (0.630, 0.326, 1.237)
+        (Hasenbusch 2010), so the formula reproduces neither.
+    (f) High d: mean-field percolation exponents (ν, β, γ) = (1/2, 1, 1) are
+        proved for nearest-neighbour bond percolation at d ≥ 11 (triangle
+        condition: Hara and Slade 1990; Fitzner and van der Hofstad 2017;
+        exponents: Aizenman and Newman 1984; Barsky and Aizenman 1991;
+        Hara 1990). Class B gives (4/13, 9/13, 24/13) at d = 11, and
+        γ → 2, ν → 0 as d → ∞.
+    (g) Scope: the catalogue's Class B examples (Polyakov loop,
+        metal-insulator transition) are not Bernoulli percolation. (b), (c)
+        and (f) contradict the literal percolation reading; for the other
+        readings the formula is simply unsupported.
+
+    Users at d = 2 (``bpr.fluid_dynamics.TwoDTurbulence`` and the_well
+    validators turbulence_2d, shear_flow and planetswe) are therefore not
+    tests of Class B; the k^{-3} enstrophy cascade they check is Kraichnan's.
+    See doc/CLOSED_AND_DEPRECATED.md.
     """
     d: int = 3
 
@@ -238,7 +278,11 @@ def kibble_zurek_defect_density(tau_quench: float, d: int = 3,
     z : float
         Dynamical critical exponent.
     nu : float, optional
-        Correlation-length exponent.  Defaults to Class B value 4/(d+2).
+        Correlation-length exponent.  Defaults to Class B value 4/(d+2),
+        which is stipulated, not derived (see the LIMITATION block of
+        :class:`SubstrateCriticalExponents`); pass a known ν where one
+        exists.  For an infinite-order (BKT) transition the Kibble-Zurek law
+        is not of this power-law form at all.
     """
     if nu is None:
         nu = 4.0 / (d + 2)

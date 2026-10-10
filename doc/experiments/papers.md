@@ -410,7 +410,7 @@
 
 ---
 
-## 29. Critical Exponents (3D Ising) — **CONFIRM**
+## 29. Critical Exponents (3D Ising) — **MISMATCH / WITHDRAWN (2026-10)**
 
 **BPR predicts:** ν, β, γ from substrate Class B (Universal Phase Transition Taxonomy).
 
@@ -419,7 +419,7 @@
 | **Hasenbusch, Phys. Rev. B 82, 174433 (2010)** | ν = 0.63002(10) from FSS | [DOI:10.1103/PhysRevB.82.174433](https://doi.org/10.1103/PhysRevB.82.174433) |
 | **Campostrini et al., Phys. Rev. B 74, 144506 (2006)** | High-precision 3D Ising | [DOI:10.1103/PhysRevB.74.144506](https://doi.org/10.1103/PhysRevB.74.144506) |
 
-**Verdict: CONFIRM** — BPR Class B exponents consistent with 3D Ising universality.
+**Verdict: MISMATCH / WITHDRAWN (2026-10).** The earlier CONFIRM was an arithmetic error. Class B at d = 3 gives (ν, β, γ) = (0.8, 0.2, 1.6); 3D Ising is ≈ (0.630, 0.326, 1.237). BPR's own `TRANSITION_CATALOG` also places ferromagnetism in Class C, not B. See the LIMITATION block in `bpr/phase_transitions.py` and `doc/CLOSED_AND_DEPRECATED.md`.
 
 ---
 
@@ -1056,6 +1056,8 @@
 
 ## 89–97. Individual CONFIRM Tests (batch)
 
+Row 96 is withdrawn (2026-10): Class B gives ν = 0.8, not 0.630. See entry 29.
+
 | # | Test | BPR | Experiment | Paper |
 |---|------|-----|------------|-------|
 | 89 | B/A(⁵⁶Fe) | 8.86 MeV | 8.79 MeV | AME2020 [amdc.impcas.ac.cn](https://amdc.impcas.ac.cn) |
@@ -1065,7 +1067,7 @@
 | 93 | R_K | h/e² | 25812.8 Ω | von Klitzing PRL 45, 494; CODATA |
 | 94 | GW speed | c | \|δv/c\| < 7×10⁻¹⁶ | Abbott PRL 119, 161101; Creminelli PRL 119, 251302 |
 | 95 | Tsirelson | 2√2 | 2√2 | Hensen Nature 526; Shalm PRL 115; Giustina PRL 115 |
-| 96 | 3D Ising ν | Class B | 0.630 | Hasenbusch PRB 82, 174433; Campostrini PRB 74, 144506 |
+| 96 | 3D Ising ν | Class B (0.8; **MISMATCH / WITHDRAWN**) | 0.630 | Hasenbusch PRB 82, 174433; Campostrini PRB 74, 144506 |
 | 97 | Dark energy Ω_Λ | frustration | 0.685 | Planck 2018 A&A 641, A6 |
 
 **Verdict: CONFIRM** — All within bounds.
@@ -1163,7 +1165,7 @@
 | 26 | Planck length | emergent | CODATA | **CONFIRM** |
 | 27 | Anyons | π/p | FQHE | **INCONCLUSIVE** |
 | 28 | Tsirelson | 2√2 | 2√2 | **CONFIRM** |
-| 29 | 3D Ising ν | Class B | 0.630 | **CONFIRM** |
+| 29 | 3D Ising ν | Class B (0.8) | 0.630 | **MISMATCH / WITHDRAWN (2026-10)** |
 | 30 | Dark energy | frustration | Ω_Λ ≈ 0.685 | **CONFIRM** |
 | 31 | Higgs m_H | boundary | 125 GeV | **CONFIRM** |
 | 32 | Proton r_p | — | 0.84 fm | **INCONCLUSIVE** |
@@ -1190,7 +1192,9 @@
 
 ---
 
-**Totals:** **CONFIRM 115** | FALSIFY 0 | INCONCLUSIVE 11
+**Totals:** **CONFIRM 115** | FALSIFY 0 | INCONCLUSIVE 11 (compiled Feb 2026)
+
+2026-10: tests 29 and 96 (3D Ising ν) are withdrawn as mismatches, so at most 113 CONFIRM remain. The other rows were not re-audited here; the totals are historical, and the dated audits (`VALIDATION_STATUS.md`, `doc/CLOSED_AND_DEPRECATED.md`) take precedence.
 
 - **115 CONFIRM** across 129 tests. **All 21 theories** now have at least one CONFIRM.
 - **250+ papers** cited.

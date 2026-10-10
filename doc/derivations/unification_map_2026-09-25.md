@@ -734,6 +734,16 @@ they are not mistaken for results.
   expected underflow does not occur; the test assumes a platform where
   longdouble equals double. The full suite on this platform gives 7,388
   passed, 4 skipped, 1 failed, before the new modules.
+- Repaired or withdrawn on 2026-10-10, in legacy modules with no map node (so
+  no node changes): the Max-Cut solver's sign error and its withdrawn
+  claims; Bridge 9, which could not run; the BKT exponent at T_BKT; the Class B
+  exponent formula, now marked as a stipulation contradicted at d = 2 and
+  d ≥ 11, with the 3D-Ising "CONFIRM" withdrawn; the prime-state
+  "CONFIRMED" row, which a density-matched null model reproduces; and several
+  mislabelled comparisons. They are listed in
+  [CLOSED_AND_DEPRECATED.md](../CLOSED_AND_DEPRECATED.md). They were found
+  while scoping the openai/math index, but none rests on an openai/math
+  result.
 
 ## 7. What would count as "everything ties together"
 

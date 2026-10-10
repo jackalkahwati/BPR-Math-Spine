@@ -293,7 +293,27 @@ Bernoulli baseline**, never approaching it. This means:
    in general, NOT about p = 104761 specifically. Any prime would
    exhibit the same QR-correlation signature.
 
-### Honest scoping of what this establishes
+### Null model (2026-10): the ratio is explained by density alone
+
+Density-matched random subsets of [1, p), embedded the same way, give the
+same ratio, so the reading in the interpretation above (points 1 and 2) is
+withdrawn. Random subsets do **not** give a ratio near 1.0; the gap below 1
+comes from the density and the zero padding of the embedding.
+
+| p | 31 | 61 | 127 | 251 | 509 |
+|---|---|---|---|---|---|
+| random subsets, mean ratio (sd), 200 samples, seed 0 | 0.70 (0.07) | 0.61 (0.04) | 0.68 (0.03) | 0.61 (0.02) | 0.66 (0.01) |
+| QR state, ratio | 0.77 | 0.67 | 0.68 | 0.57 | 0.64 |
+| QR − null, in units of sd | +1.0 | +1.4 | +0.1 | −2.2 | −1.5 |
+
+The QR values lie within 2.3σ of the null, with deviations of both signs, so
+there is no consistent offset to attribute to quadratic residuosity. Classically the two-point correlations
+of the Legendre symbol are exactly −1/p. Code:
+`bpr.prime_state_check.random_subset_null_model`; test:
+`test_qr_ratio_matches_random_subset_null`. The scoping below predates the
+null model; its ✅ item is withdrawn.
+
+### Honest scoping of what this establishes (superseded in part)
 
 ✅ **The framework's prime-substrate claim is NOT purely decorative.**
 The natural quantum state on a Z_p substrate has nontrivial number-
@@ -328,12 +348,12 @@ ratio ∈ [0.4, 0.9] for all tested primes) and
 
 | Aspect | Status |
 |---|---|
-| BPR substrate state has nontrivial quantum-information content beyond bare density | **CONFIRMED** (QR state at 0.65× Bernoulli baseline) |
+| BPR substrate state has nontrivial quantum-information content beyond bare density | **NOT ESTABLISHED** (2026-10): consistent with density-matched random subsets (see the null model below) |
 | Structure depends specifically on p = 104761 vs other primes | NOT CONFIRMED (slope ~ 0 across primes) |
 | Square-free / Möbius / Mertens structure appears in BPR substrate | UNTESTED (different number-theoretic invariants) |
 | Connections to SM parameters via QR structure | UNTESTED |
 
-This is a real, honest, partial closure: the framework's prime substrate
-isn't decorative — it carries genuine number-theoretic content. But the
-content is structural (any prime works), not specifically validating of
-BPR's particular prime selection.
+After the null model, no number-theoretic content has been shown: the QR
+state's entanglement is what a random subset of the same density gives.
+The earlier conclusion that the prime substrate "isn't decorative" is
+withdrawn.

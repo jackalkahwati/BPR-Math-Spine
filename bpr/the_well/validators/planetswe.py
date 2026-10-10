@@ -3,7 +3,7 @@ Planetary shallow water equations (SWE) spectral validator
 ===========================================================
 
 Well dataset : ``planetswe``
-BPR prediction: PW14.1 -- quasi-geostrophic E(k) ~ k^{-3}
+Classical prediction (PW14.1): quasi-geostrophic E(k) ~ k^{-3}
 
 SCIENTIFIC CONTEXT
 ------------------
@@ -12,9 +12,12 @@ sphere.  In the quasi-geostrophic regime (Charney 1971), the forward
 enstrophy cascade produces E(k) ~ k^{-3}, identical to the 2-D
 enstrophy cascade prediction from Kraichnan-Batchelor-Leith theory.
 
-BPR's substrate topology with d=2 predicts the same spectral index:
-the Class B formula beta = (d-2)/(d+2) = 0 at d=2 produces the
-degenerate k^{-3} enstrophy cascade.
+NOT A TEST OF BPR (2026-10): the k^{-3} spectral index is Charney and
+Kraichnan's result. The former claim that the Class B formula beta =
+(d-2)/(d+2) = 0 at d = 2 produces it has no derivation, and the Class B
+formula is itself contradicted at d = 2 (see
+bpr.phase_transitions.SubstrateCriticalExponents). This validator checks
+the classical cascade only.
 
 METHOD
 ------
@@ -22,12 +25,12 @@ METHOD
 2. Squeeze velocity to 2-D, take one component.
 3. Compute 2-D radial power spectrum.
 4. Fit spectral index in the inertial range.
-5. BPR predicts alpha = -3.  Theory uncertainty +/-0.5.
+5. Compare with alpha = -3.  Theory uncertainty +/-0.5.
 
 Note: planetswe has 1008 timesteps per sample; we load max_timesteps=2
 to keep downloads small.
 
-Status: CONSISTENT (BPR reproduces the Charney QG enstrophy cascade).
+Status: NOT_A_BPR_TEST (checks the Charney QG enstrophy cascade only).
 """
 
 from __future__ import annotations
@@ -81,15 +84,15 @@ def _fit_cascade_exponent_fallback(k_bins: np.ndarray, power: np.ndarray,
 def validate(verbose: bool = False) -> dict:
     """Validate planetary SWE quasi-geostrophic enstrophy cascade E(k) ~ k^{-3}.
 
-    PW14.1 -- BPR (Class B, d=2) predicts alpha = -3 for shallow water
-    turbulence on a rotating sphere (Charney 1971 QG cascade).
+    PW14.1 -- classical alpha = -3 for shallow water turbulence on a
+    rotating sphere (Charney 1971 QG cascade); not a test of BPR Class B.
     """
     result_base = dict(
         pid="PW14.1",
         name="Planetary SWE quasi-geostrophic enstrophy cascade spectral index",
-        theory="Substrate Topology Class B (d=2) -- Charney QG enstrophy cascade",
+        theory="Charney QG enstrophy cascade (not a test of BPR Class B)",
         unit="spectral index alpha",
-        status="CONSISTENT",
+        status="NOT_A_BPR_TEST",
         satisfies=None,
     )
 

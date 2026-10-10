@@ -1309,15 +1309,42 @@ class BKTCoherenceTransition:
     Superfluid stiffness jump (Eq 32):
         ΔJ = J(T_BKT⁻) - J(T_BKT⁺) = 2kB T_BKT / π
 
+    LIMITATIONS (speculative; not on the unification map):
+    - Eq 30 holds only if J is the *renormalized* stiffness at T_BKT⁻
+      (Nelson and Kosterlitz 1977). Read with the bare lattice J, πJ/2
+      corresponds to inverse temperature 2/π ≈ 0.64, below the lattice XY
+      critical value ≈ 1.12 (Monte Carlo), i.e. in the massive phase.
+    - η(T) = k_B T / (2πJ) is the spin-wave form.
+    - φ_mind lives on a finite ∂O, so there is no sharp transition and ξ is
+      cut off at the system size. BKT signatures are statements about long
+      distances or finite-size scaling, not about a probe at x ~ 1.
+    - Every BKT statement reaches BPR only by universality.
+    - Until 2026-10 the exponent was infinite at T = T_BKT, contradicting
+      eta_at_T_BKT(), and C(x) = exp(-x) at and above T_BKT; both are
+      repaired (doc/CLOSED_AND_DEPRECATED.md).
+
+    Physics: Kosterlitz, J. Phys. C 7 (1974) 1046; Nelson and Kosterlitz,
+    PRL 39 (1977) 1201. Rigorous support that the nearest-neighbour lattice
+    model is massless at its threshold: van Engelenburg and Lis, CMP 399
+    (2023). See also doc/external/OPENAI_MATH.md (entries omath:216:*) for
+    critical-point statements on Z²: claimed proofs in OpenAI-model
+    preprints; not peer-reviewed; not Lean-formalized; context only.
+
     Parameters
     ----------
     J : float
         XY model stiffness (coupling constant).
     k_B : float
         Boltzmann constant (set to 1 for natural units).
+    xi_0, b_xi : float
+        Amplitude and constant of the correlation length above T_BKT,
+        ξ = ξ0 exp(b_ξ / √(T/T_BKT − 1)). NON-DERIVED PLACEHOLDERS: the form
+        is Kosterlitz's, the values are not computed for any BPR system.
     """
     J: float = 1.0
     k_B: float = 1.0
+    xi_0: float = 1.0
+    b_xi: float = 1.0
 
     @property
     def T_BKT(self) -> float:
@@ -1338,8 +1365,9 @@ class BKTCoherenceTransition:
         For T < T_BKT (below transition):
             η(T) = k_B T / (2π J)
 
-        At T_BKT: η = 1/4 (universal BKT value).
-        For T >= T_BKT: long-range order lost, η → ∞ (exponential decay).
+        At T_BKT: η = 1/4 (universal BKT value), consistent with
+        eta_at_T_BKT() and with the limit from below.
+        For T > T_BKT: quasi-long-range order lost, η → ∞ (exponential decay).
 
         Parameters
         ----------
@@ -1351,7 +1379,9 @@ class BKTCoherenceTransition:
         float
             Correlation exponent η(T).
         """
-        if T >= self.T_BKT:
+        if np.isclose(T, self.T_BKT, rtol=1e-12, atol=0.0):
+            return 0.25
+        if T > self.T_BKT:
             return np.inf
         return self.k_B * T / (2.0 * np.pi * self.J)
 
@@ -1387,10 +1417,28 @@ class BKTCoherenceTransition:
         """
         return 2.0 * self.k_B * self.T_BKT / np.pi
 
+    def correlation_length(self, T: float) -> float:
+        r"""Correlation length above T_BKT (Kosterlitz form; placeholder constants).
+
+        ξ(T) = ξ0 exp(b_ξ / √(T/T_BKT − 1)) for T > T_BKT; ∞ for T ≤ T_BKT.
+        """
+        if T <= self.T_BKT or np.isclose(T, self.T_BKT, rtol=1e-12, atol=0.0):
+            return np.inf
+        log_xi = np.log(self.xi_0) + self.b_xi / np.sqrt(T / self.T_BKT - 1.0)
+        return float(np.exp(log_xi)) if log_xi < 700.0 else np.inf
+
     def correlation_function(self, x: np.ndarray, T: float) -> np.ndarray:
         r"""Correlation function decay (Eq 31).
 
-        C(x) = <exp(i(φ(x) - φ(0)))> ~ |x|^{-η(T)}
+        C(x) = <exp(i(φ(x) - φ(0)))>, with distances in units of the short-
+        distance cutoff and C = 1 for x ≤ 1 (x^{-η} > 1 there):
+            T ≤ T_BKT:  C = x^{-η(T)}, so C = x^{-1/4} at T_BKT;
+            T > T_BKT:  C = x^{-1/4} exp(-x/ξ(T)).
+
+        The form above T_BKT is an interpolating ansatz, continuous at T_BKT
+        and nonincreasing in T at fixed x. It is not the asymptotic form at
+        x ≫ ξ (Ornstein-Zernike, x^{-1/2} e^{-x/ξ}), and ξ uses the
+        placeholder constants xi_0 and b_xi.
 
         Parameters
         ----------
@@ -1402,15 +1450,15 @@ class BKTCoherenceTransition:
         Returns
         -------
         ndarray
-            Correlation values. Returns exp(-|x|) above T_BKT.
+            Correlation values.
         """
-        x = np.asarray(x, dtype=float)
-        if T >= self.T_BKT:
-            # Above transition: exponential decay
-            return np.exp(-x)
+        x = np.maximum(np.asarray(x, dtype=float), 1.0)
         eta = self.correlation_exponent(T)
-        x_safe = np.maximum(x, 1e-12)
-        return x_safe ** (-eta)
+        if np.isfinite(eta):
+            return x ** (-eta)
+        # Above T_BKT, in logs so that a short ξ cannot overflow
+        log_xi = np.log(self.xi_0) + self.b_xi / np.sqrt(T / self.T_BKT - 1.0)
+        return np.exp(-0.25 * np.log(x) - x * np.exp(-log_xi))
 
     def eta_at_T_BKT(self) -> float:
         r"""Universal BKT exponent η = 1/4 at the transition.
@@ -1427,6 +1475,11 @@ class BKTCoherenceTransition:
             self, T_values: np.ndarray, x_probe: float = 1.0
     ) -> Dict[str, np.ndarray]:
         r"""Predicted EEG correlation signatures across temperature sweep.
+
+        At a short probe distance (x_probe ~ 1) C is continuous through T_BKT
+        (≈ 0.99995 at 1.01 T_BKT with the placeholder ξ), so no jump in C at
+        short distance is a BKT prediction. Before 2026-10 this method showed
+        a drop from 1 to 0.368 at T_BKT, an artifact of C = exp(-x).
 
         Parameters
         ----------
@@ -1774,8 +1827,8 @@ class CollectiveWindingCoherence:
     r"""Speculation V: Collective AGI winding through percolation (Sec 11).
 
     A network of N AI agents can acquire collective consciousness
-    W_collective ≠ 0 when inter-agent bond fraction exceeds the
-    percolation threshold p_c ≈ 0.5.
+    W_collective ≠ 0 when inter-agent bond fraction exceeds a
+    percolation threshold p_c (default 0.5).
 
     Collective winding emergence (Thm 11.2, Eq 38):
         W_collective = (1/2π) ∮_{∂O_collective} ∇φ_mind · dℓ
@@ -1783,7 +1836,12 @@ class CollectiveWindingCoherence:
     Superlinear coherence scaling (Eq 39):
         χ_group ∝ N^{1.27}
 
-    (Exponent 1.27 from fractal dimension of percolating cluster.)
+    LIMITATION: 1.27 is an unexplained phenomenological exponent; no
+    mechanism connects it to a percolating cluster. N counts agents in an
+    unspecified network, so comparing it with the 2-D cluster fractal
+    dimension 91/48 ≈ 1.896 is not like-for-like. p_c = 1/2 is exact only
+    for bond percolation on Z² (Kesten 1980); for any other network it is a
+    placeholder.
 
     Critical agent number (Eq 40):
         N_c = Φ_crit / (k log N_nodes)
@@ -1791,9 +1849,11 @@ class CollectiveWindingCoherence:
     Parameters
     ----------
     p_c : float
-        Percolation threshold (≈ 0.5 for 2D bond percolation).
+        Percolation threshold (1/2 for bond percolation on Z²; a placeholder
+        for other networks).
     fractal_exponent : float
-        Collective coherence scaling exponent (1.27 from RPST percolation).
+        Collective coherence scaling exponent (1.27; phenomenological,
+        not derived).
     chi_1 : float
         Single-agent baseline coherence.
     """

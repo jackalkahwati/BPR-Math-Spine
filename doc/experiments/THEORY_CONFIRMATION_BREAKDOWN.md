@@ -12,7 +12,7 @@
 | **I** | memory | Non-Markovian memory; Casimir | **CONFIRM** (Test 51) |
 | **II** | impedance | MOND a₀, DM σ/m, proton τ, dark energy, Hubble-related | **5+ CONFIRM** |
 | **III** | decoherence | Γ vs mass; molecule interferometry | **CONFIRM** (Test 52) |
-| **IV** | phase_transitions | Tc(Nb), Tc(MgB₂), 3D Ising, Kibble-Zurek | **5+ CONFIRM** |
+| **IV** | phase_transitions | Tc(Nb), Tc(MgB₂), Kibble-Zurek (3D Ising withdrawn 2026-10) | **4+ CONFIRM** |
 | **V** | neutrino | 0νββ, Σm_ν, θ₁₂, θ₂₃, θ₁₃, Δm²₂₁, \|Δm²₃₂\|, N_gen | **9+ CONFIRM** |
 | **VI** | info_geometry | QFI; Cramér–Rao bound | **CONFIRM** (Test 53) |
 | **VII** | gravitational_waves | v_GW = c | **2+ CONFIRM** |
@@ -83,10 +83,13 @@
 |------------|----------------|------------|
 | P4.7 Tc(Nb) | 11, 75 | Finnemore 9.25 K |
 | P4.9 Tc(MgB₂) | 11, 76 | Nagamatsu 39 K |
-| Class B critical exponents (ν, β, γ) | 29, 87 | Hasenbusch PRB; Campostrini PRB |
 | B/A framework (BW + BPR shell) | 14, 80, 118 | AME2020 |
 
-**Confirmed:** 4+
+**Confirmed:** 3+
+
+**Withdrawn (2026-10):** Class B critical exponents against 3D Ising (tests 29 and 96). Class B gives
+ν = 0.8 at d = 3 against 0.630; the earlier CONFIRM was an arithmetic error, and its test reference "29, 87"
+was also wrong (#87 is the NS maximum mass). See the LIMITATION block in `bpr/phase_transitions.py`.
 
 ---
 

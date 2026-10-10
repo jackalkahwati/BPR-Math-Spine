@@ -262,6 +262,14 @@ The checks are:
 - Validation of targets per connected component.
 - The RK ground states.
 
+  *Update 2026-10.* `four_cycles` also returns winding 4-cycles on small tori,
+  so on the 4×4 square torus (q_v = 2) the RK check is not a single-sector
+  six-vertex control. Its ice manifold is the 2970 six-vertex configurations
+  in 25 flux sectors. Plaquette flips alone give 69 classes (60 frozen
+  singletons), with the 990 zero-flux states forming one class. The 8 winding
+  4-cycles merge all 2970 into one class, so the RK ground state there is
+  uniform over all of them. A regression test pins these counts.
+
 These are finite algebraic checks. They do not establish a phase in the
 thermodynamic limit.
 

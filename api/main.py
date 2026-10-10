@@ -165,7 +165,7 @@ THEORY_CATALOGUE: List[Dict[str, str]] = [
     {"number": "XXIX",   "name": "fractional_boundary",   "module": "bpr.fractional_boundary",   "title": "Fractional Boundary Resonance Index"},
     {"number": "XXX",    "name": "plasmoid",              "module": "bpr.plasmoid",              "title": "Plasmoid Boundary-Phase Confinement"},
     {"number": "XXXI",   "name": "resonance_families",    "module": "bpr.resonance_families",    "title": "Resonance Families & Quasi-Integers"},
-    {"number": "XXXII",  "name": "optimization",          "module": "bpr.optimization",          "title": "NP-Hard BPR Optimization"},
+    {"number": "XXXII",  "name": "optimization",          "module": "bpr.optimization",          "title": "Max-Cut phase-oscillator heuristic (no approximation guarantee)"},
     {"number": "XXXIII", "name": "fluid_dynamics",        "module": "bpr.fluid_dynamics",        "title": "BPR Fluid Dynamics"},
     {"number": "XXXIV",  "name": "resonance_algebra",     "module": "bpr.resonance_algebra",     "title": "Resonance Algebra PDE Rulebook"},
     {"number": "XXXV",   "name": "electromechanical",     "module": "bpr.electromechanical",     "title": "Electromechanical Coherence"},

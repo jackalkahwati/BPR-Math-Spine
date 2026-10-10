@@ -3,14 +3,17 @@
 =========================================
 
 Well dataset : ``turbulence_radiative_layer_2D``
-BPR prediction: P8.x — 2-D turbulence enstrophy cascade E(k) ∝ k^{−3}
+Classical prediction: 2-D turbulence enstrophy cascade E(k) ∝ k^{−3}
 
 In 2-D turbulence (Kraichnan-Batchelor-Leith theory), the enstrophy
-cascade produces E(k) ∝ k^{−3} above the forcing scale k_f.  BPR's
-substrate topology in d=2 is CONSISTENT with this: the Class B formula
-β=(d-2)/(d+2)=0 at d=2 means the order-parameter boundary at k_f is
-degenerate, blocking energy from cascading forward, producing the k^{-3}
-enstrophy range.
+cascade produces E(k) ∝ k^{−3} above the forcing scale k_f.
+
+NOT A TEST OF BPR (2026-10): the k^{-3} spectral index is Kraichnan-
+Batchelor-Leith's result. The former claim that the Class B formula beta
+= (d-2)/(d+2) = 0 at d = 2 produces it has no derivation, and the Class
+B formula is itself contradicted at d = 2 (see
+bpr.phase_transitions.SubstrateCriticalExponents). This validator checks
+the classical cascade only.
 
 ``turbulence_radiative_layer_2D`` simulates 2-D turbulence in a
 radiatively-cooled layer, providing velocity fields u(x,y,t).
@@ -20,7 +23,7 @@ Method
 1. Load velocity frames from turbulence_radiative_layer_2D.
 2. Compute 2-D kinetic energy spectrum E(k) = ½ ∫ |û(k)|² dΩ_k.
 3. Fit spectral index α in the inertial range (k_lo to k_hi).
-4. BPR predicts α = −3 (enstrophy cascade). Status CONSISTENT.
+4. Compare with α = −3 (enstrophy cascade). Status NOT_A_BPR_TEST.
    Theory uncertainty ±0.5 (from log-log fitting noise).
 """
 
@@ -64,14 +67,14 @@ def _synthetic_frames():
 def validate(verbose: bool = False) -> dict:
     """Validate 2-D turbulence enstrophy cascade E(k)∝k^{-3}.
 
-    PW7.1 — BPR (Class B, d=2) is CONSISTENT with α = −3 enstrophy cascade.
+    PW7.1 — classical α = −3 enstrophy cascade; not a test of BPR Class B.
     """
     result_base = dict(
         pid="PW7.1",
         name="2-D turbulence enstrophy cascade spectral index",
-        theory="Substrate Topology Class B (d=2) / Kraichnan-Batchelor-Leith",
+        theory="Kraichnan-Batchelor-Leith (not a test of BPR Class B)",
         unit="spectral index α",
-        status="CONSISTENT",
+        status="NOT_A_BPR_TEST",
         satisfies=None,
     )
 

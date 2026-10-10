@@ -288,8 +288,8 @@ def simulate_phase_coupled_flow(
 class TwoDTurbulence:
     """BPR predictions for 2-D turbulence energy spectra.
 
-    In d = 2, substrate topology produces two distinct spectral cascades
-    (Kraichnan-Batchelor-Leith theory, CONSISTENT with BPR Class B, d=2):
+    In d = 2 there are two distinct spectral cascades
+    (Kraichnan-Batchelor-Leith theory):
 
     1. **Enstrophy cascade** (k > k_f, forward):
            E(k) ∝ k^{−3}
@@ -299,14 +299,14 @@ class TwoDTurbulence:
            E(k) ∝ k^{−5/3}
        Energy cascades to large scales (condensation in finite domains).
 
-    BPR interpretation: the d=2 substrate lattice has β=(d-2)/(d+2)=0
-    for Class B transitions, meaning the order-parameter boundary at
-    k_f is degenerate — energy cannot escape to smaller scales, forcing
-    the inverse cascade.
-
-    These are the same exponents as Kolmogorov 3-D (−5/3) and as
-    Kraichnan's analytical result (−3); BPR Class B in d=2 is CONSISTENT
-    with both.
+    Former BPR interpretation (withdrawn 2026-10): that β = (d-2)/(d+2) = 0
+    for Class B at d = 2 makes the order-parameter boundary at k_f
+    degenerate and forces the inverse cascade. There is no derivation
+    linking a percolation-type exponent to a spectral index, and the Class B
+    formula is itself contradicted at d = 2 (see the LIMITATION block of
+    ``bpr.phase_transitions.SubstrateCriticalExponents``). The exponents
+    here are Kraichnan's (−3) and Kolmogorov's (−5/3); checking them is not
+    a test of BPR Class B.
     """
     d: int = 2
 

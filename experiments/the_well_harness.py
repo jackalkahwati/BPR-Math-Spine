@@ -222,6 +222,7 @@ def _status_str(status: str) -> str:
         "CONSISTENT": CYAN,
         "FRAMEWORK": YELLOW,
         "CONJECTURAL": DIM,
+        "NOT_A_BPR_TEST": DIM,
     }
     c = colours.get(status, "")
     return f"{c}{status}{RESET}"
@@ -304,9 +305,13 @@ def print_summary(results: list[dict]):
     print(f"{BOLD}Summary{RESET}")
     total   = len(results)
     skipped = sum(1 for r in results if r.get("skipped"))
-    ran     = total - skipped
+    # Classical checks that are not tests of BPR are reported but not scored
+    not_bpr = sum(1 for r in results
+                  if not r.get("skipped") and r.get("status") == "NOT_A_BPR_TEST")
+    ran     = total - skipped - not_bpr
     passed  = sum(1 for r in results
                   if not r.get("skipped")
+                  and r.get("status") != "NOT_A_BPR_TEST"
                   and (
                       (r.get("satisfies") is True) or
                       (r.get("satisfies") is None and
@@ -314,7 +319,8 @@ def print_summary(results: list[dict]):
                   ))
     failed  = ran - passed
 
-    print(f"  Validators run    : {ran}/{total}  ({skipped} skipped — data not loaded)")
+    print(f"  Validators run    : {ran}/{total}  ({skipped} skipped — data not loaded; "
+          f"{not_bpr} classical checks not scored as BPR tests)")
     print(f"  Passed (<3σ)      : {GREEN}{passed}{RESET}")
     print(f"  Failed (≥3σ)      : {RED if failed else ''}{failed}{RESET}")
 

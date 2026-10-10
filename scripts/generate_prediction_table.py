@@ -106,8 +106,8 @@ def run_all():
     )
     print(f"│  Critical K_c:           {fmt(r5['K_c'])}")
     print(f"│  β (measured):           {fmt(r5['beta_measured'])}")
-    print(f"│  β (BPR predicted):      {fmt(r5['beta_predicted'])} = (d-2)/(d+2) for d=3")
-    print(f"│  β (mean-field):         0.5 (standard Kuramoto)")
+    print(f"│  β (Class B, stipulated): {fmt(r5['beta_predicted'])} = (d-2)/(d+2) for d=3; not a prediction for this system")
+    print(f"│  β (mean-field):         0.5 (standard all-to-all Kuramoto; the relevant comparison)")
 
     # ── Pipeline 6: Consciousness Onset ──
     print("\n┌─ PIPELINE 6: Conscious Agents → Collective Sync → Consciousness Threshold")

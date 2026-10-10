@@ -1010,16 +1010,31 @@ def spectral_molecular_orbitals(
 # Bridge 9: Nuclear Shell Configuration as Max-Cut Optimization
 # ===================================================================
 
-def nuclear_shell_optimization(A: int = 56, Z: int = 26) -> Dict[str, Any]:
+def nuclear_shell_optimization(A: int = 56, Z: int = 26, seed: int = 0) -> Dict[str, Any]:
     r"""Nuclear shell configuration as Max-Cut optimization.
 
-    Bridge equation
-    ---------------
+    Bridge equation (proposed)
+    --------------------------
         Nucleon arrangement -> adjacency graph G(V, E)
         V = nucleons, E = strong-force interactions
         Optimal shell filling = Max-Cut of nucleon interaction graph
         Magic numbers emerge as graph-theoretic optima where
         cut value C(G) has a local maximum.
+
+    STATUS: illustrative; the bridge equation is CONJECTURAL and
+    UNIMPLEMENTED.
+    - The graph and its couplings (1 within a shell, 0.3 between adjacent
+      shells, 0.1 proton-neutron) are hand-chosen. The "shells" are
+      l-subshells of capacity 2(2l+1) filled in order of l, whose closures
+      (2, 8, 18, 32, ...) are not the nuclear ones beyond 8.
+    - Only the first min(A, 30) nucleons enter the cut. The cut comes from
+      the phase-oscillator heuristic in bpr.optimization plus 1-flip local
+      search: it is uncertified, not a maximum cut. A claim of optimality
+      would need brute_force_max_cut(), feasible only for n <= 20.
+    - The magic-number flags are a lookup in the empirical list, not an
+      output of the cut computation; nothing here derives magic numbers.
+    - Until 2026-10 this function could not run (wrong keyword argument to
+      MaxCutBPR). See doc/CLOSED_AND_DEPRECATED.md.
 
     Parameters
     ----------
@@ -1027,18 +1042,17 @@ def nuclear_shell_optimization(A: int = 56, Z: int = 26) -> Dict[str, Any]:
         Mass number (total nucleons).
     Z : int
         Atomic number (protons).
+    seed : int
+        Seed for the solver's random initial phases.
 
     Returns
     -------
-    dict with graph properties, max-cut result, and magic number check.
+    dict with graph properties, the heuristic cut, and the magic-number lookup.
     """
     try:
-        from ..optimization import MaxCutBPR, random_graph
-        from ..nuclear_physics import magic_numbers_bpr
-    except ImportError:
-        MaxCutBPR_local = None
-        random_graph_local = None
-        magic_numbers_bpr_local = None
+        from ..optimization import MaxCutBPR, local_search_polish
+    except ImportError:  # pragma: no cover - the module ships with bpr
+        MaxCutBPR = None
 
     N = A - Z  # neutrons
 
@@ -1106,20 +1120,22 @@ def nuclear_shell_optimization(A: int = 56, Z: int = 26) -> Dict[str, Any]:
                 adj[i, j] = 0.1
                 adj[j, i] = 0.1
 
-    # Solve Max-Cut using BPR phase oscillator if available
+    # Heuristic Max-Cut with the phase oscillator, on a truncated graph
     if MaxCutBPR is not None:
-        # Use a smaller effective graph for tractability
         n_eff = min(A, 30)
         adj_eff = adj[:n_eff, :n_eff]
-        mc = MaxCutBPR(W=adj_eff, n_steps=500, beta=1.0, lambda_max=2.0)
-        result = mc.solve()
-        cut_value = result.cut_value
-        partition = result.partition
+        mc = MaxCutBPR(adjacency_matrix=adj_eff, beta=1.0, lambda_max=2.0)
+        phi = mc.solve(n_steps=500, seed=seed)
+        partition = local_search_polish(adj_eff, mc.extract_cut(phi))
+        cut_value = mc.cut_value(partition)
+        cut_method = "phase-oscillator heuristic + 1-flip local search (uncertified)"
     else:
-        # Simple greedy partition
+        # Protons versus neutrons; no optimization
+        n_eff = A
         partition = np.zeros(A, dtype=int)
-        partition[Z:] = 1  # protons vs neutrons as initial cut
+        partition[Z:] = 1
         cut_value = float(np.sum(adj[partition == 0][:, partition == 1]))
+        cut_method = "proton/neutron split (no optimization)"
 
     # Check magic numbers
     magic = [2, 8, 20, 28, 50, 82, 126]
@@ -1127,9 +1143,8 @@ def nuclear_shell_optimization(A: int = 56, Z: int = 26) -> Dict[str, Any]:
     N_is_magic = N in magic
     doubly_magic = Z_is_magic and N_is_magic
 
-    # Shell closure energy gap
-    # At magic numbers, the gap between filled and next shell is large
-    # This corresponds to a local maximum in the cut value
+    # The proposed link between shell closure and a local maximum of the cut
+    # value is not computed here (see STATUS)
     proton_closed = Z in magic
     neutron_closed = N in magic
 
@@ -1142,6 +1157,10 @@ def nuclear_shell_optimization(A: int = 56, Z: int = 26) -> Dict[str, Any]:
         "adjacency_shape": adj.shape,
         "adjacency_density": float(np.sum(adj > 0)) / (A * (A - 1)),
         "cut_value": float(cut_value),
+        "cut_graph_size": n_eff,
+        "cut_partition": [int(v) for v in partition],
+        "cut_method": cut_method,
+        "status": "illustrative; magic numbers are looked up, not derived",
         "Z_is_magic": Z_is_magic,
         "N_is_magic": N_is_magic,
         "doubly_magic": doubly_magic,

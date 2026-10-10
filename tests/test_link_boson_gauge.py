@@ -322,3 +322,68 @@ def test_full_levels_resolve_degenerate_multiplets_independent_of_arpack_state()
     assert gaps[1] == pytest.approx(0.443049, abs=1e-5)
     assert np.allclose(gaps[2:6], gaps[2], atol=1e-6)  # the 4-fold multiplet is complete
     assert gaps[2] == pytest.approx(3.412211, abs=1e-5)
+
+
+def _flip_classes(basis, cycles):
+    index = {m: i for i, m in enumerate(basis)}
+    parent = list(range(len(basis)))
+
+    def find(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    for i, mask in enumerate(basis):
+        for cycle in cycles:
+            if g.flippable(mask, cycle):
+                flip = mask
+                for l in cycle:
+                    flip ^= 1 << l
+                a, b = find(i), find(index[flip])
+                if a != b:
+                    parent[a] = b
+    classes = {}
+    for i, mask in enumerate(basis):
+        classes.setdefault(find(i), set()).add(mask)
+    return list(classes.values())
+
+
+def test_square_torus_4_is_not_a_single_sector_six_vertex_control():
+    """On the 4x4 torus with q_v = 2 the ice manifold is the six-vertex configuration set (A->B orientation):
+    2970 states in 25 flux sectors, 990 at zero flux. Plaquette flips alone give 69 classes (60 frozen
+    singletons), and the zero-flux sector is one of them. four_cycles() also returns the 8 winding 4-cycles,
+    which connect everything, so the RK ground state is uniform over all 2970 states, not the 990."""
+    n = 4
+    graph = g.square_torus(n)
+    basis = g.ice_basis(graph)
+    assert len(basis) == 2970
+    cycles = g.four_cycles(graph)
+    is_x = [l < n * n for l in range(len(graph["links"]))]  # square_torus lists the n*n x-links first
+    plaquettes = [c for c in cycles if sum(is_x[l] for l in c) == 2]
+    assert (len(cycles), len(plaquettes)) == (24, 16)
+
+    def flux(mask):
+        fx = fy = 0.0
+        for l, (a, _) in enumerate(graph["links"]):
+            x, y = graph["vertices"][a]
+            e = (((mask >> l) & 1) - 0.5) * (1 if (x + y) % 2 == 0 else -1)
+            if is_x[l] and x == 0:
+                fx += e
+            if not is_x[l] and y == 0:
+                fy += e
+        return fx, fy
+
+    sectors = {}
+    for mask in basis:
+        sectors.setdefault(flux(mask), set()).add(mask)
+    assert len(sectors) == 25 and len(sectors[(0.0, 0.0)]) == 990
+
+    plaquette_classes = _flip_classes(basis, plaquettes)
+    assert len(plaquette_classes) == 69
+    assert sum(len(c) == 1 for c in plaquette_classes) == 60
+    assert sectors[(0.0, 0.0)] in plaquette_classes
+    assert len(_flip_classes(basis, cycles)) == 1
+
+    report = g.rk_point_report(graph)
+    assert (report["ice_dimension"], report["components"], report["zero_energy_states"]) == (2970, 1, 1)

@@ -282,6 +282,13 @@ def phase_diagram(
 ) -> Dict:
     """Sweep temperature and measure order parameter, C_v, chi.
 
+    The lattice is a 1-D ring with nearest-neighbour Z_p clock coupling. A
+    1-D system with short-range interactions has no finite-temperature phase
+    transition, so the susceptibility peak returned as ``T_peak`` is a
+    finite-size crossover that moves with n_sites, not a critical
+    temperature. ``T_c`` is kept as an alias for backward compatibility
+    only (relabelled 2026-10).
+
     Parameters
     ----------
     p : int
@@ -302,7 +309,8 @@ def phase_diagram(
     Returns
     -------
     dict with:
-        T_values, m_values, C_v_values, chi_values, T_c
+        T_values, m_values, C_v_values, chi_values, T_peak (finite-size
+        crossover), T_c (alias of T_peak, not a critical temperature), note
     """
     T_range = np.asarray(T_range, dtype=float)
     m_values = np.empty(len(T_range))
@@ -320,16 +328,18 @@ def phase_diagram(
             data["magnetizations"], n_sites, T
         )
 
-    # Estimate T_c from the peak of the susceptibility
-    T_c_idx = int(np.argmax(chi_values))
-    T_c = float(T_range[T_c_idx])
+    # Susceptibility peak: a finite-size crossover on a 1-D ring, not a T_c
+    T_peak = float(T_range[int(np.argmax(chi_values))])
 
     return {
         "T_values": T_range,
         "m_values": m_values,
         "C_v_values": Cv_values,
         "chi_values": chi_values,
-        "T_c": T_c,
+        "T_peak": T_peak,
+        "T_c": T_peak,
+        "note": ("1-D nearest-neighbour ring: no finite-temperature transition; "
+                 "T_peak is a finite-size crossover"),
     }
 
 

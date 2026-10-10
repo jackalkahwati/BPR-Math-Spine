@@ -689,7 +689,11 @@ def pipeline_kuramoto_to_transition(
     else:
         beta_measured = float("nan")
 
-    # BPR prediction for the exponent
+    # Stipulated Class B value, kept for comparison only. It is not a
+    # prediction for this system: all-to-all Kuramoto synchronization is
+    # mean-field (beta = 1/2), and the Class B formula is a d-dimensional
+    # lattice stipulation (bpr.phase_transitions, LIMITATION). Comparing the
+    # two is the category error of VALIDATION_STATUS.md finding 4.
     sce = SubstrateCriticalExponents(d=d)
     beta_predicted = sce.beta
 
@@ -705,6 +709,8 @@ def pipeline_kuramoto_to_transition(
         "K_c": K_c,
         "beta_measured": beta_measured,
         "beta_predicted": float(beta_predicted),
+        "beta_predicted_note": ("stipulated Class B value, not a prediction for this system; "
+                                "all-to-all Kuramoto is mean-field, beta = 1/2"),
         "coherence_curve": coherence_curve,
         "K_values": K_values.tolist(),
         "K_star_values": K_star_values,

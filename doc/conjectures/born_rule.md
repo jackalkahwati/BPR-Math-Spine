@@ -225,10 +225,13 @@ uniform phases?") on three legs:
 
 - **(C) Continuum limit (p → ∞, proven theorem).** As p → ∞ the cat map
   mod p limits to Arnold's cat map on T², which is proven **ergodic and
-  strongly mixing** (Arnold-Avez 1968; Anosov 1967). Time averages of
-  continuous observables along orbits equal uniform-measure space
-  averages. The marginal distribution of any coordinate is uniform in the
-  long-time and continuum limits, independently of initial measure.
+  strongly mixing** (Arnold-Avez 1968; Anosov 1967). For Lebesgue-almost
+  every initial point, time averages of continuous observables along
+  orbits equal uniform-measure space averages. The marginal distribution
+  of any coordinate tends to uniform in the long-time and continuum limits
+  for every initial measure absolutely continuous with respect to Lebesgue
+  measure (μ ≪ Leb). Singular initial measures are excluded: the cat map's
+  periodic orbits are dense, and a measure on one never spreads.
 
 ### Gap status after this work
 

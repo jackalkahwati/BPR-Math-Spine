@@ -487,6 +487,10 @@ physics simulations across 20 datasets. Run via `experiments/the_well_harness.py
 
 ### Results: 10/10 run, 10 pass, 0 fail
 
+2026-10: PW13.1 and PW14.1 are no longer counted as BPR tests. Their k^-3 index is the classical
+enstrophy cascade, and the Class B formula they cited is contradicted at d = 2 (`bpr/phase_transitions.py`,
+LIMITATION). That leaves 8 rows, of which 7 are marked CONSISTENT and 1 CONJECTURAL.
+
 | PID | Dataset | Prediction | Predicted | Observed | sigma | Status |
 |-----|---------|-----------|-----------|----------|-------|--------|
 | PW2.1 | acoustic_scattering_inclusions | Mode entropy H/H_max > 0.5 (impedance mismatch) | > 0.50 | 0.696 | PASS (bound) | CONSISTENT |
@@ -496,8 +500,8 @@ physics simulations across 20 datasets. Run via `experiments/the_well_harness.py
 | PW8.1 | turbulence_gravity_cooling | Stratified Fr<1 -> k^-3 | -3.0 | -3.15 | 0.30sigma | CONSISTENT |
 | PW10.1 | supernova_explosion_64 | Post-shock Kolmogorov E(k)~k^-5/3 | -1.67 | ~-2.1 | 2.11sigma | CONSISTENT |
 | PW11.1 | turbulent_radiative_layer_3D | Cooling-steepened cascade k^-3.5 | -3.50 | -3.96 | 0.91sigma | CONSISTENT |
-| PW13.1 | shear_flow | 2D enstrophy cascade E(k)~k^-3 | -3.0 | ~-3.9 | 1.85sigma | CONSISTENT |
-| PW14.1 | planetswe | Geostrophic turbulence k^-3 | -3.0 | ~-3.5 | 1.05sigma | CONSISTENT |
+| PW13.1 | shear_flow | 2D enstrophy cascade E(k)~k^-3 | -3.0 | ~-3.9 | 1.85sigma | NOT A BPR TEST (2026-10: Kraichnan's cascade; the Class B link is withdrawn) |
+| PW14.1 | planetswe | Geostrophic turbulence k^-3 | -3.0 | ~-3.5 | 1.05sigma | NOT A BPR TEST (2026-10: Charney's cascade; the Class B link is withdrawn) |
 | PW16.1 | viscoelastic_instability | Elastic cascade alpha=-(3+Wi^1/3) | -6.68 | -6.82 | 0.27sigma | CONJECTURAL |
 
 ### Skipped (data not public or inapplicable)
@@ -506,7 +510,7 @@ physics simulations across 20 datasets. Run via `experiments/the_well_harness.py
 |-----|---------|--------|
 | PW1.1 | gray_scott_reaction_diffusion | GS spots are self-replicating, not Turing. See PW6.1. |
 | PW6.1 | brusselator | Dataset not yet public. Validator ready. |
-| PW7.1 | turbulent_radiative_layer_2D | File naming resolution pending. |
+| PW7.1 | turbulent_radiative_layer_2D | File naming resolution pending. Not a BPR test in any case (2026-10: Kraichnan's cascade). |
 | PW12.1 | acoustic_scattering_maze | Large download. Validator ready. |
 | PW15.1 | helmholtz_staircase | Field structure (pressure_re/im) needs custom handler. |
 | PW17.1 | euler_multi_quadrants_openBC | Large download. Validator ready. |

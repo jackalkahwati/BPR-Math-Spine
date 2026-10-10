@@ -36,7 +36,7 @@ now implements **36 theories + cross-theory pipelines** (Al-Kahwati, 2026):
     XXIX   Fractional Boundary Resonance Index       (bpr.fractional_boundary)
     XXX    Plasmoid Boundary-Phase Confinement       (bpr.plasmoid)
     XXXI   Resonance Families & Quasi-Integers       (bpr.resonance_families)
-    XXXII  NP-Hard BPR Optimization                  (bpr.optimization)
+    XXXII  Max-Cut phase-oscillator heuristic        (bpr.optimization)
     XXXIII BPR Fluid Dynamics                        (bpr.fluid_dynamics)
     XXXIV  Resonance Algebra PDE Rulebook            (bpr.resonance_algebra)
     XXXV   Electromechanical Coherence               (bpr.electromechanical)
@@ -205,7 +205,7 @@ try:
     from . import fractional_boundary   # Fractional Boundary Resonance Index    # noqa: F401
     from . import plasmoid              # Plasmoid Boundary-Phase Confinement    # noqa: F401
     from . import resonance_families    # Quasi-Integers & Farey Tree            # noqa: F401
-    from . import optimization          # NP-Hard BPR Solver (Max-Cut)           # noqa: F401
+    from . import optimization          # Max-Cut heuristic, no approx. guarantee # noqa: F401
     from . import fluid_dynamics        # BPR Stress in Fluids                   # noqa: F401
     from . import resonance_algebra     # Fused PDE Operator Rulebook            # noqa: F401
     from . import electromechanical     # Flexoelectric/Piezoelectric BPR        # noqa: F401

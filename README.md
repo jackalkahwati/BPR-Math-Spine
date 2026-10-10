@@ -621,11 +621,11 @@ Pull requests must:
 - [x] **Boundary Memory Dynamics** — memory kernel M(t,t'), non-Markovian correlations, consciousness temporal integration
 - [x] **Vacuum Impedance Mismatch** — dark matter as high-winding solitons, dark energy from phase frustration, MOND acceleration scale, flat rotation curves
 - [x] **Boundary-Induced Decoherence** — rates from impedance mismatch (Γ ∝ ΔZ²), pointer basis selection, quantum–classical boundary W_crit, decoherence-free subspaces
-- [x] **Universal Phase Transition Taxonomy** — Classes A–D mapping all known transitions, substrate critical exponents (ν, β, γ), Kibble–Zurek defect formation
+- [x] **Universal Phase Transition Taxonomy** — Classes A–D mapping all known transitions, substrate critical exponents (ν, β, γ; the Class B formula is a stipulation, contradicted at d = 2 and d ≥ 11, see `doc/CLOSED_AND_DEPRECATED.md`), Kibble–Zurek defect formation
 - [x] **Boundary-Mediated Neutrino Dynamics** — normal hierarchy, Σm_i ≈ 0.06 eV, PMNS matrix from boundary overlaps, Majorana/Dirac from p mod 4, sterile neutrinos
 - [x] **Substrate Information Geometry** — Fisher metric on boundary configurations, topological Cramér–Rao bound (Var ∝ 1/|W|²), thermodynamic length, K_r as parallel transport
 - [x] **Gravitational Wave Phenomenology** — v_GW = c from substrate isotropy, quadrupole formula from boundary dynamics, GW memory via Boundary Memory Dynamics kernel
-- [x] **Substrate Complexity** — P/NP/BQP as substrate properties, N_parallel = p^W, topological complexity bound (physical P ≠ NP argument), adiabatic gap
+- [x] **Substrate Complexity** — P/NP/BQP as substrate properties, N_parallel = p^W, topological complexity bound (a heuristic counting argument motivated by P ≠ NP; nothing is proved), adiabatic gap
 - [x] **Bioelectric Substrate Coupling** — morphogenetic fields φ_morph, cellular winding W_cell (cancer = aberrant W), aging as coherence decay τ_coh(age) = τ₀ e^{-age/τ_aging}
 - [x] **Resonant Collective Dynamics** — Kuramoto flocking, market impedance matching (crash = resonance), social tipping points (f_c ~ 1/⟨k⟩), cooperation from winding alignment
 

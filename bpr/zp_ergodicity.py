@@ -24,14 +24,18 @@ The closure has three legs:
   (C) **Continuum limit (p → ∞, proven theorem).** As p → ∞, the cat map
       mod p limits to Arnold's cat map on the torus T², which is proven
       **ergodic and strongly mixing** (Arnold-Avez 1968; Anosov diffeomor-
-      phisms on T²). On any continuous observable, time averages converge
-      to the uniform-measure space average. The marginal distribution of
-      any coordinate is therefore uniform — independently of the initial
-      measure, in the long-time and continuum limits.
+      phisms on T²). For Lebesgue-almost every initial point, time averages
+      of a continuous observable converge to the uniform-measure space
+      average. By mixing, the marginal distribution of any coordinate tends
+      to uniform for every initial measure absolutely continuous with
+      respect to Lebesgue measure (μ ≪ Leb), in the long-time and continuum
+      limits. It does not hold for singular initial measures: periodic
+      orbits of the cat map are dense, and a measure supported on one never
+      spreads.
 
 Combined: uniformity of the substrate phase distribution is NOT imposed.
 It is the exact invariant measure (A) of the dynamics, asymptotically
-reached from any initial measure in the continuum limit (C), with the
+reached from any initial measure μ ≪ Leb in the continuum limit (C), with the
 finite-p behavior governed by coarse-grained mixing (B).
 
 Implementation
@@ -178,16 +182,19 @@ def gap1_closure_report(p: int = 211) -> dict:
         "leg_B_mixing": B,
         "leg_C_continuum_theorem": (
             "Arnold-Avez 1968 / Anosov 1967: the cat map on T² is "
-            "ergodic and strongly mixing. Time averages of continuous "
-            "observables along orbits equal uniform-measure space "
-            "averages. The marginal distribution of any coordinate is "
-            "uniform in the long-time and continuum limits, independently "
-            "of initial measure."
+            "ergodic and strongly mixing. For Lebesgue-almost every "
+            "initial point, time averages of continuous observables equal "
+            "uniform-measure space averages. The marginal distribution of "
+            "any coordinate tends to uniform in the long-time and continuum "
+            "limits for every initial measure absolutely continuous with "
+            "respect to Lebesgue (mu << Leb); not for singular measures, "
+            "e.g. one supported on a periodic orbit."
         ),
         "status": (
             "Gap 1 CLOSED. Uniformity of Z_p phases is the exact invariant "
             "measure of any symplectic bijection (leg A), is asymptotically "
-            "reached from any initial measure by coarse-grained mixing under "
+            "reached from any initial measure mu << Leb by coarse-grained "
+            "mixing under "
             "the hyperbolic dynamics (leg B), and is proven in the continuum "
             "limit by the Arnold-Avez ergodicity theorem (leg C). The "
             "microcanonical / max-entropy assumption underlying the Born "

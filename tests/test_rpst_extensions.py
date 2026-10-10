@@ -421,14 +421,58 @@ class TestBKTCoherenceTransition:
         C = bkt.correlation_function(x, T)
         np.testing.assert_allclose(C, x ** (-eta), rtol=1e-8)
 
-    def test_correlation_function_above_exponential(self):
-        """C(x) = exp(-x) above T_BKT."""
+    def test_correlation_function_above_interpolating_form(self):
+        """Above T_BKT: C = x^{-1/4} exp(-x/xi), xi = xi_0 exp(b_xi / sqrt(T/T_BKT - 1)) (module ansatz;
+        Kosterlitz 1974 for the form of xi). C = 1 below the cutoff x = 1."""
         from bpr.rpst_extensions import BKTCoherenceTransition
         bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
         T = bkt.T_BKT * 2.0
-        x = np.array([0.5, 1.0, 2.0])
-        C = bkt.correlation_function(x, T)
-        np.testing.assert_allclose(C, np.exp(-x))
+        x = np.array([0.5, 1.0, 2.0, 50.0])
+        xi = bkt.xi_0 * np.exp(bkt.b_xi / np.sqrt(T / bkt.T_BKT - 1.0))
+        assert bkt.correlation_length(T) == pytest.approx(xi)
+        xc = np.maximum(x, 1.0)
+        np.testing.assert_allclose(bkt.correlation_function(x, T), xc ** -0.25 * np.exp(-xc / xi))
+
+    def test_correlation_exponent_equals_quarter_at_T_BKT(self):
+        """eta(T_BKT) = 1/4 = eta_at_T_BKT() (module Eq 31; Kosterlitz 1974). It was inf before 2026-10."""
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
+        assert bkt.correlation_exponent(bkt.T_BKT) == 0.25 == bkt.eta_at_T_BKT()
+        assert bkt.correlation_length(bkt.T_BKT) == np.inf
+
+    def test_decay_at_T_BKT_is_polynomial(self):
+        """At T_BKT, C(2x)/C(x) stays bounded away from 0 out to x = 1e4 (power law, not exponential).
+        Kosterlitz 1974; van Engelenburg-Lis 2023 for the massless threshold of the lattice model."""
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
+        x = np.logspace(0, 4, 41)
+        ratio = bkt.correlation_function(2 * x, bkt.T_BKT) / bkt.correlation_function(x, bkt.T_BKT)
+        assert np.all(ratio > 0.8)
+
+    def test_correlation_continuous_at_T_BKT(self):
+        """Continuity of C at T_BKT from both sides (design constraint of the module's ansatz)."""
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
+        x = np.array([1.0, 10.0, 100.0])
+        at = bkt.correlation_function(x, bkt.T_BKT)
+        for side in (1 - 1e-9, 1 + 1e-9):
+            np.testing.assert_allclose(bkt.correlation_function(x, bkt.T_BKT * side), at, rtol=1e-6)
+
+    @pytest.mark.parametrize("x", [1.0, 10.0, 1e2, 1e4])
+    def test_correlation_nonincreasing_in_T(self, x):
+        """At fixed x, C is nonincreasing in T across T_BKT. A design constraint, not a theorem test."""
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
+        Ts = bkt.T_BKT * np.linspace(0.5, 2.0, 301)
+        C = np.array([bkt.correlation_function(np.array([x]), T)[0] for T in Ts])
+        assert np.all(np.diff(C) <= 1e-15)
+
+    def test_no_short_distance_jump_at_T_BKT(self):
+        """At x_probe = 1 the signature is continuous through T_BKT; the old 1 -> 0.368 drop was an artifact."""
+        from bpr.rpst_extensions import BKTCoherenceTransition
+        bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
+        C = bkt.predict_loss_of_consciousness_signature(bkt.T_BKT * np.array([0.9, 1.0, 1.01]))["C"]
+        assert np.all(C > 0.999)
 
     def test_predict_loss_of_consciousness_signature(self):
         """predict_loss_of_consciousness_signature returns expected keys."""
@@ -926,9 +970,11 @@ class TestEmergentSpeculationsIntegration:
         bkt = BKTCoherenceTransition(J=1.0, k_B=1.0)
         T_high = bkt.T_BKT * 2.0
         assert bkt.is_conscious(T_high) is False
-        # Correlation decays exponentially at x=5
+        # Above T_BKT the decay has an exponential factor exp(-x/xi) on top of the critical power law
         C = bkt.correlation_function(np.array([5.0]), T_high)
-        assert C[0] == pytest.approx(np.exp(-5.0), rel=1e-6)
+        xi = bkt.correlation_length(T_high)
+        assert C[0] == pytest.approx(5.0 ** -0.25 * np.exp(-5.0 / xi), rel=1e-6)
+        assert C[0] < bkt.correlation_function(np.array([5.0]), bkt.T_BKT)[0]
 
 
 # ===========================================================================

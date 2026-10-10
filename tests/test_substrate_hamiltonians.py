@@ -55,6 +55,32 @@ def test_random_goe_sanity_check_passes_methodology():
     assert s["ks_statistic"]["GOE"] < s["ks_statistic"]["Poisson"]
 
 
+def _random_regular_adjacency(n, d, seed):
+    """Random simple d-regular graph by the configuration model with rejection."""
+    rng = np.random.default_rng(seed)
+    while True:
+        pairs = rng.permutation(np.repeat(np.arange(n), d)).reshape(-1, 2)
+        a, b = pairs[:, 0], pairs[:, 1]
+        if np.any(a == b):
+            continue
+        W = np.zeros((n, n))
+        W[a, b] += 1
+        W[b, a] += 1
+        if W.max() == 1:
+            return W
+
+
+def test_sparse_random_regular_goe_control():
+    """Sparse positive control: the adjacency matrix of a random 3-regular graph has GOE bulk spacings
+    (numerics: Jakobson, Miller, Rivin and Rudnick 1999; a proof is claimed in openai/math index entry
+    omath:219:goe-random-regular, unrefereed, context only). Its density is Kesten-McKay, not a semicircle.
+    unfolded_spacings only divides by the global mean spacing (no local unfolding), so this checks that the
+    classification survives a second, non-semicircle density; it does not certify the unfolding."""
+    s = spectral_statistics(_random_regular_adjacency(1000, 3, seed=1))
+    assert s["best_fit"] == "GOE"
+    assert s["ks_statistic"]["GOE"] < s["ks_statistic"]["GUE"] < s["ks_statistic"]["Poisson"]
+
+
 def test_berry_keating_transitions_to_goe_under_large_perturbation():
     """Sanity: BK + perturbation ≳ 10× mean spacing transitions to GOE,
     confirming the integrable structure breaks under sufficient noise."""

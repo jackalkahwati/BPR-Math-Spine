@@ -38,7 +38,8 @@ The review's most useful outputs were not citations:
   - a release history records withdrawals and repairs.
 - **Defects in this repository's own legacy modules** that came up while
   scoping the citations. They are fixed on their own evidence and are
-  **not** credited to openai/math.
+  **not** credited to openai/math. They are listed, with their sources, in the
+  2026-10 rows of [CLOSED_AND_DEPRECATED.md](../CLOSED_AND_DEPRECATED.md).
 
 ## Policy
 

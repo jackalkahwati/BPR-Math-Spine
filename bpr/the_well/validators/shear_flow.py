@@ -3,7 +3,7 @@ Shear flow enstrophy cascade validator
 =======================================
 
 Well dataset : ``shear_flow``
-BPR prediction: PW13.1 -- 2-D enstrophy cascade E(k) ~ k^{-3}
+Classical prediction (PW13.1): 2-D enstrophy cascade E(k) ~ k^{-3}
 
 SCIENTIFIC CONTEXT
 ------------------
@@ -12,10 +12,12 @@ into the turbulent regime.  In 2-D turbulence (Kraichnan-Batchelor-Leith
 theory), the forward enstrophy cascade produces E(k) ~ k^{-3} at
 wavenumbers above the forcing scale.
 
-BPR's substrate topology with d=2 predicts the same: the Class B
-formula beta = (d-2)/(d+2) = 0 at d=2 means the order-parameter
-boundary at k_f is degenerate, blocking the energy cascade forward
-and producing the k^{-3} enstrophy range.
+NOT A TEST OF BPR (2026-10): the k^{-3} spectral index is Kraichnan-
+Batchelor-Leith's result. The former claim that the Class B formula beta
+= (d-2)/(d+2) = 0 at d = 2 produces it has no derivation, and the Class
+B formula is itself contradicted at d = 2 (see
+bpr.phase_transitions.SubstrateCriticalExponents). This validator checks
+the classical cascade only.
 
 METHOD
 ------
@@ -23,9 +25,9 @@ METHOD
 2. Squeeze velocity to 2-D, take one component.
 3. Compute 2-D radial power spectrum using TwoDTurbulence.
 4. Fit spectral index in the inertial range.
-5. BPR predicts alpha = -3.  Theory uncertainty +/-0.5.
+5. Compare with alpha = -3.  Theory uncertainty +/-0.5.
 
-Status: CONSISTENT (BPR reproduces the known 2-D enstrophy cascade).
+Status: NOT_A_BPR_TEST (checks the known 2-D enstrophy cascade only).
 """
 
 from __future__ import annotations
@@ -79,15 +81,15 @@ def _fit_cascade_exponent_fallback(k_bins: np.ndarray, power: np.ndarray,
 def validate(verbose: bool = False) -> dict:
     """Validate 2-D shear flow enstrophy cascade E(k) ~ k^{-3}.
 
-    PW13.1 -- BPR (Class B, d=2) predicts alpha = -3 for the
-    shear flow enstrophy cascade at Re = 10000.
+    PW13.1 -- classical alpha = -3 for the shear flow enstrophy cascade
+    at Re = 10000; not a test of BPR Class B.
     """
     result_base = dict(
         pid="PW13.1",
         name="Shear flow enstrophy cascade spectral index (Re=10000)",
-        theory="Substrate Topology Class B (d=2) -- enstrophy cascade",
+        theory="Kraichnan-Batchelor-Leith enstrophy cascade (not a test of BPR Class B)",
         unit="spectral index alpha",
-        status="CONSISTENT",
+        status="NOT_A_BPR_TEST",
         satisfies=None,
     )
 

@@ -179,11 +179,46 @@ class TestDecoherence:
 class TestPhaseTransitions:
 
     def test_class_b_exponents_d3(self):
+        # Arithmetic regression test of a stipulated formula, not a check of physics (see the LIMITATION block).
         from bpr.phase_transitions import class_b_critical_exponents
         exp = class_b_critical_exponents(d=3)
         assert exp["nu"] == pytest.approx(0.8)
         assert exp["beta"] == pytest.approx(0.2)
         assert exp["gamma"] == pytest.approx(1.6)
+
+    @staticmethod
+    def _class_b_fractions(d):
+        from fractions import Fraction
+        from bpr.phase_transitions import class_b_critical_exponents
+        exp = class_b_critical_exponents(d=d)
+        return {k: Fraction(v).limit_denominator(1000) for k, v in exp.items()}
+
+    @pytest.mark.parametrize("d", [2, 3, 4, 5, 6])
+    def test_class_b_hyperscaling_deficit(self, d):
+        """Class B is inconsistent with hyperscaling d nu = 2 beta + gamma, a theorem at d = 2 (Kesten 1987)
+        and expected for d < 6: the deficit is exactly 2/(d+2)."""
+        from fractions import Fraction
+        e = self._class_b_fractions(d)
+        assert d * e["nu"] - (2 * e["beta"] + e["gamma"]) == Fraction(2, d + 2)
+
+    def test_class_b_d2_differs_from_2d_percolation(self):
+        """2-D percolation exponents (nu, beta, gamma) = (4/3, 5/36, 43/18): triangular-lattice site percolation
+        (Smirnov-Werner 2001; Lawler-Schramm-Werner 2002; Kesten 1987). Class B gives (1, 0, 3/2)."""
+        from fractions import Fraction
+        e = self._class_b_fractions(2)
+        assert (e["nu"], e["beta"], e["gamma"]) == (1, 0, Fraction(3, 2))
+        assert all(e[k] != v for k, v in
+                   {"nu": Fraction(4, 3), "beta": Fraction(5, 36), "gamma": Fraction(43, 18)}.items())
+
+    @pytest.mark.parametrize("d", range(11, 21))
+    def test_class_b_contradicts_high_d_mean_field(self, d):
+        """Mean-field percolation (nu, beta, gamma) = (1/2, 1, 1) is proved for nearest-neighbour bond percolation
+        at d >= 11 (Hara-Slade 1990; Fitzner-van der Hofstad 2017; Aizenman-Newman 1984; Barsky-Aizenman 1991;
+        Hara 1990). Class B differs in every exponent."""
+        from fractions import Fraction
+        e = self._class_b_fractions(d)
+        assert e == {"nu": Fraction(4, d + 2), "beta": Fraction(d - 2, d + 2), "gamma": Fraction(2 * (d + 1), d + 2)}
+        assert e["nu"] != Fraction(1, 2) and e["beta"] != 1 and e["gamma"] != 1
 
     def test_kibble_zurek_scaling(self):
         from bpr.phase_transitions import kibble_zurek_defect_density

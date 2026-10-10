@@ -107,8 +107,8 @@ def test_quadratic_residue_state_normalized():
 
 
 def test_qr_state_entropy_below_bernoulli_baseline():
-    """KEY FINDING: |QR_p⟩ entropy is BELOW log 2 × n_A → multiplicative
-    correlations carry information. Ratio ≈ 0.55-0.77 across small primes."""
+    """|QR_p⟩ entropy is below log 2 × n_A (ratio ≈ 0.55-0.77 across small primes). This is a regression test
+    of the numbers only: test_qr_ratio_matches_random_subset_null shows the same ratio from random subsets."""
     from bpr.prime_state_check import bpr_substrate_analog_scaling
     r = bpr_substrate_analog_scaling()
     for row in r["scan"]:
@@ -125,3 +125,14 @@ def test_qr_ratio_stable_across_primes():
     r = bpr_substrate_analog_scaling()
     # very weak slope: structure doesn't depend strongly on p
     assert abs(r["ratio_slope_vs_log_p"]) < 0.15
+
+
+def test_qr_ratio_matches_random_subset_null():
+    """Null model: density-matched random subsets of [1, p) in the same embedding give the same entropy ratio,
+    so the QR state's ratio below 1 is not evidence of number-theoretic structure. Each QR ratio lies within
+    3 standard deviations of the null mean."""
+    from bpr.prime_state_check import bpr_substrate_analog_scaling, random_subset_null_model
+    for row in bpr_substrate_analog_scaling()["scan"]:
+        null = random_subset_null_model(row["p"], n_samples=200, seed=0)
+        assert abs(row["ratio_to_bernoulli"] - null["mean_ratio"]) < 3 * null["sd_ratio"], (row["p"], null)
+        assert null["mean_ratio"] < 0.9  # the null alone sits well below 1

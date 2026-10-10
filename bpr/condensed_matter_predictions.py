@@ -499,6 +499,12 @@ def magnon_dispersion_bpr(
     to the magnon dispersion, detectable in neutron scattering.
     Amplitude: ~1e-5 of omega -- requires high-resolution measurements.
 
+    Note: the correction cos(gamma_1 ln(ka)) is non-analytic at k = 0 and
+    not 2*pi/a-periodic in k, so it is not a lattice dispersion of the
+    usual kind. Bloch's T^{3/2} law and its coefficient come from the
+    small-k quadratic magnon and cannot test this correction; only direct
+    measurement of omega(k) can.
+
     Parameters
     ----------
     J_exchange : float
