@@ -1,5 +1,50 @@
 # Selection Principle for p = 104,761 and z = 6
 
+> **WITHDRAWN (2026-10). Read this first.** The claims in this document that
+> p = 104,761 is "over-determined", that it is "unique" within the 3% band,
+> that "p is a fit parameter" is refuted, and that z = 6 is "DERIVED" are
+> withdrawn. The body below is kept as a historical record. p is an α
+> calibration: equation A gives p_exact = 104,749.03, and p is the nearest
+> prime ≡ 1 (mod 4) to it, exactly the "prior status" described below. Found
+> in the 2026-10 review of unmerged branches
+> (`claude/audit-bpr-parameters-6fSrQ`). The numbers here were recomputed on
+> the current tree with `bpr.alpha_derivation.inverse_alpha_from_substrate`
+> and `bpr.gauge_unification.electroweak_scale_GeV` (Λ_QCD = 0.332 GeV,
+> 1/α = 137.035999084, v_EW = 246.22 GeV).
+>
+> - **Not over-determined.** The band spanned by equations A–D,
+>   104,573–107,709, contains 265 primes, 129 of them ≡ 1 (mod 4); it does
+>   not single out 104,761. Equation B's root depends on the Planck-mass
+>   convention: with the reduced Planck mass it moves from 104,573 to about
+>   64,540. Equation D was not re-checked.
+> - **The "uniqueness" follows the tolerance, not the data.** Scoring each
+>   prime by the RMS of the fractional errors in 1/α and v_EW, 1,193 primes
+>   score within 2%, 580 within 1% and 238 within 0.5%, and none within
+>   0.306% (the best is 0.3062%, at 107,251). The 1% corridor runs from
+>   103,934.86 to 110,633.56, and v_EW sets its lower edge. The α root is
+>   104,749.03 and the v_EW root is 107,709.08.
+> - **α pins p only to within the prime spacing.** 1/α(104,761) = 137.038641,
+>   +19.3 ppm from CODATA 2018. The closest prime, 104,743, misses by 9.7 ppm,
+>   which is what the spacing of primes near p_exact produces. Measured
+>   against the CODATA uncertainty, every prime misses by at least 6×10⁴σ.
+> - **v_EW does not confirm the choice.** At 104,761, v_EW = 243.52 GeV,
+>   −1.10% from 246.22 GeV. That miss is within the Λ_QCD input uncertainty:
+>   moving Λ_QCD by ±17 MeV around 0.332 GeV (an illustrative uncertainty)
+>   moves the v_EW root from about 95,000 to about 122,950.
+> - **z = 6 is not derived here.** p and z enter 1/α only through
+>   [ln p]² + z/2, so α alone fixes one combination. Solving the α and v_EW
+>   equations together for a continuous z gives z* = 6.20 (at p* ≈ 104,296),
+>   and z* moves from 5.32 to 7.19 over the same Λ_QCD range; z = 6 is the
+>   nearest integer. Over all primes from 20,000 to 400,000, the best joint
+>   score at Λ_QCD = 0.332 GeV is 0.31% for z = 6, 1.18% for z = 7 and
+>   1.90% for z = 5. The preference does not survive the Λ_QCD uncertainty:
+>   at 0.315 GeV z = 7 scores best (0.28%, against 1.77% for z = 6), and at
+>   0.349 GeV z = 5 does (0.52%, against 1.07%). The three arguments for
+>   z = 6 below are motivations, not derivations.
+>
+> See `doc/CLOSED_AND_DEPRECATED.md` (including its section 4 row on the
+> ln(p)/(ln(p)+1) correction) and `doc/LIMITATIONS_AND_FALSIFICATION.md`.
+
 > **Status:** April 2026 — partial closure of Gap #2 (the "why this prime?"
 > question). This doc shows that p is **over-determined** by four independent
 > BPR structural equations, and z is fixed by geometry. The only remaining
@@ -94,7 +139,7 @@ the EW-hierarchy formula M_Pl/v_EW = p^(z/2+1/3) × ln(p)/(ln(p)+1) at the
 observed values. If z were 4 or 8 instead of 6, the two formulas would be
 mutually inconsistent by many orders of magnitude.
 
-**Status: DERIVED (geometric + CFT + self-consistency).**
+**Status: DERIVED (geometric + CFT + self-consistency).** *(Withdrawn 2026-10: these are motivations, not a derivation; see the banner at the top.)*
 
 ## What this does NOT claim
 
@@ -138,6 +183,8 @@ for dp in range(-1000, 1000):
 
 ## Status change
 
+*(Withdrawn 2026-10: the "after this document" column no longer holds; see the banner at the top.)*
+
 | Claim | Previous | After this document |
 |---|---|---|
 | Why p = 104,761? | "Fit to α, nearest prime" (weak) | **Over-determined by 4 independent equations within 3%; prime+mod-4 constraint gives unique answer** |
@@ -160,6 +207,9 @@ The over-determination argument could be tightened by:
   larger margins.)
 
 ---
+
+*(Withdrawn 2026-10: p is an α calibration, and the next sentence no longer
+holds; see the banner at the top.)*
 
 *April 2026 — partial closure of Gap #2. The claim "p is a fit parameter"
 is refuted: p = 104,761 is the unique prime ≡ 1 mod 4 that makes four

@@ -651,7 +651,7 @@ Pull requests must:
 - [x] **Gauge Unification & Hierarchy** — GUT scale = M_Pl/p^{1/4}, coupling running, hierarchy = √(pN), proton decay
 - [x] **Charged Lepton Masses** — e/μ/τ masses from cohomology norms, Koide formula = 2/3 from S², lepton universality
 - [x] **Nuclear Physics from Boundary Shell** — magic numbers (2,8,20,28,50,82,126) from winding shells, binding energies, neutron star M_max
-- [x] **Quantum Gravity Phenomenology** — modified dispersion (ξ₁=0, ξ₂=1/p), GUP (β=1/p), Lorentz invariance to exp(-p^{1/3})
+- [x] **Quantum Gravity Phenomenology** — modified dispersion (ξ₁=0, ξ₂=1/p), GUP (β=1/p), Lorentz invariance to exp(-p^{1/3}) — *superseded (2026-10): the module is implemented, but these values are stipulated on the α-calibrated p, and BPR-6D is exactly Lorentz-invariant, so it predicts no LIV, as the Standard Model with GR does. The earlier CONFIRM rows are withdrawn; see [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md).*
 - [x] **Quantum Chemistry & Periodic Table** — noble gas Z from shell filling, chemical bonds, electronegativity, chirality, periodic table
 
 ### 📚 **Empirical Calibrations & Interpretive Overlays** (May–June 2026)

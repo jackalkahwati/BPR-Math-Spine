@@ -1,5 +1,46 @@
 # Forward-Derived GUT Threshold Corrections (3-Channel)
 
+> **Status (2026-10): PHENOMENOLOGICAL (post hoc). Supersedes the April 2026
+> status below.** The three group factors were chosen after the gap was known.
+> They are not derived from z. This is a legacy GUT ansatz, superseded by the
+> BPR-6D Phase 1 unification (`bpr/model_scales.py::unify_3221`: M_GUT ≈ 4.5e16
+> GeV, 1/α_G ≈ 46.2, M_I ≈ 1.0e9 GeV), which does not use p and is unaffected.
+> These findings came from the 2026-10 review of unmerged branches (the GUT
+> audit on `claude/audit-bpr-parameters-6fSrQ`). They were recomputed on the
+> current tree and are locked by `tests/test_legacy_gut_identities.py`:
+>
+> - **The z = 6-only identity.** Channel 1 motivates Y² through
+>   κ + 1/z = (z² + 2)/(2z) and then uses (3z + 1)/6 = 19/6. The two are equal
+>   only at z = 6: 6(z² + 2) = 2z(3z + 1) gives z = 6. The code comment writes
+>   κ + 1/6 instead. So the chain is not a general-z formula.
+> - **Look-elsewhere.** Take Y² ∈ {1, 2, 3, 19/6}, T₂² ∈ {0, 1/7, 1/6, 1/5, 1/2}
+>   and T₃² ∈ {0, 1/49, 1/36, 1/7}. Of these 80 numerically distinct simple
+>   choices, 31 close at least 90% of the gap and 5 close at least 98%, on the
+>   code's metric. Y² = z/2 alone, the original rigidity argument, closes 94.5%.
+> - **The T₃ channel has the wrong sign.** 1/α₃(M_GUT) = 49.20 is already the
+>   largest, so the +0.15 shift moves it away from the others. Dropping the
+>   channel raises closure from 98.1% to 98.9%. The claim below that it "drags
+>   α₃ down to meet α₂" is wrong; the α₂–α₃ closure comes from δ₂.
+> - **The metric is inconsistent.** "Fraction closed" divides the residual
+>   max deviation from the three-coupling mean by |1/α₁ − (1/α₂ + 1/α₃)/2|,
+>   measured before correction. Using max deviation from the mean both before
+>   and after gives 97.2%, not 98.1%.
+> - **The stated mode spectrum gives much less.** `GaugeCouplingRunning`
+>   describes modes at M_k = M_GUT (M_Pl/M_GUT)^{k/N_B}. With that spectrum, a
+>   mode is active over about half of L_above on average, and the same factors
+>   close only ~67% (code metric) or ~50% (consistent metric). The code
+>   applies all N_B modes over the full L_above.
+> - **It is tuned to z = 6.** The same formula at z = 4, 8 and 12, with the SM
+>   inputs fixed, closes 75.7%, 79.2% and 35.4%.
+> - **Downstream "predictions" are identities.** The backward fit used for
+>   sin²θ_W and α_s(M_Z) returns the M_Z inputs (0.23122, 0.1179,
+>   1/127.952) for every p. They are not "conditional on unification" (item 3
+>   below); they are not predictions at all.
+>
+> The numbers in the tables below are kept as legacy arithmetic. Read
+> "98.1% / 92.0% closed" and "PARTIALLY CLOSED" as phenomenological, not
+> derived. See `doc/CLOSED_AND_DEPRECATED.md` §1c.
+
 > **Status:** April 2026 — closes Task #7 of the gap-closure pass.
 > The three-channel forward threshold corrections close 98.1% of the
 > 1-loop gap and 92.0% of the 2-loop gap in SM gauge coupling
@@ -37,6 +78,9 @@ Using the standard SU(5) normalization Y²_SU(5) = (3/5) Y² and the
 boundary content z = 6 (cubic-lattice nearest neighbors), one obtains
 the effective coefficient (3z + 1) / 6 = 19/6. The U(1)_Y threshold
 correction is
+
+*(2026-10: (z² + 2)/(2z) = (3z + 1)/6 holds only at z = 6; see the status
+banner.)*
 
     δ(1/α₁) = N_B × (3/5) × Y²_eff / 3 × L_above / (2π)                  (1)
 
@@ -109,6 +153,10 @@ this residual because the SU(2) and SU(3) boundary couplings are
 both are suppressed relative to U(1)_Y. This differential suppression
 is exactly what drags α₃ down to meet α₂.
 
+*(2026-10: incorrect. δ₃ > 0 raises 1/α₃, which is already the largest; the
+T₃ channel moves α₃ away, and closure improves to 98.9% without it. See the
+status banner.)*
+
 ## What this does NOT claim
 
 1. **Residual 1.5% at 2-loop is not derived from BPR.** In any non-SUSY
@@ -133,6 +181,9 @@ is exactly what drags α₃ down to meet α₂.
    1.5%, the backward-fit refinement is small, and the downstream
    predictions are robust to the residual. Still, the formal status is
    "conditional on unification."
+   *(2026-10: withdrawn. The backward fit returns the M_Z inputs for every
+   p: sin²θ_W = 0.23122, α_s = 0.1179, 1/α_em = 127.952. These are
+   identities, not predictions conditional on unification.)*
 
 ## Status change
 
@@ -142,6 +193,7 @@ is exactly what drags α₃ down to meet α₂.
 | Forward fraction closed (2-loop) | Not reported | **92.0% (three-channel)** |
 | LIMITATIONS §GUT | OPEN (66% residual) | PARTIALLY CLOSED (1.5% residual at 2-loop) |
 | Residual mechanism | Unknown | Superheavy gauge boson thresholds (standard non-SUSY) |
+| Status of the three-channel factors (2026-10) | — | **PHENOMENOLOGICAL (post hoc)**; 97.2% on a consistent metric; legacy, superseded by Phase 1 |
 
 ## Code changes
 
@@ -171,3 +223,6 @@ and integrating it out, which BPR has not done. Two possible paths:
 Three-channel forward corrections now close 98.1% at 1-loop and 92.0%
 at 2-loop. Residual 1.5% documented as "expected non-SUSY threshold
 range, not computed from BPR first principles."*
+
+*2026-10 — relabelled PHENOMENOLOGICAL (post hoc) after the 2026-10 review of
+unmerged branches; see the status banner at the top.*

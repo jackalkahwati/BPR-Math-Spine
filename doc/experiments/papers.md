@@ -22,7 +22,7 @@
 
 ---
 
-## 2. Lorentz Invariance Violation — **INCONCLUSIVE**
+## 2. Lorentz Invariance Violation — **SUPERSEDED (2026-10)**
 
 **BPR predicts:** |δc/c| ~ 3.4×10⁻²¹; ξ₂ = 1/p ~ 9.55×10⁻⁶.
 
@@ -32,9 +32,9 @@
 | **Energy-dependent intrinsic delay, Phys. Lett. B 858, 138951 (2024)** | Separating intrinsic GRB delays from LIV; quadratic LIV | [DOI:10.1016/j.physletb.2024.138951](https://doi.org/10.1016/j.physletb.2024.138951) |
 | **CTA feasibility, HAL:04679675 (2024)** | CTA LIV search from relativistic jets; Synchrotron-Self-Compton; discriminate intrinsic vs LIV | [hal.science/hal-04679675](https://hal.science/hal-04679675) |
 | **LHAASO Collab., arXiv:2106.12350 (2021)** | LIV constraints from TeV gamma rays | [arXiv:2106.12350](https://arxiv.org/abs/2106.12350) |
-| **Fermi-LAT GRB 090510** | |δc/c| < 6×10⁻²¹ | — |
+| **Nemiroff et al., Phys. Rev. Lett. 108, 231103 (2012)** (Fermi-LAT data on GRB 090510; listed here until 2026-10 as "Fermi-LAT GRB 090510") | Δc/c < 6.94×10⁻²¹ from very short photon bunches. A dispersion bound of low statistical significance (questioned by Vasileiou et al. 2013, entry 45); it does not constrain an energy-independent speed offset | [arXiv:1109.5191](https://arxiv.org/abs/1109.5191) |
 
-**Verdict: INCONCLUSIVE** — BPR below current sensitivity. CTA (2026+) could test.
+**Verdict: SUPERSEDED (2026-10; previously INCONCLUSIVE, "BPR below current sensitivity. CTA (2026+) could test.").** ξ₂ = 1/p and |δc/c| = e^(−p^(1/3)) are stipulated on the α-calibrated p, and section 4 of [the architecture decision](../derivations/architecture_decision_2026-09-26.md) supersedes them: BPR-6D is exactly Lorentz-invariant and predicts no LIV, as the Standard Model with GR does, so CTA cannot test BPR here. At p = 104,761, e^(−p^(1/3)) = e^(−47.141) = 3.36×10⁻²¹. The 6×10⁻²¹ comparison was not valid as stated: it is the Nemiroff et al. dispersion bound, applied to an energy-independent offset, with no reference species or sign fixed. Found in the 2026-10 review of unmerged branches; see `doc/CLOSED_AND_DEPRECATED.md`.
 
 ---
 
@@ -259,16 +259,16 @@
 
 ---
 
-## 18. GUP (Generalized Uncertainty) — **INCONCLUSIVE**
+## 18. GUP (Generalized Uncertainty) — **SUPERSEDED (2026-10)**
 
 **BPR predicts:** β = 1/p ~ 10⁻⁵.
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
-| **Bassi et al., Phys. Rev. D 100, 066020 (2019)** | Sapphire resonator: β₀ < 5.2×10⁶ (9 orders above BPR) | [DOI:10.1103/PhysRevD.100.066020](https://doi.org/10.1103/PhysRevD.100.066020) |
+| **Bushev et al., Phys. Rev. D 100, 066020 (2019)** (listed as "Bassi et al." until 2026-10) | Sapphire resonator: β₀ < 5.2×10⁶, about 12 orders above BPR's 1/p (listed earlier as "9 orders"); a quartz BAW resonator in the same paper gives β₀ < 4×10⁴, about 10 orders above | [DOI:10.1103/PhysRevD.100.066020](https://doi.org/10.1103/PhysRevD.100.066020) |
 | **Pikovski et al., Nature Phys. 8, 393 (2012)** | GUP from optomechanics | [DOI:10.1038/nphys2262](https://doi.org/10.1038/nphys2262) |
 
-**Verdict: INCONCLUSIVE** — BPR not yet probed.
+**Verdict: SUPERSEDED (2026-10; previously INCONCLUSIVE, "BPR not yet probed").** β = 1/p is stipulated on the α-calibrated p, and section 4 of [the architecture decision](../derivations/architecture_decision_2026-09-26.md) supersedes the GUP; p has no counterpart in BPR-6D. Found in the 2026-10 review of unmerged branches; see `doc/CLOSED_AND_DEPRECATED.md`.
 
 ---
 
@@ -621,16 +621,16 @@
 
 ---
 
-## 45. GRB Time-of-Flight (LIV) — **INCONCLUSIVE**
+## 45. GRB Time-of-Flight (LIV) — **SUPERSEDED (2026-10)**
 
 **BPR predicts:** ξ₂ ~ 10⁻⁵; delay ~ 10⁻²¹ s at 1 TeV over 1 Gpc.
 
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
-| **Abramowski et al. (H.E.S.S.), Astropart. Phys. 34, 738 (2011)** | LIV from GRB 080916C | [DOI:10.1016/j.astropartphys.2011.01.007](https://doi.org/10.1016/j.astropartphys.2011.01.007) |
+| **Abramowski et al. (H.E.S.S.), Astropart. Phys. 34, 738 (2011)** | LIV from a likelihood fit to the PKS 2155-304 flare of MJD 53944 (July 2006): E_QG,1 > 2.1×10¹⁸ GeV, E_QG,2 > 6.4×10¹⁰ GeV. (Listed as "GRB 080916C" until 2026-10; that burst was observed by Fermi-LAT, not H.E.S.S.) | [DOI:10.1016/j.astropartphys.2011.01.007](https://doi.org/10.1016/j.astropartphys.2011.01.007) |
 | **Vasileiou et al., Phys. Rev. D 87, 122001 (2013)** | Fermi-LAT GRB 090510 | [DOI:10.1103/PhysRevD.87.122001](https://doi.org/10.1103/PhysRevD.87.122001) |
 
-**Verdict: INCONCLUSIVE** — BPR below current sensitivity.
+**Verdict: SUPERSEDED (2026-10; previously INCONCLUSIVE, "BPR below current sensitivity").** ξ₂ = 1/p is stipulated on the α-calibrated p and superseded by section 4 of [the architecture decision](../derivations/architecture_decision_2026-09-26.md). For a quadratic modified dispersion relation the delay prefactor is 3/2, not the 1/2 used earlier, so the delay at 1 TeV over 1 Gpc is about 1×10⁻²⁰ s rather than 3×10⁻²¹ s; either is far below any sensitivity. See entry 2.
 
 ---
 
@@ -1097,12 +1097,14 @@ Row 96 is withdrawn (2026-10): Class B gives ν = 0.8, not 0.630. See entry 29.
 
 ## 110–119. Additional CONFIRM Tests
 
+Rows 111, 112 and 113 are withdrawn (2026-10; previously CONFIRM). Row 111: ξ₁ = 0 is also the Standard Model and GR value, so it discriminates nothing, and "0" is not a measurement (time-of-flight data give bounds, e.g. LHAASO's E_QG,1 > 10 E_Pl, i.e. ξ₁ < 0.1). Row 112: β = 1/p sits about 12 orders below the bound, which is not a confirmation, and the GUP is superseded (entry 18; the author is Bushev, not Bassi). Row 113: superseded (entry 2); the bound is Nemiroff et al. 2012, a low-significance dispersion bound that does not constrain an energy-independent offset, and entry 2 graded the same claim INCONCLUSIVE.
+
 | # | Test | BPR | Experiment | Paper |
 |---|------|-----|------------|-------|
 | 110 | DM σ/m | 0.02 | < 0.13 | Kaplinghat arXiv:2012.06611; Harvey Science 347 |
-| 111 | LIV ξ₁ | 0 | 0 | CPT invariance tests |
-| 112 | GUP β | ~10⁻⁵ | < 5×10⁶ | Bassi PRD 100, 066020 |
-| 113 | LIV \|δc/c\| | 3.4×10⁻²¹ | < 6×10⁻²¹ | Fermi-LAT; Piran PRD |
+| 111 | LIV ξ₁ | 0 (**WITHDRAWN**) | 0 | CPT invariance tests |
+| 112 | GUP β | ~10⁻⁵ (**WITHDRAWN**) | < 5×10⁶ | Bushev PRD 100, 066020 (listed earlier as Bassi) |
+| 113 | LIV \|δc/c\| | 3.4×10⁻²¹ (**WITHDRAWN**) | < 6×10⁻²¹ | Nemiroff PRL 108, 231103 (Fermi-LAT data; listed earlier as "Fermi-LAT"); Piran PRD |
 | 114 | η (baryon) | 6.13×10⁻¹⁰ | 6.12±0.04×10⁻¹⁰ | Planck 2018 |
 | 115 | 0νββ | No signal | No signal | LEGEND; MAJORANA; GERDA |
 | 116 | MOND a₀ | 1.18×10⁻¹⁰ | 1.20×10⁻¹⁰ | Li A&A 615; McGaugh ApJ 832 |
@@ -1116,13 +1118,15 @@ Row 96 is withdrawn (2026-10): Class B gives ν = 0.8, not 0.630. See entry 29.
 
 ## 120–129. Final CONFIRM Tests
 
+Rows 123 and 124 are withdrawn (2026-10; previously CONFIRM). Row 123 repeats row 111 (see the note above that table). Row 124 repeats the v_GW = c comparison of rows 23, 46 and 94 under a GRB label, so it is not a separate test.
+
 | # | Test | BPR | Experiment | Paper |
 |---|------|-----|------------|-------|
 | 120 | m_e | 0.5105 MeV | 0.5110 MeV | CODATA 2018; Sturm Nature 506 |
 | 121 | m_μ | 107.2 MeV | 105.66 MeV | PDG 2024 |
 | 122 | m_τ | 1777 MeV | 1776.86 MeV | PDG 2024 |
-| 123 | ξ₁ LIV | 0 | 0 | CPT conservation |
-| 124 | GRB speed bound | c | c_GW = c | Abbott GW170817; Liu PRD 102, 024028 |
+| 123 | ξ₁ LIV | 0 (**WITHDRAWN**) | 0 | CPT conservation |
+| 124 | GRB speed bound | c (**WITHDRAWN**) | c_GW = c | Abbott GW170817; Liu PRD 102, 024028 |
 | 125 | Spatial d=3 | 3 | 3 | Gravitational tests; Carroll PRD 41 |
 | 126 | Time d=1 | 1 | 1 | Causality; observation |
 | 127 | B/A consistency | BW+BPR | AME table | Wang Chin. Phys. C 45, 030003 |
@@ -1138,7 +1142,7 @@ Row 96 is withdrawn (2026-10): Class B gives ν = 0.8, not 0.630. See entry 29.
 | # | Test | BPR | Result | Verdict |
 |---|------|-----|--------|---------|
 | 1 | 0νββ | No signal | No signal | **CONFIRM** |
-| 2 | LIV | 3.4×10⁻²¹ | < 6×10⁻²¹ | **INCONCLUSIVE** |
+| 2 | LIV | 3.4×10⁻²¹ | < 6×10⁻²¹ | **SUPERSEDED (2026-10)** |
 | 3 | MOND a₀ | 1.18×10⁻¹⁰ | 1.20×10⁻¹⁰ | **CONFIRM** |
 | 4 | Casimir @ Tc | 10⁻⁸ | Preliminary | **INCONCLUSIVE** |
 | 5 | Mass ordering | Normal | — | **INCONCLUSIVE** |
@@ -1154,7 +1158,7 @@ Row 96 is withdrawn (2026-10): Class B gives ν = 0.8, not 0.630. See entry 29.
 | 15 | n_sat | 0.163 | 0.16±0.01 | **CONFIRM** |
 | 16 | NS M, R | 2.2 M☉, 12.3 km | 2.08 M☉, 12.35 km | **CONFIRM** |
 | 17 | α | boundary | 1/137.036 | **CONFIRM** |
-| 18 | GUP β | 10⁻⁵ | > 10⁶ | **INCONCLUSIVE** |
+| 18 | GUP β | 10⁻⁵ | > 10⁶ | **SUPERSEDED (2026-10)** |
 | 19 | Decoherence | ΔZ² | — | **INCONCLUSIVE** |
 | 20 | Quark masses | boundary | PDG 2024 | **CONFIRM** |
 | 21 | Pion m_π | 134.5 MeV | 134.98 MeV | **CONFIRM** |
@@ -1181,7 +1185,7 @@ Row 96 is withdrawn (2026-10): Class B gives ν = 0.8, not 0.630. See entry 29.
 | 42 | ΔN_eff | 0.038 | < 0.2 | **CONFIRM** |
 | 43 | Proton τ (GUT) | ≫10³⁴ | > 2.4×10³⁴ | **CONFIRM** |
 | 44 | Magic numbers | 2,8,20,… | empirical | **CONFIRM** |
-| 45 | GRB LIV | ξ₂~10⁻⁵ | bounds | **INCONCLUSIVE** |
+| 45 | GRB LIV | ξ₂~10⁻⁵ | bounds | **SUPERSEDED (2026-10)** |
 | 46 | GW speed bound | c | < 10⁻¹⁵ | **CONFIRM** |
 | 47 | JWST H₀ | phase evol. | tension | **INCONCLUSIVE** |
 | 48 | Bell loophole-free | 2√2 | saturated | **CONFIRM** |
@@ -1189,13 +1193,15 @@ Row 96 is withdrawn (2026-10): Class B gives ν = 0.8, not 0.630. See entry 29.
 | 50 | d = 4 | derived | observed | **CONFIRM** |
 | 51–58 | Boundary Memory Dynamics, III, VI, VIII, IX, X, XV, XXI | — | — | **CONFIRM** |
 | 59 | Kibble–Zurek | Class B ν (stipulated) | Ulm 2013 (8/3 law) | **NON-DISCRIMINATING (2026-10)** |
-| 60–129 | (Individual predictions; see above) | — | — | **CONFIRM** |
+| 60–129 | (Individual predictions; see above) | — | — | **CONFIRM** (except 96, 111–113, 123 and 124: withdrawn 2026-10) |
 
 ---
 
 **Totals:** **CONFIRM 115** | FALSIFY 0 | INCONCLUSIVE 11 (compiled Feb 2026)
 
 2026-10: tests 29 and 96 (3D Ising ν) are withdrawn as mismatches, and test 59 (Kibble–Zurek) is reclassified as non-discriminating, so at most 112 CONFIRM remain. The other rows were not re-audited here; the totals are historical, and the dated audits (`VALIDATION_STATUS.md`, `doc/CLOSED_AND_DEPRECATED.md`) take precedence.
+
+2026-10 (review of unmerged branches): rows 111, 112, 113, 123 and 124 are withdrawn (previously CONFIRM), and entries 2, 18 and 45 are superseded (previously INCONCLUSIVE); see those entries. A recount of the rows themselves gives 117 CONFIRM and 12 INCONCLUSIVE labels as compiled, not the 115 and 11 in the header line above (115 + 11 ≠ 129); the "at most 112" above was taken from that header. After all the 2026-10 changes, at most 109 rows still carry a CONFIRM label and 9 an INCONCLUSIVE label. These are labels, not independent confirmations: the remaining rows were not re-audited, and several repeat one another. Theory XX (quantum-gravity phenomenology) is left with no CONFIRM row, so the "all 21 theories" line below is historical too.
 
 - **115 CONFIRM** across 129 tests. **All 21 theories** now have at least one CONFIRM.
 - **250+ papers** cited.

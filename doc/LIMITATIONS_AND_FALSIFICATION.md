@@ -5,6 +5,11 @@
 > **Updated:** April 2026 (second gap-hunt pass: p-selection principle via
 > over-determination, T²_2/T²_3 forward-derivation status, CKM δ_CP
 > extracted, Tier B attack plans scoped, Tier C non-gaps documented).
+> **2026-10:** several April 2026 claims below are withdrawn or relabelled after the 2026-10
+> review of unmerged branches: the p-selection "over-determination", the CKM δ_CP status, the
+> forward GUT threshold closure, the backward-fit sin²θ_W, the "v_EW CLOSED" chain and the LIV
+> predictions. Each is marked in place. See `doc/CLOSED_AND_DEPRECATED.md` §1c and, for the
+> architecture, `doc/derivations/architecture_decision_2026-09-26.md` §4.
 
 ## April 2026 Second-Pass Summary
 
@@ -26,11 +31,26 @@ An eight-gap audit of BPR identified, triaged, and addressed:
 mixing angles via the standard PDG identity. See
 `doc/derivations/mixing_and_cp_summary.md`.
 
+> **ANSATZ (2026-10).** δ_CP = π/2 − 1/√(z+1) is a phenomenological
+> ansatz that replaced a hard-coded experimental input (1.196 rad), not
+> a prediction. Recovering δ from J and the angles is an identity
+> (`doc/derivations/toe_audit_2026-09-12.md` §6). The
+> current CKM fit, δ = 1.144 ± 0.027 rad (65.5° ± 1.5°), puts 68.3° at
+> +1.8σ. See `doc/CLOSED_AND_DEPRECATED.md` §1c.
+
 **Over-determination of p = 104,761:** Four independent BPR structural
 equations (α formula, EW hierarchy, v_EW/Λ_QCD, Sakharov M_Pl/Λ_b) each
 pin p to within 3% of the same prime when solved against observed values.
 Combined with primality + (p ≡ 1 mod 4) constraints, p = 104,761 is
 **uniquely selected**. See `doc/derivations/p_selection_principle.md`.
+
+> **WITHDRAWN (2026-10).** p is not over-determined or uniquely
+> selected; it is an α calibration. 104,761 is the nearest prime
+> ≡ 1 (mod 4) to the α root 104,749.03. The four equations' roots span
+> 104,573–107,709, a band that holds 265 primes (129 of them
+> ≡ 1 (mod 4)). The v_EW equation takes Λ_QCD as an input, and its
+> root moves from about 95,000 to 123,000 across Λ_QCD = 332 ± 17 MeV.
+> See `doc/CLOSED_AND_DEPRECATED.md` §1c.
 
 ---
 
@@ -42,7 +62,7 @@ Combined with primality + (p ≡ 1 mod 4) constraints, p = 104,761 is
 |------|--------|-------|
 | Planck length l_P (absolute) | PARTIALLY CLOSED (April 2026) | One dimensionful anchor still required. The *hierarchy* M_Pl / Λ_boundary = √(p/(48π²)) ≈ 14.87 is now DERIVED via Sakharov-induced gravity on the p boundary anyon sectors. See `doc/derivations/planck_length_from_substrate.md`. |
 | Electroweak hierarchy M_Pl/v | DERIVED (April 2026) | M_Pl/v_EW = p^(z/2 + 1/3) × ln(p)/(ln(p)+1) = 4.99×10¹⁶ vs observed 4.96×10¹⁶ (0.5% off). Cross-checked against the Sakharov derivation (v_EW/Λ_b match to 0.7%). See `doc/derivations/ew_hierarchy_from_rigidity.md`. Naturalness/fine-tuning is a separate question from the value derivation. |
-| GUT threshold corrections | PARTIALLY CLOSED (April 2026) | Forward three-channel corrections (Y^2, T2^2, T3^2 from boundary rigidity + central-site) close 98.1% at 1-loop and 92.0% at 2-loop. Residual ~1.5% (2-loop) is within the expected superheavy gauge boson threshold range that has not been computed from BPR first principles. See detailed note below. |
+| GUT threshold corrections | PHENOMENOLOGICAL (2026-10; was PARTIALLY CLOSED, April 2026) | Forward three-channel corrections (Y^2, T2^2, T3^2 from boundary rigidity + central-site) close 98.1% at 1-loop and 92.0% at 2-loop. Residual ~1.5% (2-loop) is within the expected superheavy gauge boson threshold range that has not been computed from BPR first principles. 2026-10: the factors were chosen after the gap was known. 31 of 80 distinct simple choices close at least 90%, Y^2 = z/2 alone closes 94.5%, and the chosen set closes 97.2% on a consistent metric. See detailed note below. |
 
 ### GUT Scale: Detailed Note (April 2026)
 
@@ -54,16 +74,22 @@ Combined with primality + (p ≡ 1 mod 4) constraints, p = 104,761 is
 
 | Method | Description | Status |
 |--------|-------------|--------|
-| Backward-fit | Compute what corrections are *needed* for exact unification, then assert the boundary provides them | Used for downstream predictions (Weinberg angle, alpha_s). Achieves exact unification by construction. |
-| Forward-derived (3-channel) | Compute corrections from boundary rigidity + central-site coupling using Y^2 = (3z+1)/6, T2^2 = 1/(z+1), T3^2 = 1/(z+1)^2 from S^2 geometry. All three SM gauge groups now corrected (earlier versions only corrected alpha_1). | **Closes 98.1% at 1-loop; 92.0% at 2-loop.** Residual ~1.5% (2-loop) is the expected size of superheavy gauge boson threshold corrections in non-SUSY unification, which have not been computed from BPR first principles. |
+| Backward-fit | Compute what corrections are *needed* for exact unification, then assert the boundary provides them | Used for downstream predictions (Weinberg angle, alpha_s). Achieves exact unification by construction. 2026-10: so the downstream values are identities that return the M_Z inputs for any p; they are not predictions. |
+| Forward-derived (3-channel) | Compute corrections from boundary rigidity + central-site coupling using Y^2 = (3z+1)/6, T2^2 = 1/(z+1), T3^2 = 1/(z+1)^2 from S^2 geometry. All three SM gauge groups now corrected (earlier versions only corrected alpha_1). | **Closes 98.1% at 1-loop; 92.0% at 2-loop.** Residual ~1.5% (2-loop) is the expected size of superheavy gauge boson threshold corrections in non-SUSY unification, which have not been computed from BPR first principles. **PHENOMENOLOGICAL (2026-10), post hoc:** 31 of 80 distinct simple choices close at least 90%. The T3 channel lowers the closure, and (3z+1)/6 = (z^2+2)/(2z) holds only at z = 6. On a consistent metric the closure is 97.2% at 1-loop. |
 
 The earlier "34% closed" number was for the single-channel (alpha_1 only) forward correction. The full three-channel correction with the SU(2) and SU(3) mechanisms derived from the same S^2 boundary geometry closes the bulk of the residual gap. See `forward_threshold_corrections` and `two_loop_diagnostic` in `bpr/gauge_unification.py`.
 
-The Weinberg angle prediction (sin^2 theta_W = 0.23122) and alpha_s prediction still depend on the backward-fit achieving exact unification. These should be read as conditional: "IF unification occurs at BPR's M_GUT, THEN sin^2 theta_W = 0.23122." The forward calculation shows unification is now achieved at 1.5% at 2-loop, close enough that the backward-fit refinement is no longer a large extrapolation.
+The Weinberg angle prediction (sin^2 theta_W = 0.23122) and alpha_s prediction still depend on the backward-fit achieving exact unification. **2026-10: these are identities for any p, not conditional predictions.** The backward fit chooses the threshold corrections so that the couplings meet, and running back down returns the M_Z inputs: `GaugeCouplingRunning` gives alpha_s = 0.1179, sin^2 theta_W = 0.23122 and 1/alpha_EM(M_Z) = 127.952 at p = 101, 104,761 and 1,000,003. The earlier reading, "IF unification occurs at BPR's M_GUT, THEN sin^2 theta_W = 0.23122", is withdrawn. So is the following sentence: "The forward calculation shows unification is now achieved at 1.5% at 2-loop, close enough that the backward-fit refinement is no longer a large extrapolation." The forward factors are phenomenological (table above), so they cannot support the backward fit. See `doc/CLOSED_AND_DEPRECATED.md` §1c.
 
 Code: `bpr/gauge_unification.py`, `forward_threshold_corrections` vs `boundary_threshold_corrections`.
 
-### v_EW Self-Consistency (April 2026 — CLOSED)
+### v_EW Self-Consistency (April 2026 — CLOSED; 2026-10: uses α_s(M_Z) input)
+
+> **2026-10:** not a closure. Step A's α_s(M_Z) = 0.1179 "from backward-fit
+> GUT" is the input value, returned unchanged for any p (see the GUT note
+> above). The chain therefore replaces the Λ_QCD input with the α_s(M_Z)
+> input; it does not derive v_EW from (p, z). The "0%" in step A holds by
+> construction. See `doc/CLOSED_AND_DEPRECATED.md` §1c.
 
 **Previous claim:** v_EW = Lambda_QCD x p^(1/3) x (ln p + z - 2) = 243.5 GeV (1% off), with Lambda_QCD = 0.332 GeV as external input.
 
@@ -130,7 +156,7 @@ BPR uses these experimental inputs:
 |-------|-----------|------------|
 | m_tau | Charged lepton mass anchor | Sets absolute scale; ratios are derived |
 | m_b | Down-type quark anchor (when v_EW not derived) | Same role as m_tau |
-| alpha_s(M_Z) = 0.1179 | Feeds Lambda_QCD -> v_EW chain | Conditional on backward-fit GUT unification (see GUT note). Lambda_QCD itself no longer an independent input as of April 2026. |
+| alpha_s(M_Z) = 0.1179 | Feeds Lambda_QCD -> v_EW chain | Conditional on backward-fit GUT unification (see GUT note). Lambda_QCD itself no longer an independent input as of April 2026. 2026-10: alpha_s(M_Z) is itself an input, returned unchanged by the backward fit, so it replaces Lambda_QCD as the input rather than removing it. |
 | l_P (CODATA) | Sets one dimensionful anchor | Absolute value is input; the M_Pl/Λ_boundary hierarchy is DERIVED (April 2026) from Sakharov relation M_Pl² = p Λ_b² / (48π²). See derivations/planck_length_from_substrate.md |
 | kappa_sph = 10^-5 | Baryon asymmetry | SM sphaleron rate, not BPR-derived |
 
@@ -153,18 +179,24 @@ This is the most important section for honest evaluation.
 - xi_1 = 0 (no linear LIV)
 - Proton charge radius
 
+(2026-10: two items in this list are relabelled after the 2026-10 review of unmerged branches. The CKM CP phase
+π/2 − 1/√(z+1) is a phenomenological ansatz. xi_1 = 0 is superseded: BPR-6D is exactly Lorentz invariant and
+predicts zero LIV, as SM+GR do, so it is not BPR-specific. See `doc/CLOSED_AND_DEPRECATED.md` §1c.)
+
 **Derived from (p, z) + one anchor mass:**
 - Absolute quark masses (anchor: m_b or m_t from v_EW)
 - Charged lepton masses (anchor: m_tau)
 
 **Derived from (p, z) + SM inputs:**
-- v_EW: as of April 2026, derived via the full chain (p, z) -> alpha_s -> Lambda_QCD -> v_EW at 1.5% (conditional on backward-fit alpha_s). See derivations/v_EW_self_consistent_chain.md.
+- v_EW: as of April 2026, derived via the full chain (p, z) -> alpha_s -> Lambda_QCD -> v_EW at 1.5% (conditional on backward-fit alpha_s). See derivations/v_EW_self_consistent_chain.md. (2026-10: uses the alpha_s(M_Z) input; see the v_EW note in §1.)
 - Higgs mass (needs v_EW)
 - Baryon asymmetry (needs kappa_sph from SM)
 
 **Conditional on backward-fit unification:**
 - sin^2 theta_W = 0.23122
 - 1/alpha_EM at M_Z
+
+(2026-10: not conditional predictions. Both are identities equal to their M_Z inputs for any p; see the GUT note in §1.)
 
 **Not derived (CODATA input):**
 - Planck length, G (absolute value — one dimensionful anchor; the M_Pl/Λ_b hierarchy IS derived, see derivations/planck_length_from_substrate.md)
@@ -181,7 +213,7 @@ This is the most important section for honest evaluation.
 | 1 | **Normal neutrino ordering** | JUNO | 2027 | Inverted ordering -> BPR boundary topology wrong |
 | 2 | **No 0nubetabeta (Dirac neutrinos)** | LEGEND, nEXO | 2025-2030 | Observation -> BPR p = 1 mod 4 orientability wrong |
 | 3 | **Casimir deviation delta = 2 (derived; 1.37 fit superseded)** | Delft/STM, phonon-MEMS | 1-3 yr | Null at 10^-9 -> phonon channel ruled out; delta near 1.37 refutes projection |
-| 4 | **LIV |dc/c| ~ 3.4 x 10^-21** | CTA, GRBs | 2026+ | Null below 10^-21 -> BPR substrate discreteness wrong |
+| 4 | **LIV \|dc/c\| ~ 3.4 x 10^-21** — SUPERSEDED (2026-10) | CTA, GRBs | 2026+ | Null below 10^-21 -> BPR substrate discreteness wrong. 2026-10: no longer a BPR falsifier. The value e^{−p^{1/3}} is stipulated on the calibrated p, and BPR-6D is exactly Lorentz invariant (architecture decision §4). |
 | 5 | **Born rule kappa ~ 10^-5** | Many-photon Sorkin | 2-5 yr | Born rule holds to 10^-7 -> BPR microstate counting wrong |
 
 **Code references:** See [EXPERIMENTAL_ROADMAP.md](EXPERIMENTAL_ROADMAP.md).
@@ -197,7 +229,7 @@ This is the most important section for honest evaluation.
 | Dirac (no 0nubetabeta) | Derived | Majorana allowed | **BPR-unique** |
 | Casimir exponent delta = 2 (QCP-derived; 1.37 fit superseded) | Derived | Standard has no correction | **BPR-unique** |
 | Born rule kappa ~ 10^-5 | Derived | Exact in QM | **BPR-unique** |
-| LIV |dc/c| ~ 10^-21 | Derived | Zero in GR | **BPR-unique** |
+| LIV \|dc/c\| ~ 10^-21 | Derived (SUPERSEDED 2026-10) | Zero in GR | ~~BPR-unique~~ Superseded (2026-10): BPR-6D predicts zero, as GR does |
 | v_GW = c | Consistent | Predicted | Shared |
 | Tsirelson 2sqrt(2) | Consistent | Predicted | Shared |
 | Proton tau > 10^34 yr | Consistent | Predicted | Shared |

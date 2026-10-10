@@ -98,31 +98,50 @@ class TestDerivedPredictions:
         """BPR predicts normal neutrino mass ordering."""
         assert predictions["P5.1_hierarchy"] == "normal"
 
-    def test_lorentz_invariance_no_linear_violation(self, predictions):
-        """No linear Lorentz invariance violation (ξ₁ = 0).
+    # ── Legacy arithmetic regressions: P20.1, P20.7, P20.4 (2026-10) ──
+    # The next three tests pin legacy arithmetic in
+    # bpr/quantum_gravity_pheno.py. They are not tests of predictive power
+    # and passing them is not an experimental confirmation: the values are
+    # stipulated on the alpha-calibrated p and are SUPERSEDED by the BPR-6D
+    # architecture decision (doc/derivations/architecture_decision_2026-09-26.md,
+    # section 4), under which BPR-6D predicts no Lorentz violation, the same
+    # as the Standard Model plus general relativity. P20.1, P20.4 and P20.7
+    # were withdrawn as predictions in the 2026-10 review of unmerged
+    # branches (doc/CLOSED_AND_DEPRECATED.md).
 
-        BPR:  ξ₁ = 0 (boundary locality)
+    def test_lorentz_invariance_no_linear_violation(self, predictions):
+        """Legacy arithmetic regression: ξ₁ = 0 (P20.1, SUPERSEDED 2026-10).
+
+        Legacy:  ξ₁ = 0 (attributed to boundary locality / CPT)
         LHAASO: E_QG,1 > 10 × M_Pl
+        ξ₁ = 0 is also the Standard Model plus general relativity value, and
+        the BPR-6D one, so it does not discriminate. Pins the value only.
         """
         xi1 = predictions["P20.1_LIV_xi1"]
         assert xi1 == 0.0, f"ξ₁ = {xi1}, should be exactly 0"
 
     def test_lorentz_violation_below_fermi_bound(self, predictions):
-        """Speed-of-light deviation below Fermi-LAT bound.
+        """Legacy arithmetic regression: exp(−p^{1/3}) < 6e-21 (P20.7, SUPERSEDED 2026-10).
 
-        BPR:  3.38 × 10⁻²¹
-        Fermi: < 6.0 × 10⁻²¹
+        Legacy:  |δc/c| = exp(−p^{1/3}) = 3.38 × 10⁻²¹ at p = 104729 (stipulated)
+        Figure: < 6.0 × 10⁻²¹ (labelled Fermi-LAT in the registry)
+        The 6e-21 figure is a time-of-flight bound on energy-dependent
+        dispersion (the 2026-10 review traces it to Nemiroff et al. 2012,
+        6.94e-21). It does not constrain an energy-independent offset, so
+        this pins arithmetic only and is not a confirmation.
         """
         delta_c = predictions["P20.7_LI_delta_c_over_c"]
         assert delta_c < 6.0e-21, \
-            f"|δc/c| = {delta_c:.2e}, exceeds Fermi bound 6e-21"
+            f"|δc/c| = {delta_c:.2e}, exceeds the legacy 6e-21 figure"
         assert delta_c > 0, "Deviation must be positive"
 
     def test_gup_beta_within_bounds(self, predictions):
-        """GUP parameter β = 1/p well within experimental bound.
+        """Legacy arithmetic regression: GUP β = 1/p (P20.4, SUPERSEDED 2026-10).
 
-        BPR:  9.55 × 10⁻⁶
+        Legacy:  β = 1/p = 9.55 × 10⁻⁶ (stipulated)
         Bound: β < 4 × 10⁴
+        The architecture decision (section 4) supersedes the GUP; p has no
+        BPR-6D counterpart. Pins the arithmetic only.
         """
         beta = predictions["P20.4_GUP_beta"]
         assert beta < 4e4, f"β = {beta}, exceeds bound 4e4"

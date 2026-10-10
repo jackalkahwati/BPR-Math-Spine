@@ -79,8 +79,12 @@ DEFAULT_AUTONOMY_POLICY = AutonomyPolicy(
             ),
         ),
     ),
+    # P20.7_LI_delta_c_over_c was removed as a flagship (2026-10): the
+    # exp(-p^{1/3}) speed-of-light variation is stipulated, superseded by the
+    # BPR-6D architecture decision (section 4), and withdrawn as a prediction
+    # in the 2026-10 review of unmerged branches (doc/CLOSED_AND_DEPRECATED.md).
+    # Its registry row and query hints remain, so an explicit scan still works.
     flagship_prediction_ids=(
-        "P20.7_LI_delta_c_over_c",
         "P4.7_Tc_niobium_K",
         "P4.9_Tc_MgB2_K",
         "P5.8_delta_m21_sq_eV2",
@@ -88,6 +92,7 @@ DEFAULT_AUTONOMY_POLICY = AutonomyPolicy(
         "P22.1_inv_alpha_0",
     ),
     query_hints={
+        # Legacy, not a flagship (see above); kept for explicit scans.
         "P20.7_LI_delta_c_over_c": (
             "Lorentz invariance violation",
             "gamma ray burst timing",

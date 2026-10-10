@@ -498,6 +498,24 @@ The generalized uncertainty principle yields a black hole remnant
 mass $M_{\mathrm{rem}} = \MPl\,(1 + 1/(2p))$.  These predictions
 are testable with LISA post-merger ringdown observations.
 
+\textit{Withdrawn (2026-10).}  The QNM shift in Eq.~\eqref{eq:qnm}
+is withdrawn as a prediction, together with its LISA test.  The
+coefficient is stipulated, not derived: this paper uses $1/(2p)
+\approx 4.8\times10^{-6}$, the code's Bridge~11
+(\texttt{bh\_quasinormal\_modes} in
+\texttt{bpr/bridges/cosmology\_gravity.py}) uses $\ln p/(4\pi p)
+\approx 8.8\times10^{-6}$, and \texttt{bpr/black\_hole.py} contains
+no QNM correction.  For single-mode ($l=2$, $n=0$) ringdown a
+mass-independent fractional shift is degenerate with a small change
+in the remnant's mass and spin, so it does not distinguish \bpr{}
+from GR.  The code's own \texttt{detectable\_by} flag reports the
+shift as not detectable with current or planned detectors.  The
+size also rests on the $\alpha$-calibrated $p$, which has no
+counterpart in the current BPR-6D architecture
+(\texttt{doc/derivations/architecture\_decision\_2026-09-26.md}).
+Found in the 2026-10 review of unmerged branches; see
+\texttt{doc/CLOSED\_AND\_DEPRECATED.md}.
+
 \subsection{CMB power spectrum modulation}
 
 The non-trivial zeros of the Riemann zeta function modulate the
@@ -795,6 +813,9 @@ A framework that cannot be falsified is not physics.  We organize
 
 \item \textbf{BH QNM shift $\sim 10^{-5}$}: Falsified if no
   shift at the $10^{-6}$ level.  Experiment: LISA ringdown.
+  \textit{Withdrawn (2026-10): the shift is stipulated, degenerate
+  with the remnant's mass and spin, and not detectable by the code's
+  own flag; see the note after Eq.~\eqref{eq:qnm}.}
 
 \item \textbf{Muon $g-2$ BPR correction}: Falsified if the $g-2$
   discrepancy is resolved without a BPR-type term.  Experiment:
@@ -882,7 +903,7 @@ Errors are computed relative to the central experimental value.}
 20 & $f_{\mathrm{QNM}}$ (Hz, $10\,M_\odot$) & 1207 & --- & --- &
    \texttt{black\_hole} & Prediction \\
 21 & BPR QNM shift & $\sim\!10^{-5}$ & --- & --- &
-   \texttt{black\_hole} & Prediction \\
+   \texttt{black\_hole} & Withdrawn (2026-10) \\
 \colrule
 \multicolumn{7}{c}{\textit{Condensed Matter \& Atomic}} \\
 22 & MgB$_2$ $T_c$ (K) & 41.3 & 39 & 6\% &

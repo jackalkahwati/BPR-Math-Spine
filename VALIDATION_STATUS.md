@@ -1,6 +1,12 @@
 # BPR-Math-Spine: Prediction Validation Status
 
 > **Version:** 1.0.3 (2026-09-10) — foundation repair
+> **2026-10 status note.** The architecture decision (`doc/derivations/architecture_decision_2026-09-26.md` §4)
+> supersedes the substrate-based claims in this file. The substrate prime p has no BPR-6D counterpart. The fine-structure
+> formula is an inverse calibration in p. The Lorentz-violation, ξ₂ and GUP values (P20.x) are superseded: BPR-6D is
+> exactly Lorentz invariant. Following the 2026-10 review of unmerged branches, P11.2, P12.7, P12.11, P17.1, P17.8, P20.1,
+> P20.4, P20.7, P22.1 and P22.3 are relabelled; ξ₁ = 0 and the LHAASO row are removed from the lists of BPR-specific evidence;
+> and the δ_CP comparisons below are corrected. See `doc/CLOSED_AND_DEPRECATED.md` §1c. Earlier labels and numbers are kept, relabelled, for history.
 > **v1.0.3 changes (SUPERSEDES the v0.9.9 and v1.0 status claims below for the flavor sector):**
 > Two foundational derivations were audited and found invalid; both are WITHDRAWN.
 > (1) The "Atiyah–Singer index = n_gen" step behind l_t=283: for an ordinary SU(N_c) bundle
@@ -31,6 +37,9 @@
 > n2EDM at PSI entering construction (arXiv:2512.14975) — targeting 10⁻²⁸ e·cm.
 > Meissner-levitated Casimir sensor (arXiv:2602.13829) now in BPR deviation sensitivity range.
 > **v1.0 changes:** ALL 22 predictions now DERIVED. Zero free parameters. Zero experimental anchors.
+> (2026-10: "zero free parameters" does not hold. p is an α calibration, the nearest prime ≡ 1 (mod 4) to the root
+> p = 104,749.03 of the α formula, and the "over-determined / uniquely selected" claim is withdrawn. v_EW from the boundary
+> formula takes Λ_QCD as an input. See `doc/CLOSED_AND_DEPRECATED.md` §1c.)
 > Input set: (v_EW=246 GeV, p=104761, z=6, N_c=z/2=3, n_gen=3, α=1/137).
 > CKM angles: m_d/m_s, m_s/m_b, m_u/m_t all from l-modes+W_c; no PDG masses.
 > PMNS θ₁₂ from p only; θ₂₃ from m_μ/m_τ=l_μ²/l_τ²=210/3481.
@@ -68,6 +77,10 @@
 | **CONJECTURAL** | Novel BPR claim, not yet testable |
 | **OPEN** | BPR does not yet derive this quantity |
 | **SUSPICIOUS** | Value matches because it was likely an input, not a genuine prediction |
+| **SUPERSEDED** (2026-10) | Replaced by the BPR-6D architecture decision (§4); not a prediction of the current theory |
+| **STIPULATED** / **ANSATZ** (2026-10) | Written down or chosen, not derived; numbers kept for history |
+| **CALIBRATED** (2026-10) | Reproduces the datum it was fixed by; not a test |
+| **NOT A PREDICTION** (2026-10) | Rests on a hard-coded input or an identity |
 
 ## Previously Catastrophic Failures — Root Cause and Fixes
 
@@ -82,6 +95,8 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 - **Galactic/cosmological predictions:** use cosmological boundary (R_Hubble)
 - **Particle physics:** use electroweak/GUT scales
 - **The prime p = 104761** is the universal topological invariant across all scales
+  (2026-10: withdrawn. p is an α calibration, not a topological invariant fixed independently of data, and it has no
+  BPR-6D counterpart. See `doc/CLOSED_AND_DEPRECATED.md` §1c.)
 
 ### Specific Fixes
 
@@ -138,7 +153,7 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 ### BPR Cosmology & Early Universe (P11.x)
 | # | Prediction | Value | Status | Comparison |
 |---|-----------|-------|--------|------------|
-| P11.2 | n_s | 0.968 | FRAMEWORK | Planck: 0.9649 ± 0.004 (N derived from p, but Starobinsky potential assumed) |
+| P11.2 | n_s | 0.968 | FRAMEWORK | Planck: 0.9649 ± 0.004 (N assumed: N_e = p^{1/3}(1+1/d) is an ansatz, not derived from p (2026-10; earlier text said "N derived from p"); Starobinsky potential also assumed. The Planck 1σ band corresponds to p ∈ [55,603, 114,393], so n_s does not discriminate p.) |
 | P11.3 | r | 0.003 | FRAMEWORK | Bound: r < 0.044 (Starobinsky potential assumed, not derived) |
 | P11.7 | η_baryon | 6.2×10⁻¹⁰ | DERIVED | Obs: 6.14×10⁻¹⁰ ± 0.19×10⁻¹⁰ (boundary-enhanced sphaleron, 0.4σ) |
 | P11.15 | Ω_DM h² | ~0.11 | DERIVED | Planck: 0.120 ± 0.001 (boundary collective freeze-out, within 10%) |
@@ -152,10 +167,10 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 ### Gauge Unification & Hierarchy (P17.x)
 | # | Prediction | Value | Status | Notes |
 |---|-----------|-------|--------|-------|
-| P17.1 | GUT scale | 6.8×10¹⁷ GeV | DERIVED | Standard: ~2×10¹⁶ (30× off) |
+| P17.1 | GUT scale | 6.8×10¹⁷ GeV | STIPULATED (2026-10; was DERIVED) | Standard: ~2×10¹⁶ (30× off). M_GUT = M_Pl/p^{1/4} is an ansatz (e7efce9); with α_GUT = π/(p^{1/3}z) it gives α_s ≈ 0.020, sin²θ_W ≈ 0.274, 1/α_em(M_Z) ≈ 261 at M_Z. Superseded by BPR-6D Phase 1 (`bpr/model_scales.py`: M_GUT ≈ 4.5×10¹⁶ GeV, independent of p). |
 | P17.4 | Hierarchy value | OPEN | OPEN | Cannot yet derive M_Pl/v from (p,N) |
 | P17.6 | Higgs mass protected | YES | DERIVED | UV cutoff from boundary |
-| P17.8 | τ_proton(GUT) | ~10⁴³ yr | DERIVED | Bound: > 2.4×10³⁴ yr ✓ |
+| P17.8 | τ_proton(GUT) | ~10⁴³ yr | NOT A PREDICTION (2026-10; was DERIVED) | Bound: > 2.4×10³⁴ yr. Uses the hard-coded α_GUT = 1/40 and the stipulated M_GUT of P17.1. BPR-6D Phase 1's naive estimate is ~2.6×10³⁸ yr. |
 
 ### QCD & Flavor Physics (P12.x)
 
@@ -183,11 +198,11 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | P12.4 | m_s | 93.6 MeV | **DERIVED** | PDG: 93.4 (0.2%); from z-derived spectrum, no free parameters |
 | P12.5 | m_c | 1242 MeV | **DERIVED** | PDG: 1270 ± 20 (1.38σ); l_c=z(z−2)=24; m_t=v_EW/√2 anchor; 1% theory floor |
 | P12.6 | m_b | 4180 MeV | **DERIVED** | PDG: 4180 ± 40 (0.0σ); m_b=m_t×(E_b/c_t)×factor from l-modes |
-| P12.7 | m_t = v_EW/√2 (y_t = 1) | 174.1 GeV | **DERIVED** | BPR predicts pole mass. Pole-mass extractions from tt̄ differential cross-sections (theoretically clean): ATLAS 13 TeV 173.1 +2.0/−2.1 (+0.5σ), CMS 13 TeV 173.7 +1.9/−2.1 (+0.2σ). ATLAS+CMS combined MC mass 172.52±0.33 (not directly comparable; MC→pole correction ≈ +0.5–1 GeV gives +1.8 to +3.3σ — scheme-dependent, not a falsification). |
+| P12.7 | m_t = v_EW/√2 (y_t = 1) | 174.1 GeV | FRAMEWORK (2026-10; was **DERIVED**) | 2026-10: 174.1 GeV uses the measured v = 246.22 GeV, not a derived one; the framework's own boundary v_EW = 243.5 GeV would give 172.2 GeV. BPR predicts pole mass. Pole-mass extractions from tt̄ differential cross-sections (theoretically clean): ATLAS 13 TeV 173.1 +2.0/−2.1 (+0.5σ), CMS 13 TeV 173.7 +1.9/−2.1 (+0.2σ). ATLAS+CMS combined MC mass 172.52±0.33 (not directly comparable; MC→pole correction ≈ +0.5–1 GeV gives +1.8 to +3.3σ — scheme-dependent, not a falsification). |
 | P12.8 | CKM θ₁₂ | 12.92° | **DERIVED** | PDG: 13.04°; sin(θ_C)=√(m_d/m_s)=√(r_ds); r_ds from l-modes+W_c only |
 | P12.9 | CKM θ₂₃ | 2.33° | **DERIVED** | PDG: ~2.38°; √(r_sb)/√(ln p+z/3); r_sb from l-modes+W_c; p,z only |
 | P12.10 | CKM θ₁₃ | 0.20° | **DERIVED** | PDG: ~0.201°; √(r_ut)=√(1/l_t²); l_t=283 CONJECTURAL (v1.0.3) |
-| P12.11 | CKM δ_CP = π/2−1/√(z+1) | 68.3° | **DERIVED** | PDG: 68.5°±5.7° (0.03σ) — pure geometry, no free parameters ✓ |
+| P12.11 | CKM δ_CP = π/2−1/√(z+1) | 68.3° | ANSATZ (2026-10; was **DERIVED**) | Phenomenological ansatz that replaced the hard-coded input 1.196 rad (99ff50e). Current CKM fit δ = 1.144 ± 0.027 rad (65.5° ± 1.5°): +1.8σ, mildly disfavoured; z = 5 fits better. The earlier "PDG: 68.5°±5.7°" was an older global fit, with an error about four times the current one. |
 | P12.12 | Jarlskog J | 2.9×10⁻⁵ | **DERIVED** | PDG: 3.12×10⁻⁵ (6.5% off); follows from DERIVED angles |
 | P12.13 | m_proton | 0.996 GeV | CONSISTENT | Standard QCD: m_p ≈ 3Λ_QCD (not BPR-specific) |
 | P12.14 | m_pion | 134.5 MeV | FRAMEWORK | GMOR with BPR-motivated condensate \|qq\|^{1/3}=Λ_QCD√(2/3); 0.4% off observed 135 MeV. f_π and Λ_QCD are QCD inputs. |
@@ -221,9 +236,9 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 ### Quantum Gravity Phenomenology (P20.x)
 | # | Prediction | Value | Status | Comparison |
 |---|-----------|-------|--------|------------|
-| P20.1 | ξ₁ = 0 (no linear LIV) | 0 | DERIVED | LHAASO GRB 221009A 2024 (arXiv:2402.06009): E_QG,1 > 10 M_Pl ✓ — squeezes LQG/string LIV; BPR predicts exactly zero, not just suppressed |
-| P20.4 | GUP β = 1/p | 9.5×10⁻⁶ | DERIVED | Bound: β < 4×10⁴ (well within) |
-| P20.7 | |δc/c| | 3.4×10⁻²¹ | DERIVED | Fermi: < 6×10⁻²¹ (just below — testable!); LHAASO quadratic LIV bound E_QG,2 > 6×10⁻⁸ M_Pl consistent |
+| P20.1 | ξ₁ = 0 (no linear LIV) | 0 | SUPERSEDED (2026-10; was DERIVED) | LHAASO GRB 221009A 2024 (arXiv:2402.06009): E_QG,1 > 10 M_Pl. BPR-6D is exactly Lorentz invariant and predicts zero LIV, as SM+GR do, so this does not discriminate. |
+| P20.4 | GUP β = 1/p | 9.5×10⁻⁶ | SUPERSEDED (2026-10; was DERIVED) | Bound: β < 4×10⁴. Stipulated on the calibrated p; architecture decision §4 supersedes the GUP. |
+| P20.7 | \|δc/c\| | 3.4×10⁻²¹ | SUPERSEDED (2026-10; was DERIVED) | e^{−p^{1/3}} = 3.36×10⁻²¹ at p = 104761 (3.38×10⁻²¹ at p = 104729), stipulated and superseded by architecture decision §4. "Fermi: < 6×10⁻²¹" is Nemiroff et al. 2012 (6.94×10⁻²¹), a dispersion bound, not a bound on an energy-independent offset. LHAASO quadratic LIV bound E_QG,2 > 6×10⁻⁸ M_Pl consistent |
 
 ### Emergent Spacetime & Holography (P13.x)
 | # | Prediction | Status | Notes |
@@ -273,9 +288,9 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 ### Fine Structure Constant from Substrate (P22.x)
 | # | Prediction | Value | Status | Comparison |
 |---|-----------|-------|--------|------------|
-| P22.1 | 1/α at q²=0 | 137.031 | DERIVED | CODATA: 137.036 ✓ 0.06σ at theory precision (~55 ppm) |
-| P22.2 | 1/α at M_Z | 127.95 | DERIVED | PDG: 128.944 ✓ 0.50σ at running-coupling theory precision |
-| P22.3 | 1/α_GUT | ~90 | CONJECTURAL | Amaldi 1987: ~40 (scheme-dependent; factor ~2 discrepancy) |
+| P22.1 | 1/α at q²=0 | 137.031 | CALIBRATED (2026-10; was DERIVED) | 2026-10: at p = 104761 the formula gives 137.0386 (+19.3 ppm); 137.031 was the p = 104729 arithmetic. p is chosen as the nearest prime ≡ 1 (mod 4) to the formula's root 104,749.03, so this reproduces its own input and is not a test. CODATA: 137.036 (earlier entry: ✓ 0.06σ at theory precision ~55 ppm) |
+| P22.2 | 1/α at M_Z | 127.95 | DERIVED | PDG: 128.944 ✓ 0.50σ at running-coupling theory precision. (2026-10: 1/α(0) minus a fixed 9.084, so it inherits the calibration of P22.1.) |
+| P22.3 | 1/α_GUT | ~90 | CONJECTURAL | Amaldi 1987: ~40 (scheme-dependent; factor ~2 discrepancy). (2026-10: ~40 is a model-dependent extrapolation, not a measurement. The legacy code holds three inconsistent values: 90.0 from the bare ansatz, 48.6 from the backward fit and 40 hard-coded in `ProtonDecay`.) |
 
 ### Meta-Boundary Dynamics (P23.x)
 | # | Prediction | Value | Status | Comparison |
@@ -309,15 +324,15 @@ different values and experiment can distinguish them. "Consistent with both" is 
 | **θ_QCD = 0 exactly, no axion** | p≡1 mod 4 → orientable substrate → ∫F∧F=0 topologically | 0 | Unsolved (strong CP problem); needs axion or tuning | \|d_n\| < 1.8×10⁻²⁶ e·cm | — | ADMX/CASPEr ruling out KSVZ/DFSZ window with no signal (~2030) |
 | **n_gen = 3 exactly** | \|SU(3) prime winding sectors\| = 3 from p=104761 | 3 | Free parameter — SM takes 3 as unexplained input | Confirmed | 0.0σ | Already confirmed; any 4th generation falsifies BPR |
 | **Normal neutrino hierarchy** | Orientable substrate → normal ordering; same p≡1 mod 4 argument as θ_QCD | Normal | Agnostic — both orderings allowed | T2K+NOvA prefer normal; JUNO resolving | — | JUNO ~2028 to >3σ; inverted falsifies BPR |
-| **Linear LIV ξ₁ = 0 exactly** | Discrete substrate is Lorentz-covariant at boundary; no linear dispersion | 0 | QG models (LQG, string) predict LIV at M_Pl | LHAASO GRB 221009A: E_QG,1 > 10 M_Pl (arXiv:2402.06009) | — | BPR predicts strictly zero (not just >M_Pl suppressed); quadratic signal |δc/c\|=3.4×10⁻²¹ is next target |
-| **CKM δ_CP = π/2−1/√(z+1)** | z=6 substrate coordination number — pure geometry | 68.3° | No formula; free parameter fitted from unitarity triangle | PDG: 68.5°±5.7°; Belle II ϕ₃=75.2°±7.6° (arXiv:2509.25765) | 0.03σ | Belle II Run 2 + LHCb Run 3 → ~1° precision; formula directly testable |
+| **Linear LIV ξ₁ = 0 exactly** — REMOVED FROM TIER 1 (2026-10) | Discrete substrate is Lorentz-covariant at boundary; no linear dispersion (superseded: BPR-6D is exactly Lorentz invariant) | 0 | SM+GR also predict exactly zero; only some QG models (LQG, string) predict LIV at M_Pl | LHAASO GRB 221009A: E_QG,1 > 10 M_Pl (arXiv:2402.06009) | — | Fails this section's rule: BPR-6D and SM+GR both predict zero. The energy-independent offset \|δc/c\| = e^{−p^{1/3}} ≈ 3.4×10⁻²¹ (mislabelled a "quadratic signal" before 2026-10) is superseded (P20.7). |
+| **CKM δ_CP = π/2−1/√(z+1)** — ANSATZ (2026-10) | Phenomenological ansatz in z (it replaced the hard-coded input 1.196 rad); not a derivation | 68.3° | No formula; free parameter fitted from unitarity triangle | Current CKM fit δ = 1.144 ± 0.027 rad (65.5° ± 1.5°); Belle II ϕ₃=75.2°±7.6° (arXiv:2509.25765). Earlier entry used an older fit, 68.5°±5.7°. | +1.8σ | Belle II Run 2 + LHCb Run 3 → ~1° precision would test the ansatz. It does not resolve z: z = 5 fits the current value better, and 30 of 517 simple closed forms lie within 1σ of the old target. |
 | **PMNS θ₁₃ = 8.64°** | Boundary lattice Gaussian localization: sin θ₁₃ = exp(−l₃(l₃+1)/(2z))/√(2n_gen) = e⁻¹/√6 | 8.64° | Free parameter; tribimaximal predicted 0° before 2012 | Daya Bay 2012: 8.54°±0.15° | **+0.65σ** | Fully derived from (z, n_gen, l₃). NOTE: other discrete symmetry models (T₇, A₄) also predicted non-zero θ₁₃ before 2012 (arXiv:1108.0570) — but BPR now has a closed-form derivation they lack |
 
 ### Tier 2 — Supporting (BPR explains something SM leaves unexplained)
 
 | Prediction | BPR value | SM status | Observed | σ | Notes |
 |-----------|-----------|-----------|----------|---|-------|
-| **Top Yukawa y_t = 1** | m_t = v_EW/√2 = 174.1 GeV (pole mass) from boundary saturation | Observed to be ≈1, no explanation | Pole-mass extractions (differential cross-section): ATLAS 13 TeV 173.1±2.0 GeV, CMS 13 TeV 173.7±2.0 GeV | +0.2 to +0.5σ ✓ | SM has no reason y_t=1; BPR derives it. Pole-mass extractions agree at <1σ. ATLAS+CMS MC-mass combined (172.52±0.33) is not directly comparable — scheme correction +0.5–1 GeV applies. |
+| **Top Yukawa y_t = 1** | m_t = v_EW/√2 = 174.1 GeV (pole mass) from boundary saturation | Observed to be ≈1, no explanation | Pole-mass extractions (differential cross-section): ATLAS 13 TeV 173.1±2.0 GeV, CMS 13 TeV 173.7±2.0 GeV | +0.2 to +0.5σ ✓ | 2026-10: 174.1 GeV uses the measured v; the framework's own v_EW = 243.5 GeV gives 172.2 GeV (P12.7). SM has no reason y_t=1; BPR derives it. Pole-mass extractions agree at <1σ. ATLAS+CMS MC-mass combined (172.52±0.33) is not directly comparable — scheme correction +0.5–1 GeV applies. |
 | **η_baryon = 6.2×10⁻¹⁰** | Sphaleron efficiency enhanced by W_c topology | Needs leptogenesis + many free parameters | BBN 2024 (arXiv:2401.15054): 6.14×10⁻¹⁰ | 0.4σ | BPR mechanism is specific; SM baryogenesis models can also fit |
 | **sin²θ₁₂ = 0.3083** | 1/3−1/(3.5 ln p) from p alone | Free parameter — SM always fits | JUNO 2025: 0.3092±0.0087 (arXiv:2511.14593) | 0.03σ | Discriminates vs. tribimaximal (1/3, now 2.8σ excluded by JUNO); not yet vs. other discrete-symmetry models; decisive at JUNO full precision ±0.002 |
 
@@ -346,10 +361,11 @@ different values and experiment can distinguish them. "Consistent with both" is 
 | ADMX excludes DFSZ axions at 3.27–3.34 μeV, null signal | [arXiv:2408.15227](https://arxiv.org/abs/2408.15227) | Same — DFSZ null now documented. Window narrowing on both benchmark models. |
 | Extended haloscope near 1.036 GHz, null, approaching DFSZ | [arXiv:2602.05388](https://arxiv.org/html/2602.05388) | Third independent null. No axion detected across progressively larger mass range. |
 | HAYSTAC Phase II: null in 17–19 μeV range, sub-quantum noise floor | [arXiv:2409.08998](https://arxiv.org/abs/2409.08998) | Fourth independent axion null. Widest squeezed-state search to date. KSVZ excluded in this window. |
-| LHAASO: E_QG,1 > 10 M_Pl — linear LIV squeezed past Planck scale | [arXiv:2402.06009](https://arxiv.org/abs/2402.06009) | BPR predicts ξ₁=0 exactly. LQG/string LIV models that predict E_QG,1~M_Pl now in tension. |
 | JUNO: sin²θ₁₂ = 0.3092±0.0087 | [arXiv:2511.14593](https://arxiv.org/abs/2511.14593) | BPR formula 1/3−1/(3.5 ln p)=0.3083 — 0.03σ. Tribimaximal (1/3) now 2.8σ excluded. |
 | JUNO precision era: mixing matrix constrained via charged-lepton rotation hypotheses | [arXiv:2603.29876](https://arxiv.org/abs/2603.29876) | Tests TBM+perturbation texture structures (the class BPR belongs to) — JUNO precision starts discriminating these. BPR's specific mechanism (Gaussian localization breaking μ-τ symmetry) is now testable. |
-| T2K+NOvA joint (Oct 2025): first combined LBL analysis | [arXiv:2510.19888](https://arxiv.org/abs/2510.19888) | Δm²₃₂ measured precisely in normal ordering. δ_CP 3σ interval [-248°, 54°] from these two experiments alone — BPR at 68.3° is just outside. BUT PDG global fit (all experiments) gives δ_CP=68.5°±5.7°, consistent with BPR at 0.03σ. Tension between LBL and reactor data is a known open issue in neutrino physics — global fit is the right reference. |
+| T2K+NOvA joint (Oct 2025): first combined LBL analysis | [arXiv:2510.19888](https://arxiv.org/abs/2510.19888) | Δm²₃₂ measured precisely in normal ordering. CORRECTION (2026-10): the δ_CP interval [-248°, 54°] from these experiments is the leptonic (PMNS) Dirac phase. BPR's 68.3° formula is for the quark (CKM) phase, and the "68.5°±5.7°" global fit quoted here was a CKM value. The earlier text set this interval against BPR ("just outside", then "0.03σ"), comparing different observables, so neither statement applies. |
+
+2026-10: the LHAASO row (E_QG,1 > 10 M_Pl, [arXiv:2402.06009](https://arxiv.org/abs/2402.06009), read as "BPR predicts ξ₁=0 exactly") was removed from this list. BPR-6D predicts no Lorentz violation, exactly as SM+GR do, so the bound is consistent with both and supports neither (`doc/CLOSED_AND_DEPRECATED.md` §1c).
 
 ### What weakens BPR claims (honest accounting)
 
@@ -357,11 +373,11 @@ different values and experiment can distinguish them. "Consistent with both" is 
 |---------|-------|---------------|
 | Multiple discrete symmetry models (T₇, A₄) also predicted non-zero θ₁₃ before Daya Bay | [arXiv:1108.0570](https://arxiv.org/abs/1108.0570) | BPR's θ₁₃ prediction was NOT uniquely discriminating — it shared the prediction with other frameworks |
 | Competing formula sin²θ₁₂=(1−2tan²θ₁₃)/3 proposed | [arXiv:2510.17583](https://arxiv.org/abs/2510.17583) | CORRECTION: Xing formula gives 0.3183, which is +1.05σ from JUNO now and would be +4.6σ at full JUNO precision — already disfavored. BPR (0.3086, −0.07σ) is winning this comparison. |
-| LHCb γ = 53.9°+9.5−8.9° noted as "below BPR δ_CP" | [arXiv:2504.00354](https://arxiv.org/abs/2504.00354) | CORRECTION: γ (unitarity triangle angle) ≠ δ_CP (Dirac phase) — wrong observable compared. BPR predicts δ_CP=68.3°; PDG global fit δ_CP=68.5°±5.7° is the right comparison (0.03σ). |
+| LHCb γ = 53.9°+9.5−8.9° noted as "below BPR δ_CP" | [arXiv:2504.00354](https://arxiv.org/abs/2504.00354) | CORRECTION (2026-10): in the standard CKM parametrisation γ ≈ δ (the difference is far below these errors), so γ is the right observable and the earlier correction, "γ ≠ δ_CP — wrong observable", was itself wrong. The ansatz value 68.3° is 1.5σ above this γ and +1.8σ above the current CKM fit δ = 1.144 ± 0.027 rad. The "68.5°±5.7° (0.03σ)" comparison used an older fit. |
 | θ₁₃ = 8.64° — sin θ₁₃ = e⁻¹/√6 now **DERIVED** | bpr/neutrino.py | RESOLVED: Boundary lattice Gaussian localization gives sin θ₁₃ = exp(−l₃(l₃+1)/(2z))/√(2n_gen) = e⁻¹/√6 = 0.1502 → 8.64° (+0.65σ from Daya Bay). Previously hardcoded; now derived from (z, n_gen, l₃) with zero free parameters. |
 | ADMX cannot yet reach DFSZ sensitivity across full mass range | [arXiv:2504.07279](https://arxiv.org/abs/2504.07279) | Axion window not fully closed — BPR's no-axion prediction not yet confirmed |
 | ATLAS+CMS combined m_t = 172.52 ± 0.33 GeV (15 measurements, 7+8 TeV) | [arXiv:2402.08713](https://arxiv.org/abs/2402.08713) | BPR's 174.1 GeV is 4.8σ away at face value from this combined result (more precise than the single ATLAS 2025 measurement at ~2.2σ). MC mass ≠ pole mass (scheme correction ~0.5–1 GeV reduces this), but the combined result puts real pressure on BPR's y_t=1 derivation. This is the most concerning quantitative tension in the current survey. |
-| T2K+NOvA δ_CP interval [-248°, 54°] does not contain BPR's 68.3° | [arXiv:2510.19888](https://arxiv.org/abs/2510.19888) | These two LBL experiments alone exclude BPR's δ_CP at ~3σ. Resolved by noting PDG global fit (all data) gives 68.5°±5.7° — the tension is between LBL and reactor experiments, not BPR specifically. Monitor for resolution. |
+| T2K+NOvA δ_CP interval [-248°, 54°] does not contain BPR's 68.3° | [arXiv:2510.19888](https://arxiv.org/abs/2510.19888) | CORRECTION (2026-10): not a test of BPR's formula. The T2K+NOvA interval is the leptonic (PMNS) phase, while 68.3° is BPR's quark (CKM) ansatz, and the "68.5°±5.7°" quoted as the resolution was a CKM value. The earlier text ("exclude BPR's δ_CP at ~3σ … tension between LBL and reactor experiments") mixed the two sectors. The relevant pressure is the CKM comparison: +1.8σ against δ = 1.144 ± 0.027 rad. |
 
 ### Summary verdict
 
@@ -370,7 +386,7 @@ BPR is **not validated** but is **accumulating consistent null results** in its 
 - The **JUNO sin²θ₁₂** result is consistent but not uniquely BPR.
 - The **θ₁₃** derivation is now closed-form (sin θ₁₃ = e⁻¹/√6, +0.65σ) — BPR now has a unique derivation path that discrete symmetry models lack.
 - The **top mass**: BPR's 174.1 GeV is a *pole mass* prediction. Pole-mass extractions from differential cross-sections (ATLAS 173.1±2.0, CMS 173.7±2.0) agree at +0.2 to +0.5σ. The apparent 4.8σ tension with the ATLAS+CMS MC-mass combined (172.52±0.33) is a scheme mismatch, not a pole-mass disagreement. Decisive apples-to-apples test requires a pole-mass extraction with <0.5 GeV uncertainty (expected ~2027 from Run-3 differential data).
-- **δ_CP tension**: T2K+NOvA alone exclude BPR's 68.3°, but the PDG global fit (all data) is consistent. Monitoring the LBL vs reactor data tension is important.
+- **δ_CP tension** (corrected 2026-10): the earlier bullet compared the leptonic T2K+NOvA phase with BPR's CKM value, so it does not apply. The CKM ansatz π/2−1/√7 = 68.3° sits +1.8σ above the current CKM fit δ = 1.144 ± 0.027 rad, which mildly disfavours it.
 - Real validation requires: JUNO hierarchy resolution, axion window closure, Belle II δ_CP at ±1°, and a careful mass-scheme analysis for m_t.
 
 ## Live Experimental Cross-Check (April 2026)
@@ -379,7 +395,7 @@ BPR is **not validated** but is **accumulating consistent null results** in its 
 |---|---|---|---|---|---|
 | sin²θ₁₂ | 1/3−1/(3.5 ln p) | **0.3083** | JUNO: 0.3092±0.0087 | **0.03σ** ✓ | [arXiv:2511.14593](https://arxiv.org/abs/2511.14593) |
 | m_t (y_t=1) | v_EW/√2 | **174.1 GeV** (pole mass) | Measured values are MC mass (≠ pole mass); MC→pole correction ≈ +0.5–1 GeV. ATLAS 2025: 172.95±0.53 → pole 173.5–174.0 → **+0.3 to +1.2σ** ✓. ATLAS+CMS combined: 172.52±0.33 → pole 173.0–173.5 → **+1.8 to +3.3σ** ⚠️ | scheme-dependent | [arXiv:2502.18216](https://arxiv.org/abs/2502.18216), [arXiv:2402.08713](https://arxiv.org/abs/2402.08713) |
-| δ_CP | π/2−1/√(z+1) | **68.3°** | PDG: 68.5°±5.7° | 0.03σ ✓ | PDG 2024 |
+| δ_CP (CKM; ANSATZ, 2026-10) | π/2−1/√(z+1) | **68.3°** | CKM fit: 1.144±0.027 rad (65.5°±1.5°); earlier entry used an older fit, 68.5°±5.7° | +1.8σ | PDG CKM fit as used in `bpr/fermion_fit.py` (the earlier "PDG 2024" label was wrong: 68.5° is an older global fit, probably PDG 2020) |
 | θ_QCD = 0 | orientability → ∫F∧F=0 | **0** | |d_n|<1.8×10⁻²⁶ e·cm | — ✓ | PSI nEDM |
 | Normal hierarchy | p≡1 mod 4 → orientable | **normal** | preferred; unresolved | — | JUNO ongoing |
 | Casimir deviation | RPST boundary modes | power-law correction | New sensor online | entering range | [arXiv:2602.13829](https://arxiv.org/html/2602.13829) |
@@ -387,7 +403,7 @@ BPR is **not validated** but is **accumulating consistent null results** in its 
 **Upcoming decisive tests:**
 - **JUNO full dataset (~2027-2028):** resolves normal vs. inverted hierarchy to >3σ. BPR falsified if inverted.
 - **n2EDM@PSI:** targets 10⁻²⁸ e·cm. Any nonzero signal falsifies BPR's θ_QCD=0 prediction. ([arXiv:2512.14975](https://arxiv.org/abs/2512.14975))
-- **Belle II Run 2 + LHCb Run 3:** δ_CP precision to ~1°. BPR formula π/2−1/√7=68.3° directly testable.
+- **Belle II Run 2 + LHCb Run 3:** δ_CP precision to ~1°. This would test the ansatz π/2−1/√7=68.3° (2026-10: an ansatz, not a derivation; already +1.8σ from the current CKM fit).
 - **Meissner-levitated Casimir sensor:** first apparatus sensitive to BPR's predicted force-law deviation at submicron separations. ([arXiv:2602.13829](https://arxiv.org/html/2602.13829))
 
 **Most notable result (April 2026):** JUNO's first 59-day dataset measures sin²θ₁₂=0.3092±0.0087.
@@ -410,7 +426,7 @@ derivation power to date.
 | F1 | θ_QCD > 10⁻¹⁰ detected | |θ_QCD| < 10⁻¹⁰ (bound) | Exactly 0 from orientability |
 | F2 | 4th quark/lepton generation discovered | 3 confirmed (LEP, LHC) | v1.0.3: no longer a BPR falsifier — n_gen=3 is an input; topology does not exclude 4 |
 | F3 | Inverted neutrino hierarchy confirmed >5σ | Normal preferred (T2K+NOvA) | Normal from orientability |
-| F4 | CKM δ_CP outside [55°, 80°] at >5σ | 68.5°±5.7° | 68.3° from z=6 geometry |
+| F4 | CKM δ_CP outside [55°, 80°] at >5σ | 65.5°±1.5° (δ = 1.144±0.027 rad; earlier entry: 68.5°±5.7°, an older fit) | 68.3° from the ansatz π/2−1/√(z+1) (2026-10; was "from z=6 geometry") |
 | F5 | l-modes derived and wrong | OPEN | Integer S² modes with l² scaling |
 
 ### Soft Tensions — Require explanation but not immediate falsification
@@ -419,7 +435,7 @@ derivation power to date.
 |-----------|-----|----------|-----|--------|
 | m_μ | 107.2 MeV | 105.66 MeV | 2.5σ | DERIVED tension — l_μ=√210 derived from z(z²-1); discrepancy documented |
 | m_pion | 134.5 MeV | 135 MeV | 0.4% | FRAMEWORK — GMOR with BPR-motivated condensate (z=6 isospin, SU(3) color); f_π and Λ_QCD are QCD inputs. |
-| GUT scale | 6.8×10¹⁷ GeV | ~2×10¹⁶ GeV | 30× | Unresolved; labeled DERIVED but suspicious |
+| GUT scale | 6.8×10¹⁷ GeV | ~2×10¹⁶ GeV | 30× | Unresolved; labeled DERIVED but suspicious. 2026-10: STIPULATED (P17.1), superseded by BPR-6D Phase 1 |
 | Jarlskog J | 2.9×10⁻⁵ | 3.12×10⁻⁵ | 6.5% | DERIVED tension; follows from DERIVED CKM angles |
 
 ## Full-Stack Validation Run (v0.9.4)
@@ -430,12 +446,14 @@ against published experimental data. Results as of Feb 2026:
 | Result | Count | Notes |
 |--------|-------|-------|
 | Pass (<2σ or bound satisfied) | 29 | Green |
-| Caution (2–3σ) | 7 | Yellow — within acceptable theory precision |
+| Caution (2–3σ) | 7 (6 after 2026-10: P22.3 removed) | Yellow — within acceptable theory precision |
 | Fail (>3σ, DERIVED only) | 0 | All DERIVED predictions validated |
 
 Caution predictions (2–3σ): P9.2 cancer depolarization (2.50σ), P10.3 firefly sync ratio (2.49σ),
 P22.3 α_GUT (2.50σ), P15.1 g−2 leading term (1.01σ), P23.1 Turing wavelength (1.20σ),
 P24.1 GUE spacing ratio (1.04σ), P1.3 non-Markovian ratio (0.89σ).
+(2026-10: P22.3 is removed from this tally. Its comparison value, 40 ± 20, is a model-dependent band, not a
+measurement, so it is neither a pass nor a caution.)
 
 ## Summary Scorecard (v0.9.8)
 

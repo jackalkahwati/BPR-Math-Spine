@@ -182,6 +182,16 @@ def impedance_weinberg_angle(
     -------
     dict with sin^2(theta_W) from impedance route and gauge-running
     route, plus comparison.
+
+    NOTE (2026-10): neither returned value tests anything.
+    - ``sin2_theta_W_gauge_running`` is rebuilt from alpha_i(., M_Z), the
+      M_Z inputs of GaugeCouplingRunning, so it equals 0.23122 for every p.
+      ``bpr.consistency._check_sin2_theta_w`` is NON-DISCRIMINATING for
+      this reason.
+    - The impedance route does not use p (W_c = 10 is hard-coded).  At
+      the default windings it gives Z_B/Z_W = 0.985 and
+      sin^2(theta_W) = 0.493, not the "~0.300 → 0.231" of the key-insight
+      line above.
     """
     # --- Impedance route ---
     W_c = 10.0
@@ -212,6 +222,8 @@ def impedance_weinberg_angle(
     sin2_impedance = impedance_result["sin2_theta_W"]
 
     # --- Gauge-running route (cross-check) ---
+    # IDENTITY (2026-10): alpha_i(., M_Z) are the inputs; this is 0.23122
+    # for every p.
     sin2_gauge = None
     if GaugeCouplingRunning is not None:
         gcr = GaugeCouplingRunning(p=p)
@@ -1191,6 +1203,29 @@ def alpha_em_full_chain(p: int = 104761, z: int = 6) -> Dict[str, Any]:
 
     The spread between routes measures internal consistency of BPR.
 
+    STATUS (2026-10): the routes are NOT independent and are no longer
+    averaged.
+    - Route 1 is the only non-trivial one, and it is a calibrated ansatz:
+      p is chosen so that it reproduces alpha (137.0386 at p = 104761,
+      +19.3 ppm).
+    - Route 3 evaluates alpha_1 and alpha_2 at mu = M_Z, which are the
+      inputs of GaugeCouplingRunning, so it returns
+      1/alpha_em(M_Z) = 127.952 for every p.  It is an M_Z-scale identity,
+      not a q^2 = 0 value.  The old code put it in the same mean and
+      spread as the q^2 = 0 routes, mixing scales.  It is now reported
+      separately (``routes_excluded``).
+    - Route 2 as coded computes 2 Z_0 epsilon_0 c, which equals 2 for every
+      p because Z_0 = 1/(epsilon_0 c); it is not alpha.  The SI relation
+      1/alpha = 2h/(e^2 Z_0) would only return the measured alpha that
+      fixes Z_0 (TopologicalImpedance at W = 0 is Z_0).  Either way it is
+      not an independent route.  The computed value is kept, flagged and
+      excluded.
+    route_mean and route_spread now use only independent routes at
+    q^2 = 0.  Route 1 is the only one, so both are NaN and
+    internal_consistency reads "not assessable".  The route mixing was
+    found in the 2026-10 review of unmerged branches.  The route-2 defect
+    was found while applying it (2026-10).
+
     Parameters
     ----------
     p : int
@@ -1201,6 +1236,8 @@ def alpha_em_full_chain(p: int = 104761, z: int = 6) -> Dict[str, Any]:
     Returns
     -------
     dict with all three routes, spread, and comparison to experiment.
+    (2026-10: ``routes_q2_zero_independent`` and ``routes_excluded``
+    separate the routes; see STATUS.)
     """
     gamma_em = 0.5772156649  # Euler-Mascheroni constant
     alpha_exp_inv = 137.035999084  # experimental 1/alpha at q=0
@@ -1213,6 +1250,8 @@ def alpha_em_full_chain(p: int = 104761, z: int = 6) -> Dict[str, Any]:
     alpha_substrate = 1.0 / inv_alpha_substrate
 
     # Route 2: Impedance
+    # DEFECTIVE (2026-10): 2 * Z_0 * epsilon_0 * c == 2 identically, since
+    # Z_0 = 1/(epsilon_0 c).  Kept as computed, excluded from the spread.
     # alpha = 1 / (Z_0 * 2 * epsilon_0 * c)
     # But Z_0 = 1/(epsilon_0 * c), so alpha = epsilon_0 * c / (2 * Z_0 * epsilon_0 * c)
     # Simplifying: alpha = 1 / (2 * Z_0 * epsilon_0 * c)
@@ -1227,6 +1266,8 @@ def alpha_em_full_chain(p: int = 104761, z: int = 6) -> Dict[str, Any]:
     alpha_impedance = 1.0 / inv_alpha_impedance
 
     # Route 3: GUT running
+    # IDENTITY (2026-10): alpha_i(., M_Z) are the M_Z inputs, so this is
+    # 1/alpha_em(M_Z) = 127.952 for every p, at the M_Z scale.
     inv_alpha_gut = None
     if GaugeCouplingRunning is not None:
         gcr = GaugeCouplingRunning(p=p)
@@ -1236,12 +1277,47 @@ def alpha_em_full_chain(p: int = 104761, z: int = 6) -> Dict[str, Any]:
         alpha_em_mz = a1_gut * alpha2 / (a1_gut + alpha2)
         inv_alpha_gut = 1.0 / alpha_em_mz
 
-    # Spread between routes
-    routes = [inv_alpha_substrate, inv_alpha_impedance]
+    # Spread between routes.
+    # Until 2026-10 this averaged all three routes, mixing the q^2 = 0
+    # values with the M_Z-scale identity (route 3) and the defective
+    # route 2.  Only independent q^2 = 0 routes enter now.
+    routes_independent = {"substrate_formula": float(inv_alpha_substrate)}
+    routes_excluded = {
+        "impedance_as_coded": {
+            "inv_alpha": float(inv_alpha_impedance),
+            "scale": "q^2 = 0",
+            "reason": (
+                "defective: 2 Z_0 epsilon_0 c = 2 for every p; the SI "
+                "relation 1/alpha = 2h/(e^2 Z_0) would return the measured "
+                "alpha encoded in Z_0, not an independent value"
+            ),
+        },
+    }
     if inv_alpha_gut is not None:
-        routes.append(inv_alpha_gut)
-    route_spread = float(max(routes) - min(routes))
-    route_mean = float(np.mean(routes))
+        routes_excluded["gut_running_MZ_identity"] = {
+            "inv_alpha": float(inv_alpha_gut),
+            "scale": "M_Z",
+            "reason": (
+                "identity: returns the input 1/alpha_em(M_Z) = 127.952 for "
+                "every p; different scale from the q^2 = 0 routes"
+            ),
+        }
+    vals = list(routes_independent.values())
+    if len(vals) >= 2:
+        route_spread = float(max(vals) - min(vals))
+        route_mean = float(np.mean(vals))
+        internal_consistency = (
+            "excellent" if route_spread < 0.1
+            else "good" if route_spread < 1.0
+            else "moderate" if route_spread < 5.0
+            else "poor"
+        )
+    else:
+        route_spread = float("nan")
+        route_mean = float("nan")
+        internal_consistency = (
+            "not assessable (2026-10): only one independent q^2 = 0 route"
+        )
 
     # Deviations from experiment
     dev_substrate = abs(inv_alpha_substrate - alpha_exp_inv) / alpha_exp_inv
@@ -1254,23 +1330,27 @@ def alpha_em_full_chain(p: int = 104761, z: int = 6) -> Dict[str, Any]:
         "inv_alpha_experimental": alpha_exp_inv,
         "alpha_substrate": float(alpha_substrate),
         "alpha_impedance": float(alpha_impedance),
+        "routes_q2_zero_independent": routes_independent,
+        "routes_excluded": routes_excluded,
         "route_spread": route_spread,
         "route_mean": route_mean,
         "deviation_substrate": float(dev_substrate),
         "deviation_impedance": float(dev_impedance),
         "p": p,
         "z": z,
-        "internal_consistency": (
-            "excellent" if route_spread < 0.1
-            else "good" if route_spread < 1.0
-            else "moderate" if route_spread < 5.0
-            else "poor"
+        "internal_consistency": internal_consistency,
+        "status": (
+            "2026-10: route 1 is a calibrated ansatz (p chosen to reproduce "
+            "alpha); route 2 is defective and route 3 is an M_Z-scale input "
+            "identity, so neither is averaged with route 1. No internal "
+            "consistency test remains."
         ),
         "prediction": (
-            f"1/alpha: substrate={inv_alpha_substrate:.3f}, "
-            f"impedance={inv_alpha_impedance:.3f}, "
-            f"experiment={alpha_exp_inv:.6f}; "
-            f"spread={route_spread:.3f}"
+            f"1/alpha(0): substrate ansatz={inv_alpha_substrate:.4f} "
+            f"(calibrated), experiment={alpha_exp_inv:.6f}; excluded: "
+            f"impedance as coded={inv_alpha_impedance:.3f} (defective), "
+            + (f"1/alpha(M_Z) gut route={inv_alpha_gut:.3f} (input identity)"
+               if inv_alpha_gut is not None else "gut route unavailable")
         ),
     }
 
@@ -1721,6 +1801,19 @@ def topological_phase_boundary(
         sigma_xy = (C + delta_BPR / p) * e^2 / h
         -> Fractional correction ~ 10^{-5} per plateau
 
+    STATUS (2026-10): STIPULATED, no derivation.  The correction
+    delta_BPR / p = ln(p) / (4 pi p) (8.78e-6 at p = 104761, added to the
+    filling; 2.6e-5 relative at nu = 1/3) is written down, not derived
+    from any boundary calculation in the repository.  The same
+    ln(p)/(4 pi p) factor is reused as the legacy QNM frequency shift in
+    ``bpr.bridges.cosmology_gravity.bh_quasinormal_modes``; it is a stock
+    template, not a quantum-Hall result.  Its size is borrowed from the
+    alpha-calibrated p, which has no BPR-6D counterpart.  No comparison
+    with quantum-Hall resistance metrology has been made, so it is not a
+    prediction confronted with data.  Returned as
+    ``status = "stipulated_deviation"``.  Found in the 2026-10 review of
+    unmerged branches; see doc/CLOSED_AND_DEPRECATED.md §1c.
+
     Additionally, BPR predicts that the FQHE filling fractions are
     exactly the Farey mediants of adjacent integer QHE plateaus:
 
@@ -1760,6 +1853,7 @@ def topological_phase_boundary(
     sigma_xy_standard = filling * e2_over_h
 
     # BPR correction: substrate prime introduces a ~ 1/p fractional shift
+    # STIPULATED (2026-10): no derivation; see the docstring STATUS.
     delta_BPR = np.log(float(p)) / (4.0 * np.pi)
     bpr_correction = delta_BPR / float(p)
     sigma_xy_bpr = (filling + bpr_correction) * e2_over_h
@@ -1799,6 +1893,12 @@ def topological_phase_boundary(
         "sigma_xy_bpr_S": float(sigma_xy_bpr),
         "bpr_correction": float(bpr_correction),
         "bpr_correction_sigma_S": float(bpr_correction * e2_over_h),
+        "status": "stipulated_deviation",
+        "bpr_correction_note": (
+            "STIPULATED (2026-10): ln(p)/(4 pi p) is written down, not "
+            "derived; same template as the legacy QNM shift; not compared "
+            "with quantum-Hall metrology."
+        ),
         "farey_fillings": farey_fillings,
         "farey_coverage_of_known_FQHE": float(farey_coverage),
         "known_FQHE_in_Farey": sorted(overlap),
@@ -1809,8 +1909,8 @@ def topological_phase_boundary(
             f"Topological phase boundary at filling {frac}: "
             f"Chern number C={chern_number}, "
             f"sigma_xy = {sigma_xy_standard:.6e} S (standard), "
-            f"{sigma_xy_bpr:.6e} S (BPR). "
-            f"BPR correction = {bpr_correction:.2e}. "
+            f"{sigma_xy_bpr:.6e} S (BPR, stipulated shift). "
+            f"BPR correction = {bpr_correction:.2e} (stipulated, not derived). "
             f"Farey mediants cover {farey_coverage:.0%} of known FQHE fractions."
         ),
     }

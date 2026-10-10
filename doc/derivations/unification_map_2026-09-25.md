@@ -744,6 +744,32 @@ they are not mistaken for results.
   [CLOSED_AND_DEPRECATED.md](../CLOSED_AND_DEPRECATED.md). They were found
   while scoping the openai/math index, but none rests on an openai/math
   result.
+- Found in the 2026-10 review of unmerged branches
+  (`claude/audit-bpr-parameters-6fSrQ`, `claude/bpr-ecdlp-research-SWQnW`,
+  `claude/explore-eml-operator-CA3iK`), in legacy modules with no map node,
+  so no node changes and nothing from those branches is ported:
+  - The QNM ringdown shift (Bridge 11) and the prime-periodic ringdown
+    modulation (Bridge 12) are withdrawn as stipulated. The same
+    ln p/(4πp) template in `topological_phase_boundary` is marked as
+    stipulated.
+  - "p = 104,761 over-determined / uniquely selected" is withdrawn: p is an
+    α calibration.
+  - The CKM δ_CP formula π/2 − 1/√(z+1) and the e-fold count
+    N_e = p^{1/3}(1+1/d) are ansätze.
+  - The legacy GUT chain α_GUT = π/(p^{1/3}z), M_GUT = M_Pl/p^{1/4} fails
+    when run forward, and Phase 1 supersedes it. Its backward-fit α_s,
+    sin²θ_W and α_em(M_Z) are identities for any p, and its forward
+    threshold factors were chosen post hoc.
+  - The P20 Lorentz-violation values are superseded by the architecture
+    decision: ξ₁ = 0, β = 1/p and |δc/c| = e^{−p^{1/3}}.
+  - `cross_predictions.dark_energy_from_impedance` also returns
+    Ω_Λ ≈ 1.05×10⁻¹⁰⁴ for every p, like `dark_energy_from_boundary_action`
+    above.
+  - The EML re-encoding of the α formula is not a result.
+
+  These sharpen the existing limitations of `fine_structure_constant` and
+  `flavor_formulas`. They are listed in
+  [CLOSED_AND_DEPRECATED.md](../CLOSED_AND_DEPRECATED.md) §1c.
 
 ## 7. What would count as "everything ties together"
 

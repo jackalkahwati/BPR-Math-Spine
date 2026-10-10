@@ -316,6 +316,10 @@ _REGISTRY: list[Measurement] = [
     ),
 
     # ─── Gauge Unification & Hierarchy──────────────────────────────
+    # 2026-10 (comment only; registry hash-frozen): the legacy
+    # gauge_unification.ProtonDecay lifetime (~9.7e42 yr) uses a hard-coded
+    # alpha_GUT = 1/40 and the ansatz M_GUT = M_Pl/p^{1/4}; it is not a
+    # prediction. BPR-6D Phase 1 (bpr.model_scales) gives a naive ~2.6e38 yr.
     Measurement(
         prediction_id="P17.8_proton_lifetime_GUT_years",
         name="Proton lifetime (GUT prediction)",
@@ -401,6 +405,18 @@ _REGISTRY: list[Measurement] = [
     ),
 
     # ─── Quantum Gravity Phenomenology─────────────────────────────────
+    # SUPERSEDED (2026-10; comment only, entries kept unchanged because this
+    # registry is hash-frozen by tests/test_foundation_provenance.py and
+    # P20.7 is used by tests/test_research_loop.py). Architecture decision
+    # §4 (doc/derivations/architecture_decision_2026-09-26.md) supersedes
+    # "Lorentz invariance to exp(-p^{1/3})", xi_2 = 1/p dispersion and the
+    # GUP: BPR-6D is exactly Lorentz invariant and p has no counterpart.
+    # So P20.7, P20.4 and P20.1 are not predictions of the current theory,
+    # and BPR-6D's xi_1 = 0 is also the SM+GR value, so it does not
+    # discriminate. The 6.0e-21 bound below traces to Nemiroff et al. 2012
+    # (6.94e-21, GRB 090510), a dispersion bound, not a bound on an
+    # energy-independent offset. Found in the 2026-10 review of unmerged
+    # branches; see doc/CLOSED_AND_DEPRECATED.md §1c.
     Measurement(
         prediction_id="P20.7_LI_delta_c_over_c",
         name="Lorentz invariance violation |δc/c|",
@@ -745,9 +761,16 @@ _REGISTRY: list[Measurement] = [
 
     # ─── Fine Structure Constant from Substrate ──────────────────────────────
     # BPR: 1/α = [ln p]² + z/2 + γ_EM - 1/(2π) for p=104761, z=6 → 137.031
+    # [2026-10 correction: at p=104761 the formula gives 137.0386, +19.3 ppm
+    #  vs CODATA 2018. "137.031" (and "36 ppm" elsewhere) is the p=104729
+    #  arithmetic (137.0316, truncated). The formula is an ANSATZ and p is
+    #  calibrated to reproduce α (map node fine_structure_constant), so this
+    #  entry is a calibration, not a test.]
     # BPR lattice precision is ~55 ppm (δ(1/α) ≈ 0.0075); the CODATA measurement
     # uncertainty (2.1e-8) is irrelevant at this theory precision level.
     # Comparison uncertainty set to BPR theory precision ≈ 0.075.
+    # [2026-10 note: the stored 0.075 is ~550 ppm, ten times the ~55 ppm
+    #  (0.0075) stated above; the stored value is left unchanged (frozen).]
     Measurement(
         prediction_id="P22.1_inv_alpha_0",
         name="Inverse fine-structure constant α⁻¹ at q²=0",
@@ -756,6 +779,9 @@ _REGISTRY: list[Measurement] = [
         bpr_status="DERIVED",
     ),
     # BPR running: 1/α(M_Z) = 137.031 − 9.084 = 127.947
+    # [2026-10 correction: at p=104761, 137.0386 − 9.084 = 127.955. The stored
+    #  128.944 below is not the 127.952 that bpr/alpha_derivation.py compares
+    #  with (a different α(M_Z) convention); the value is left unchanged.]
     # Theory uncertainty at M_Z scale is ~2.0 (hadronic + lattice uncertainties).
     Measurement(
         prediction_id="P22.2_inv_alpha_MZ",
@@ -766,6 +792,11 @@ _REGISTRY: list[Measurement] = [
     ),
     # BPR: α_GUT lattice gives 1/α_GUT ≈ 90; observed ~40 (2× discrepancy).
     # Unification scale is scheme-dependent; marked CONJECTURAL.
+    # [2026-10 note: 40 ± 20 is a model-dependent band, not a measurement.
+    #  The legacy code holds three inconsistent values: 1/α_GUT ≈ 90.0 (bare
+    #  lattice ansatz), 48.6 (GaugeCouplingRunning backward fit) and 40
+    #  (hard-coded in ProtonDecay). The bare ansatz fails at M_Z: α_s ≈ 0.020,
+    #  sin²θ_W ≈ 0.274, 1/α_em(M_Z) ≈ 261.]
     Measurement(
         prediction_id="P22.3_alpha_GUT_inv",
         name="Inverse GUT coupling constant α_GUT⁻¹ at unification scale (band)",

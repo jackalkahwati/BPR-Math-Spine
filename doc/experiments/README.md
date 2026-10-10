@@ -33,7 +33,15 @@ supersede subsequently recorded closures or withdrawals. In particular,
 the zero historical FALSIFY count does not erase the closed particle sector.
 Since 2026-10, the 3D-Ising rows (tests 29 and 96) are withdrawn as
 mismatches and the Kibble–Zurek row (test 59) is non-discriminating; see
-[papers.md](papers.md) and `doc/CLOSED_AND_DEPRECATED.md`.
+[papers.md](papers.md) and `doc/CLOSED_AND_DEPRECATED.md`. The 2026-10
+review of unmerged branches also withdrew the Lorentz-invariance-violation
+and GUP rows (tests 111, 112, 113, 123 and 124, previously CONFIRM) and
+marked entries 2, 18 and 45 (LIV, GUP and GRB time of flight, previously
+INCONCLUSIVE) as superseded: those values are stipulated on the
+α-calibrated p, and BPR-6D predicts no Lorentz violation, as the Standard
+Model with GR does. A recount of the rows in papers.md gives 117 CONFIRM
+and 12 INCONCLUSIVE labels as compiled, not the 115 and 11 above; after
+the 2026-10 changes at most 109 CONFIRM labels remain.
 
 The legacy benchmark grade is a numerical comparison heuristic, not a
 statistical hypothesis test. It mixes sigma thresholds, relative-error

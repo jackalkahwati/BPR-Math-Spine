@@ -11,6 +11,16 @@
 > Cross-experiment inconsistency falsifies CCR even if individual
 > experiments pass.  CCR-affected predictions are flagged by
 > `scripts/generate_predictions.py` in the `ccr_affected` column.
+>
+> **Note (2026-10):** this file was not regenerated for this note. A fresh
+> run of `scripts/benchmark_predictions.py` changes more than the rows below
+> (grades, statuses and values computed at p = 104,761 rather than 104,729)
+> and would drop the hand-added CCR addendum above. The P20 rows (ξ₁, GUP β
+> and the speed variation δc/c) are superseded: their values are stipulated on the α-calibrated p,
+> and BPR-6D is exactly Lorentz-invariant, so it predicts no Lorentz
+> violation, as the Standard Model with GR does. Their PASS grades are not
+> confirmations. See the note under "XX: QG Phenomenology" and
+> `doc/CLOSED_AND_DEPRECATED.md`.
 > 
 > **Grading key:**
 > | Grade | Criterion |
@@ -205,6 +215,14 @@
 | P19.9_saturation_density_fm3 | Nuclear saturation density | 0.1630 | 0.1600 ± 0.0100 | 0.3 | 1.9% | **PASS** | DERIVED |  |
 
 ### XX: QG Phenomenology
+
+Superseded (2026-10). ξ₁ = 0 is also the Standard Model and GR value, and
+β = 1/p sits nearly ten orders below its bound, which is not a confirmation.
+The value of |δc/c| below (3.3803e-21) is the p = 104,729 value; at
+p = 104,761 it is 3.3641e-21. Its 6e-21 bound is Nemiroff et al. 2012 (PRL
+108, 231103), a low-significance dispersion bound that does not apply to an
+energy-independent offset, so that PASS is not valid either. Found in the
+2026-10 review of unmerged branches.
 
 | ID | Name | BPR | Experiment | σ | Rel. Dev. | Grade | Status | Note |
 |---|---|---|---|---|---|---|---|---|

@@ -79,6 +79,18 @@ print(neutrino_nature(104761))  # → "Dirac" (p ≡ 1 mod 4)
 
 ### Test 3: Lorentz Invariance Violation (CTA / GRBs)
 
+> **SUPERSEDED (2026-10).** This test no longer tests BPR and is kept as a historical record. The values
+> below (|dc/c| = e^(−p^(1/3)), xi_2 = 1/p) are stipulated on the α-calibrated p, and section 4 of the
+> architecture decision (`doc/derivations/architecture_decision_2026-09-26.md`) supersedes them: in BPR-6D
+> spacetime is exactly Lorentz-invariant and p has no counterpart. BPR-6D therefore predicts no LIV, as the
+> Standard Model with GR does, so xi_1 = 0 discriminates nothing and no CTA outcome would confirm or falsify
+> BPR. The comparison below was also misread. The "Fermi-LAT 6 x 10^{-21}" bound is Nemiroff et al. 2012
+> (PRL 108, 231103), a low-significance dispersion bound that does not apply to an energy-independent speed
+> offset. An energy-independent |dc/c| produces no energy-dependent arrival time at all, and the LHAASO E_{QG,2}
+> bound corresponds to xi_2 below about 3 x 10^{14}, about 19 orders above 1/p, so "just barely below these
+> bounds" was wrong. At p = 104,761, e^(−p^(1/3)) = 3.36 x 10^{-21}. Found in the 2026-10 review of unmerged
+> branches; see `doc/CLOSED_AND_DEPRECATED.md`.
+
 **BPR is just below current bounds — next-gen could see it or kill it.**
 
 | | |
@@ -228,7 +240,7 @@ These are the cleanest existing comparisons between BPR and data.
 | Casimir phonon deviation NOT seen at 10^{-9} | Phonon channel coupling wrong |
 | JUNO finds **inverted** mass ordering | Boundary topology prediction fails |
 | 0-nu-beta-beta decay **observed** | Dirac neutrino prediction falsified |
-| CTA pushes LIV bound below 10^{-22} | Substrate discreteness scale wrong |
+| CTA pushes LIV bound below 10^{-22} | Substrate discreteness scale wrong (superseded 2026-10: Test 3 no longer tests BPR) |
 | Born rule holds to 10^{-7} | Microstate counting model wrong |
 | If ALL of the above come back null | BPR is falsified as a physical theory |
 
@@ -239,7 +251,7 @@ These are the cleanest existing comparisons between BPR and data.
 | Anomalous Casimir shift near Tc at predicted level | Direct evidence for boundary coupling |
 | Normal ordering confirmed by JUNO | Consistent (but not unique to BPR) |
 | No 0-nu-beta-beta after LEGEND-1000 | Consistent with Dirac prediction |
-| CTA sees energy-dependent photon delay at ~10^{-21} | Evidence for substrate discreteness |
+| CTA sees energy-dependent photon delay at ~10^{-21} | Evidence for substrate discreteness (superseded 2026-10: BPR-6D predicts no LIV; see Test 3) |
 | Born rule violated at ~10^{-5} in multi-photon experiment | Strong evidence for substrate microstructure |
 | Decoherence shows quadratic DeltaZ scaling | Evidence for impedance mechanism |
 

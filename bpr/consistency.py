@@ -8,7 +8,11 @@ chains disagrees, it exposes a bug or physics error.
 
 Key consistency relations:
 1. sin²θ_W from gauge running = sin²θ_W from impedance (within error)
+   [NON-DISCRIMINATING (2026-10): both routes return the input 0.23122
+   for every p; see _check_sin2_theta_w]
 2. α_EM from substrate = α_EM from running (within error)
+   [NON-DISCRIMINATING (2026-10): both routes call the same formula;
+   see _check_alpha_em]
 3. v_EW from gauge = v_EW used in lepton masses
 4. Σm_ν from seesaw < cosmological bound
 5. w(z) from impedance → Ω_Λ from dark energy (consistent)
@@ -121,6 +125,12 @@ def _classify(error_pct: float, tol_pass: float, tol_tension: float = 5.0,
         return "FAIL"
 
 
+# Status for checks whose two routes agree by construction (2026-10).
+# Such a check can never fail, so it is reported separately and not
+# counted as a PASS.
+NON_DISCRIMINATING = "NON-DISCRIMINATING"
+
+
 # ===================================================================
 # Individual consistency checks
 # ===================================================================
@@ -130,6 +140,13 @@ def _check_alpha_em(p: int, z: int) -> Dict[str, Any]:
 
     Route A: alpha_derivation.inverse_alpha_from_substrate(p, z)
     Route B: full_cosmological_chain(p, z) -> inv_alpha_predicted
+
+    NON-DISCRIMINATING (2026-10): route B is not independent.
+    ``cross_predictions.full_cosmological_chain`` obtains
+    inv_alpha_predicted by calling ``inverse_alpha_from_substrate(p, z)``,
+    so the two routes agree to the last bit for every (p, z).  The check
+    only confirms that the call path is wired; it says nothing about the
+    physics.  Status is reported as NON-DISCRIMINATING, not PASS.
     """
     if not (_HAS_ALPHA and _HAS_CROSS):
         return {
@@ -157,7 +174,12 @@ def _check_alpha_em(p: int, z: int) -> Dict[str, Any]:
         "route_B": float(route_b),
         "route_B_label": "full_cosmological_chain",
         "error": f"{error_pct:.4f}%",
-        "status": _classify(error_pct, tol_pass=0.01),
+        # Was _classify(error_pct, tol_pass=0.01) -> always PASS (2026-10).
+        "status": NON_DISCRIMINATING,
+        "note": (
+            "Route B calls the same function as route A; agreement is by "
+            "construction for every (p, z)."
+        ),
     }
 
 
@@ -166,6 +188,17 @@ def _check_sin2_theta_w(p: int, z: int) -> Dict[str, Any]:
 
     Route A: GaugeCouplingRunning(p).weinberg_angle_at_MZ
     Route B: impedance_weinberg_angle(p) -> sin2_theta_W_gauge_running
+
+    NON-DISCRIMINATING (2026-10): both routes are identities that return
+    the input sin²θ_W(M_Z) = 0.23122 for every p.  Route A is the
+    backward-fit identity of ``GaugeCouplingRunning`` (running up, adding
+    δ_i, running down and subtracting δ_i returns the M_Z inputs).  Route
+    B is not the impedance value: it rebuilds sin²θ_W from
+    ``alpha_i(1, M_Z)`` and ``alpha_i(2, M_Z)``, i.e. from the same inputs
+    at μ = M_Z.  The check gives 0.0000% at p = 101 as at p = 104761, so
+    it cannot fail and is reported as NON-DISCRIMINATING, not PASS.  Any
+    "v_EW CLOSED" or "sin²θ_W consistent" claim that rests on it is
+    withdrawn.  Found in the 2026-10 review of unmerged branches.
     """
     if not (_HAS_GAUGE and _HAS_PARTICLES):
         return {
@@ -195,7 +228,12 @@ def _check_sin2_theta_w(p: int, z: int) -> Dict[str, Any]:
         "route_B": float(route_b),
         "route_B_label": "impedance_weinberg_angle.sin2_theta_W_gauge_running",
         "error": f"{error_pct:.4f}%",
-        "status": _classify(error_pct, tol_pass=0.1),
+        # Was _classify(error_pct, tol_pass=0.1) -> always PASS (2026-10).
+        "status": NON_DISCRIMINATING,
+        "note": (
+            "Identity: both routes return the input sin^2(theta_W) = 0.23122 "
+            "for every p (backward-fit identity vs. inputs rebuilt at M_Z)."
+        ),
     }
 
 
@@ -485,6 +523,8 @@ def run_all_consistency_checks(
     A 'PASS' means they agree within tolerance.
     A 'TENSION' means >5% disagreement.
     A 'FAIL' means >20% disagreement (likely a bug).
+    A 'NON-DISCRIMINATING' check (2026-10) compares two routes that agree
+    by construction for every p; it is counted separately, not as a PASS.
 
     Parameters
     ----------
@@ -496,7 +536,8 @@ def run_all_consistency_checks(
     Returns
     -------
     dict
-        total_checks, passed, tensions, failed, skipped, details
+        total_checks, passed, tensions, failed, skipped,
+        non_discriminating, details
     """
     checks = [
         _check_alpha_em(p, z),
@@ -515,6 +556,7 @@ def run_all_consistency_checks(
     tensions = sum(1 for c in checks if c["status"] == "TENSION")
     failed = sum(1 for c in checks if c["status"] == "FAIL")
     skipped = sum(1 for c in checks if c["status"] == "SKIP")
+    non_discriminating = sum(1 for c in checks if c["status"] == NON_DISCRIMINATING)
 
     return {
         "total_checks": len(checks),
@@ -522,6 +564,7 @@ def run_all_consistency_checks(
         "tensions": tensions,
         "failed": failed,
         "skipped": skipped,
+        "non_discriminating": non_discriminating,
         "details": checks,
     }
 
@@ -718,11 +761,12 @@ def print_consistency_report(p: int = 104761, z: int = 6) -> None:
     print(f"  Tensions:      {report['tensions']}")
     print(f"  Failed:        {report['failed']}")
     print(f"  Skipped:       {report['skipped']}")
+    print(f"  Non-discrim.:  {report['non_discriminating']}  (agree by construction)")
     print("-" * 60)
 
     for detail in report["details"]:
         icon = {"PASS": "[OK]", "TENSION": "[!!]", "FAIL": "[XX]",
-                "SKIP": "[--]"}.get(detail["status"], "[??]")
+                "SKIP": "[--]", NON_DISCRIMINATING: "[==]"}.get(detail["status"], "[??]")
         name = detail["name"]
         error = detail.get("error", "")
         print(f"  {icon} {name:30s}  {error}")

@@ -1,7 +1,7 @@
 # BPR Theory Confirmation Breakdown
 
 > **Purpose:** Map each of the 21 BPR theories to experimentally confirmed predictions.
-> **Total:** 115 CONFIRM verdicts across 129 tests as compiled in Feb 2026; in 2026-10 the 3D-Ising tests (29 and 96) were withdrawn and test 59 (Kibble–Zurek) was reclassified as non-discriminating, leaving at most 112. These verdicts are historical; the dated audits (`VALIDATION_STATUS.md`, `doc/CLOSED_AND_DEPRECATED.md`) take precedence.
+> **Total:** 115 CONFIRM verdicts across 129 tests as compiled in Feb 2026; in 2026-10 the 3D-Ising tests (29 and 96) were withdrawn and test 59 (Kibble–Zurek) was reclassified as non-discriminating, leaving at most 112. The 2026-10 review of unmerged branches then withdrew the Lorentz-invariance-violation and GUP rows (111, 112, 113, 123 and 124); a recount of the rows in papers.md leaves at most 109 labelled CONFIRM (see its totals note). These verdicts are historical; the dated audits (`VALIDATION_STATUS.md`, `doc/CLOSED_AND_DEPRECATED.md`) take precedence.
 
 ---
 
@@ -28,7 +28,7 @@
 | **XVII** | gauge_unification | v_EW, m_H, proton τ (GUT) | **4+ CONFIRM** |
 | **XVIII** | charged_leptons | m_e, m_μ, m_τ, Koide Q | **5+ CONFIRM** |
 | **XIX** | nuclear_physics | B/A(⁴He), B/A(⁵⁶Fe), n_sat, M_NS,max, R_NS, magic numbers | **7+ CONFIRM** |
-| **XX** | quantum_gravity_pheno | ξ₁=0, \|δc/c\|, GUP β | **3+ CONFIRM** (within bounds) |
+| **XX** | quantum_gravity_pheno | ξ₁=0, \|δc/c\|, GUP β (superseded 2026-10) | **0 CONFIRM** (3 withdrawn 2026-10) |
 | **XXI** | quantum_chemistry | Noble gas; ionization; periodic table | **CONFIRM** (Test 58) |
 | **α derivation** | alpha_derivation | α | **1+ CONFIRM** |
 
@@ -313,9 +313,18 @@ was also wrong (#87 is the NS maximum mass). See the LIMITATION block in `bpr/ph
 |------------|----------------|------------|
 | P20.1 ξ₁ = 0 (CPT) | 102, 114 | CPT invariance |
 | P20.7 \|δc/c\| | 2, 104 | Fermi-LAT; Piran — within bounds |
-| P20.4 GUP β | 18, 103 | Bassi — BPR below sensitivity |
+| P20.4 GUP β | 18, 103 | Bushev (listed as Bassi until 2026-10) — BPR below sensitivity |
 
-**Confirmed:** 3+ (bounds satisfied; BPR below probed region)
+**Confirmed:** 0 (was 3+, "bounds satisfied; BPR below probed region")
+
+**Withdrawn / superseded (2026-10):** all three rows. ξ₂ = 1/p, |δc/c| = e^(−p^(1/3)) and β = 1/p are stipulated on
+the α-calibrated p, and section 4 of the architecture decision (`doc/derivations/architecture_decision_2026-09-26.md`)
+supersedes them: BPR-6D is exactly Lorentz-invariant and predicts no LIV, as the Standard Model with GR does, so ξ₁ = 0
+discriminates nothing. A value far below a bound is not a confirmation. The |δc/c| bound is Nemiroff et al. 2012
+(PRL 108, 231103), a low-significance dispersion bound that does not apply to an energy-independent offset, and the GUP
+bound is Bushev et al. 2019 (PRD 100, 066020), not "Bassi". The test references above were also wrong: in papers.md the
+rows are 111 and 123 (ξ₁), 113 and entry 2 (|δc/c|), and 112 and entry 18 (β); rows 102, 103, 104 and 114 are m_p,
+Ω_DM h², strong CP and η. Found in the 2026-10 review of unmerged branches; see `doc/CLOSED_AND_DEPRECATED.md`.
 
 ---
 
@@ -343,6 +352,8 @@ was also wrong (#87 is the NS maximum mass). See the LIMITATION block in `bpr/ph
 ---
 
 ## All Theories Now Have CONFIRM (Feb 2026)
+
+Historical heading: since 2026-10, Theory XX has no CONFIRM row (see its section above).
 
 Tests 51–59 added papers for Theories I, III, VI, VIII, IX, X, XV, XXI, and Kibble-Zurek (IV):
 
@@ -376,7 +387,7 @@ Tests 51–59 added papers for Theories I, III, VI, VIII, IX, X, XV, XXI, and Ki
 | XVII (Gauge) | 4 |
 | XVIII (Leptons) | 5 |
 | XIX (Nuclear) | 7 |
-| XX (QG Pheno) | 3 |
+| XX (QG Pheno) | 0 (3 withdrawn 2026-10) |
 | α derivation | 1 |
 | **Total** | **~68 unique** |
 

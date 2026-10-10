@@ -36,7 +36,7 @@ The framework's flavor-sector machinery:
 - Conjectural flavor-mode labels evaluated from (z, n_gen): l_u = 1, l_c = z(z−2) = 24, l_t = (z²−1)(z+n_gen+2−N_c) + n_gen = 283; l_d = 1, l_s = z−2 = 4, l_b = z(z−1) = 30.
 - Quark masses from boundary mode squared, anchored to v_EW for up-type (m_t = v_EW/√2) and to m_b via boundary coordination (factor 2 + 1/(3 ln p)) for down-type.
 - CKM angles from quark mass ratios using Gatto-Sartori-Tonin (Cabibbo) and Fritzsch-style relations (V_cb, V_ub), with a boundary-coordination suppression √(ln p + z/3).
-- CP phase from boundary geometry: δ_CP = π/2 − 1/√(z+1).
+- CP phase from boundary geometry: δ_CP = π/2 − 1/√(z+1). *(Relabelled 2026-10: a phenomenological ansatz with no derivation, not a result of boundary geometry; see the note under the table in section 3.)*
 - Doubly-heavy baryons: exact spin algebra + κ * (m_s − m_d) for SU(3) splittings + 3/2 × (1 + 2/z) for hyperfine; κ from mode-ratio ansatz at z = 6.
 
 The numerical formulas and anchors are retained, including the m_τ anchor.
@@ -59,9 +59,19 @@ localization and mode-identification assumptions in `bpr/neutrino.py`.
 | sin θ_C (Cabibbo) | 0.225 | 0.225 | 0% | GST relation |
 | V_cb | 0.0406 | 0.0405 ± 0.001 | 0.2% | Fritzsch + boundary |
 | V_ub | 0.00367 | 0.00382 ± 0.020 | 4% | mass ratio |
-| δ_CP (CKM) | 1.193 rad | 1.196 ± 0.04 | 0.25% | boundary geometry |
+| δ_CP (CKM) | 1.193 rad | 1.196 ± 0.04 | 0.25% | ansatz (was "boundary geometry"; relabelled 2026-10) |
 | sin² θ_C (predicted from m_d/m_s) | 0.0504 | 0.0506 | 0.4% | GST + BPR masses |
 | Ωcc⁺ − Ξcc⁺ splitting | 105.2 MeV | 105.45 ± 5.02 | 0.05σ | κ × (m_s − m_d) |
+
+δ_CP note (2026-10): δ = π/2 − 1/√(z+1) is an ansatz. The reference
+1.196 ± 0.04 rad is an older PDG global-fit value (probably PDG 2020;
+recalled, not fetched), not a current one. Against δ = 1.144 rad, the CKM
+input used in `bpr/fermion_fit.py`, the ansatz is +0.049 rad high (+1.6σ
+with that module's 0.03 rad tolerance, +1.8σ with σ = 0.027 rad, recalled),
+and z = 5 fits better. The δ that `CKMMatrix.mixing_angles()` recovers from
+the Jarlskog invariant is the input δ returned by an identity, not a second
+result. Found in the 2026-10 review of unmerged branches; see
+`doc/CLOSED_AND_DEPRECATED.md`.
 
 These are historical numerical comparisons with the quoted reference
 values. Their values and residuals are retained without a fresh source

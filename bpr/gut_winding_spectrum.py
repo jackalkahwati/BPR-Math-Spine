@@ -33,6 +33,19 @@ coefficient, not a rep-resolved one. So this BOUNDS the threshold effect and
 shows the mode tower is the right order of magnitude, but does not yet close
 the 1.5% residual from first principles.
 
+NOTES (2026-10)
+---------------
+* The M_GUT_GeV default of 2.0e16 GeV is a conventional SM-like GUT scale.
+  It is NOT BPR's legacy M_Pl / p^{1/4}, which is ≈ 6.79e17 GeV at
+  p = 104761.  (The docstring below used to attribute 2e16 to
+  M_Pl / p^{1/4}.)  The value does not affect any output: the thresholds
+  depend only on mass ratios to the lightest mode, so M_GUT cancels, and
+  ``gut_threshold_su5_assigned`` does not use it at all.
+* The "1.5%" / "~0.8%" residuals these thresholds are compared with are
+  what remains after ``GaugeCouplingRunning.forward_threshold_corrections``.
+  Those factors are PHENOMENOLOGICAL (post hoc), so "closing" the residual
+  inherits that status.  See doc/derivations/forward_gut_thresholds.md.
+
 References: generations_from_CFT.md (R²=3 derivation); Ginsparg, "Applied
 Conformal Field Theory" (c=1 spectrum).
 """
@@ -82,7 +95,10 @@ class GUTThresholdEstimate:
     Parameters
     ----------
     M_GUT_GeV : float
-        Unification scale (BPR: M_Pl / p^{1/4} ≈ 2e16 GeV).
+        Unification scale anchor.  Default 2e16 GeV is a conventional
+        SM-like GUT scale, not BPR's M_Pl / p^{1/4} (≈ 6.79e17 GeV at
+        p = 104761; this line said "BPR: M_Pl / p^{1/4} ≈ 2e16 GeV" until
+        2026-10).  Results depend only on mass ratios, so the value cancels.
     R_squared : float
         Compact-boson radius squared (3 in BPR).
     """
@@ -201,6 +217,9 @@ def gut_threshold_su5_assigned(
 
     Summed over modes (with their degeneracies, capped at n_xy total
     states). δb_i are the SU(5) X,Y coefficients.
+
+    (2026-10: ``M_GUT_GeV`` is accepted but unused; only mass ratios
+    enter.)
 
     Honest scope
     ------------

@@ -8,9 +8,37 @@ of the hierarchy problem from boundary winding mode counting.
 Key results
 -----------
 * Gauge couplings α₁, α₂, α₃ run logarithmically with boundary mode count
-* Unification scale M_GUT ~ M_Pl / p^{1/4} ≈ 2 × 10¹⁶ GeV
+* Unification scale M_GUT ~ M_Pl / p^{1/4} ≈ 6.79 × 10¹⁷ GeV at p = 104761
+  (corrected 2026-10: this line used to say ≈ 2 × 10¹⁶ GeV, which is not
+  what M_Pl / p^{1/4} gives for any p near 10⁵)
 * Hierarchy ratio M_Pl / M_EW = √p × √N (winding suppression)
+  [WITHDRAWN earlier: off by 12 orders; see HierarchyProblem]
 * Proton decay: dominant channel p → π⁰ e⁺ from Class A winding
+
+STATUS (2026-10): LEGACY GUT ANSATZ, superseded by Phase 1
+----------------------------------------------------------
+The 2026-10 review of unmerged branches (the GUT audit on
+claude/audit-bpr-parameters-6fSrQ, re-checked on the current tree) found:
+
+* The backward fit in ``GaugeCouplingRunning`` makes ``alpha_s_prediction``,
+  ``weinberg_angle_at_MZ`` and ``alpha_em_prediction`` algebraic identities:
+  they return the M_Z inputs α_s = 0.1179, sin²θ_W = 0.23122 and
+  1/α_em(M_Z) = 127.952 for every p (checked at p = 101, 104761, 1000003).
+  They are NOT predictions, and nothing built on them (the v_EW chain,
+  the sin²θ_W consistency check) tests the framework.
+* The forward threshold factors are PHENOMENOLOGICAL (post hoc); see
+  ``forward_threshold_corrections`` and
+  doc/derivations/forward_gut_thresholds.md.
+* The bare forward chain α_GUT = π/(p^{1/3} z) at M_GUT = M_Pl/p^{1/4}
+  fails (α_s ≈ 0.020, sin²θ_W ≈ 0.274, 1/α_em(M_Z) ≈ 261); see
+  ``bpr.alpha_derivation.alpha_em_from_gut_running``.
+* The legacy code carries three inconsistent unified couplings:
+  1/α_GUT = 90.0 (bare lattice ansatz), 48.6 (backward fit) and 40
+  (hard-coded in ``ProtonDecay``).
+
+The BPR-6D Phase 1 unification (``bpr.model_scales.unify_3221``:
+M_GUT ≈ 4.5 × 10¹⁶ GeV, 1/α_G ≈ 46.2, M_I ≈ 1.0 × 10⁹ GeV) does not use p
+and is unaffected. See doc/CLOSED_AND_DEPRECATED.md §1c.
 
 References: Al-Kahwati (2026), BPR-Math-Spine extended theories
 """
@@ -28,6 +56,7 @@ _LAMBDA_QCD_GEV = 0.332     # QCD confinement scale [GeV]
 _ALPHA_EM_MZ = 1.0 / 127.952  # fine-structure constant at M_Z (running value)
 _ALPHA_S_MZ = 0.1179         # strong coupling at M_Z
 _SIN2_TW = 0.23122           # sin²θ_W at M_Z (MS-bar)
+_SUPER_K_TAU_YR = 2.4e34     # Super-K 2020: τ(p → e⁺π⁰) > 2.4e34 yr (90% CL); was 1.6e34 before 2026-10
 
 
 def electroweak_scale_GeV(p: int = 104761, z: int = 6,
@@ -103,6 +132,11 @@ def lambda_qcd_with_thresholds(alpha_s_MZ: float = _ALPHA_S_MZ,
     comes from 2-loop and 3-loop corrections.  A 2-loop estimate
     gives ~290 MeV.  The scaling factor k_NLO ≈ 2.34 is computed
     and applied.
+
+    NOTE (2026-10): only k_2loop ≈ 1.485 is computed.  k_3loop = 1.57
+    is an empirical factor (the code comment cites lattice-QCD
+    comparisons), not a calculation.  With it, α_s = 0.1179 gives
+    Λ^(3) ≈ 330 MeV, essentially the PDG 332 MeV.
 
     Parameters
     ----------
@@ -185,6 +219,18 @@ def electroweak_scale_self_consistent(p: int = 104761, z: int = 6) -> dict:
     observation by construction). The only remaining external input is
     the overall dimensionful anchor.
 
+    STATUS (2026-10, supersedes the paragraph above): USES THE α_s(M_Z)
+    INPUT; NOT A DERIVATION.  Step 1 is an identity: the backward fit
+    returns the input α_s(M_Z) = 0.1179 for every p (see
+    ``GaugeCouplingRunning.boundary_threshold_corrections``).  Step 2
+    then reproduces the PDG Λ_QCD (330 vs 332 MeV) through the empirical
+    k_3loop = 1.57 in ``lambda_qcd_with_thresholds``.  So the chain is
+    α_s(M_Z) input → Λ_QCD ≈ PDG value → the same v_EW formula as
+    ``electroweak_scale_GeV``; it needs α_s(M_Z) as an external input
+    in place of Λ_QCD, and "no separate Λ_QCD input is needed" is
+    withdrawn.  All p dependence enters through step 3 (v_EW = 13 GeV
+    at p = 101).  Found in the 2026-10 review of unmerged branches.
+
     Returns dict with full chain, comparison, and diagnostic fields.
     """
     gcr = GaugeCouplingRunning(p=p)
@@ -209,7 +255,13 @@ def electroweak_scale_self_consistent(p: int = 104761, z: int = 6) -> dict:
             "Lambda_QCD_GeV": lqcd_backward,
             "v_EW_GeV": vew_backward,
             "v_EW_error_pct": abs(vew_backward - 246.22) / 246.22 * 100,
-            "status": "DERIVED (1.5% off) via backward-fit α_s + 2-loop RGE",
+            "status": (
+                "USES α_s(M_Z) INPUT (2026-10): the backward-fit α_s is the "
+                "input 0.1179 for every p (identity), and Λ_QCD comes out "
+                "near the PDG value through an empirical 3-loop factor; "
+                "1.5% off on v_EW. Not a derivation. (Previously labelled "
+                "'DERIVED (1.5% off) via backward-fit α_s + 2-loop RGE'.)"
+            ),
         },
         "experimental_chain": {
             "Lambda_QCD_GeV": lqcd_exp,
@@ -227,7 +279,10 @@ def electroweak_scale_self_consistent(p: int = 104761, z: int = 6) -> dict:
             "The self-consistent chain (α_s from GUT backward-fit → Λ_QCD "
             "via 2-loop RGE with thresholds → v_EW via boundary formula) "
             "closes at 1.5% error on v_EW. No separate Λ_QCD input is "
-            "needed. See doc/derivations/v_EW_self_consistent_chain.md."
+            "needed. See doc/derivations/v_EW_self_consistent_chain.md. "
+            "[2026-10: WITHDRAWN as stated. The backward-fit α_s(M_Z) "
+            "equals its input for every p, so the chain trades the "
+            "Λ_QCD input for the α_s(M_Z) input; it is not a closure.]"
         ),
     }
 
@@ -278,6 +333,26 @@ class GaugeCouplingRunning:
 
     RESULT: All three couplings unify at M_GUT = M_Pl/p^{1/4}
     with BPR threshold corrections.
+
+    STATUS (2026-10): LEGACY ANSATZ; the RESULT above does not hold.
+    - Exact unification comes only from the backward fit
+      (``boundary_threshold_corrections``), which chooses δ_i so that the
+      couplings meet.  Running back down then returns the M_Z inputs for
+      every p, so ``alpha_s_prediction``, ``weinberg_angle_at_MZ`` and
+      ``alpha_em_prediction`` are identities, not predictions.
+    - The forward factors (``forward_threshold_corrections``) are
+      PHENOMENOLOGICAL, chosen after the gap was known.
+    - The mode spectrum M_k stated above is not the one the code uses.
+      The code applies all N_B modes over the full ln(M_Pl/M_GUT).  With
+      the stated spectrum a mode is active over about half that log on
+      average, and the same group factors close only ~67% of the gap on
+      the code's metric (~50% on a consistent max-deviation metric).
+    - The "complex scalar in the fundamental of SU(3)" description
+      conflicts with ``forward_threshold_corrections``, which calls the
+      modes SM singlets.
+    - M_GUT = M_Pl/p^{1/4} is an ansatz.  Superseded by the BPR-6D Phase 1
+      unification in ``bpr.model_scales`` (independent of p).  Found in
+      the 2026-10 review of unmerged branches.
 
     Parameters
     ----------
@@ -333,6 +408,10 @@ class GaugeCouplingRunning:
         Derivation: the GUT scale is set by the boundary mode
         condensation threshold.  The lowest boundary mode has
         energy M_Pl / p^{1/4} (winding number 1 in p^{1/4} units).
+
+        STATUS (2026-10): ANSATZ; the "derivation" above is a motivation.
+        The SM couplings do not meet at this scale (1/α₁, 1/α₂, 1/α₃ ≈
+        35.2, 48.0, 49.2 at p = 104761).
         """
         return _M_PL_GEV / self.p ** 0.25
 
@@ -392,6 +471,35 @@ class GaugeCouplingRunning:
         FORMULA: delta(1/alpha_1) = p^(1/3) × z × ln(p) / (80 pi)
 
         All from (p, z). No free parameters. No backward fitting.
+
+        SUPERSEDED DESCRIPTION (2026-10).  The text above describes an
+        earlier single-channel version (Y_eff^2 = z/2, 96.9%).  The code
+        below uses THREE channels, per mode and over the full
+        L_above = ln(M_Pl/M_GUT) = ln(p)/4:
+
+            delta_1 = N_B × (3/5) × Y^2/3 × L_above/(2 pi),  Y^2  = (3z+1)/6
+            delta_2 = N_B × T2^2/3       × L_above/(2 pi),   T2^2 = 1/(z+1)
+            delta_3 = N_B × T3^2/3       × L_above/(2 pi),   T3^2 = 1/(z+1)^2
+
+        At p = 104761, z = 6: deltas 13.73, 1.03, 0.15; fraction_closed =
+        98.1% on the metric below (residual max deviation from the mean
+        over |1/α₁ − (1/α₂ + 1/α₃)/2| before), 97.2% on a consistent
+        max-deviation-from-mean metric (``fraction_closed_consistent``).
+
+        STATUS (2026-10): PHENOMENOLOGICAL (post hoc).  Found in the
+        2026-10 review of unmerged branches and re-checked here:
+        - the group factors were chosen after the gap was known: of 80
+          numerically distinct simple choices (Y^2 in {1, 2, 3, 19/6},
+          T2^2 in {0, 1/7, 1/6, 1/5, 1/2}, T3^2 in {0, 1/49, 1/36, 1/7}),
+          31 close at least 90% and 5 close at least 98%;
+        - Y^2 = z/2 alone (the original rigidity argument) closes 94.5%;
+        - the identity Y^2 = κ + 1/z = (z^2+2)/(2z) = (3z+1)/6 used to
+          motivate 19/6 holds only at z = 6 (the comment below writes
+          κ + 1/6 instead);
+        - the T3 channel has the wrong sign: 1/α₃ is already the largest,
+          so adding +0.15 moves it away; dropping it gives 98.9%;
+        - the same formula at z = 4, 8, 12 closes 75.7%, 79.2%, 35.4%.
+        "No free parameters. No backward fitting." is withdrawn.
         """
         N_B = self.p ** (1.0 / 3.0)
         z = 6
@@ -400,6 +508,8 @@ class GaugeCouplingRunning:
         inv_a1, inv_a2, inv_a3, _ = self._sm_couplings_at_mgut
 
         # THREE boundary coupling mechanisms, all from z:
+        # (2026-10: PHENOMENOLOGICAL, post hoc; see the docstring.  The
+        # factors below are motivated choices, not derived from z.)
         #
         # 1. U(1)_Y: Y^2 = (3z+1)/6 = kappa + 1/6
         #    Boundary rigidity (kappa = z/2 independent winding directions)
@@ -439,6 +549,15 @@ class GaugeCouplingRunning:
         original_gap = abs(inv_a1 - (inv_a2 + inv_a3) / 2.0)
         fraction_closed = 1.0 - residual_gap / original_gap if original_gap > 0 else 0.0
 
+        # Same max-deviation-from-mean measure before and after (2026-10).
+        inv_avg_bare = (inv_a1 + inv_a2 + inv_a3) / 3.0
+        original_max_dev = max(abs(inv_a1 - inv_avg_bare),
+                               abs(inv_a2 - inv_avg_bare),
+                               abs(inv_a3 - inv_avg_bare))
+        fraction_closed_consistent = (
+            1.0 - residual_gap / original_max_dev if original_max_dev > 0 else 0.0
+        )
+
         return {
             "delta_1_forward": delta_1_fwd,
             "delta_2_forward": delta_2_fwd,
@@ -450,11 +569,17 @@ class GaugeCouplingRunning:
             "residual_gap": residual_gap,
             "original_gap": original_gap,
             "fraction_closed": fraction_closed,
+            "fraction_closed_consistent": fraction_closed_consistent,
             "Y_sq": float(Y_sq),
             "T2_sq": float(T2_sq),
             "T3_sq": float(T3_sq),
             "mechanism": "Y^2=(3z+1)/6, T2^2=1/(z+1), T3^2=1/(z+1)^2",
-            "status": "FORWARD-DERIVED from z alone — 0.5% unification",
+            "status": (
+                "PHENOMENOLOGICAL (post hoc, 2026-10): group factors chosen "
+                "after the gap was known (31 of 80 simple alternatives close "
+                ">=90%); not derived from z. Previously labelled "
+                "'FORWARD-DERIVED from z alone — 0.5% unification'."
+            ),
         }
 
     @property
@@ -472,6 +597,12 @@ class GaugeCouplingRunning:
 
         CONCLUSION: 1-loop + boundary rigidity is the cleanest result.
         2-loop is a known correction that slightly worsens unification.
+
+        NOTE (2026-10): the code applies the three-channel factors of
+        ``forward_threshold_corrections``, which are PHENOMENOLOGICAL
+        (post hoc).  At p = 104761 it gives a 1.50% max deviation from the
+        mean (bare 2-loop: 20.8%), i.e. 92.0% closed, not "~2.5%".  The
+        2-loop result inherits the post hoc status of the factors.
         """
         # 2-loop beta coefficients (Machacek & Vaughn 1984)
         b_ij = np.array([
@@ -550,6 +681,18 @@ class GaugeCouplingRunning:
 
         The residual ~22% gap is an open problem documented in
         LIMITATIONS_AND_FALSIFICATION.md.
+
+        IDENTITY (2026-10, supersedes the "IF unification ... THEN
+        sin²θ_W = 0.23122" reading above).  With
+        δ_i = 1/α_GUT − 1/α_i(M_GUT) and 1/α_i(M_GUT) = 1/α_i(M_Z) − b_i L/(2π),
+        running down gives 1/α_GUT + b_i L/(2π) − δ_i = 1/α_i(M_Z) exactly,
+        whatever p, L or 1/α_GUT are.  So ``weinberg_angle_at_MZ``,
+        ``alpha_s_prediction`` and ``alpha_em_prediction`` return the M_Z
+        inputs 0.23122, 0.1179 and 1/127.952 for every p (checked at
+        p = 101, 104761, 1000003).  They are withdrawn as predictions;
+        they are not conditional on unification either, since no
+        unification condition enters the result.  Found in the 2026-10
+        review of unmerged branches.
         """
         N_B = self.n_boundary_modes
         L_above = np.log(_M_PL_GEV / self.unification_scale_GeV)
@@ -576,11 +719,22 @@ class GaugeCouplingRunning:
             "inv_alpha_gut": inv_alpha_gut,
             "n_modes": N_B,
             "method": "BACKWARD-FIT (exact unification by construction)",
+            "status": (
+                "IDENTITY (2026-10): running back down with these δ_i "
+                "returns the M_Z inputs for every p; not a prediction"
+            ),
         }
 
     @property
     def alpha_gut(self) -> float:
-        """Unified coupling at M_GUT (with BPR threshold corrections)."""
+        """Unified coupling at M_GUT (with BPR threshold corrections).
+
+        NOTE (2026-10): this is the backward-fit value, (1/α₂ + 1/α₃)/2 at
+        M_GUT (1/α_GUT ≈ 48.6 at p = 104761), set by the measured couplings.
+        It differs from the bare lattice ansatz
+        ``bpr.alpha_derivation.alpha_gut_from_lattice`` (1/α_GUT ≈ 90.0)
+        and from the 1/40 hard-coded in ``ProtonDecay``.
+        """
         th = self.boundary_threshold_corrections
         return 1.0 / th["inv_alpha_gut"]
 
@@ -606,6 +760,11 @@ class GaugeCouplingRunning:
            sin²θ_W = (3/5)α₁ / ((3/5)α₁ + α₂)
 
         Result: sin²θ_W(M_Z) ≈ 0.231
+
+        IDENTITY (2026-10): the matching corrections −δ_i undo the
+        backward fit exactly, so this returns the input sin²θ_W = 0.23122
+        for every p.  The value 3/8 of step 1 is never used by the code.
+        Not a prediction; see ``boundary_threshold_corrections``.
         """
         th = self.boundary_threshold_corrections
         inv_a_gut = th["inv_alpha_gut"]
@@ -629,7 +788,11 @@ class GaugeCouplingRunning:
 
     @property
     def alpha_em_prediction(self) -> float:
-        """Predicted α_EM(M_Z) from top-down running with matching."""
+        """Predicted α_EM(M_Z) from top-down running with matching.
+
+        IDENTITY (2026-10): returns the input α_EM(M_Z) = 1/127.952 for
+        every p.  Not a prediction; see ``boundary_threshold_corrections``.
+        """
         th = self.boundary_threshold_corrections
         inv_a_gut = th["inv_alpha_gut"]
         L = np.log(self.unification_scale_GeV / _M_Z_GEV)
@@ -643,7 +806,13 @@ class GaugeCouplingRunning:
 
     @property
     def alpha_s_prediction(self) -> float:
-        """Predicted α_s(M_Z) from top-down running with matching."""
+        """Predicted α_s(M_Z) from top-down running with matching.
+
+        IDENTITY (2026-10): returns the input α_s(M_Z) = 0.1179 for every
+        p.  Not a prediction; see ``boundary_threshold_corrections``.  The
+        bare forward chain, which is p-dependent, gives α_s ≈ 0.020
+        (``bpr.alpha_derivation.alpha_em_from_gut_running``).
+        """
         th = self.boundary_threshold_corrections
         inv_a_gut = th["inv_alpha_gut"]
         L = np.log(self.unification_scale_GeV / _M_Z_GEV)
@@ -958,6 +1127,21 @@ class ProtonDecay:
 
     Dominant channel: p → π⁰ + e⁺ (ΔW = 1, ΔL = 1)
 
+    STATUS (2026-10): LEGACY; the lifetime is NOT a prediction.
+    - The exp(−p^{1/3}) tunnelling rate above is STIPULATED and NOT
+      IMPLEMENTED: ``lifetime_years`` is the standard dimension-6 estimate
+      M_GUT⁴ / (α_GUT² m_p⁵) and contains no such factor.  (At p = 104761,
+      exp(−p^{1/3}) ≈ 3.4 × 10⁻²¹; applied to the rate it would lengthen
+      the lifetime by ≈ 3 × 10²⁰.)  The claim has no derivation here and
+      is withdrawn as a description of this class.
+    - α_GUT = 1/40 in ``lifetime_years`` is hard-coded, not taken from
+      this module (see ``lifetime_years``).
+    - M_GUT = M_Pl/p^{1/4} ≈ 6.8 × 10¹⁷ GeV is the legacy ansatz.  The
+      BPR-6D Phase 1 naive estimate (``bpr.model_scales``: M_GUT ≈
+      4.5 × 10¹⁶ GeV, 1/α_G ≈ 46.2) is ≈ 2.6 × 10³⁸ yr.
+    - The branching ratios are generic GUT values, not BPR outputs.
+    Found in the 2026-10 review of unmerged branches.
+
     Parameters
     ----------
     p : int – substrate prime
@@ -995,9 +1179,17 @@ class ProtonDecay:
         """Proton lifetime [years].
 
         τ_p ~ M_GUT⁴ / (m_p⁵ α_GUT²)
+
+        HARD-CODED COUPLING (2026-10): α_GUT = 1/40 is a "typical GUT"
+        value, not one of this module's couplings.  The module's own
+        values are 1/α_GUT ≈ 48.6 (backward fit,
+        ``GaugeCouplingRunning.alpha_gut``) and ≈ 90.0 (bare lattice
+        ansatz, ``bpr.alpha_derivation.alpha_gut_from_lattice``); they would
+        lengthen τ_p by ×1.48 and ×5.07.  At p = 104761 the result is
+        ≈ 9.7 × 10⁴² yr.  Not a prediction (see the class STATUS).
         """
         m_p_GeV = 0.938
-        alpha_gut = 1.0 / 40.0  # typical GUT coupling
+        alpha_gut = 1.0 / 40.0  # HARD-CODED "typical GUT coupling" (2026-10: not derived; see docstring)
         # In natural units → convert to years
         tau_natural = self.M_GUT_GeV ** 4 / (m_p_GeV ** 5 * alpha_gut ** 2)
         # Convert GeV⁻¹ to seconds: 1 GeV⁻¹ ≈ 6.58 × 10⁻²⁵ s
@@ -1007,8 +1199,13 @@ class ProtonDecay:
 
     @property
     def exceeds_superK(self) -> bool:
-        """True if lifetime exceeds Super-Kamiokande bound (1.6 × 10³⁴ yr)."""
-        return self.lifetime_years > 1.6e34
+        """True if lifetime exceeds the Super-Kamiokande bound.
+
+        Bound: τ(p → e⁺π⁰) > 2.4 × 10³⁴ yr (Super-K 2020, 90% CL), the
+        value ``bpr.model_scales.SUPER_K_TAU_YR`` and the P17.8 registry
+        entry use.  Updated 2026-10 from the older 1.6 × 10³⁴ yr.
+        """
+        return self.lifetime_years > _SUPER_K_TAU_YR
 
 
 # ---------------------------------------------------------------------------
@@ -1038,6 +1235,11 @@ def weinberg_angle_from_boundary(geometry: str = "sphere") -> float:
                   ≈ 0.231
 
     Use GaugeCouplingRunning.weinberg_angle_at_MZ for the full calculation.
+
+    NOTE (2026-10): ``GaugeCouplingRunning.weinberg_angle_at_MZ`` does not
+    use this 3/8; it returns the input 0.23122 for every p (backward-fit
+    identity).  The "≈ 0.231" above is therefore not a calculation.  3/8
+    itself is the standard SU(5) normalisation value.
 
     Parameters
     ----------

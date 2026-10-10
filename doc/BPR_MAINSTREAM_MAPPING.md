@@ -120,7 +120,7 @@ commitments make specific numerical predictions:
 | Ωcc⁺ − Ξcc⁺ SU(3) splitting | 105.2 MeV | LHCb 105.45 ± 5; lattice 85–130 | Currently consistent; future precision could discriminate |
 | δ Casimir exponent | 2 (derived from Postulate 0c) | Standard QED predicts no anomalous exponent | Yes (next-gen precision Casimir) |
 | Cabibbo angle | √(m_d/m_s) from BPR masses → 0.225 | PDG 0.225 | Already matches; depends on derived masses staying accurate |
-| CP phase δ_CP | π/2 − 1/√(z+1) ≈ 1.193 rad | 1.196 rad (PDG) | 0.25% match; BPR-distinctive in deriving from z |
+| CP phase δ_CP | π/2 − 1/√(z+1) ≈ 1.193 rad | 1.196 rad (PDG) | 0.25% match; BPR-distinctive in deriving from z. *Withdrawn 2026-10: the formula is an ansatz with no derivation; 1.196 rad is an older PDG global fit, and against the 1.144 rad used in `bpr/fermion_fit.py` it is about +1.6–1.8σ high, with z = 5 fitting better. Not discriminating.* |
 | V_cb | 0.0406 (BPR formula) | 0.0405 (PDG) | 0.2% match; BPR-distinctive in derivation |
 
 ### Speculative but framework-defining

@@ -76,10 +76,15 @@ and $\sin^2\theta_{12} = 1/3 - 1/(3.5\ln p) = 0.3083$
 orientability, predicting no axion (consistent with four independent
 ADMX/HAYSTAC null searches);
 (v)~linear Lorentz-invariance violation coefficient $\xi_1 = 0$ exactly
-from $\CPT$ symmetry of the $\Stwo$ boundary (confirmed: LHAASO sets
-$E_{\mathrm{QG},1} > 10\,\MPl$);
+from $\CPT$ symmetry of the $\Stwo$ boundary (LHAASO sets
+$E_{\mathrm{QG},1} > 10\,\MPl$; superseded 2026-10: $\xi_1 = 0$ is
+also the Standard Model and GR value, so this bound is consistent
+with it but does not confirm it, see Sec.~\ref{sec:qg});
 (vi)~the CKM CP-violating phase $\delta_{\mathrm{CP}} = \pi/2 - 1/\!\sqrt{z+1}
-= 68.34^\circ$ ($0.03\sigma$ from \textsc{pdg} global fit);
+= 68.34^\circ$ ($0.03\sigma$ from \textsc{pdg} global fit; relabelled
+2026-10 as a phenomenological ansatz with no derivation, and the
+$0.03\sigma$ used an older reference value with an error several
+times the current one);
 and (vii)~the number of fermion generations $n_{\mathrm{gen}} = 3$ from
 topological winding constraints on the prime substrate.
 All 22 particle-sector predictions are derived with zero free parameters.
@@ -439,6 +444,16 @@ boundary mode overlap correction:
 \label{eq:dcp}
 \quad (\text{\textsc{pdg}: }68.5 \pm 5.7^\circ,\; 0.03\sigma).
 \end{equation}
+\textit{Relabelled 2026-10.}  Eq.~\eqref{eq:dcp} is a
+phenomenological ansatz with no derivation, not a derived result.  In
+the code (\texttt{bpr/qcd\_flavor.py}) it is the CKM phase, and the
+reference $68.5^\circ$ (1.196~rad) is an older CKM global-fit value, so
+the comparison does not belong in this PMNS section: the PMNS Dirac
+phase is a different quantity.  The quoted $\pm5.7^\circ$ is several
+times the current CKM error, which is where the $0.03\sigma$ comes
+from; against the CKM phase $\delta = 1.144$~rad used in
+\texttt{bpr/fermion\_fit.py} the ansatz is about $1.6$--$1.8\sigma$
+high.  See \texttt{doc/CLOSED\_AND\_DEPRECATED.md}.
 
 The neutrino prediction scorecard is summarized in Table~\ref{tab:pmns}.
 
@@ -453,7 +468,7 @@ Parameter & BPR & Experiment & Dev.\\
 $\sin^2\theta_{12}$ & 0.3083 & $0.3092\pm0.0087$ (JUNO 2025) & $0.03\sigma$ \\
 $\theta_{13}$ & $8.64^\circ$ & $8.54\pm0.15^\circ$ (Daya Bay) & $+0.65\sigma$ \\
 $\theta_{23}$ & $49.3^\circ$ & $\sim49\pm1.3^\circ$ & $0.3\sigma$ \\
-$\delta_{\mathrm{CP}}$ & $68.34^\circ$ & $68.5\pm5.7^\circ$ (\textsc{pdg}) & $0.03\sigma$ \\
+$\delta_{\mathrm{CP}}$ & $68.34^\circ$ & $68.5\pm5.7^\circ$ (\textsc{pdg}) & $0.03\sigma$ (ansatz; CKM value, 2026-10) \\
 $\Delta m^2_{21}$ & $8.27\times10^{-5}$~eV$^2$ & $7.53\times10^{-5}$ & $10\%$ \\
 $|\Delta m^2_{32}|$ & $2.40\times10^{-3}$~eV$^2$ & $2.45\times10^{-3}$ & $2\%$ \\
 $\sum m_\nu$ & $0.060$~eV & $< 0.12$~eV & within bound \\
@@ -505,6 +520,34 @@ providing a cross-check (Appendix~\ref{app:clifford}).
 \label{sec:qg}
 %% ============================================================================
 
+\begin{quote}
+\textbf{Superseded (2026-10).}  This section is kept as a historical
+record; its results are superseded.  The three nonzero values
+($\xi_2 = 1/p$, $\abs{\delta c/c} = e^{-p^{1/3}}$, $\beta = 1/p$) are
+stipulated on the $\alpha$-calibrated $p$.  The architecture decision
+(\texttt{doc/derivations/architecture\_decision\_2026-09-26.md},
+section~4) supersedes them: in BPR-6D spacetime is six-dimensional
+and exactly Lorentz-invariant, and $p$ has no counterpart.  BPR-6D
+therefore predicts no Lorentz violation, exactly as the Standard
+Model with GR does, so $\xi_1 = 0$ does not distinguish \bpr{} from
+conventional physics, and the LHAASO bound below is consistent with
+it without confirming it.  The symmetry argument for $\xi_1 = 0$ does
+not hold as stated either: the reflection $n \leftrightarrow p+1-n$
+does not act on energy, so it cannot remove parity-even odd-power
+terms such as $E^3$ in the dispersion relation, and the $SO(3)$
+Killing vectors include no boosts.  In the CPT-odd (birefringent)
+effective-field-theory form, linear Lorentz violation is already
+bounded at $\xi \lesssim 3.4\times10^{-16}$ by GRB polarimetry
+(G\"otz et al., MNRAS 431, 3550 (2013)), far below time-of-flight
+reach.  For a quadratic modified dispersion relation the
+time-delay prefactor is $3/2$, not the $1/2$ used below, so the
+Mrk~421 delay would be $1.3\times10^{-19}$~s rather than
+$4.4\times10^{-20}$~s; either is undetectable.  The text does not
+fix a reference species or a sign for $\delta c/c$.  Found in the
+2026-10 review of unmerged branches; see
+\texttt{doc/CLOSED\_AND\_DEPRECATED.md}.
+\end{quote}
+
 \subsection{Structural result: $\xi_1 = 0$ exactly}
 
 The $\Stwo$ boundary possesses three Killing vectors (generators of $SO(3)$
@@ -551,10 +594,12 @@ Killing vectors of $\Stwo$ simultaneously.  The barrier height in the winding
 landscape is $\Delta\mathcal{H} = p^{1/3}$, giving an instanton rate
 $\Gamma_{\mathrm{inst}} \sim e^{-p^{1/3}}$ and a fractional speed variation:
 \begin{equation}
-\abs{\frac{\delta c}{c}} = e^{-p^{1/3}} = e^{-47.136}
-  \simeq 3.38 \times 10^{-21}.
+\abs{\frac{\delta c}{c}} = e^{-p^{1/3}} = e^{-47.141}
+  \simeq 3.36 \times 10^{-21}.
 \label{eq:deltac}
 \end{equation}
+(Corrected 2026-10: the earlier $e^{-47.136} \simeq 3.38\times10^{-21}$
+is the value at $p = 104{,}729$, not at the $p = 104{,}761$ used here.)
 This is energy-independent and five orders of magnitude below the
 GW170817/GRB~170817A multi-messenger bound
 $|\delta c_\gamma / c| < 7\times10^{-16}$~\cite{Abbott2017}.
@@ -579,17 +624,40 @@ correction $\delta f/f \sim 10^{-5}$.  The GUP prediction implies a
 black hole remnant mass $M_{\mathrm{rem}} = \MPl(1 + 1/(2p))$, testable
 with LISA ringdown observations.
 
+\textit{Withdrawn (2026-10).}  The QNM correction is withdrawn as a
+prediction, together with its LISA test.  It is stipulated, not
+derived, and the legacy sources disagree on its coefficient: the
+earlier papers use $1/(2p) \approx 4.8\times10^{-6}$ and the code's
+Bridge~11 (\texttt{bh\_quasinormal\_modes} in
+\texttt{bpr/bridges/cosmology\_gravity.py}) uses $\ln p/(4\pi p)
+\approx 8.8\times10^{-6}$.  For single-mode ($l=2$, $n=0$) ringdown a
+mass-independent fractional shift is degenerate with a small change
+in the remnant's mass and spin, and the code's own
+\texttt{detectable\_by} flag reports it as not detectable with current
+or planned detectors.  The gravitational-wave dispersion
+$\delta v/c \sim 1/p$ is one of three mutually inconsistent legacy
+dispersion statements recorded as legacy debt in section~6 of
+\texttt{doc/derivations/unification\_map\_2026-09-25.md}; it is not a
+result.  Found in the 2026-10 review of unmerged branches; see
+\texttt{doc/CLOSED\_AND\_DEPRECATED.md}.
+
 \begin{table}[h]
-\caption{Quantum gravity predictions compared with current bounds.}
+\caption{Quantum gravity predictions compared with current bounds.
+Superseded (2026-10); see the note at the start of
+Sec.~\ref{sec:qg}.  Corrected 2026-10: the $\xi_1$ row earlier
+quoted ``$<8\times10^{-18}$ (CTA forecast)'', which is not a bound on
+$\xi_1$; LHAASO's $E_{\rm QG,1}>10\,\MPl$ corresponds to
+$\xi_1 < 0.1$.  The $|\delta c/c|$ row earlier read
+$3.38\times10^{-21}$, the value at $p = 104{,}729$.}
 \label{tab:qg}
 \begin{ruledtabular}
 \begin{tabular}{lll}
 Observable & BPR prediction & Current bound / test \\
 \colrule
-$\xi_1$ (linear LIV) & $0$ (exact) &  $<8\times10^{-18}$ (CTA forecast) \\
+$\xi_1$ (linear LIV) & $0$ (exact) &  $<0.1$ (time of flight) \\
                       &              & LHAASO: $E_{\rm QG,1}>10\,\MPl$ \\
 $\xi_2$ (quadratic LIV) & $9.55\times10^{-6}$ & undetectable via MDR \\
-$|\delta c/c|$ (instanton) & $3.38\times10^{-21}$ & $<7\times10^{-16}$ (GW170817) \\
+$|\delta c/c|$ (instanton) & $3.36\times10^{-21}$ & $<7\times10^{-16}$ (GW170817) \\
 $\beta$ (GUP) & $9.55\times10^{-6}$ & $<10^{21}$ (current) \\
 \end{tabular}
 \end{ruledtabular}
@@ -803,7 +871,7 @@ unless marked as an anchor.  Updated April 2026.}
 15 & $\sin^2\theta_{12}$ & 0.3083 & $0.3092\pm0.0087$ & $0.03\sigma$ & \texttt{neutrino} & Derived \\
 16 & $\theta_{13}$ & $8.64^\circ$ & $8.54\pm0.15^\circ$ & $+0.65\sigma$ & \texttt{neutrino} & Derived \\
 17 & $\theta_{23}$ & $49.3^\circ$ & $\sim49\pm1.3^\circ$ & $0.3\sigma$ & \texttt{neutrino} & Derived \\
-18 & $\delta_{\mathrm{CP}}$ & $68.34^\circ$ & $68.5\pm5.7^\circ$ & $0.03\sigma$ & \texttt{neutrino} & Derived \\
+18 & $\delta_{\mathrm{CP}}$ & $68.34^\circ$ & $68.5\pm5.7^\circ$ & $0.03\sigma$ & \texttt{neutrino} & Ansatz (2026-10)$^\ddagger$ \\
 19 & $n_{\mathrm{gen}}$ & 3 & 3 & exact & \texttt{neutrino} & Derived \\
 20 & Hierarchy & Normal & Preferred & --- & \texttt{neutrino} & Consistent \\
 21 & $\sum m_\nu$ (eV) & 0.060 & $<0.12$ & within bound & \texttt{neutrino} & Consistent \\
@@ -813,9 +881,9 @@ unless marked as an anchor.  Updated April 2026.}
 22d & $G$ ($10^{-11}$) & 6.59 & 6.67 & 1.2\% & \texttt{gauge\_unification} & Derived \\
 \colrule
 \multicolumn{7}{c}{\textit{Quantum Gravity}} \\
-23 & $\xi_1$ (linear LIV) & 0 (exact) & $<8\times10^{-18}$ (CTA) & --- & \texttt{rpst\_extensions} & Unique pred. \\
-24 & $\xi_2$ (quadratic) & $9.55\times10^{-6}$ & undetectable & --- & \texttt{rpst\_extensions} & Derived \\
-25 & $\beta$ (GUP) & $9.55\times10^{-6}$ & $<10^{21}$ & --- & \texttt{quantum\_gravity\_pheno} & Derived \\
+23 & $\xi_1$ (linear LIV) & 0 (exact) & $<0.1$ (LHAASO) & --- & \texttt{rpst\_extensions} & Superseded (2026-10)$^\dagger$ \\
+24 & $\xi_2$ (quadratic) & $9.55\times10^{-6}$ & undetectable & --- & \texttt{rpst\_extensions} & Superseded (2026-10) \\
+25 & $\beta$ (GUP) & $9.55\times10^{-6}$ & $<10^{21}$ & --- & \texttt{quantum\_gravity\_pheno} & Superseded (2026-10) \\
 \colrule
 \multicolumn{7}{c}{\textit{Condensed Matter \& Atomic}} \\
 26 & MgB$_2$ $T_c$ (K) & 41.3 & 39 & 6\% & \texttt{tdgl\_bpr} & Derived \\
@@ -826,7 +894,18 @@ unless marked as an anchor.  Updated April 2026.}
 \end{tabular}
 \end{ruledtabular}
 \textit{$^*$Pole mass from $t\bar{t}$ cross-section extractions;
-MC direct measurements give $172.52$--$172.95$~GeV ($\sim 1$~GeV below pole).}
+MC direct measurements give $172.52$--$172.95$~GeV ($\sim 1$~GeV below pole).}\par
+\textit{$^\dagger$Rows 23--25 are superseded (2026-10); see the note at
+the start of Sec.~\ref{sec:qg}.  Row~23 earlier quoted
+``$<8\times10^{-18}$ (CTA)'', which is not a bound on $\xi_1$, and was
+labelled ``Unique pred.''; $\xi_1 = 0$ is also the Standard Model and
+GR value.}\par
+\textit{$^\ddagger$Relabelled 2026-10 from ``Derived'': the CKM phase
+$\pi/2 - 1/\!\sqrt{z+1}$ is a phenomenological ansatz with no
+derivation.  The reference $68.5\pm5.7^\circ$ is an older global-fit
+value (1.196~rad) with an error several times the current one; against
+the CKM phase $\delta = 1.144$~rad used in \texttt{bpr/fermion\_fit.py}
+the ansatz is about $1.6$--$1.8\sigma$ high, and $z = 5$ fits better.}
 \end{table*}
 
 
@@ -842,6 +921,9 @@ by timeline.
 \begin{itemize}
 \item \textbf{Linear LIV}: Any positive detection of $\xi_1 \neq 0$ by
   \textsc{cta} or Fermi-LAT immediately falsifies \bpr.
+  \textit{Superseded (2026-10): $\xi_1 = 0$ is also the Standard Model
+  and GR value, so this tests Lorentz invariance in general, not
+  \bpr; see Sec.~\ref{sec:qg}.}
 \item \textbf{Normal hierarchy}: JUNO will determine the mass ordering
   to $> 3\sigma$ by $\sim 2028$.  Inverted ordering falsifies the
   orientability argument.
@@ -859,7 +941,10 @@ by timeline.
 \textit{Medium-term (2028--2035):}
 \begin{itemize}
 \item \textbf{GW dispersion} $\delta v/c \sim 10^{-5}$: LISA post-merger
-  ringdown.
+  ringdown.  \textit{Withdrawn (2026-10): this is one of three mutually
+  inconsistent legacy dispersion statements (unification map,
+  section~6), and the related QNM shift is withdrawn; see the note in
+  Sec.~\ref{sec:qg}.}
 \item \textbf{$w_0 > -0.8$}: Falsified by DESI-II or Euclid.
 \item \textbf{Fourth generation fermion}: Any observation of a 4th
   generation falsifies Eq.~\eqref{eq:ngen}.
@@ -873,6 +958,7 @@ by timeline.
   KSVZ/DFSZ coupling falsifies $\theta_{\mathrm{QCD}} = 0$.
 \item \textbf{GUP parameter $\beta = 1/p$}: Next-generation
   optomechanics approaching $\beta \sim 10^{-5}$.
+  \textit{Superseded (2026-10); see Sec.~\ref{sec:qg}.}
 \end{itemize}
 
 
@@ -911,7 +997,9 @@ removing $m_\tau$ as an anchor mass ($1.5\%$ error).
 consistent with existing data but also consistent with the Standard Model
 (which simply treats them as inputs).  The framework's genuinely unique
 predictions --- no axion, $\xi_1 = 0$ exactly, normal hierarchy --- are
-accumulating supporting null results but none is yet decisive.  The choice
+accumulating supporting null results but none is yet decisive.
+(2026-10: $\xi_1 = 0$ is withdrawn from this list; it is also the
+Standard Model and GR value, see Sec.~\ref{sec:qg}.)  The choice
 $p = 104{,}761$ is a selection from primes rather than a purely deductive
 derivation.  One dimensionful anchor ($\Lambda_{\mathrm{QCD}}$ or any
 equivalent energy scale) is required by dimensional analysis: dimensionless

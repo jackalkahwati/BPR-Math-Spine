@@ -239,3 +239,86 @@ class TestPrecision:
         inv_a = inverse_alpha_from_substrate(104729, 6)
         # Pre-computed: should be approximately 137.031
         assert abs(inv_a - 137.031) < 0.01
+
+    def test_known_numerical_value_at_default_prime(self):
+        """At the default p = 104761 the formula gives 137.0386 (+19.3 ppm).
+
+        The "137.031 / 36 ppm" the module used to print is the p = 104729
+        arithmetic (corrected 2026-10).
+        """
+        from bpr.alpha_derivation import inverse_alpha_from_substrate, alpha_breakdown
+        inv_a = inverse_alpha_from_substrate(104761, 6)
+        assert inv_a == pytest.approx(137.038641, abs=1e-6)
+        bd = alpha_breakdown(104761, 6)
+        signed_ppm = (bd.inv_alpha_predicted - bd.inv_alpha_experiment) \
+            / bd.inv_alpha_experiment * 1e6
+        assert signed_ppm == pytest.approx(19.28, abs=0.01)
+
+
+# =====================================================================
+# 2026-10: labels and the legacy GUT chain
+# =====================================================================
+
+class TestLabels2026:
+    """Wording tripwires for the 2026-10 corrections."""
+
+    def test_module_docstring_states_value_at_default_prime(self):
+        import bpr.alpha_derivation as ad
+        doc = ad.__doc__
+        assert "ANSATZ" in doc
+        assert "137.0386" in doc
+        assert "+19.3 ppm" in doc
+        # The old value survives only inside the dated correction note.
+        assert "= 137.031\n" not in doc
+
+    def test_formulas_labelled_ansatz(self):
+        from bpr.alpha_derivation import alpha_gut_from_lattice, inverse_alpha_from_substrate
+        assert "ANSATZ" in inverse_alpha_from_substrate.__doc__
+        assert "ANSATZ" in alpha_gut_from_lattice.__doc__
+
+    def test_no_dangling_top_down_reference(self):
+        import inspect
+        import bpr.alpha_derivation as ad
+        assert not hasattr(ad, "derive_couplings_top_down")
+        assert "See ``derive_couplings_top_down``" not in inspect.getsource(ad)
+
+
+class TestBareGUTChainFails:
+    """The ansatz α_GUT = π/(p^{1/3} z) at M_GUT = M_Pl/p^{1/4} fails at M_Z."""
+
+    def test_bare_chain_alpha_s_far_below_measured(self):
+        from bpr.alpha_derivation import alpha_em_from_gut_running
+        r = alpha_em_from_gut_running(104761, 6)
+        assert r["alpha_s_MZ"] < 0.03          # measured 0.1179
+        assert r["alpha_s_MZ"] == pytest.approx(0.02028, abs=1e-4)
+
+    def test_bare_chain_numbers(self):
+        from bpr.alpha_derivation import alpha_em_from_gut_running
+        r = alpha_em_from_gut_running(104761, 6)
+        assert r["inv_alpha_gut"] == pytest.approx(90.033, abs=1e-3)
+        assert r["sin2_theta_W"] == pytest.approx(0.2739, abs=1e-4)   # measured 0.23122
+        assert r["inv_alpha_em_MZ"] == pytest.approx(261.41, abs=0.01)  # measured 127.95
+        assert r["M_gut_GeV"] == pytest.approx(6.786e17, rel=1e-3)
+        assert r["status"].startswith("FAILS")
+
+
+class TestBackwardFitIsIdentity:
+    """GaugeCouplingRunning's backward fit returns its M_Z inputs for every p."""
+
+    PRIMES = (101, 104729, 104761, 1000003)
+
+    @pytest.mark.parametrize("p", PRIMES)
+    def test_outputs_equal_inputs(self, p):
+        from bpr.gauge_unification import GaugeCouplingRunning
+        g = GaugeCouplingRunning(p=p)
+        assert g.alpha_s_prediction == pytest.approx(0.1179, abs=1e-12)
+        assert g.weinberg_angle_at_MZ == pytest.approx(0.23122, abs=1e-12)
+        assert 1.0 / g.alpha_em_prediction == pytest.approx(127.952, abs=1e-9)
+
+    def test_alpha_s_prediction_independent_of_p(self):
+        from bpr.gauge_unification import GaugeCouplingRunning
+        values = [GaugeCouplingRunning(p=p).alpha_s_prediction for p in self.PRIMES]
+        assert max(values) - min(values) < 1e-12
+        # while the scale it is supposedly derived from does depend on p
+        scales = [GaugeCouplingRunning(p=p).unification_scale_GeV for p in self.PRIMES]
+        assert max(scales) / min(scales) > 5

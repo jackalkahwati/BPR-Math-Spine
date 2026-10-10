@@ -1211,7 +1211,7 @@ def bh_quasinormal_modes(
     M_solar: float = 10.0,
     p: int = P_DEFAULT,
 ) -> Dict[str, Any]:
-    r"""BPR quasi-normal mode frequencies for a Schwarzschild black hole.
+    r"""Schwarzschild l=2, n=0 quasi-normal mode with a stipulated BPR shift.
 
     Quasi-normal modes (QNMs) are the damped oscillations of a perturbed
     black hole.  For the fundamental l=2 mode of a Schwarzschild BH:
@@ -1219,27 +1219,65 @@ def bh_quasinormal_modes(
         f_QNM = (1/2pi) * c^3 / (G M) * omega_R
         tau_damp = G M / (c^3 * omega_I)
 
-    Standard GR values (l=2, n=0):
+    Standard GR values (l=2, n=0; Leaver 1985 gives 0.3736717 - 0.0889623 i):
         omega_R ~ 0.3737,  omega_I ~ 0.0890
 
-    BPR correction from boundary phase at the horizon:
+    Stipulated deviation (written down, not derived):
         omega_R^BPR = omega_R * (1 + delta_BPR / p)
-        where delta_BPR = ln(p) / (4 pi) from the horizon winding entropy
+        omega_I^BPR = omega_I * (1 - delta_BPR / (2 p))
+        with delta_BPR = ln(p) / (4 pi)
 
-    Prediction: for 10 M_sun, f_QNM ~ 1.2 kHz; BPR shift ~ 10^{-5} f
-    -> testable with Cosmic Explorer / Einstein Telescope.
+    The fractional frequency shift ln(p) / (4 pi p) is the same for every
+    mass: 8.78e-6 at p = 104761. For 10 M_sun, f_QNM ~ 1.2 kHz and
+    delta_f ~ 0.011 Hz.
+
+    STATUS: stipulated_deviation. WITHDRAWN as a prediction (2026-10).
+
+    LIMITATION (2026-10). Found in the 2026-10 review of unmerged branches
+    (claude/bpr-ecdlp-research-SWQnW); see doc/CLOSED_AND_DEPRECATED.md.
+    (a) Not derived. The coefficient ln(p) / (4 pi p) is stipulated.
+        bpr.black_hole contains no per-cell ln(p) / (4 pi) phase, and an
+        entropy correction does not by itself set QNM frequencies. The
+        legacy papers carry the same claim with a different, equally
+        underived coefficient, 1 / (2p) = 4.77e-6.
+    (b) Not a BPR-6D result. The size comes from the alpha-calibrated p,
+        which has no counterpart in BPR-6D
+        (doc/derivations/architecture_decision_2026-09-26.md, section 4).
+        Under the current BPR-6D architecture the effect is not derived. A
+        dimensional estimate, corrections of order (r / r_s)^2 with r the
+        S^2 radius (1/r ~ 4.5e16 to 7.6e16 GeV in the Phase 1 control
+        window), gives ~1e-74 to ~1e-76 for 10 to 60 M_sun remnants. That
+        is an order-of-magnitude estimate, not a computation in this
+        repository.
+    (c) Degenerate with the remnant. For single-mode (220-only) ringdown
+        the shifts of frequency and damping time are absorbed by the
+        remnant mass and spin: at chi = 0.69 the shift above equals a GR
+        remnant with d chi = +1.04e-5 and dM/M = -6.3e-7 (Berti, Cardoso and
+        Will 2006 fits). Only multimode spectroscopy at ~1e-5 precision
+        could separate the two, and then only in principle. This function
+        also uses the Schwarzschild (zero-spin) mode, whereas merger
+        remnants spin.
+    (d) Not detectable. ``detectable_by`` compares delta_f with a nominal
+        0.1 Hz resolution. At p = 104761 that threshold is met only for
+        M < 1.06 M_sun, below the black-hole remnants of observed mergers
+        (``nominal_threshold_mass_solar``), and it ignores
+        ringdown duration and signal-to-noise ratio, so it is not a
+        detector forecast. For stellar-mass and heavier remnants it reports
+        "Not detectable with current or planned detectors". No detector
+        claim is made.
 
     Parameters
     ----------
     M_solar : float
         Black hole mass in solar masses.
     p : int
-        Substrate prime modulus.
+        Substrate prime modulus (legacy, alpha-calibrated).
 
     Returns
     -------
     dict
-        f_QNM_Hz, omega_R, omega_I, bpr_correction, delta_f_Hz, detectable_by
+        f_QNM_Hz, omega_R, omega_I, bpr_correction, delta_f_Hz,
+        detectable_by, status ("stipulated_deviation"), limitation
     """
     # Constants
     G = 6.67430e-11
@@ -1259,9 +1297,8 @@ def bh_quasinormal_modes(
     f_QNM_gr = f_scale * omega_R_gr
     tau_damp = G * M_kg / (C ** 3 * omega_I_gr)
 
-    # BPR correction: boundary phase winding at the horizon
-    # delta_BPR encodes the logarithmic entropy correction from the
-    # discrete Z_p structure of the horizon microstates
+    # Stipulated BPR deviation (see LIMITATION (a) in the docstring): the
+    # coefficient ln(p)/(4 pi) is written down, not derived.
     delta_BPR = np.log(float(p)) / (4.0 * np.pi)
 
     # Corrected dimensionless frequency
@@ -1272,11 +1309,14 @@ def bh_quasinormal_modes(
     delta_f = f_QNM_bpr - f_QNM_gr
     fractional_shift = delta_f / f_QNM_gr
 
-    # Detectability: Cosmic Explorer sensitivity ~ 10^{-24} strain,
-    # frequency resolution ~ 0.1 Hz for loud events
-    # BPR shift is a fractional frequency shift of ~ 1/p
-    ce_freq_resolution = 0.1  # Hz
-    detectable = abs(delta_f) > ce_freq_resolution
+    # Nominal 0.1 Hz frequency resolution (legacy threshold). It ignores
+    # ringdown duration and signal-to-noise ratio, so it is not a detector
+    # forecast; at p = 104761 it is met only for M < 1.06 M_sun
+    # (LIMITATION (d)).
+    nominal_freq_resolution = 0.1  # Hz
+    exceeds_nominal_resolution = abs(delta_f) > nominal_freq_resolution
+    # delta_f scales as 1/M, so the threshold holds below this mass
+    threshold_mass_solar = M_solar * abs(delta_f) / nominal_freq_resolution
 
     return {
         "f_QNM_Hz": float(f_QNM_bpr),
@@ -1291,16 +1331,27 @@ def bh_quasinormal_modes(
         "tau_damp_s": float(tau_damp),
         "M_solar": M_solar,
         "p": p,
+        "exceeds_nominal_resolution": bool(exceeds_nominal_resolution),
+        "nominal_threshold_mass_solar": float(threshold_mass_solar),
         "detectable_by": (
-            "Cosmic Explorer / Einstein Telescope (3G detectors)"
-            if detectable
+            "None claimed: delta_f exceeds the nominal 0.1 Hz threshold "
+            f"(met only for M < {threshold_mass_solar:.3g} M_sun), which is "
+            "not a detector forecast"
+            if exceeds_nominal_resolution
             else "Not detectable with current or planned detectors"
+        ),
+        "status": "stipulated_deviation",
+        "limitation": (
+            "Withdrawn as a prediction (2026-10): the shift ln(p)/(4 pi p) is "
+            "stipulated, not derived; p is alpha-calibrated and has no BPR-6D "
+            "counterpart; for 220-only ringdown the shift is degenerate with "
+            "the remnant mass and spin. See doc/CLOSED_AND_DEPRECATED.md."
         ),
         "description": (
             f"BH QNM f = {f_QNM_bpr:.1f} Hz for {M_solar} M_sun; "
-            f"BPR shift delta_f = {delta_f:.4f} Hz "
-            f"(fractional {fractional_shift:.2e}). "
-            f"delta_BPR/p = {delta_BPR/p:.2e} from horizon winding entropy."
+            f"stipulated BPR shift delta_f = {delta_f:.4f} Hz "
+            f"(fractional {fractional_shift:.2e}, delta_BPR/p = "
+            f"{delta_BPR/p:.2e}); not derived, withdrawn as a prediction."
         ),
     }
 
@@ -1314,27 +1365,48 @@ def bh_ringdown_prime_periodic(
     p: int = P_DEFAULT,
     n_samples: int = 1024,
 ) -> Dict[str, Any]:
-    r"""Prime-periodic ringing in BH ringdown waveform.
+    r"""Ringdown waveform with a stipulated prime-periodic modulation.
 
     After a binary merger, the ringdown waveform is:
         h(t) = A exp(-t / tau_damp) cos(2 pi f_QNM t)
 
-    BPR predicts a prime-periodic envelope modulation:
-        h_BPR(t) = h(t) * [1 + epsilon * sum_n cos(2 pi n t / (p tau_P))]
+    Stipulated modulation (written down, not derived):
+        h_BPR(t) = h(t) * [1 + epsilon * sum_n cos(2 pi n t / (p tau_P)) / n^2]
 
-    where epsilon ~ 1/p ~ 10^{-5} and tau_P = 5.391e-44 s.
+    with epsilon = 1/p ~ 1e-5 and tau_P = 5.391e-44 s, summed over n = 1..5.
+    f_QNM and tau_damp come from Bridge 11 (bh_quasinormal_modes), so they
+    carry its stipulated shift.
 
-    The modulation frequency f_mod = 1/(p tau_P) ~ 1.76e38 Hz is far
-    above the ringdown band, so the physical effect is a slow beat
-    pattern with period T_beat ~ p tau_P / f_QNM that modulates the
-    ringdown envelope amplitude at the ~ 10^{-5} level.
+    STATUS: stipulated_deviation. WITHDRAWN as a prediction (2026-10).
+
+    LIMITATION (2026-10). Found in the 2026-10 review of unmerged branches
+    (claude/bpr-ecdlp-research-SWQnW); see doc/CLOSED_AND_DEPRECATED.md.
+    The legacy prediction list carries the same idea as P7.2, P7.4 and
+    P7.5 (bpr.first_principles).
+    (a) Not derived. Both epsilon = 1/p and the modulation period p tau_P
+        are stipulated, on the alpha-calibrated p, which has no counterpart
+        in BPR-6D (doc/derivations/architecture_decision_2026-09-26.md,
+        section 4). Under the current BPR-6D architecture no such
+        modulation is derived.
+    (b) No observable. The modulation frequency f_mod = 1/(p tau_P)
+        = 1.77e38 Hz lies about 35 decades above the ringdown band (f_QNM
+        = 1.2 kHz at 10 M_sun). A modulation that fast averages to zero
+        over any detector sampling interval; it does not produce a slow
+        beat on the envelope, as an earlier version of this docstring said.
+    (c) The returned ``waveform_samples`` modulation is a sampling artefact.
+        At 10 M_sun and 1024 samples each sample step spans ~1e33
+        modulation periods, and the phase 2 pi n t / (p tau_P) reaches
+        ~3e37 rad, where the float64 spacing is ~5e21 rad. The cos(...)
+        values are therefore aliasing and rounding noise and change with
+        ``n_samples``. ``modulation_depth`` is epsilon * sum 1/n^2 by
+        construction, not a measured depth.
 
     Parameters
     ----------
     M_solar : float
         Black hole mass in solar masses.
     p : int
-        Substrate prime modulus.
+        Substrate prime modulus (legacy, alpha-calibrated).
     n_samples : int
         Number of waveform samples to generate.
 
@@ -1342,14 +1414,15 @@ def bh_ringdown_prime_periodic(
     -------
     dict
         tau_damp_s, f_QNM_Hz, epsilon_modulation, f_modulation_Hz,
-        waveform_samples (array of n_samples points)
+        waveform_samples (array of n_samples points),
+        status ("stipulated_deviation"), limitation
     """
     # Get QNM parameters from Bridge 11
     qnm = bh_quasinormal_modes(M_solar=M_solar, p=p)
     f_QNM = qnm["f_QNM_Hz"]
     tau_damp = qnm["tau_damp_s"]
 
-    # Prime-periodic modulation
+    # Stipulated prime-periodic modulation (LIMITATION (a))
     tau_planck = 5.391247e-44  # s
     epsilon = 1.0 / float(p)
     f_mod = 1.0 / (float(p) * tau_planck)
@@ -1362,19 +1435,18 @@ def bh_ringdown_prime_periodic(
     envelope = np.exp(-times / tau_damp)
     carrier = np.cos(2.0 * np.pi * f_QNM * times)
 
-    # Prime-periodic modulation (sum first 5 harmonics)
-    # Since f_mod >> f_QNM, the actual modulation appears as a very
-    # slow beat; we model the effective envelope modulation
+    # Stipulated modulation (first 5 harmonics). Since f_mod >> f_QNM,
+    # evaluating cos(phase_n) on the sample grid only aliases it: the
+    # values are sampling and rounding noise, not a physical beat
+    # (LIMITATION (b), (c)).
     modulation = np.ones_like(times)
     for n in range(1, 6):
-        # Effective beat: use the fractional part of n*t/(p*tau_P)
-        # mapped into the observable band via aliasing
         phase_n = 2.0 * np.pi * n * times / (float(p) * tau_planck)
         modulation += (epsilon / n ** 2) * np.cos(phase_n)
 
     waveform = envelope * carrier * modulation
 
-    # Peak-to-peak modulation depth
+    # Nominal depth epsilon * sum 1/n^2, by construction
     mod_depth = float(epsilon * sum(1.0 / n ** 2 for n in range(1, 6)))
 
     return {
@@ -1389,11 +1461,19 @@ def bh_ringdown_prime_periodic(
         "times_s": times.tolist(),
         "M_solar": M_solar,
         "p": p,
+        "status": "stipulated_deviation",
+        "limitation": (
+            "Withdrawn as a prediction (2026-10): epsilon = 1/p and the "
+            "period p*tau_P are stipulated on the alpha-calibrated p, which "
+            "has no BPR-6D counterpart; f_mod ~ 1.77e38 Hz has no observable "
+            "effect, and the sampled modulation is an aliasing artefact. "
+            "See doc/CLOSED_AND_DEPRECATED.md."
+        ),
         "description": (
             f"Ringdown for {M_solar} M_sun BH: f_QNM={f_QNM:.1f} Hz, "
-            f"tau_damp={tau_damp:.6f} s. Prime-periodic modulation: "
-            f"epsilon=1/p={epsilon:.2e}, f_mod={f_mod:.2e} Hz, "
-            f"effective depth={mod_depth:.2e}."
+            f"tau_damp={tau_damp:.6f} s. Stipulated prime-periodic "
+            f"modulation: epsilon=1/p={epsilon:.2e}, f_mod={f_mod:.2e} Hz, "
+            f"nominal depth={mod_depth:.2e}; not derived, no observable."
         ),
     }
 

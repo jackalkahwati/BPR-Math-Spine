@@ -289,10 +289,22 @@ class CKMMatrix:
     θ₁₃ (|V_ub|): DERIVED from mass hierarchy.
         |V_ub| = √(m_u/m_t) from boundary overlap (exp: 0.00367, 4% off).
 
-    δ_CP: DERIVED from boundary geometry.
+    δ_CP: ANSATZ (relabelled from DERIVED, 2026-10).
         δ = π/2 − 1/√(z+1) (z = coordination number).  The 1/√(z+1)
-        correction encodes the boundary mode overlap phase.  For z=6:
-        δ ≈ 1.193 rad (68.3°), exp 1.196 rad (68.5°), 0.25% off.
+        term was described as the boundary mode overlap phase, but no
+        derivation exists; the formula is a phenomenological ansatz.  It
+        replaced the hard-coded experimental input 1.196 rad in commit
+        99ff50e, and 1.196 remains as the fallback when p is None.  For
+        z=6: δ ≈ 1.193 rad (68.3°), 0.26% from that 1.196 rad (68.5°).
+        1.196 rad is an older PDG global-fit value (probably PDG 2020),
+        not a current one.  Against δ = 1.144 rad, the CKM input used in
+        bpr/fermion_fit.py, z=6 sits +0.049 rad high: +1.6σ with that
+        module's 0.03 rad tolerance, +1.8σ with σ = 0.027 rad (an error
+        recalled, not fetched); z=5 is preferred by Δχ² ≈ 2.3–2.8.  So
+        z=6 is mildly disfavoured, not excluded, and the formula does not
+        single it out.  Found in the 2026-10 review of unmerged branches
+        (claude/audit-bpr-parameters-6fSrQ); see
+        doc/CLOSED_AND_DEPRECATED.md.
     """
     overlap_matrix: Optional[np.ndarray] = None
     p: Optional[int] = None
@@ -338,11 +350,14 @@ class CKMMatrix:
             s13 = np.sqrt(r_ut)
             c13 = np.sqrt(1.0 - s13 ** 2)
 
-            # δ_CP: DERIVED — δ = π/2 − 1/√(z+1) from boundary geometry
+            # δ_CP: ANSATZ (2026-10; was labelled DERIVED) — δ = π/2 − 1/√(z+1),
+            # a phenomenological formula with no derivation.
             delta = (
                 np.pi / 2.0 - 1.0 / np.sqrt(self.z + 1.0)
                 if self.p is not None
-                else 1.196  # fallback
+                # Fallback: outdated experimental input (older PDG global
+                # fit, probably PDG 2020), not a BPR value and not current.
+                else 1.196
             )
 
             # Standard CKM parameterisation
@@ -366,10 +381,14 @@ class CKMMatrix:
     def mixing_angles(self) -> dict:
         """Extract θ₁₂, θ₂₃, θ₁₃, δ_CP from the CKM matrix.
 
-        δ_CP is derived from the Jarlskog invariant via the identity
-        J = s₁₂·c₁₂·s₂₃·c₂₃·s₁₃·c₁₃²·sin(δ_CP).  Since all three angles
-        and J are independently derived from (p, z), δ_CP follows.
-        For p=104761, z=6:  δ_CP ≈ 68.3° (PDG 2024: 65.5°–72.2°).
+        δ_CP is recovered from the Jarlskog invariant via the identity
+        J = s₁₂·c₁₂·s₂₃·c₂₃·s₁₃·c₁₃²·sin(δ_CP).  J is computed from the
+        matrix built with the input δ, so this returns that input δ (folded
+        into [0°, 90°] by the arcsin); it is an identity, not an independent
+        derivation.  For p=104761, z=6:  δ_CP ≈ 68.3°, the ANSATZ value
+        (see the class docstring; note 2026-10).  The range "PDG 2024:
+        65.5°–72.2°" quoted here earlier is withdrawn; the CKM input used in
+        bpr/fermion_fit.py is δ = 1.144 rad (65.5°).
         """
         V = np.abs(self.V)
         s13 = V[0, 2]
@@ -384,7 +403,8 @@ class CKMMatrix:
             np.conj(self.V[0, 1]) * np.conj(self.V[1, 0])
         ))
 
-        # Derive δ_CP from J and the three angles (standard PDG identity)
+        # Recover δ_CP from J and the three angles (standard PDG identity;
+        # this returns the input δ, folded into [0, π/2])
         s12 = float(np.sin(theta12))
         c12 = float(np.cos(theta12))
         s23 = float(np.sin(theta23))

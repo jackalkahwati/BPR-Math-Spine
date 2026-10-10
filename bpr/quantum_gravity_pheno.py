@@ -1,18 +1,38 @@
 """
-Quantum Gravity Phenomenology
+Quantum Gravity Phenomenology (legacy, SUPERSEDED)
 ==========================================
 
-Derives observable quantum gravity corrections from the discrete
-BPR substrate: modified dispersion relations, generalized uncertainty
-principle, and Lorentz invariance violation bounds.
+Legacy module. It writes down quantum-gravity corrections attributed to the
+discrete BPR substrate: modified dispersion relations, a generalized
+uncertainty principle, and a Lorentz-violation estimate. None of the
+p-dependent values below is derived; each is stipulated on the
+alpha-calibrated substrate prime p.
 
-Key results
------------
-* Modified dispersion: E² = p²c² + m²c⁴ + ξ_n E³/M_Pl (n=1 forbidden)
-* Generalized uncertainty principle: ΔxΔp ≥ ℏ/2 [1 + β(Δp/M_Pl c)²]
+SUPERSEDED (2026-10). The architecture decision
+(doc/derivations/architecture_decision_2026-09-26.md, section 4) supersedes
+"Lorentz invariance to exp(-p^{1/3})", the ξ₂ = 1/p dispersion and the GUP:
+BPR-6D is six-dimensional and exactly Lorentz-invariant, and p has no
+counterpart there. BPR-6D therefore predicts no Lorentz violation, the same
+as the Standard Model plus general relativity, so ξ₁ = 0 discriminates
+nothing. The 2026-10 review of unmerged branches withdrew P20.1, P20.4 and
+P20.7 as predictions; see doc/CLOSED_AND_DEPRECATED.md. The code is kept as
+a legacy arithmetic record; the registry rows in bpr/experimental_data.py
+are left unchanged.
+
+Legacy formulas
+---------------
+* Modified dispersion: E² = p²c² + m²c⁴ + ξ_n E^{n+2}/(M_Pl c²)^n, with
+  ξ₁ = 0 and ξ₂ = 1/p (stipulated)
+* Generalized uncertainty principle: ΔxΔp ≥ ℏ/2 [1 + β(Δp/M_Pl c)²], with
+  β = 1/p (stipulated)
 * Minimum measurable length: Δx_min = l_Pl √β
-* Lorentz invariance: preserved to O(1/p), tiny violation at O(1/p²)
-* Photon time delay from GRB: Δt ~ E L / (M_Pl c²)  × correction
+* Speed-of-light variation: |δc/c| = exp(−p^{1/3}) (stipulated). An earlier
+  version of this docstring said O(1/p²) here, which the code never used.
+* Photon time delay (quadratic case): Δt = (3/2) ξ₂ (E/M_Pl c²)² L/c
+
+Corrections (2026-10): energy_correction() carried a spurious factor 2 and
+grb_time_delay() used the prefactor 1/2 instead of 3/2. Both are fixed; see
+the method docstrings.
 
 References: Al-Kahwati (2026), BPR-Math-Spine extended theories
 """
@@ -37,17 +57,22 @@ _M_PL_KG = 2.176434e-8      # kg
 
 @dataclass
 class ModifiedDispersion:
-    """Modified dispersion relation from substrate discreteness.
+    """Modified dispersion relation (legacy, SUPERSEDED 2026-10).
 
     E² = p²c² + m²c⁴ + ξ_n × E^{n+2} / (M_Pl c²)^n
 
-    BPR predicts:
-    - n = 1 (linear correction): ξ₁ = 0 (forbidden by boundary CPT)
+    Legacy assignments (stipulated, not derived):
+    - n = 1 (linear correction): ξ₁ = 0 (attributed to boundary CPT)
     - n = 2 (quadratic correction): ξ₂ ~ 1/p
     - Higher order: ξ_n ~ 1/p^{n-1}
 
-    The n=1 term vanishes because the boundary preserves CPT,
-    and CPT + Lorentz → no odd-power corrections.
+    The legacy argument was that the boundary preserves CPT, and
+    CPT + Lorentz → no odd-power corrections.
+
+    SUPERSEDED (2026-10): BPR-6D is exactly Lorentz-invariant
+    (architecture decision, section 4), so it predicts ξ₁ = ξ₂ = 0, as the
+    Standard Model plus general relativity do. ξ₁ = 0 is therefore not a
+    discriminating prediction, and ξ₂ = 1/p rests on the alpha-calibrated p.
 
     Parameters
     ----------
@@ -62,27 +87,39 @@ class ModifiedDispersion:
 
     @property
     def xi_2(self) -> float:
-        """Quadratic LIV parameter ξ₂ ~ 1/p."""
+        """Quadratic LIV parameter ξ₂ ~ 1/p (stipulated, legacy)."""
         return 1.0 / self.p
 
     def energy_correction(self, E_GeV: float, m_GeV: float = 0.0) -> float:
         """Fractional energy correction from modified dispersion.
 
-        δE / E ~ ξ₂ × (E / M_Pl)²
+        δE / E = ξ₂ × (E / M_Pl)² / 2   (massless, at fixed momentum)
+
+        From E² = p²c² + ξ₂ E⁴/(M_Pl c²)², 2E δE = ξ₂ E⁴/(M_Pl c²)² to
+        first order in ξ₂, hence the factor 1/2. Corrected 2026-10: the
+        earlier code returned ξ₂ (E/M_Pl)², twice this value.
 
         Parameters
         ----------
         E_GeV : float – photon/particle energy [GeV]
-        m_GeV : float – rest mass [GeV]
+        m_GeV : float – rest mass [GeV]; unused (massless formula)
 
         Returns float – fractional correction δE/E.
         """
-        return self.xi_2 * (E_GeV / _E_PLANCK_GEV) ** 2
+        return 0.5 * self.xi_2 * (E_GeV / _E_PLANCK_GEV) ** 2
 
     def grb_time_delay(self, E_GeV: float, distance_Mpc: float) -> float:
-        """Time delay for GRB photons from modified dispersion [s].
+        """Time-of-flight difference for GRB photons from modified dispersion [s].
 
-        Δt = ξ₂ × E² × L / (2 M_Pl² c⁵)
+        |Δt| = (3/2) × ξ₂ × E² × L / (M_Pl² c⁵)
+
+        For E² = p²c² + ξ₂ E⁴/(M_Pl c²)², the group velocity is
+        v/c = 1 + (3/2) ξ₂ (E/M_Pl c²)² to first order in ξ₂, which gives the
+        prefactor 3/2 (the standard (1+n)/2 for n = 2). Corrected 2026-10: the
+        earlier code used 1/2, a factor 3 too small. For ξ₂ > 0 the
+        higher-energy photon is faster and arrives earlier; the magnitude is
+        returned. L is a flat-space distance: no cosmological redshift
+        integral is applied.
 
         Parameters
         ----------
@@ -92,7 +129,7 @@ class ModifiedDispersion:
         L_m = distance_Mpc * 3.0857e22  # Mpc to metres
         E_J = E_GeV * 1.602e-10         # GeV to J
         M_Pl_c2 = _M_PL_KG * _C ** 2
-        return self.xi_2 * E_J ** 2 * L_m / (2.0 * M_Pl_c2 ** 2 * _C)
+        return 1.5 * self.xi_2 * E_J ** 2 * L_m / (M_Pl_c2 ** 2 * _C)
 
 
 # ---------------------------------------------------------------------------
@@ -101,12 +138,15 @@ class ModifiedDispersion:
 
 @dataclass
 class GeneralizedUncertainty:
-    """Generalized uncertainty principle from substrate discreteness.
+    """Generalized uncertainty principle (legacy, SUPERSEDED 2026-10).
 
     Δx Δp ≥ (ℏ/2) [1 + β (Δp / M_Pl c)²]
 
-    BPR predicts:
+    Legacy assignment (stipulated, not derived):
         β = 1/p  (substrate correction)
+
+    SUPERSEDED (2026-10): the architecture decision (section 4) supersedes
+    the GUP; BPR-6D has no counterpart of p.
 
     This modifies the Heisenberg uncertainty at Planck scale:
     - Standard QM: Δx_min = 0 (no minimum length)
@@ -161,16 +201,24 @@ class GeneralizedUncertainty:
 
 @dataclass
 class LorentzInvariance:
-    """Lorentz invariance violation bounds from BPR.
+    """Legacy Lorentz-violation estimate (SUPERSEDED 2026-10).
 
-    BPR preserves Lorentz invariance to leading order because
+    Legacy argument: Lorentz invariance holds to leading order because
     the boundary respects the Killing vectors of S².
 
-    Violations appear at order 1/p²:
-        |δc/c| ~ 1/p²
+    The code returns |δc/c| = exp(−p^{1/3}) (stipulated, not derived):
+    3.38e-21 at p = 104729 and 3.36e-21 at p = 104761. An earlier version
+    of this docstring said |δc/c| ~ 1/p² (≈ 9.1e-11 at p = 104761) and
+    "many orders of magnitude below" the bound; neither matched the code.
+    exp(−p^{1/3}) sits only ~0.25 decades below the 6e-21 figure used here.
 
-    This is many orders of magnitude below current bounds from
-    gamma-ray observations (|δc/c| < 10⁻²⁰).
+    SUPERSEDED (2026-10): BPR-6D is exactly Lorentz-invariant and p has no
+    counterpart there (architecture decision, section 4), so BPR-6D
+    predicts δc/c = 0, as the Standard Model plus general relativity do.
+    The comparison with 6e-21 is also a category error: that figure is a
+    photon time-of-flight bound on energy-dependent dispersion, which an
+    energy-independent offset of the photon speed does not produce. P20.7
+    is withdrawn as a prediction (doc/CLOSED_AND_DEPRECATED.md).
 
     Parameters
     ----------
@@ -180,19 +228,27 @@ class LorentzInvariance:
 
     @property
     def fractional_speed_variation(self) -> float:
-        """Fractional variation in speed of light.
+        """Fractional variation in speed of light (stipulated, legacy).
 
         |δc/c| ~ exp(-p^{1/3})
 
-        The violation requires tunneling through a barrier of height
-        p^{1/3} in the boundary winding landscape (3 Killing vectors
-        of S² must be simultaneously disrupted).
+        The legacy argument: the violation requires tunneling through a
+        barrier of height p^{1/3} in the boundary winding landscape (3
+        Killing vectors of S² must be simultaneously disrupted). No such
+        barrier is computed anywhere in the repository.
         """
         return np.exp(-self.p ** (1.0 / 3.0))
 
     @property
     def experimental_bound(self) -> float:
-        """Current experimental bound: |δc/c| < 6 × 10⁻²¹ (Fermi-LAT)."""
+        """Legacy comparison figure: |δc/c| < 6 × 10⁻²¹.
+
+        Attributed here and in bpr/experimental_data.py to Fermi-LAT
+        GRB 090510. The 2026-10 review of unmerged branches traces the figure
+        to Nemiroff et al. 2012 (6.94e-21), a low-significance bound on
+        energy-dependent dispersion. It does not bound an energy-independent
+        offset such as exp(-p^{1/3}). Value kept for the legacy record.
+        """
         return 6e-21
 
     @property
@@ -215,8 +271,8 @@ def hydrogen_gravity_shift(n: int = 1) -> float:
 
     ΔE_grav / E_n = (m_e / M_Pl)² × f(n)
 
-    This is incredibly tiny (~10⁻⁴⁵) but demonstrates that BPR
-    predicts specific corrections to every atomic level.
+    This is incredibly tiny (~10⁻⁴⁵). It is a dimensional estimate with no
+    dependence on p, so it is not specific to BPR (note added 2026-10).
 
     Parameters
     ----------
