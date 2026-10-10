@@ -1,6 +1,7 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "date": "2026-09-25",
+  "revised": "2026-10-09",
   "baseline_commit": "c27470f",
   "scope": "Dependency map of every link a theory of everything would need, with the current evidence for each. Not a proof score or completion percentage.",
   "empirical_validation": false,
@@ -16,265 +17,918 @@
     "open": "No result yet; a well-posed problem is named.",
     "withdrawn": "Claim falsified or withdrawn; kept for the record."
   },
+  "link_vocabulary": {
+    "premises": "Map nodes whose results this node's claim actually uses, each with a reason. A stipulated node has none. For an open node they are the objects the problem is posed on.",
+    "context": "Map nodes that motivated or frame this node without being used by its result, each with a reason.",
+    "hypotheses": "Named unproven assumptions the node's status rests on. 'node' names a map node when the assumption is that node's unproven content. Every conditional node names at least one.",
+    "depends_on": "Union of premises and context, kept for one release for compatibility; read premises and context instead."
+  },
+  "premise_audit": {
+    "audited_statuses": ["exact_theorem", "controlled_limit", "obstructed"],
+    "permitted_statuses": ["stipulated", "exact_theorem", "controlled_limit", "obstructed"],
+    "rule": "For an audited node, every node reachable through premises must have a permitted status unless the audited node names it in hypotheses. Axioms are the stipulated nodes reachable through premises (an analogue of Lean's #print axioms); they list map nodes only."
+  },
+  "verification_levels": ["none", "argument", "ai_review", "exact_computation", "formal_statement", "formal_proof"],
+  "verification_vocabulary": {
+    "none": "No check of the stated content is recorded. Used for stipulated inputs, open problems and withdrawn claims.",
+    "argument": "A written derivation or computation exists in the repository; no independent review section is recorded for it.",
+    "ai_review": "AI review of scoped mathematics, not certification: an independent adversarial review by a separate AI agent is recorded under a heading in a derivation note (review.anchor). Such reviews can miss errors; the repository's own review records show repairs after review.",
+    "exact_computation": "As ai_review, and named pytest tests (exact_checks) check the claim's computational core in exact integer, rational, finite-field or symbolic arithmetic against an independent oracle. scope states what those tests do not cover; the reduction from the physical statement to that core remains argument plus review.",
+    "formal_statement": "The statement is fixed in a proof assistant; its proof is not machine-checked. Not used: BPR has no Lean formalization.",
+    "formal_proof": "A machine-checked proof of the exact formal statement, with a comparator configuration (verification.formal). Not used: BPR has no Lean formalization. It would cover only the formal statement, never the physics reduction."
+  },
+  "review_kinds": {
+    "ai_adversarial": "An independent review by a separate AI agent instructed to look for errors.",
+    "human": "A review by a named human expert. None is recorded."
+  },
+  "verification_note": "Verification records how far a node's content has been checked; status records what kind of claim it is. No percentage of nodes at any level is computed: it would depend on the denominator and would read as a proof score.",
   "layers": ["substrate", "vacuum", "spacetime", "gravity", "gauge", "matter", "flavor", "observation"],
   "architecture_decision": "doc/derivations/architecture_decision_2026-09-26.md",
+  "history": "doc/HISTORY.md",
+  "status_snapshot": "doc/derivations/status_snapshot.json",
   "revisions": [
-    {"date": "2026-09-26", "summary": "Round 3: Lorentz invariance adopted as fundamental (BPR-6D); flux vacuum, flux landscape, family symmetry and Yukawa obstruction added; substrate nodes reclassified as analogue/regulator."},
-    {"date": "2026-09-26", "summary": "Round 4: characteristic-class Dirac quantization of the Green-Schwarz couplings; the minimal completion needs the parent charge in 3Z, so the family number is a multiple of three (family_count moves to conditional)."},
-    {"date": "2026-09-26", "summary": "Round 5: Omega_7^Spin(B(Spin(10) x U(1))) = 0 by an exact Adams E2 computation over A(1); BPR-6D has no global anomaly for the Spin x Spin(10) x U(1) structure."},
-    {"date": "2026-09-26", "summary": "Rounds 6-7: Morrison-Taylor tension resolved as a non-supersymmetric fork (SUSY analogues force 10 hypers and lose 3 | n_gen); geometric Spin(10) breaking obstructed (flux makes hypercharge massive via Green-Schwarz; S^2/(Z2xZ2) gives non-uniform families)."},
-    {"date": "2026-09-26", "summary": "Rounds 8-9: brane and bulk-vector Yukawa mechanisms (no single brane gives three distinct masses; no natural hierarchy); no classical brane self-tuning of the cosmological constant (discrete flat tensions)."},
-    {"date": "2026-09-26", "summary": "Round 10: BPR-6D predictions - a Green-Schwarz QCD axion near the compactification scale (generic to GS models) and n_gen in 3Z (postdiction; excludes a fourth family); everything else is untestable or not predicted."},
-    {"date": "2026-09-26", "summary": "Independent-review repairs for rounds 6-10: T=1 supersymmetric analogues can force charges into 3Z (fork restated as anomaly-forced 3 | n_gen vs F-theory embeddability); every quantized Spin(10) flux on S^2 is unstable; brane Higgs J_z charge c = s_h + 3 (brane scalar never couples; J_z breaking gives the Froggatt-Nielsen form, no hierarchy predicted); CC flatness pins the deficit globally; U(1)_F acts as a Peccei-Quinn symmetry of the supplied Higgs, so a viable QCD axion needs a supplied F-charged singlet."},
-    {"date": "2026-09-26", "summary": "Phase 1: minimal BPR-6D model specified and kill-checked. Brane Higgs copies fail (no tree-level cross-brane mixing; three Delta_R break the one-loop running); a single bulk F-charge -6 Higgs (lowest level a spin-3 multiplet, eth-bar coupling at four branes) passes the computed checks. c = 2 point couplings give only J = 2 Yukawas; four branes realize generic pairs modulo U(3) via quartic roots; brane moduli are the main open danger."},
-    {"date": "2026-09-27", "summary": "Phases 1d and 2: a charge -4 vortex condensate pins the four branes metastably at a regular tetrahedron (kill check 11 conditional). Against fermion data, the free-position 10 + 126bar model fits (chi^2 2.9, -1 dof, normal ordering only); the pinned model fails in the charged sector (best found chi^2 ~ 124; m_s about 3.6x too large). The independent review's blockers (two missing phases; a pinned point off W) reversed the first version's numbers and are repaired."},
-    {"date": "2026-10-01", "summary": "Phase 2b: normalization corrections (brane kinetic terms, tension distortion, any kinetic matrix) do not rescue the pinned branes at natural size (chi^2 >~ 40 charged, >~ 90 with neutrinos), but the one-derivative brane vertex of the same order does (chi^2 = 4.5 at |delta| <= 0.3, the top of its natural range). The review found this vertex and reversed the first version's verdict; pinning is not excluded at next-to-leading order, but flavour is not predicted. Phase 2's pinned best point lowered to 120.45."}
+    {"date": "2026-09-26", "pre_change_commit": "f82453e4268d0331db5473a87fce6bbac1cab6b6",
+     "summary": "Round 3: Lorentz invariance adopted as fundamental (BPR-6D); flux vacuum, flux landscape, family symmetry and Yukawa obstruction added; substrate nodes reclassified as analogue/regulator.",
+     "node_changes": [
+       {"id": "bpr6d_architecture", "from": null, "to": "stipulated", "claim_sha256_from": null, "claim_sha256_to": "0e2fcf8483d4496ed34475ec1d12b9cc4b107a6a155ec2526b13cd9709689c13", "reason": "Added: the Round 3 decision to make Lorentz invariance fundamental."},
+       {"id": "six_d_gravity", "from": null, "to": "stipulated", "claim_sha256_from": null, "claim_sha256_to": "f60a690ffe36f57a285c444833579ba2a6d86c895ae53c227b5ecc5698a5de2d", "reason": "Added with BPR-6D: six-dimensional Einstein gravity is supplied."},
+       {"id": "flux_vacuum", "from": null, "to": "exact_theorem", "claim_sha256_from": null, "claim_sha256_to": "fd60dbe8f6aab708300739c587a63344ace2913dd3d7a69a328f9ec0192fcffa", "reason": "Added: the M4 x S^2 flux vacuum and its breathing-mode stability."},
+       {"id": "flux_selection", "from": null, "to": "obstructed", "claim_sha256_from": null, "claim_sha256_to": "e2f23228af0b126081c564db7a7686a2066bf701f9e74644381f79ba0f37e22d", "reason": "Added: the classical flux landscape does not select m = 3."},
+       {"id": "family_symmetry", "from": null, "to": "exact_theorem", "claim_sha256_from": null, "claim_sha256_to": "488b0aab33d50419198f07114dd0f7f18041c03f3f5a9874fbc28f492011e12f", "reason": "Added: the flux families form one SU(2) isometry triplet."},
+       {"id": "yukawa_sector", "from": null, "to": "obstructed", "claim_sha256_from": null, "claim_sha256_to": "b60bdfbf0cf10cbd33f990d25e35831452541331c9a464d9777899fe93aa39fc", "reason": "Added: the minimal content has no Yukawa coupling."},
+       {"id": "common_limiting_speed", "from": "obstructed", "to": "obstructed", "claim_sha256_from": "b99c42381eab31987d1a5940d95ea55a5fd155f4d96b5101e9d525ade5aef70c", "claim_sha256_to": "5cb32f0e7a9b8844e63d295d564d0e47211630923d3b85644f910e80a2139993", "reason": "Claim narrowed to species emerging from the lattice substrate, since BPR-6D makes Lorentz invariance fundamental."}
+     ]},
+    {"date": "2026-09-26", "pre_change_commit": "b506441759e8ee643fc8532cc679b5ff6899e028",
+     "summary": "Round 4: characteristic-class Dirac quantization of the Green-Schwarz couplings; the minimal completion needs the parent charge in 3Z, so the family number is a multiple of three (family_count moves to conditional).",
+     "node_changes": [
+       {"id": "gs_quantization", "from": null, "to": "exact_theorem", "claim_sha256_from": null, "claim_sha256_to": "d8cc0faaecb05378fc67831ff21678e4f2b8ef26ed70a5d4203e1c419601c196", "reason": "Added: Dirac quantization of the Green-Schwarz couplings needs 3 | q."},
+       {"id": "family_count", "from": "stipulated", "to": "conditional", "claim_sha256_from": "d0858b5045268bcbef8a8890a9558697d6380ec5dfd8873c433c41bc658253d7", "claim_sha256_to": "aab88c08b6c8f361ff225c4f3a837202b934b5202f862d7adbc8a2dda2f5aef7", "reason": "The family number is now a multiple of three (characteristic-class level); three still needs minimal choices, so the node is conditional rather than stipulated."},
+       {"id": "gs_quantization", "from": "exact_theorem", "to": "exact_theorem", "claim_sha256_from": "d8cc0faaecb05378fc67831ff21678e4f2b8ef26ed70a5d4203e1c419601c196", "claim_sha256_to": "309b6a472d202471b3c034e48e461932bf2671dbe7a8b8e0b1a43951f4f668ee", "reason": "Review repair: 'unimodular' widened to 'integral' 2-form lattice, and the U(1) normalization anchored to Park-Taylor."}
+     ]},
+    {"date": "2026-09-26", "pre_change_commit": "80029d3803ab2b5cd0fa94cc4da464ac4e63380e",
+     "summary": "Round 5: Omega_7^Spin(B(Spin(10) x U(1))) = 0 by an exact Adams E2 computation over A(1); BPR-6D has no global anomaly for the Spin x Spin(10) x U(1) structure.",
+     "node_changes": [
+       {"id": "global_anomalies", "from": null, "to": "exact_theorem", "claim_sha256_from": null, "claim_sha256_to": "ae92a8ff17c097f8c6f1d58059a405094d0548ef50e4743b0146ba6fad9637ad", "reason": "Added: Omega_7^Spin(B(Spin(10) x U(1))) = 0 by an exact Adams E2 computation."},
+       {"id": "global_anomalies", "from": "exact_theorem", "to": "exact_theorem", "claim_sha256_from": "ae92a8ff17c097f8c6f1d58059a405094d0548ef50e4743b0146ba6fad9637ad", "claim_sha256_to": "d159a509b42efe1fee34032ed08e457babf71867b53667f8240590e3da622e41", "reason": "Claim extended to the twisted Spin x_Z2 Spin(10) x U(1) form after the review found a Z/2 in Omega_7 (trivial anomaly by a reduction argument)."}
+     ]},
+    {"date": "2026-09-26", "pre_change_commit": "dbafa2189a419c7a0d156fa4b5d174b349f13877",
+     "summary": "Rounds 6-7: Morrison-Taylor tension resolved as a non-supersymmetric fork (SUSY analogues force 10 hypers and lose 3 | n_gen); geometric Spin(10) breaking obstructed (flux makes hypercharge massive via Green-Schwarz; S^2/(Z2xZ2) gives non-uniform families).",
+     "node_changes": [
+       {"id": "string_embedding", "from": null, "to": "open", "claim_sha256_from": null, "claim_sha256_to": "e94f2633eaa9f3b331556ae86b2503b46f73c347ed4805645da7bb80c862e177", "reason": "Added: the string-embedding question is open (Morrison-Taylor fork)."},
+       {"id": "spin10_breaking", "from": null, "to": "obstructed", "claim_sha256_from": null, "claim_sha256_to": "d10c519181b5c33a7e7a45d2a6476039e3b76e4331bb5eec7dfb0796f6654df0", "reason": "Added: geometric Spin(10) breaking on the sphere is obstructed."}
+     ]},
+    {"date": "2026-09-26", "pre_change_commit": "93913ec52e020b9e4232e82130c1f44ea70fca86",
+     "summary": "Rounds 8-9: brane and bulk-vector Yukawa mechanisms (no single brane gives three distinct masses; no natural hierarchy); no classical brane self-tuning of the cosmological constant (discrete flat tensions).",
+     "node_changes": [
+       {"id": "cc_self_tuning", "from": null, "to": "obstructed", "claim_sha256_from": null, "claim_sha256_to": "ebca2f78dff63e77a45050d5f6f2c88591b8ca3705e03476e256cfdd1809561e", "reason": "Added: no classical brane self-tuning of the cosmological constant."}
+     ]},
+    {"date": "2026-09-26", "pre_change_commit": "acb3271bf1e9f5f43ca7139d54fbb4875ab7cc45",
+     "summary": "Round 10: BPR-6D predictions - a Green-Schwarz QCD axion near the compactification scale (generic to GS models) and n_gen in 3Z (postdiction; excludes a fourth family); everything else is untestable or not predicted.",
+     "node_changes": [
+       {"id": "bpr6d_predictions", "from": null, "to": "conditional", "claim_sha256_from": null, "claim_sha256_to": "ca47dd5056f507732e502c6ff461f67021f44a8762f6b07681dca49f4e7491ac", "reason": "Added: the Green-Schwarz QCD axion and n_gen in 3Z."}
+     ]},
+    {"date": "2026-09-26", "pre_change_commit": "96bd2c2f8cc47ca6d3dadfee53b27af6ab433f25",
+     "summary": "Independent-review repairs for rounds 6-10: T=1 supersymmetric analogues can force charges into 3Z (fork restated as anomaly-forced 3 | n_gen vs F-theory embeddability); every quantized Spin(10) flux on S^2 is unstable; brane Higgs J_z charge c = s_h + 3 (brane scalar never couples; J_z breaking gives the Froggatt-Nielsen form, no hierarchy predicted); CC flatness pins the deficit globally; U(1)_F acts as a Peccei-Quinn symmetry of the supplied Higgs, so a viable QCD axion needs a supplied F-charged singlet.",
+     "node_changes": [
+       {"id": "bpr6d_predictions", "from": "conditional", "to": "conditional", "claim_sha256_from": "ca47dd5056f507732e502c6ff461f67021f44a8762f6b07681dca49f4e7491ac", "claim_sha256_to": "05e1e634b2e9e398d16f0944d0f657a1593ad704f75ab3d1324f7477b5801ccd", "reason": "Review blocker (the F-charged Higgs was omitted): 'BPR-6D predicts a QCD axion near the compactification scale' narrowed to an axion that needs a supplied F-charged singlet."}
+     ]},
+    {"date": "2026-09-26", "pre_change_commit": "51d38c9e9fedb3e5c5b91de6c6a7163e0830e33c",
+     "summary": "Phase 1: minimal BPR-6D model specified and kill-checked. Brane Higgs copies fail (no tree-level cross-brane mixing; three Delta_R break the one-loop running); a single bulk F-charge -6 Higgs (lowest level a spin-3 multiplet, eth-bar coupling at four branes) passes the computed checks. c = 2 point couplings give only J = 2 Yukawas; four branes realize generic pairs modulo U(3) via quartic roots; brane moduli are the main open danger.",
+     "node_changes": [
+       {"id": "bpr6d_minimal_model", "from": null, "to": "conditional", "claim_sha256_from": null, "claim_sha256_to": "5dfa09d60280b1544376cbe33a9db61c60553bf4dee8516dfa88bd4de9ca7654", "reason": "Added: the Phase 1 minimal model (version B, one bulk Higgs) after the review failed version A."}
+     ]},
+    {"date": "2026-09-27", "pre_change_commit": "0b915479aa384fdfa4d63dfcbe09d741fb2b26c3",
+     "summary": "Phases 1d and 2: a charge -4 vortex condensate pins the four branes metastably at a regular tetrahedron (kill check 11 conditional). Against fermion data, the free-position 10 + 126bar model fits (chi^2 2.9, -1 dof, normal ordering only); the pinned model fails in the charged sector (best found chi^2 ~ 124; m_s about 3.6x too large). The independent review's blockers (two missing phases; a pinned point off W) reversed the first version's numbers and are repaired.",
+     "node_changes": [
+       {"id": "brane_positions", "from": null, "to": "conditional", "claim_sha256_from": null, "claim_sha256_to": "c40752991d4076891bb9fcf4d1379f95fd816c64727a24da9d8fe312ef1d2b8b", "reason": "Added: Phase 1d pinning, conditional after the review (kill check 11 not passed)."},
+       {"id": "fermion_fit", "from": null, "to": "phenomenological_fit", "claim_sha256_from": null, "claim_sha256_to": "65196257db72d3a304ebd2154feaf429dab9a532325e7ea03b519e759307c095", "reason": "Added: the Phase 2 fit; the review's two blockers reversed the first version's numbers."}
+     ]},
+    {"date": "2026-10-01", "pre_change_commit": "b207c17bb3ca15cf0d5d982098e5256dcdbf3c9f",
+     "summary": "Phase 2b: normalization corrections (brane kinetic terms, tension distortion, any kinetic matrix) do not rescue the pinned branes at natural size (chi^2 >~ 40 charged, >~ 90 with neutrinos), but the one-derivative brane vertex of the same order does (chi^2 = 4.5 at |delta| <= 0.3, the top of its natural range). The review found this vertex and reversed the first version's verdict; pinning is not excluded at next-to-leading order, but flavour is not predicted. Phase 2's pinned best point lowered to 120.45.",
+     "node_changes": [
+       {"id": "kinetic_corrections", "from": null, "to": "phenomenological_fit", "claim_sha256_from": null, "claim_sha256_to": "792b1d199ff963b966fbcfba0c6b4ed8c8a1dd08c3632e841b63121af29e2bf3", "reason": "Added: Phase 2b next-to-leading corrections."},
+       {"id": "fermion_fit", "from": "phenomenological_fit", "to": "phenomenological_fit", "claim_sha256_from": "65196257db72d3a304ebd2154feaf429dab9a532325e7ea03b519e759307c095", "claim_sha256_to": "ffa1192e169a5223ea3185d56a0de2c797b9c4029feafd0da2fbcbb053e629e5", "reason": "Pinned best point lowered from chi^2 ~ 124 to ~ 120 (the Phase 2b review's point); m_s factor 3.6 -> 3.6-3.9."},
+       {"id": "kinetic_corrections", "from": "phenomenological_fit", "to": "phenomenological_fit", "claim_sha256_from": "792b1d199ff963b966fbcfba0c6b4ed8c8a1dd08c3632e841b63121af29e2bf3", "claim_sha256_to": "3be7357f80af9408fe23fdf66c2b421cbbf27d66ab634cb24cf4887a08bb4ceb", "reason": "Review found the omitted one-derivative brane vertex; the verdict reversed from 'natural-size corrections do not rescue pinning' to 'the vertex rescues pinning near the top of its natural size; flavour is not predicted'."}
+     ]},
+    {"date": "2026-10-09", "pre_change_commit": "16ca3cae9a406d2c6ef4da31f2b5b0f1bf9014ec",
+     "summary": "Schema 2. Bookkeeping conventions modelled on openai/math (verification recorded separately from status; premises separated from context; a release history); no openai/math result is used. depends_on is split into premises and context with reasons, nodes name their hypotheses, and a premise audit runs as a test: stipulated nodes have no premises, so the six_d_gravity -> bpr6d_architecture -> common_limiting_speed -> emergent_gauge_field chain is recorded as motivation; the one genuine use of a conditional node by an audited node (the photon clause of common_limiting_speed) is a named hypothesis; flavor_formulas is context for flavor_source_selection. Every node has a verification record (no formal levels; AI review is not certification). Status snapshot guard and doc/HISTORY.md added. thermodynamic_condensation re-scoped to the superfluid region (claim text only). No status changes.",
+     "node_changes": [
+       {"id": "thermodynamic_condensation", "from": "open", "to": "open", "claim_sha256_from": "f75dee1c2f9cbe0d90a222b7b6cf739fa85ac3ba589a7cb7d073476998da9658", "claim_sha256_to": "2e635e3d5c669481872dc9d05719de97d3aa976ea9ce7211b31d0b667211d497", "reason": "Claim text re-scoped to the superfluid region; status unchanged. At integer filling and large g/C the ground state is expected to be a Mott insulator ((g/C)_c ~ 29.3 at unit filling in 3D; Capogrosso-Sansone, Prokof'ev and Svistunov 2007, numerical), so the unscoped claim was expected to be false on part of the (g, density) plane. The limitation now names reflection positivity (Dyson-Lieb-Simon 1978; Kennedy-Lieb-Shastry 1988) as the method behind the half-filling hard-core result. openai/math is not the basis for this change: it rests only on the peer-reviewed and numerical sources named here."}
+     ]}
   ],
   "nodes": [
     {"id": "ring_substrate", "layer": "substrate", "status": "stipulated",
      "claim": "One-dimensional complete Bose ring with C>0, g>=0.",
      "sources": ["bpr/substrate_vacuum_selection.py", "doc/derivations/substrate_extensive_stability_2026-09-13.md"],
      "depends_on": [],
+     "premises": [],
+     "context": [],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "One-dimensional; no observation map to physical spacetime."},
     {"id": "ring_locality_obstruction", "layer": "substrate", "status": "obstructed",
      "claim": "Uniformly bounded local encodings of superlinear-growth (e.g. 3D) graphs into the ring are excluded.",
      "sources": ["doc/derivations/substrate_locality_dimension_2026-09-13.md"],
      "depends_on": ["ring_substrate"],
+     "premises": [
+       {"id": "ring_substrate", "reason": "The obstruction concerns encodings into this ring's graph."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-13", "blockers_found": 0, "anchor": "doc/derivations/substrate_locality_dimension_2026-09-13.md#conditional-locality-and-dimension-derivation-and-proposed-contract"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": "The review is recorded in the status paragraph under the note's title; that note has no separate review heading. It covers the counting theorem."
+     },
      "limitation": "Covers bounded-dilation, bounded-fiber maps only."},
     {"id": "ring_gauss_obstruction", "layer": "substrate", "status": "obstructed",
      "claim": "Nontrivial bounded short-interval conserved (Gauss-type) operators on unrestricted Bose Fock space are scalar.",
      "sources": ["doc/derivations/substrate_local_symmetry_2026-09-13.md"],
      "depends_on": ["ring_substrate"],
+     "premises": [
+       {"id": "ring_substrate", "reason": "The theorem classifies operators that commute with this ring Hamiltonian."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-13", "blockers_found": null, "anchor": "doc/derivations/substrate_local_symmetry_2026-09-13.md#independent-review"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": "Covers the stated theorem on unrestricted Bose Fock space; the numerical work checks the implementation and fixed controls only."
+     },
      "limitation": "Constrained, dressed or low-energy emergent gauge structures are not covered."},
     {"id": "cubic_lattice", "layer": "substrate", "status": "stipulated",
      "claim": "Three-dimensional periodic cubic Bose-Hubbard lattice, C>0, g>=0; self-adjoint dynamics and one-particle nonrelativistic continuum limit.",
      "sources": ["doc/derivations/supplied_cubic_bose_2026-09-13.md", "bpr/supplied_cubic_bose.py"],
      "depends_on": ["ring_locality_obstruction"],
+     "premises": [],
+     "context": [
+       {"id": "ring_locality_obstruction", "reason": "The ring route to three dimensions is obstructed, which is why the cubic graph is supplied. A stipulated input has no premises."}
+     ],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "Three-dimensional geometry is supplied, not derived; repulsive contact scattering is trivial in the continuum limit."},
     {"id": "cubic_tuned_continuum", "layer": "substrate", "status": "controlled_limit",
      "claim": "Attractive tuned contact interaction with hard triple exclusion: fixed-N and direct-sum continuum convergence, canonical energy density, locally normal limit state.",
      "sources": ["doc/derivations/cubic_contact_continuum_2026-09-13.md", "doc/derivations/cubic_sector_direct_sum_convergence_2026-09-14.md", "doc/derivations/cubic_canonical_energy_density_2026-09-14.md", "doc/derivations/cubic_locally_normal_limit_state_2026-09-14.md"],
      "depends_on": ["cubic_lattice"],
+     "premises": [
+       {"id": "cubic_lattice", "reason": "The continuum limits are taken for this lattice model with an added tuned contact interaction."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-14", "blockers_found": 0, "anchor": "doc/derivations/cubic_sector_direct_sum_convergence_2026-09-14.md#8-independent-mathematical-review"},
+       "additional_reviews": [
+         {"kind": "ai_adversarial", "date": "2026-09-13", "blockers_found": 0, "anchor": "doc/derivations/cubic_contact_continuum_2026-09-13.md#7-sources-preservation-and-status"},
+         {"kind": "ai_adversarial", "date": "2026-09-14", "blockers_found": 0, "anchor": "doc/derivations/cubic_canonical_energy_density_2026-09-14.md#8-independent-mathematical-review"},
+         {"kind": "ai_adversarial", "date": "2026-09-14", "blockers_found": 0, "anchor": "doc/derivations/cubic_locally_normal_limit_state_2026-09-14.md#8-independent-mathematical-review"}
+       ],
+       "exact_checks": [],
+       "formal": null,
+       "scope": "One review per source note; each clearance is scoped as its note states (no equilibrium phase, thermodynamics or physical vacuum selection)."
+     },
      "limitation": "Hard triple exclusion is an added constraint; no equilibrium phase is established."},
     {"id": "link_boson_substrate", "layer": "substrate", "status": "stipulated",
      "claim": "Proposed amendment: hard-core bosons on links of a 3D lattice (equivalently site bosons on its line graph) with vertex charging U and hopping t.",
      "sources": ["doc/derivations/emergent_gauge_link_bosons_2026-09-25.md", "bpr/link_boson_gauge.py"],
      "depends_on": [],
+     "premises": [],
+     "context": [],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "New model input, not derived from the site-boson substrate; lattice (cubic vs diamond) is a choice."},
     {"id": "cubic_sector_vacuum", "layer": "vacuum", "status": "exact_theorem",
      "claim": "In every fixed-N sector the cubic lattice ground state is simple, strictly positive, invariant under every graph automorphism, and overlaps the condensate; an exact lattice f-sum identity follows.",
      "sources": ["doc/derivations/cubic_condensate_regime_2026-09-25.md", "bpr/cubic_condensate_regime.py"],
      "depends_on": ["cubic_lattice"],
+     "premises": [
+       {"id": "cubic_lattice", "reason": "The theorem is about the fixed-N ground states of this lattice Hamiltonian."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-25", "blockers_found": 0, "anchor": "doc/derivations/cubic_condensate_regime_2026-09-25.md#9-review-record"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": null
+     },
      "limitation": "Selects the vacuum inside a supplied population; does not select N."},
     {"id": "cubic_mean_field_condensate", "layer": "vacuum", "status": "controlled_limit",
      "claim": "Complete Bose-Einstein condensation with N-uniform depletion bound, and convergence of the low-lying spectrum to the Bogoliubov spectrum e=sqrt(eps(eps+2mu)), for g=lambda/(N-1) at fixed lattice size.",
      "sources": ["doc/derivations/cubic_condensate_regime_2026-09-25.md", "bpr/cubic_condensate_regime.py"],
      "depends_on": ["cubic_sector_vacuum"],
+     "premises": [
+       {"id": "cubic_sector_vacuum", "reason": "Complete condensation uses the positivity and translation invariance of the sector ground state (condensate note, Theorem 1)."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-25", "blockers_found": 0, "anchor": "doc/derivations/cubic_condensate_regime_2026-09-25.md#9-review-record"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": "The reviewer judged the Bogoliubov-spectrum theorem (Theorem 4) a valid sketch that needs more detail, not an error."
+     },
      "limitation": "Mean-field limit at fixed n; not a thermodynamic limit or the dilute Gross-Pitaevskii regime."},
     {"id": "thermodynamic_condensation", "layer": "vacuum", "status": "open",
-     "claim": "Condensation and a phonon branch in the thermodynamic limit of the cubic lattice at fixed g and density.",
+     "claim": "Condensation and a phonon branch in the thermodynamic limit of the cubic lattice at fixed g and density, in the superfluid region: (g, density) outside the Mott lobes, e.g. non-integer filling, or integer filling with g/C below the lobe tip (at unit filling in 3D the Mott transition is at (g/C)_c ~ 29.3, a numerical result of Capogrosso-Sansone, Prokof'ev and Svistunov 2007).",
      "sources": ["doc/derivations/cubic_condensate_regime_2026-09-25.md"],
      "depends_on": ["cubic_mean_field_condensate"],
-     "limitation": "Proved in the literature only in special cases (hard-core bosons at half filling); nothing proved here."},
+     "premises": [],
+     "context": [
+       {"id": "cubic_mean_field_condensate", "reason": "Starting point: the open problem asks to extend this fixed-size mean-field result to the thermodynamic limit."}
+     ],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
+     "limitation": "Proved in the literature only in special cases (lattice hard-core bosons at half filling, via reflection positivity: Dyson-Lieb-Simon 1978; Kennedy-Lieb-Shastry 1988); nothing proved here. The Mott-lobe boundary that scopes the claim is numerical (quantum Monte Carlo), not proved."},
     {"id": "continuum_equilibrium_gate", "layer": "vacuum", "status": "open",
      "claim": "Local physical energy-transfer theorem making the tuned continuum limit state an equilibrium phase.",
      "sources": ["doc/derivations/cubic_equilibrium_transfer_gap_2026-09-14.md"],
      "depends_on": ["cubic_tuned_continuum"],
+     "premises": [
+       {"id": "cubic_tuned_continuum", "reason": "The open target theorem is stated for this continuum limit state."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "Named sufficient target (T) is unproved; no no-go is established either."},
     {"id": "literal_particle_relativity", "layer": "spacetime", "status": "obstructed",
      "claim": "The exact one-particle branch E=E0+kappa p^2 cannot satisfy a finite-c mass shell on any open band.",
      "sources": ["doc/derivations/cubic_relativity_gate_2026-09-14.md"],
      "depends_on": ["cubic_lattice"],
+     "premises": [
+       {"id": "cubic_lattice", "reason": "The obstruction concerns the exact one-particle branch of this lattice."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-14", "blockers_found": 0, "anchor": "doc/derivations/cubic_relativity_gate_2026-09-14.md#9-independent-review-record"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": null
+     },
      "limitation": "Excludes only the literal identification; massive nonrelativistic approximation is compatible."},
     {"id": "acoustic_lorentz_window", "layer": "spacetime", "status": "controlled_limit",
      "claim": "The Bogoliubov phonon obeys |e/(c_s|q|)-1| <= max(a^2/12, xi^2)|q|^2 exactly, with c_s^2=2 mu kappa; this realizes the relativity gate's conditional acoustic Lagrangian with derived A,B.",
      "sources": ["doc/derivations/cubic_condensate_regime_2026-09-25.md", "bpr/cubic_condensate_regime.py"],
      "depends_on": ["cubic_mean_field_condensate", "literal_particle_relativity"],
+     "premises": [
+       {"id": "cubic_mean_field_condensate", "reason": "The bound is on the Bogoliubov dispersion controlled there (condensate note, Theorem 4)."}
+     ],
+     "context": [
+       {"id": "literal_particle_relativity", "reason": "The window realizes the relativity gate's conditional acoustic Lagrangian at Hartree order, a consistency statement; the bound does not use the obstruction."}
+     ],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-25", "blockers_found": 0, "anchor": "doc/derivations/cubic_condensate_regime_2026-09-25.md#9-review-record"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": "The inequalities are also checked numerically for every mode on finite lattices (floating point); that is a regression control, not an exact check."
+     },
      "limitation": "One scalar mode; preferred condensate frame; anisotropic lattice and superluminal Bogoliubov corrections."},
     {"id": "acoustic_metric", "layer": "spacetime", "status": "controlled_limit",
      "claim": "For uniform lattice flows the long-wave phonon cone is the null cone of an acoustic metric; it is Lorentzian iff the flow is dynamically stable, and has no ergoregion iff it is long-wave Landau stable.",
      "sources": ["doc/derivations/cubic_condensate_regime_2026-09-25.md", "bpr/cubic_condensate_regime.py"],
      "depends_on": ["acoustic_lorentz_window"],
+     "premises": [
+       {"id": "acoustic_lorentz_window", "reason": "The metric generalizes this phonon cone to uniform flows at the same Hartree-Bogoliubov level; at zero flow the two coincide."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-25", "blockers_found": 0, "anchor": "doc/derivations/cubic_condensate_regime_2026-09-25.md#9-review-record"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": null
+     },
      "limitation": "Kinematic, Hartree-Bogoliubov level, uniform flows only; no curved geometries or horizons derived."},
     {"id": "common_limiting_speed", "layer": "spacetime", "status": "obstructed",
      "claim": "All low-energy species emerging from the lattice substrate share one light cone.",
      "sources": ["doc/derivations/common_light_cone_2026-09-25.md", "bpr/common_light_cone.py", "doc/derivations/architecture_decision_2026-09-26.md"],
      "depends_on": ["acoustic_metric", "emergent_gauge_field"],
+     "premises": [
+       {"id": "acoustic_metric", "reason": "The two-species Bogoliubov analysis extends this single-species condensate and phonon cone to a second species (a proposed extension of the cubic lattice)."},
+       {"id": "emergent_gauge_field", "reason": "The photon clause (photon, charges and phonons have unrelated speeds; the charges outrun the photon) uses the link-boson model and its Coulomb phase. Named in hypotheses."}
+     ],
+     "context": [],
+     "hypotheses": [
+       {"name": "link_boson_photon_phase", "node": "emergent_gauge_field", "statement": "The photon clause assumes that the link-boson model has a Coulomb (photon) phase. For the diamond lattice this rests on published quantum Monte Carlo; on the cubic lattice it is undetermined. The Bogoliubov clause (density-coupled condensate species never share a cone; decoupled species share one only under tuning) does not use it."}
+     ],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-25", "blockers_found": 0, "anchor": "doc/derivations/common_light_cone_2026-09-25.md#8-review-record"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": "Covers the Bogoliubov-level mathematics. The radiative and renormalization-group statements are cited literature, checked for existence and content summaries only."
+     },
      "limitation": "At Bogoliubov level, density-coupled species never share a cone; decoupled species share one only under tuning; the photon, charges and phonons have unrelated speeds; loops and slow RG running undo tree-level tuning (literature). A naturalness obstruction, not a no-go: a new principle is needed. Bypassed, not solved, in BPR-6D, where Lorentz invariance is fundamental (doc/derivations/architecture_decision_2026-09-26.md)."},
     {"id": "spatial_dimension", "layer": "spacetime", "status": "stipulated",
      "claim": "Three spatial dimensions.",
      "sources": ["doc/derivations/supplied_cubic_bose_2026-09-13.md", "doc/derivations/substrate_locality_dimension_2026-09-13.md"],
      "depends_on": ["cubic_lattice"],
+     "premises": [],
+     "context": [
+       {"id": "cubic_lattice", "reason": "The stipulated three dimensions are those of the supplied cubic graph."}
+     ],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "Supplied by the cubic graph; the ring route to 3D is obstructed."},
     {"id": "gravity_action", "layer": "gravity", "status": "stipulated",
      "claim": "Induced R+R^2 action with exact scalaron mass, plateau and slow-roll normalizations.",
      "sources": ["doc/derivations/gravity_consistency_2026-09-12.md", "bpr/gravity_consistency.py"],
      "depends_on": [],
+     "premises": [],
+     "context": [],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "Action inserted by hand; bare/counterterm/cutoff freedom leaves coefficients non-identifiable. Superseded as the gravity sector by six_d_gravity in BPR-6D."},
     {"id": "newton_constant", "layer": "gravity", "status": "calibrated",
      "claim": "G and the Planck length.",
      "sources": ["doc/derivations/planck_length_from_substrate.md", "bpr/emergent_spacetime.py"],
      "depends_on": ["gravity_action"],
+     "premises": [
+       {"id": "gravity_action", "reason": "G and the Planck length are read off this supplied action."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {"level": "argument", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "Only the ratio a/l_P is derived, conditionally; G matches by construction."},
     {"id": "metric_dynamics", "layer": "gravity", "status": "open",
      "claim": "Dynamical metric (tensor modes, universal coupling) from the substrate.",
      "sources": ["doc/derivations/foundation_decision_2026-09-13.md", "doc/derivations/cubic_condensate_regime_2026-09-25.md"],
      "depends_on": ["acoustic_metric", "gravity_action"],
+     "premises": [
+       {"id": "acoustic_metric", "reason": "The open problem asks whether this kinematic acoustic metric can acquire Einstein dynamics."}
+     ],
+     "context": [
+       {"id": "gravity_action", "reason": "The supplied action is what a derivation of metric dynamics would replace."}
+     ],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "The acoustic metric follows condensate hydrodynamics, not Einstein equations; any emergent massless spin-2 must evade Weinberg-Witten. In BPR-6D the metric is fundamental (node six_d_gravity); this node now concerns the substrate as an analogue only."},
     {"id": "vacuum_energy", "layer": "gravity", "status": "open",
      "claim": "Cosmological constant from the substrate.",
      "sources": ["doc/derivations/gravity_consistency_2026-09-12.md", "doc/derivations/flux_compactification_2026-09-26.md"],
      "depends_on": ["gravity_action"],
+     "premises": [],
+     "context": [
+       {"id": "gravity_action", "reason": "The cosmological constant enters this supplied action as an input; the open problem asks to derive it."}
+     ],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "Energy-origin invariance leaves it underived; legacy dark-energy helpers are inconsistent. In BPR-6D a flat M4 requires one tuning of the 6D cosmological constant (flux_vacuum)."},
     {"id": "path_b_gauge", "layer": "gauge", "status": "stipulated",
      "claim": "Gauged dihedral point group (Postulate 0d) with a central heat-kernel Hamiltonian; 2D non-Abelian anyons.",
      "sources": ["doc/BPR2_PATH_B_NONABELIAN_GAUGE.md", "doc/derivations/gauge_two_plaquette_2026-09-12.md", "bpr/gauge_heat_kernel.py"],
      "depends_on": [],
+     "premises": [],
+     "context": [],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "No map to 4D SU(3)xSU(2)xU(1); coupling-to-phase map unknown."},
     {"id": "glueball_benchmark", "layer": "gauge", "status": "withdrawn",
      "claim": "BPR 1.0 particle sector glueball ratios.",
      "sources": ["doc/GLUEBALL_BENCHMARK_V1.md", "doc/CLOSED_AND_DEPRECATED.md"],
      "depends_on": ["path_b_gauge"],
+     "premises": [
+       {"id": "path_b_gauge", "reason": "The withdrawn ratios were computed in this gauge model."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "Sealed blind benchmark failed gates 2-4."},
     {"id": "substrate_gauge_encoding", "layer": "gauge", "status": "obstructed",
      "claim": "Fixed five-site occupation-orbit encoding of the D5 gauge target.",
      "sources": ["doc/derivations/substrate_gauge_encoding_2026-09-13.md"],
      "depends_on": ["ring_substrate", "path_b_gauge"],
+     "premises": [
+       {"id": "ring_substrate", "reason": "The encoding uses this ring's occupation space and dynamics."},
+       {"id": "path_b_gauge", "reason": "The encoding target is this model's D5 link algebra."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-13", "blockers_found": null, "anchor": "doc/derivations/substrate_gauge_encoding_2026-09-13.md#independently-cross-checked-mathematical-results"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": "Covers the one preregistered encoding only."
+     },
      "limitation": "Excludes that candidate only."},
     {"id": "emergent_gauge_field", "layer": "gauge", "status": "conditional",
      "claim": "Hard-core link bosons with a vertex charging term give, exactly to third order in t/U, a compact U(1) quantum link model with emergent Gauss law; on the diamond lattice this is the pyrochlore hard-core boson model whose Coulomb (photon) phase at large U/t is reported by quantum Monte Carlo.",
      "sources": ["doc/derivations/emergent_gauge_link_bosons_2026-09-25.md", "bpr/link_boson_gauge.py"],
      "depends_on": ["ring_gauss_obstruction", "link_boson_substrate"],
+     "premises": [
+       {"id": "link_boson_substrate", "reason": "The effective gauge theory is derived from this amendment."}
+     ],
+     "context": [
+       {"id": "ring_gauss_obstruction", "reason": "Exact bounded Gauss operators are excluded on the ring, which motivates the energetic link-boson route; the derivation does not use the theorem."}
+     ],
+     "hypotheses": [
+       {"name": "pyrochlore_coulomb_phase", "node": null, "statement": "The diamond-lattice case, the pyrochlore hard-core boson model, has a Coulomb photon phase at large U/t. This is reported by published quantum Monte Carlo, not proved; the cubic-lattice phase is undetermined."}
+     ],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-25", "blockers_found": 0, "anchor": "doc/derivations/emergent_gauge_link_bosons_2026-09-25.md#10-review-record"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": "Covers the effective theory to third order in t/U (checked against brute force and exact diagonalization in floating point); the Coulomb phase is cited Monte Carlo (see hypotheses)."
+     },
      "limitation": "U(1) only; the photon phase relies on published Monte Carlo for the diamond lattice (cubic undetermined); charges are bosonic; within one species the photon and the superfluid Goldstone mode occupy different phases (numerics plus a Higgs heuristic)."},
     {"id": "nonabelian_gauge_field", "layer": "gauge", "status": "open",
      "claim": "Emergent SU(3) x SU(2) gauge fields from a bosonic substrate.",
      "sources": ["doc/derivations/emergent_gauge_link_bosons_2026-09-25.md"],
      "depends_on": ["emergent_gauge_field"],
+     "premises": [],
+     "context": [
+       {"id": "emergent_gauge_field", "reason": "The U(1) construction is the starting point; a non-Abelian group needs a different route (fermionic rishons)."}
+     ],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "Non-Abelian quantum link models use fermionic rishons; no bosonic-substrate derivation exists here."},
     {"id": "chiral_parent", "layer": "matter", "status": "obstructed",
      "claim": "Lone 6D Weyl 16 of Spin(10) with U(1)_X flux: irreducible S4 and p2 anomaly.",
      "sources": ["doc/derivations/chiral_parent_anomaly_2026-09-12.md", "bpr/chiral_parent_anomaly.py"],
      "depends_on": [],
+     "premises": [],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "exact_computation",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-12", "blockers_found": 0, "anchor": "doc/derivations/chiral_parent_anomaly_2026-09-12.md#status"},
+       "additional_reviews": [],
+       "exact_checks": [
+         "tests/test_chiral_parent_anomaly.py::test_traces_against_direct_weight_powers",
+         "tests/test_chiral_parent_anomaly.py::test_parent_and_lower_against_independent_truncated_product",
+         "tests/test_chiral_parent_anomaly.py::test_irreducible_gravity_and_neutral_restrictions",
+         "tests/test_chiral_parent_completion.py::test_partial_completions_keep_their_obstructions"
+       ],
+       "formal": null,
+       "scope": "Exact rational and symbolic checks of the parent anomaly polynomial against an independent weight-sum oracle, including the p2 coefficient and the irreducible S4 status. Reading these coefficients as an obstruction (no Green-Schwarz cancellation) is argument plus AI review. The review is recorded under the note's Status heading."
+     },
      "limitation": "Excluded only as a lone parent."},
     {"id": "chiral_parent_completion", "layer": "matter", "status": "exact_theorem",
      "claim": "Unique minimal (16-component) completion: add one opposite-chirality Spin(10) spinor with zero U(1)_F charge; I8=(1/3)X^2(3S2+2X^2-p1) is cancelled by one Green-Schwarz 2-form; massless 4D content at flux 3 is exactly three chiral 16s; remaining U(1)_F anomalies are proportional to X4 and cancelled by the descended axion.",
      "sources": ["doc/derivations/chiral_parent_completion_2026-09-25.md", "bpr/chiral_parent_completion.py"],
      "depends_on": ["chiral_parent"],
+     "premises": [
+       {"id": "chiral_parent", "reason": "The completion cancels this parent's anomaly polynomial."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "exact_computation",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-25", "blockers_found": 1, "anchor": "doc/derivations/chiral_parent_completion_2026-09-25.md#8-review-record"},
+       "additional_reviews": [],
+       "exact_checks": [
+         "tests/test_chiral_parent_completion.py::test_minimal_completion_polynomial_and_factorization",
+         "tests/test_chiral_parent_completion.py::test_minimal_completion_zero_modes_and_ledger",
+         "tests/test_chiral_parent_completion.py::test_four_d_anomaly_is_proportional_to_x4",
+         "tests/test_chiral_parent_completion.py::test_class_c_budget_scan"
+       ],
+       "formal": null,
+       "scope": "Exact checks of I8 and its factorization against an independent Cartan-weight oracle, the flux-3 zero modes, the X4 proportionality and the class-C budget scan (charges 0 to 4). Uniqueness beyond the scan and the anomaly-cancellation physics are argument plus AI review."
+     },
      "limitation": "Added spinor and 2-form are inputs; local anomalies only (Omega_7 bordism and 2-form quantization unchecked); flux choice supplies n_gen; U(1)_F becomes Stuckelberg-massive with an axion and moduli left over."},
     {"id": "gs_quantization", "layer": "matter", "status": "exact_theorem",
      "claim": "Characteristic-class Dirac quantization of the minimal completion's Green-Schwarz couplings holds, for any integral 2-form lattice, iff the parent's U(1)_F charge is a multiple of 3 in units of the smallest charge; one non-chiral 2-form (lattice U) suffices; the odd lattice I_{1,1} is obstructed. U(1) normalization anchored to Park-Taylor.",
      "sources": ["doc/derivations/green_schwarz_quantization_2026-09-26.md", "bpr/green_schwarz_quantization.py", "tests/test_green_schwarz_quantization.py"],
      "depends_on": ["chiral_parent_completion"],
+     "premises": [
+       {"id": "chiral_parent_completion", "reason": "Quantization is tested for this completion's Green-Schwarz factorization."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "exact_computation",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-26", "blockers_found": 0, "anchor": "doc/derivations/green_schwarz_quantization_2026-09-26.md#9-independent-review"},
+       "additional_reviews": [],
+       "exact_checks": [
+         "tests/test_green_schwarz_quantization.py::test_integral_polynomial_matches_direct_substitution",
+         "tests/test_green_schwarz_quantization.py::test_x4_coefficient_forces_three_to_divide_the_parent_charge",
+         "tests/test_green_schwarz_quantization.py::test_parent_charge_one_fails_every_lattice",
+         "tests/test_green_schwarz_quantization.py::test_parent_charge_three_has_an_explicit_U_lattice_solution",
+         "tests/test_green_schwarz_quantization.py::test_odd_lattice_is_obstructed_but_the_search_can_succeed",
+         "tests/test_green_schwarz_quantization.py::test_abelian_normalization_matches_park_taylor"
+       ],
+       "formal": null,
+       "scope": "Exact checks of the arithmetic core: the x^4 coefficient (3 | q), the I8 factorization, the U-lattice Gram entries, a bounded odd-lattice search and the Park-Taylor normalization identities. The characteristic-class reduction to that arithmetic is argument plus AI review; torsion refinements are not computed."
+     },
      "limitation": "Torsion refinements and Omega_7 bordism not computed; minimal completion unique only in class C (16_+(1)+16_-(2) passes outside it); requires states of charge q/3, massive in BPR-6D as defined; Morrison-Taylor (2021) suggests F-theory realizations would normally make them massless; 2-form Green-Schwarz terms only."},
     {"id": "global_anomalies", "layer": "matter", "status": "exact_theorem",
      "claim": "Omega_7^Spin(B(Spin(10) x U(1))) = 0, so BPR-6D with its quantized Green-Schwarz couplings has no global gauge or gravitational anomaly; for the twisted Spin x_Z2 Spin(10) x U(1) form the Z2 in Omega_7 carries a trivial anomaly.",
      "sources": ["doc/derivations/global_anomalies_2026-09-26.md", "bpr/global_anomaly_bordism.py", "tests/test_global_anomaly_bordism.py"],
      "depends_on": ["gs_quantization"],
+     "premises": [
+       {"id": "gs_quantization", "reason": "The bordism argument assumes these quantized Green-Schwarz couplings."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "exact_computation",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-26", "blockers_found": 0, "anchor": "doc/derivations/global_anomalies_2026-09-26.md#9-independent-review"},
+       "additional_reviews": [],
+       "exact_checks": [
+         "tests/test_global_anomaly_bordism.py::test_omega7_vanishes_for_every_summand",
+         "tests/test_global_anomaly_bordism.py::test_truncation_independence"
+       ],
+       "formal": null,
+       "scope": "Exact F2 computation of the Adams E2 page over A(1) in stem 7 for every summand, with truncation independence. The reduction to ko (Anderson-Brown-Peterson), the Dai-Freed framework and the twisted-form reduction argument are argument plus AI review."
+     },
      "limitation": "Untwisted: exact Adams E2 = 0 in stem 7. Twisted: reduction argument (eta product formula on S^2 x Wu, branching 16 = (4,4), order bound on Omega_5^{Spin x_Z2 Spin(5)}), no numerical eta-invariant. Assumes the Dai-Freed/Witten-Yonekura framework and the standard 7D Green-Schwarz term."},
     {"id": "family_count", "layer": "matter", "status": "conditional",
      "claim": "Three generations; the family number is a multiple of three.",
      "sources": ["doc/derivations/foundation_claims_2026-09-13.json", "doc/derivations/chiral_parent_completion_2026-09-25.md", "doc/derivations/flux_compactification_2026-09-26.md", "doc/derivations/green_schwarz_quantization_2026-09-26.md"],
      "depends_on": ["chiral_parent_completion", "flux_selection", "gs_quantization"],
+     "premises": [
+       {"id": "chiral_parent_completion", "reason": "n_gen = q|m| is the index-theorem count of this completion's zero modes."},
+       {"id": "gs_quantization", "reason": "Dirac quantization forces 3 | q."}
+     ],
+     "context": [
+       {"id": "flux_selection", "reason": "Records that the vacuum does not select |m| = 1; the Lambda-tuning and classical-stability readings in the limitation come from there."}
+     ],
+     "hypotheses": [
+       {"name": "minimal_charge_and_flux", "node": null, "statement": "Three, rather than another multiple of three, needs parent charge q = 3 and flux |m| = 1. Both are minimal choices, selected otherwise only by the Lambda tuning or the classical stability reading."},
+       {"name": "class_c_minimal_completion", "node": null, "statement": "The matter content is the minimal completion in class C; near-minimal completions do not force 3 | n_gen."}
+     ],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-26", "blockers_found": 0, "anchor": "doc/derivations/green_schwarz_quantization_2026-09-26.md#9-independent-review"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": null
+     },
      "limitation": "n_gen = q|m| with 3 | q forced by Dirac quantization of the minimal completion in class C (gs_quantization), so n_gen is in 3Z. Three needs q=3 and |m|=1, both minimal choices (selected otherwise only by the Lambda tuning or the classical stability reading); near-minimal completions do not force 3 | n_gen. Characteristic-class level only."},
     {"id": "lattice_chiral_fermions", "layer": "matter", "status": "open",
      "claim": "Physical chiral fermions from the bosonic substrate.",
      "sources": ["doc/derivations/substrate_fermionization_2026-09-12.md", "doc/derivations/substrate_chirality_2026-09-12.md"],
      "depends_on": ["cubic_lattice", "chiral_parent_completion"],
+     "premises": [
+       {"id": "cubic_lattice", "reason": "The open problem is posed on this substrate."}
+     ],
+     "context": [
+       {"id": "chiral_parent_completion", "reason": "Supplies the target fermion content (three chiral 16s)."}
+     ],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "Jordan-Wigner is one-dimensional and charge-carrying; Nielsen-Ninomiya doubling constrains any lattice realization."},
     {"id": "flavor_formulas", "layer": "flavor", "status": "phenomenological_fit",
      "claim": "Mixing-angle and mass-ratio formulas.",
      "sources": ["doc/BPR_FLAVOR_SECTOR.md", "doc/CLOSED_AND_DEPRECATED.md"],
      "depends_on": ["family_count"],
+     "premises": [
+       {"id": "family_count", "reason": "The formulas take three families as input."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {"level": "argument", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "Fitted PMNS coefficients, conjectural mode labels, anchored masses. BPR-6D derives no mass or mixing relation; the formulas are unconnected to it (yukawa_sector)."},
     {"id": "fine_structure_constant", "layer": "flavor", "status": "calibrated",
      "claim": "1/alpha from (ln p)^2 + z/2 + gamma - 1/(2 pi).",
      "sources": ["bpr/alpha_derivation.py", "doc/derivations/toe_audit_2026-09-12.md"],
      "depends_on": [],
+     "premises": [],
+     "context": [],
+     "hypotheses": [],
+     "verification": {"level": "argument", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "p is chosen to reproduce alpha; inverse calibration."},
     {"id": "flavor_source_selection", "layer": "flavor", "status": "obstructed",
      "claim": "Supplied local sources select realistic non-aligned flavor.",
      "sources": ["doc/derivations/flavor_source_selection_2026-09-12.md", "doc/derivations/substrate_triplet_projection_2026-09-12.md"],
      "depends_on": ["flavor_formulas", "ring_substrate"],
+     "premises": [
+       {"id": "ring_substrate", "reason": "The direct-source clause (five of nine directions) projects this ring's local sources."}
+     ],
+     "context": [
+       {"id": "flavor_formulas", "reason": "These fitted formulas are the phenomenology the sources were meant to explain; no mass or mixing target enters the calculation."}
+     ],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-12", "blockers_found": 0, "anchor": "doc/derivations/flavor_source_selection_2026-09-12.md#independent-review"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": "The proof review covered the theorem and overlap conventions; a separate implementation review covered the code."
+     },
      "limitation": "Attractive coupling aligns sectors; direct linear source image spans five of nine directions."},
     {"id": "experimental_discrimination", "layer": "observation", "status": "obstructed",
      "claim": "A measurement distinguishing BPR from conventional Bose physics.",
      "sources": ["doc/derivations/foundation_observation_gate_2026-09-13.md"],
      "depends_on": ["ring_substrate"],
+     "premises": [
+       {"id": "ring_substrate", "reason": "The identical-model comparison uses this ring's Bose Hamiltonian."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-13", "blockers_found": 0, "anchor": "doc/derivations/foundation_observation_gate_2026-09-13.md#independent-review"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": "Covers the identifiability argument; it certifies no measurement."
+     },
      "limitation": "Identical-model comparison gives no distinguishing prediction."},
     {"id": "lorentz_violation_mapping", "layer": "observation", "status": "open",
      "claim": "Map the phonon's bounded Lorentz violation to a physical particle and compare with data.",
      "sources": ["doc/derivations/cubic_condensate_regime_2026-09-25.md"],
      "depends_on": ["acoustic_lorentz_window", "common_limiting_speed"],
+     "premises": [
+       {"id": "acoustic_lorentz_window", "reason": "The bounded Lorentz violation to be mapped is this one."}
+     ],
+     "context": [
+       {"id": "common_limiting_speed", "reason": "Any identification with physical particles must face the common-cone obstruction."}
+     ],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "No physical particle is identified with the phonon."},
     {"id": "bpr6d_architecture", "layer": "spacetime", "status": "stipulated",
      "claim": "BPR-6D: six-dimensional Lorentz-invariant spacetime with Einstein gravity, Spin(10) x U(1)_F, the minimal chiral completion and a Green-Schwarz 2-form, on M4 x S^2 with flux 3; the lattice substrate becomes an analogue/regulator.",
      "sources": ["doc/derivations/architecture_decision_2026-09-26.md"],
      "depends_on": ["common_limiting_speed", "chiral_parent_completion", "gs_quantization", "global_anomalies"],
+     "premises": [],
+     "context": [
+       {"id": "common_limiting_speed", "reason": "The obstruction is the reason for the decision (architecture note, section 0). A stipulated input has no premises."},
+       {"id": "chiral_parent_completion", "reason": "Adopted as the matter content; results that use it cite it directly."},
+       {"id": "gs_quantization", "reason": "Adopted quantized couplings (parent charge 3); results that use them cite them directly."},
+       {"id": "global_anomalies", "reason": "Records that the adopted structure has no global anomaly."}
+     ],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "A decision, not a derivation: spacetime is no longer derived and the common light cone holds by assumption. Anomalies cancel locally, with Dirac-quantized Green-Schwarz couplings (parent charge 3; gs_quantization) and globally (global_anomalies) for the Spin x Spin(10) x U(1) structure. U(1)_F is Stueckelberg-massive."},
     {"id": "six_d_gravity", "layer": "gravity", "status": "stipulated",
      "claim": "Six-dimensional Einstein gravity (M^4/2) R_6 - Lambda; after compactification a massless 4D graviton with universal coupling.",
      "sources": ["doc/derivations/flux_compactification_2026-09-26.md", "bpr/six_dim_flux_vacuum.py"],
      "depends_on": ["bpr6d_architecture"],
+     "premises": [],
+     "context": [
+       {"id": "bpr6d_architecture", "reason": "Part of the BPR-6D definition. A stipulated input has no premises."}
+     ],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "Supplied; non-renormalizable effective theory with cutoff of order M; G is related to the U(1)_F coupling (M_Pl^2 = pi m^2/e^2) but not predicted."},
     {"id": "flux_vacuum", "layer": "vacuum", "status": "exact_theorem",
      "claim": "M4 x S^2 with U(1)_F flux m solves the 6D equations with r = m/(2 M^2 e) when Lambda = 2 M^8 e^2/m^2; the breathing mode is stable with mass exactly 1/r0; M_Pl^2 = pi m^2/e^2 and 1/r = 2 g4 M_Pl/m.",
      "sources": ["doc/derivations/flux_compactification_2026-09-26.md", "bpr/six_dim_flux_vacuum.py", "tests/test_six_dim_flux_vacuum.py"],
      "depends_on": ["six_d_gravity", "chiral_parent_completion"],
+     "premises": [
+       {"id": "six_d_gravity", "reason": "The vacuum solves these six-dimensional equations."},
+       {"id": "chiral_parent_completion", "reason": "The flux is quantized for the matter charges, and the background must leave the completion's Green-Schwarz 2-form unsourced (flux note, section 5)."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "exact_computation",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-26", "blockers_found": 1, "anchor": "doc/derivations/flux_compactification_2026-09-26.md#8-independent-review"},
+       "additional_reviews": [],
+       "exact_checks": [
+         "tests/test_six_dim_flux_vacuum.py::test_curvature_matches_product_space_formulas",
+         "tests/test_six_dim_flux_vacuum.py::test_vacuum_solution_and_flux_quantization",
+         "tests/test_six_dim_flux_vacuum.py::test_reduced_potential_matches_hand_reduction",
+         "tests/test_six_dim_flux_vacuum.py::test_breathing_mode_normalization_is_standard",
+         "tests/test_six_dim_flux_vacuum.py::test_radion_is_stable_with_mass_one_over_radius",
+         "tests/test_six_dim_flux_vacuum.py::test_four_dimensional_scale_relations"
+       ],
+       "formal": null,
+       "scope": "Exact symbolic checks of the classical solution of the supplied action against hand formulas: the Einstein equations, the radius and Lambda tuning, the reduced potential, the breathing-mode mass and M_Pl^2 = pi m^2/e^2. Other fluctuations are cited (RSS 1983); quantum corrections are not included."
+     },
      "limitation": "Classical; one tuning of Lambda; only the breathing mode derived (other Einstein-Maxwell fluctuations cited from RSS 1983; Spin(10), fermion and 2-form fluctuations not covered); no one-loop, axion or Stueckelberg corrections; r = (m/2 g4) l_P with g4 unknown, so the sphere is near-Planckian only if g4 is not tiny; classical control needs g4 below an O(1), convention-dependent bound."},
     {"id": "flux_selection", "layer": "matter", "status": "obstructed",
      "claim": "The vacuum selects flux m=3 (three families).",
      "sources": ["doc/derivations/flux_compactification_2026-09-26.md", "bpr/six_dim_flux_vacuum.py", "doc/derivations/green_schwarz_quantization_2026-09-26.md"],
      "depends_on": ["flux_vacuum"],
+     "premises": [
+       {"id": "flux_vacuum", "reason": "The landscape is the family of these vacua at fixed Lambda."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-26", "blockers_found": 1, "anchor": "doc/derivations/flux_compactification_2026-09-26.md#8-independent-review"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": null
+     },
      "limitation": "Classical Einstein-Maxwell: at fixed Lambda only one flux sector is flat, lower fluxes are AdS and fluxes above (2/sqrt 3) m0 have no vacuum; the choice of m is the Lambda tuning. Quantum corrections and supersymmetric embeddings are open. With the parent at charge 3, three families is one flux quantum, and at its tuned Lambda it is the only flux sector with a compactified minimum (gs_quantization)."},
     {"id": "family_symmetry", "layer": "flavor", "status": "exact_theorem",
      "claim": "The three flux families form one triplet of the gauged SU(2) isometry of the round sphere; massive levels m^2 r^2 = (l+1/2)^2 - k^2/4.",
      "sources": ["doc/derivations/family_symmetry_from_flux_2026-09-26.md", "bpr/sphere_family_structure.py", "tests/test_sphere_family_structure.py"],
      "depends_on": ["flux_vacuum", "chiral_parent_completion"],
+     "premises": [
+       {"id": "flux_vacuum", "reason": "The families are zero modes on this round-sphere flux background."},
+       {"id": "chiral_parent_completion", "reason": "The zero modes are those of this completion's fermions."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-26", "blockers_found": 0, "anchor": "doc/derivations/family_symmetry_from_flux_2026-09-26.md#8-independent-review"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": null
+     },
      "limitation": "Round sphere assumed; the SU(2) family gauge bosons need a high-scale breaking that is not supplied."},
     {"id": "yukawa_sector", "layer": "flavor", "status": "obstructed",
      "claim": "Yukawa couplings of the three flux families in BPR-6D.",
      "sources": ["doc/derivations/family_symmetry_from_flux_2026-09-26.md", "bpr/sphere_family_structure.py", "doc/derivations/yukawa_mechanisms_2026-09-26.md", "bpr/yukawa_mechanisms.py"],
      "depends_on": ["family_symmetry"],
+     "premises": [
+       {"id": "family_symmetry", "reason": "The selection rule acts on these flux families."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-26", "blockers_found": 0, "anchor": "doc/derivations/family_symmetry_from_flux_2026-09-26.md#8-independent-review"},
+       "additional_reviews": [
+         {"kind": "ai_adversarial", "date": "2026-09-26", "blockers_found": 1, "anchor": "doc/derivations/yukawa_mechanisms_2026-09-26.md#5-independent-review"}
+       ],
+       "exact_checks": [],
+       "formal": null,
+       "scope": null
+     },
      "limitation": "The minimal content has no field in 16x16 = 10+120+126, so no Yukawa at all. For extensions, an all-orders selection rule (perturbative in U(1)_F) leaves only an F-charge -2 (-6 in parent-charge-3 units) internal one-form 10 or 126 in the J=2 channel; scalars and the 120 never couple. SO(12) gauge-Higgs gives paired, even families and a vacuum instability. 10-only Higgs gives M_d = M_e^T (excluded); complex J=2 vevs reach every spectrum, so no mass ratio is predicted. Round 8: a brane Higgs has J_z charge c = s_h + 3, so a brane scalar never couples and a normal-bundle vector gives rank 1; with J_z exact one brane never gives three distinct masses; clustered vector branes or J_z broken at a brane (Heckman-Vafa) give the Froggatt-Nielsen form (1, eps^2, eps^4) with eps free, so no hierarchy is predicted; every route needs the ~1e-30 weak-scale tuning."},
     {"id": "string_embedding", "layer": "matter", "status": "open",
      "claim": "BPR-6D admits a string-theory (supersymmetric F-theory) embedding.",
      "sources": ["doc/derivations/string_embedding_2026-09-26.md", "bpr/string_embedding.py", "tests/test_string_embedding.py"],
      "depends_on": ["gs_quantization"],
+     "premises": [
+       {"id": "gs_quantization", "reason": "The question is posed for the quantized model; the Morrison-Taylor tension concerns its charge-q/3 states."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {"level": "none", "review": null, "additional_reviews": [], "exact_checks": [], "formal": null, "scope": null},
      "limitation": "The Morrison-Taylor massless-charge statement is supersymmetric, and BPR-6D meets its premise (-a.b~ = 24) only in a chirality convention (no gravitino). A massless vector-like charge-1 pair removes the tension without changing anomalies or families, but its masslessness is unprotected. Supersymmetric analogues: on T=0 the charge normalization is never forced (Lemma 3, any gauge group) and a gcd-1 spectrum still has 3 net families; on T=1 (the counterpart of one non-chiral 2-form) anomaly cancellation can force charges into 3Z. The fork is anomaly-forced 3 | n_gen vs F-theory embeddability. No vacuum or F-theory construction is given."},
     {"id": "spin10_breaking", "layer": "gauge", "status": "obstructed",
      "claim": "The compactification breaks Spin(10) to the Standard Model.",
      "sources": ["doc/derivations/gut_breaking_2026-09-26.md", "bpr/gut_breaking.py", "tests/test_gut_breaking.py"],
      "depends_on": ["family_symmetry", "gs_quantization"],
+     "premises": [
+       {"id": "family_symmetry", "reason": "The orbifold family counts use the families' SU(2) triplet structure."},
+       {"id": "gs_quantization", "reason": "The Green-Schwarz BF vector that makes the flux direction massive comes from the quantized coupling."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-26", "blockers_found": 0, "anchor": "doc/derivations/gut_breaking_2026-09-26.md#5-independent-review"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": null
+     },
      "limitation": "Every quantized Spin(10) flux on the round S^2 is unstable (a root with |alpha.h| >= 2 gives a tachyonic W; pi_1(Spin(10)) = 0). Even if stabilized, the Green-Schwarz BF vector (18m, 3h) makes the flux direction massive, so no flux keeps SU(3) x SU(2) with a massless hypercharge (standard or flipped); the flux would be chirality-neutral (3 net families). Rotation orbifolds of S^2 keep at most 2 (Z2) or 1 families per multiplet. Conventional Higgs breaking remains possible but is supplied, not derived."},
     {"id": "cc_self_tuning", "layer": "gravity", "status": "obstructed",
      "claim": "Brane tensions on the BPR-6D sphere self-tune the 4D cosmological constant.",
      "sources": ["doc/derivations/cosmological_constant_2026-09-26.md", "bpr/cosmological_constant.py", "tests/test_cosmological_constant.py"],
      "depends_on": ["flux_vacuum"],
+     "premises": [
+       {"id": "flux_vacuum", "reason": "The football solutions deform this vacuum with brane tensions."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-26", "blockers_found": 0, "anchor": "doc/derivations/cosmological_constant_2026-09-26.md#5-independent-review"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": null
+     },
      "limitation": "Classical football solutions with the flux quantum conserved: H = 0 forces u = M^4/(2 Lambda) and B^2 = 2 Lambda on either root, pinning the deficit, so flat tensions are discrete (one per flux quantum) and dH^2/dT = sqrt(2) e sqrt(Lambda)/(3 pi m M^4) > 0 at the flat point; brane vacuum energy is not absorbed (Navarro 2003; Garriga-Porrati). Unwarped, equal-tension ansatz; breathing-mode stability only. Supersymmetric SLED routes are cited and contested; in an F-theory embedding 3 | n_gen would be allowed but not forced."},
     {"id": "bpr6d_predictions", "layer": "observation", "status": "conditional",
      "claim": "With a supplied Higgs sector, U(1)_F acts as a Peccei-Quinn symmetry; given a supplied F-charged Standard-Model singlet, BPR-6D has an invisible QCD axion with f <~ f_b/3 (~1e14 to 1e17 GeV); n_gen in 3Z.",
      "sources": ["doc/derivations/predictions_2026-09-26.md", "bpr/predictions.py", "tests/test_predictions.py"],
      "depends_on": ["gs_quantization", "flux_vacuum"],
+     "premises": [
+       {"id": "gs_quantization", "reason": "The axion couplings come from the quantized Green-Schwarz term."},
+       {"id": "flux_vacuum", "reason": "The decay-constant band uses the compactification scales of this vacuum."}
+     ],
+     "context": [],
+     "hypotheses": [
+       {"name": "supplied_higgs_sector", "node": null, "statement": "A Higgs sector is supplied; with it U(1)_F acts as a Peccei-Quinn symmetry."},
+       {"name": "supplied_f_charged_singlet", "node": null, "statement": "An F-charged Standard-Model singlet S with a DFSZ-type link is supplied. With only the Higgs doublets the axion is an excluded PQWW axion."}
+     ],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-26", "blockers_found": 1, "anchor": "doc/derivations/predictions_2026-09-26.md#6-independent-review"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": null
+     },
      "limitation": "theta-bar = theta_0 + 3b + 3 arg(H_u H_d) + ... is gauge invariant and the dual axion a does not enter. With only the Higgs doublets the axion is an excluded PQWW axion (f ~ 41 GeV); an instanton-generated H_u H_d term pins theta-bar; a viable axion needs a supplied singlet S (f ~ min(f_b/3, f_S/c_S)). The band depends on the unfixed 2-form coupling; axion quality is unresolved; superradiance disfavours f >~ 3e17 GeV. The axion is generic to Green-Schwarz models. n_gen in 3Z is a postdiction for class C. Masses, mixings, Higgs mass, GUT scale and the cosmological constant are not predicted. No test against data is made."},
     {"id": "bpr6d_minimal_model", "layer": "matter", "status": "conditional",
      "claim": "A definite minimal BPR-6D model (Phase 1): bulk 45_H plus a single bulk complex 10_H and 126bar_H of F-charge -6, coupled at four branes through eth-bar operators, and a brane singlet S; it breaks Spin(10) exactly to the SM, realizes generic Yukawa pairs modulo U(3), and unifies at one loop with proton decay far above the Super-K bound.",
      "sources": ["doc/derivations/minimal_model_2026-09-26.md", "bpr/minimal_model.py", "bpr/model_scales.py", "tests/test_minimal_model.py", "tests/test_model_scales.py"],
      "depends_on": ["spin10_breaking", "yukawa_sector", "bpr6d_predictions", "flux_vacuum", "family_symmetry"],
+     "premises": [
+       {"id": "yukawa_sector", "reason": "Its coupling rules (only F-charge -6 Higgs fields in J = 2 couple; point couplings need c = 2) fix the Higgs content and the brane operators."},
+       {"id": "bpr6d_predictions", "reason": "Kill check 6 (a viable axion) uses the axion analysis, and the singlet S is added because of it."},
+       {"id": "flux_vacuum", "reason": "The model lives on this compactification."},
+       {"id": "family_symmetry", "reason": "The families and their SU(2) structure are those of the flux sphere."}
+     ],
+     "context": [
+       {"id": "spin10_breaking", "reason": "Geometric breaking is obstructed, which is why a 45_H breaking Higgs is supplied."}
+     ],
+     "hypotheses": [
+       {"name": "cited_vacuum_and_fits", "node": null, "statement": "The 45 + 126 breaking vacuum and the fermion fits the model relies on are cited, not derived."},
+       {"name": "one_loop_survival", "node": null, "statement": "Gauge running is one loop under the survival hypothesis (M_I ~ 1e9 GeV)."},
+       {"name": "brane_moduli_stabilized", "node": null, "statement": "The five brane-position moduli, which couple to fermions, are stabilized. This is not shown and is potentially fatal (kill check 11)."}
+     ],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-26", "blockers_found": 1, "anchor": "doc/derivations/minimal_model_2026-09-26.md#7-independent-review"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": null
+     },
      "limitation": "The brane-copy version fails (rank-1 tree Yukawas; three Delta_R leave no consistent intermediate scale). The adopted bulk-Higgs version passes the computed checks but: the Higgs content is chosen; the 45+126 vacuum and the fermion fits are cited; running is one-loop under the survival hypothesis (M_I ~ 1e9 GeV, seesaw tension possibly an artifact); the compactification window 1/r ~ (2-8)e16 GeV is not robust; five brane-position moduli couple to fermions and are unstabilized (potentially fatal); no fermion mass is predicted (21 parameters for 15 effective); Higgs mass, M_I hierarchy and Lambda are tuned."},
     {"id": "brane_positions", "layer": "flavor", "status": "conditional",
      "claim": "Phase 1d: a bulk SO(10)-singlet scalar chi of U(1)_F charge -4 has a spin-2 lowest level whose profiles have exactly four zeros; in the type-II regime its quartic is minimized by the tetrahedral state (|2,2> + sqrt2 |2,-1>)/sqrt3 (energy 25/(84 pi), five positive Hessian modes), and brane terms kappa |chi(z_a)|^2 pin the four branes at its zeros, a regular tetrahedron.",
      "sources": ["doc/derivations/brane_positions_2026-09-27.md", "bpr/brane_stabilization.py", "tests/test_brane_stabilization.py"],
      "depends_on": ["bpr6d_minimal_model", "flux_vacuum"],
+     "premises": [
+       {"id": "bpr6d_minimal_model", "reason": "The four branes and their couplings are this model's."},
+       {"id": "flux_vacuum", "reason": "chi lives on this flux sphere; its charge fixes the spin of its lowest level."}
+     ],
+     "context": [],
+     "hypotheses": [
+       {"name": "chi_supplied", "node": null, "statement": "The charge -4 bulk scalar chi and its brane terms are added, not derived."},
+       {"name": "type_ii_regime", "node": null, "statement": "chi's quartic is in the type-II regime, where the tetrahedral state is its minimum."},
+       {"name": "pinning_survives", "node": null, "statement": "The uncomputed one-loop brane forces do not undo the metastable pinning, and vr lies in the narrow window 1.75 <~ vr <~ 2.45."}
+     ],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-27", "blockers_found": 2, "anchor": "doc/derivations/brane_positions_2026-09-27.md#7-independent-review"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": null
+     },
      "limitation": "chi is added, not derived. The pinning is metastable at best: stacking two branes on one zero costs no pinning energy, the barrier between vortices is 5/(16 pi) kappa (vr)^2/r^4, and the one-loop brane forces are not computed; the window 1.75 <~ vr <~ 2.45 is narrow and not robust. Identical branes give zero Yukawas, so A4 must be broken at O(1) by the brane couplings. Fixed positions restrict the reachable Yukawa pairs to a proper subset (Phase 2 finds this subset fails the charged-fermion data)."},
     {"id": "fermion_fit", "layer": "observation", "status": "phenomenological_fit",
      "claim": "Phase 2: with free brane positions the minimal non-SUSY 10 + 126bar sector with a type-I seesaw fits the charged-fermion and neutrino data (one-loop SM running, assumed GUT-scale errors): best chi^2 = 2.9 for 17 observables and 18 physical parameters (-1 dof), normal ordering only (inverted chi^2 ~ 4e4). With the branes pinned at the Phase 1d tetrahedron, H and F must be pure J = 2 and annihilated by the pinning condensate in some family basis; the best pinned fits found have chi^2 ~ 120 (73 for the charged sector alone), with m_s about 3.6-3.9 times too large.",
      "sources": ["doc/derivations/phase2_fermion_fit_2026-09-27.md", "bpr/fermion_fit.py", "tests/test_fermion_fit.py"],
      "depends_on": ["bpr6d_minimal_model", "brane_positions"],
+     "premises": [
+       {"id": "bpr6d_minimal_model", "reason": "Fits this model's 10 + 126bar sector."},
+       {"id": "brane_positions", "reason": "The pinned case uses this tetrahedron."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-09-27", "blockers_found": 2, "anchor": "doc/derivations/phase2_fermion_fit_2026-09-27.md#8-independent-review"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": "A reviewed fit, not a validation; see the limitation."
+     },
      "limitation": "No empirical validation: the free-position fit has -1 degrees of freedom, so it shows consistency, not a test; its stable consequences (normal ordering, sum m_nu ~ 0.06-0.07 eV, m_betabeta ~ 0.4 meV) follow from the fit, while sin delta_CP and M_R are not stable. It needs v_R >~ 4e11 GeV, 400-1000 times the one-loop M_I. The pinned failure is leading order (Phase 2b: normalization corrections do not repair it at natural size, but a one-derivative brane vertex of the same order can) and rests on searches, not a proof of the global minimum. Running is one loop with an 8% theory error; errors and inputs are assumed or recalled."},
     {"id": "kinetic_corrections", "layer": "observation", "status": "phenomenological_fit",
      "claim": "Phase 2b: next-to-leading corrections to the pinned flavour structure. Normalization corrections (brane kinetic terms, tension distortion) act only through the family kinetic matrix, Y -> A Y A^T with A = Kbar^{-1/2}; equal or A4-symmetric ones are trivial (tight frame, Schur), and an O(1) kinetic matrix erases pinning (projective equivalence; exact positive control). At natural size they leave chi^2 >~ 40 (charged) and >~ 90 (with neutrinos). The one-derivative brane vertex 16 (eth 16) (ethbar^2 Phi), allowed by the same J_z rule and of the same order, adds pure-J=2 pieces outside the pinned subspace and fits: charged sector at |delta| <= 0.1, all data at |delta| <= 0.3 (chi^2 = 4.5), at or just above the top of its natural range 0.07-0.25. Pinning is not excluded at next-to-leading order, but flavour is not predicted.",
      "sources": ["doc/derivations/kinetic_corrections_2026-10-01.md", "bpr/kinetic_corrections.py", "tests/test_kinetic_corrections.py"],
      "depends_on": ["fermion_fit", "brane_positions"],
+     "premises": [
+       {"id": "fermion_fit", "reason": "Uses its fit machinery, inputs and pinned best point."},
+       {"id": "brane_positions", "reason": "The corrections act on this pinned tetrahedral structure."}
+     ],
+     "context": [],
+     "hypotheses": [],
+     "verification": {
+       "level": "ai_review",
+       "review": {"kind": "ai_adversarial", "date": "2026-10-01", "blockers_found": 1, "anchor": "doc/derivations/kinetic_corrections_2026-10-01.md#7-independent-review"},
+       "additional_reviews": [],
+       "exact_checks": [],
+       "formal": null,
+       "scope": "Search-based upper bounds; the review checked the stored values against the code."
+     },
      "limitation": "Search-based upper bounds, not a proof: bounded local optimizations (homotopy, restarts, polish, re-seeding); some with-neutrino rows are rugged. Natural sizes are unit-coefficient estimates (strong coupling could raise them by up to 8 pi); tension effects are estimated, not computed. Non-universal SO(10)-breaking brane terms and two-derivative vertices are not included. The vertex rescue adds 16 real parameters and relaxes the condensate condition, so pinning constrains flavour no more than free positions. Inputs and errors as in Phase 2. Found by the independent review, which reversed the first version's verdict."}
   ]
 }

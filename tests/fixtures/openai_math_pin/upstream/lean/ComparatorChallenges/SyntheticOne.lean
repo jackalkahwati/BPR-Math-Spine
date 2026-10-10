@@ -1,0 +1,2 @@
+-- Synthetic stand-in written for BPR tests. Not Lean code from any upstream.
+-- statement: seven is odd

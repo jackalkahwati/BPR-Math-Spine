@@ -258,3 +258,28 @@ Its findings are repaired above:
   - the flux landscape is credited as known;
   - the Yukawa statement is stated as a selection rule;
   - wording fixes.
+
+## 9. Map bookkeeping (2026-10-09)
+
+Schema 2 of the [unification map](unification_map_2026-09-25.md) separates a
+node's **premises** (inputs its result uses) from its **context** (motivation
+or history). This decision appears there as the stipulated node
+`bpr6d_architecture`. A stipulated node is an input, so it has no premises.
+Its links are context:
+- `common_limiting_speed`: the section 0 obstruction is the reason the
+  decision was taken;
+- `chiral_parent_completion`, `gs_quantization` and `global_anomalies`: the
+  matter content and couplings the decision adopts. The BPR-6D results that
+  use them cite them directly as premises.
+
+As a result, the BPR-6D results built on this decision (`flux_vacuum`,
+`family_symmetry` and the obstructions that rest on them) no longer appear to
+inherit the conditional node `emergent_gauge_field` through
+six_d_gravity → bpr6d_architecture → common_limiting_speed →
+emergent_gauge_field. That chain recorded motivation, not logical use: the
+definition in section 2 and the results in section 3 do not use the
+light-cone obstruction or the emergent photon. No status or result changes.
+
+The light-cone obstruction itself does use the link-boson photon for one of
+its clauses. The map records that as a named hypothesis of
+`common_limiting_speed` rather than hiding it.

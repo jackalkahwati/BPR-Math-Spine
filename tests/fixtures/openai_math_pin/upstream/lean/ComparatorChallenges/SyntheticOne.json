@@ -1,0 +1,12 @@
+{
+  "challenge_module": "ComparatorChallenges.SyntheticOne",
+  "solution_module": "Synthetic.One",
+  "theorem_names": [
+    "Synthetic.one"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext"
+  ],
+  "enable_nanoda": false
+}

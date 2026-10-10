@@ -306,6 +306,11 @@ bound, positive ordered overlaps and the distinction between degeneracy and
 unselected orientation. Finite trial states are regression checks of the
 analytic theorem, not an exhaustive numerical proof.
 
+### Independent review
+
+(Heading added on 2026-10-09 so that the review record has a standard anchor
+in the unification map; the paragraph below is unchanged.)
+
 Independent proof review found no substantive mathematical error in this
 stated domain. Separate quadrature checks at R=1.7 confirmed the density
 convention, multipole powers and normalization for four deterministic pure
@@ -317,6 +322,8 @@ in the numerical energy certificate. The latter now resolves an equal-filled
 gap of 3.0504697425946596e-17 at kappa=1e15, even when direct total-energy
 subtraction rounds to zero. No substantive findings remained in the reviewed
 scope after these fixes.
+
+### Test record
 
 The new source-selection suite has 82 tests. Together with the 71 existing
 flavor-prototype tests, **153 tests passed**, including the new demo's text and

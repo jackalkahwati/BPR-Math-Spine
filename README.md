@@ -182,6 +182,10 @@
 > - A one-derivative brane vertex, allowed by the same J_z rule and of the same order, does: χ² = 4.5 for all data at |δ| ≤ 0.3, at or just above the top of its natural range. So pinning is not excluded at next-to-leading order, but it no longer predicts flavour.
 > - The independent review found this vertex, which reversed the first version's verdict. The results rest on bounded searches.
 >
+> **MAP BOOKKEEPING AND EXTERNAL REFERENCES (2026-10-09):** the [unification map](doc/derivations/unification_map_2026-09-25.md) moves to schema 2, and a [release history](doc/HISTORY.md) is added.
+> - Each node now records its verification level separately from its status. Its links are split into premises and context, and a premise audit runs as a test. No node's status changes.
+> - [openai/math](doc/external/OPENAI_MATH.md), an AI-generated, unrefereed catalogue of mathematics manuscripts, is indexed as **context only**, pinned to one commit. No openai/math result changes the status or limitation of any map node. Nothing from it is built, imported or copied here.
+>
 > **NEGATIVE-FINDINGS REGISTRY** → [`doc/CLOSED_AND_DEPRECATED.md`](doc/CLOSED_AND_DEPRECATED.md) *(everything honestly closed: Riemann/GUE, glueball sector, refuted retrofits, fitted coefficients)*
 >
 > **Website :** [`bpr.thestardrive.com`](https://bpr.thestardrive.com) — interactive framework explorer, physics landscape, constant calculator, and experimental roadmap

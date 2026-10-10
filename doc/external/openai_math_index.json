@@ -1,0 +1,1471 @@
+{
+ "schema_version": 1,
+ "title": "openai/math cross-reference index",
+ "scope": "Results from openai/math that BPR has considered, pinned to one upstream commit. Every entry is context only: no unification-map node's status or limitation depends on any entry, and the map loader never reads this file. Bookkeeping, not a validity check of any upstream result.",
+ "policy": "doc/external/OPENAI_MATH.md",
+ "validator": "bpr/external_refs.py",
+ "drift_checker": "scripts/check_openai_math_pin.py",
+ "bottom_line": "No openai/math result changes the status or limitation of any unification-map node.",
+ "upstream": {
+  "name": "openai/math",
+  "url": "https://github.com/openai/math",
+  "key_prefix": "omath",
+  "author": "OpenAI",
+  "commit": "fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb",
+  "commit_short": "fd4aeeb2e",
+  "retrieved": "2026-10-09",
+  "license": "Apache-2.0",
+  "license_url": "https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/LICENSE",
+  "license_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+  "notice_file": null,
+  "redistributed_files": [],
+  "history_sections": [
+   "October 7, 2026"
+  ],
+  "upstream_disclaimer": "Paraphrase of the upstream README: results are at different stages of verification, not all have Lean formalizations, and some unformalized results could have issues.",
+  "upstream_review_status": "unchecked",
+  "lean_toolchain": "v4.34.1",
+  "mathlib_rev": "d13f23b723b8a846827a245b89c10fc7d3f11612"
+ },
+ "vocab": {
+  "upstream_status": [
+   "active",
+   "revised",
+   "withdrawn"
+  ],
+  "verification": [
+   "manuscript_only",
+   "lean_supporting_only",
+   "lean_main_statement"
+  ],
+  "verification_source": [
+   "formalization_yaml",
+   "lean_docs_only"
+  ],
+  "bpr_check": [
+   "none",
+   "statement_read",
+   "built"
+  ],
+  "relation": [
+   "input",
+   "counterexample",
+   "technique",
+   "context",
+   "analogue",
+   "methodology",
+   "none"
+  ],
+  "applicability": [
+   "load_bearing",
+   "partial",
+   "tangential",
+   "none"
+  ],
+  "usage_cap": [
+   "context_only",
+   "conditional_input",
+   "rigorous_input"
+  ],
+  "review_verdict": [
+   "survived",
+   "survived_value_refuted",
+   "not_applicable",
+   "context_only_unverified",
+   "refuted",
+   "considered_not_cited"
+  ]
+ },
+ "vocab_notes": {
+  "verification": "Describes the statement in statement_bpr, not the family: lean_main_statement means that statement is a Lean comparator statement (its scope recorded in lean_scope_excerpt); lean_supporting_only means a comparator exists but covers only supporting results; manuscript_only means no comparator covers it.",
+  "verification_source": "formalization_yaml: the comparator is listed in lean/formalization.yaml main_results; lean_docs_only: it is linked only from lean/docs/<family>.md.",
+  "bpr_check": "none: BPR has not checked the comparator against the manuscript; statement_read: a BPR reviewer read the comparator statement against the manuscript (fidelity_check records it); built: the comparator was re-run by BPR in an isolated sandbox.",
+  "usage_cap": "rigorous_input requires lean_main_statement, bpr_check built, a fidelity check, an active upstream status and no external dependencies; nothing in this index is above context_only.",
+  "review_verdict": "survived_value_refuted: passed the hypotheses and reliability lenses, rejected as a substantive integration; context_only_unverified: single-agent triage, not adversarially verified; considered_not_cited: used by no BPR argument and cited nowhere."
+ },
+ "entries": [
+  {
+   "key": "omath:102:optimal-maxcut",
+   "family_id": "102",
+   "family_title": "Unique Games and optimal approximation thresholds",
+   "manuscript_dir": "preprints/A-Direct-Proof-of-Optimal-Max-Cut-Hardness-September-23-2026",
+   "title": "A Direct Proof of Optimal Max-Cut Hardness",
+   "date": "2026-09-23",
+   "result_ref": "Main theorem (TeX label thm:main); Lean comparator OAI.OptimalMaxCut.main",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-Direct-Proof-of-Optimal-Max-Cut-Hardness-September-23-2026",
+   "source_file": "preprints/A-Direct-Proof-of-Optimal-Max-Cut-Hardness-September-23-2026/build/sections/introduction.tex",
+   "source_sha256": "10149bce0692ec9b7c4fd1d32698bb4bd2c614f6116f4960768d494e7bb5e14f",
+   "statement_bpr": "For every fixed alpha with alpha_GW < alpha <= 1, where alpha_GW = min over -1 <= rho < 1 of 2 arccos(rho) / (pi (1 - rho)) = 0.8785672..., there is a deterministic polynomial-time reduction (a Mathlib TM2 machine with finite tape alphabets) from binary-encoded 3SAT to finite simple unweighted graphs with a positive integer scale Q and rationals yesBound > 0, noBound >= 0, noBound < alpha * yesBound: satisfiable inputs give maxCut/Q >= yesBound and unsatisfiable inputs give maxCut/Q <= noBound.",
+   "not_covered": [
+    "The step from this reduction to 'NP-hard' (Cook-Levin) and the algorithmic corollary (no fixed ratio above alpha_GW unless P = NP; NP not in BPP for guarantees in expectation): informal, not in Lean",
+    "Ratios alpha_GW + o(1)",
+    "Average-case instances such as G(n, 1/2); dense graphs admit a PTAS",
+    "Any fixed n, including the n <= 14 and n = 500 claims in bpr/optimization.py",
+    "The manuscript's direct proof: the Lean proof goes through the formalized Unique Games theorem plus a KKMO-type gadget, so Lean certifies the statement, not the paper's argument",
+    "P versus NP itself"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "lean_main_statement",
+   "verification_source": "formalization_yaml",
+   "lean_scope_excerpt": "Max-Cut paragraph of lean/docs/102.md: for every fixed alpha with alpha_GW < alpha <= 1, a deterministic polynomial-time reduction from binary 3SAT to a strictly separated Max-Cut gap on finite simple unweighted graphs, with an explicit positive integer scale as part of the output. The same page also scopes the Unique Games, Vertex Cover, Min-UnCut and directed feedback vertex set statements; its sentence that no P != NP assumption is built in belongs to the Vertex Cover paragraph (for Max-Cut, read the comparator).",
+   "lean_scope_terms": [
+    "alpha_GW",
+    "3SAT",
+    "simple unweighted graphs",
+    "integer scale",
+    "polynomial-time reduction"
+   ],
+   "outside_lean_scope": [
+    "NP-hard",
+    "P = NP",
+    "BPP",
+    "Cook-Levin",
+    "average-case"
+   ],
+   "lean": {
+    "comparator_config": "lean/ComparatorChallenges/OptimalMaxCut.json",
+    "challenge_file": "lean/ComparatorChallenges/OptimalMaxCut.lean",
+    "declarations": [
+     "OAI.OptimalMaxCut.main"
+    ],
+    "solution_module": "OAI.Computability.MaxCut.Main",
+    "permitted_axioms": [
+     "propext",
+     "Quot.sound",
+     "Classical.choice"
+    ],
+    "enable_nanoda": false,
+    "statement_sha256": "a30ac1bd42af8f3602bbfb73c689c755fd2d8c74cae8fd58b63a8ed42c5e6b0d",
+    "in_main_results": true,
+    "proof_route_differs_from_manuscript": true,
+    "additional_comparators": []
+   },
+   "lean_doc": "lean/docs/102.md",
+   "lean_doc_sha256": "c3e96a746042bf5aeb2f0ef8cdc8e27360785a7da8ac37ed69d6fd8c132f572f",
+   "bpr_check": "statement_read",
+   "fidelity_check": {
+    "by": "BPR review (deep review and hypotheses lens), re-read while indexing",
+    "date": "2026-10-09",
+    "note": "Comparator MainStatement read against the manuscript's main theorem, the gap theorem and the unweighted lemma: it matches. Not built. The Lean kernel and Mathlib's TM2ComputableInPolyTime at the pinned Mathlib revision are trusted, not checked."
+   },
+   "external_dependencies": [],
+   "classical_fallback": [
+    "Håstad 2001 with Trevisan–Sorkin–Sudan–Williamson 2000: approximating Max-Cut beyond 16/17 is NP-hard (unconditional)",
+    "Khot–Kindler–Mossel–O'Donnell 2007 with Mossel–O'Donnell–Oleszkiewicz 2010: alpha_GW is optimal assuming the Unique Games Conjecture",
+    "Goemans–Williamson 1995: the alpha_GW approximation algorithm"
+   ],
+   "supersedes_classical": true,
+   "bpr_nodes": [],
+   "bpr_files": [
+    "bpr/optimization.py"
+   ],
+   "bpr_usage": "At most one worst-case context line in the MaxCutBPR STATUS block. Not a reason for withdrawing the old MaxCutBPR claims, no docstring tripwire, no note in bpr/complexity.py.",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "survived_value_refuted",
+    "date": "2026-10-09",
+    "reviewers": "multi_agent",
+    "lenses": {
+     "hypotheses": "not refuted",
+     "reliability": "not refuted",
+     "value": "refuted"
+    },
+    "note": "Worst-case asymptotic ceiling on claims BPR never makes (fixed n, G(n, 1/2)); changes no decision. The MaxCutBPR sign error and the broken Bridge 9 call were found while scoping this citation; they are BPR-internal findings and are not credited to openai/math."
+   }
+  },
+  {
+   "key": "omath:216:xy-critical-exponent",
+   "family_id": "216",
+   "family_title": "Critical and near-critical XY scaling and BKT universality",
+   "manuscript_dir": "preprints/The-critical-correlation-exponent-of-the-planar-XY-model-September-24-2026",
+   "title": "The critical correlation exponent of the planar XY model",
+   "date": "2026-09-24",
+   "result_ref": "Main theorem (TeX label thm:main)",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/The-critical-correlation-exponent-of-the-planar-XY-model-September-24-2026",
+   "source_file": "preprints/The-critical-correlation-exponent-of-the-planar-XY-model-September-24-2026/build/paper.tex",
+   "source_sha256": "4775eff2abea294beec217722875418f8b95a12ed5d8f86c5f8d7668583a34d2",
+   "statement_bpr": "In the nearest-neighbour cosine XY model on Z^2 with energy b * sum over edges of cos(theta_x - theta_y), free boxes Lambda_R with R -> infinity taken before the separation limit, axis correlations C_b(r), b_c := inf{b : m(b) = 0} (value not computed): lim over n -> infinity of log C_(b_c)(n) / log n = -1/4.",
+   "not_covered": [
+    "Amplitudes, error rates and the numerical value of b_c",
+    "Other lattices, interactions, boundary conditions or directions",
+    "Continuum phase fields such as BPR's phi_mind on a finite boundary (reachable only through universality, a physics assumption)",
+    "Statements derived by the BPR review rather than stated as theorems: 0 < eta <= 1/4 throughout the massless phase, and a(b) = 0 for b < b_c"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "manuscript_only",
+   "verification_source": null,
+   "lean_scope_excerpt": null,
+   "lean_scope_terms": [],
+   "outside_lean_scope": [],
+   "lean": null,
+   "lean_doc": null,
+   "lean_doc_sha256": null,
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [
+    "Companion preprint 'BKT universality for height and planar spin fields' (openai/math family 216, 2026-09-24): unformalized",
+    "van Engelenburg–Lis 2023 (Comm. Math. Phys. 399), massless threshold: refereed"
+   ],
+   "classical_fallback": [
+    "Kosterlitz 1974 (J. Phys. C 7): eta = 1/4 at the BKT point (renormalization-group prediction, non-rigorous)",
+    "van Engelenburg–Lis 2023 (Comm. Math. Phys. 399): the threshold of the nearest-neighbour model is massless",
+    "Fröhlich–Spencer 1981 (Comm. Math. Phys. 81): existence of the massless low-temperature phase"
+   ],
+   "supersedes_classical": true,
+   "bpr_nodes": [],
+   "bpr_files": [
+    "bpr/rpst_extensions.py"
+   ],
+   "bpr_usage": "Optional 'see also' sentence in the BKTCoherenceTransition class docstring, carrying the label 'claimed proof in an OpenAI-model preprint; not peer-reviewed; not Lean-formalized; depends on unformalized companion preprints'.",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "survived_value_refuted",
+    "date": "2026-10-09",
+    "reviewers": "multi_agent",
+    "lenses": {
+     "hypotheses": "not refuted",
+     "reliability": "not refuted",
+     "value": "refuted"
+    },
+    "note": "Tangential: BKTCoherenceTransition is speculative and not on the unification map. Every real fix to it cites textbook or refereed sources. Cite constants by paper, not by catalogue label: the catalogue swaps A and B, and the centre-magnetisation paper reuses A_XY for a third constant."
+   }
+  },
+  {
+   "key": "omath:216:xy-log-correction",
+   "family_id": "216",
+   "family_title": "Critical and near-critical XY scaling and BKT universality",
+   "manuscript_dir": "preprints/The-critical-logarithmic-correction-for-the-planar-XY-model-October-5-2026",
+   "title": "The critical logarithmic correction for the planar XY model",
+   "date": "2026-10-05",
+   "result_ref": "Main theorem (TeX label thm:main)",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/The-critical-logarithmic-correction-for-the-planar-XY-model-October-5-2026",
+   "source_file": "preprints/The-critical-logarithmic-correction-for-the-planar-XY-model-October-5-2026/build/sections/introduction.tex",
+   "source_sha256": "563232c27ce4c75f927648b94d0901555b71b824af5438b9b4f7ee576c5a98b7",
+   "statement_bpr": "In the nearest-neighbour cosine XY model on Z^2 with energy b * sum over edges of cos(theta_x - theta_y), free boxes Lambda_R with R -> infinity taken before the separation limit, axis correlations C_b(r), b_c := inf{b : m(b) = 0} (value not computed): C_(b_c)(r) = B_XY r^(-1/4) (log r)^(1/8) (1 + o(1)) as r -> infinity over integers, for some B_XY in (0, infinity) that is not evaluated; no rate for the o(1).",
+   "not_covered": [
+    "Amplitudes, error rates and the numerical value of b_c",
+    "Other lattices, interactions, boundary conditions or directions",
+    "Continuum phase fields such as BPR's phi_mind on a finite boundary (reachable only through universality, a physics assumption)",
+    "Splicing (log r)^(1/8) into a spin-wave form near T_BKT (breaks monotonicity in temperature)"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "manuscript_only",
+   "verification_source": null,
+   "lean_scope_excerpt": null,
+   "lean_scope_terms": [],
+   "outside_lean_scope": [],
+   "lean": null,
+   "lean_doc": null,
+   "lean_doc_sha256": null,
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [
+    "Companion preprints on the critical exponent, BKT universality and the critical spin field (openai/math family 216): all unformalized"
+   ],
+   "classical_fallback": [
+    "Kosterlitz 1974 (J. Phys. C 7): the logarithmic correction as a renormalization-group prediction (non-rigorous)",
+    "Janke 1997 (Phys. Rev. B 55): Monte Carlo evidence for the logarithmic correction (numerical)"
+   ],
+   "supersedes_classical": true,
+   "bpr_nodes": [],
+   "bpr_files": [
+    "bpr/rpst_extensions.py"
+   ],
+   "bpr_usage": "As for omath:216:xy-critical-exponent; no critical_correlation_asymptotic() method and no tests of placeholder formulas.",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "survived_value_refuted",
+    "date": "2026-10-09",
+    "reviewers": "multi_agent",
+    "lenses": {
+     "hypotheses": "not refuted",
+     "reliability": "not refuted",
+     "value": "refuted"
+    },
+    "note": "Tangential: BKTCoherenceTransition is speculative and not on the unification map. Every real fix to it cites textbook or refereed sources. Cite constants by paper, not by catalogue label: the catalogue swaps A and B, and the centre-magnetisation paper reuses A_XY for a third constant."
+   }
+  },
+  {
+   "key": "omath:216:xy-essential-singularity",
+   "family_id": "216",
+   "family_title": "Critical and near-critical XY scaling and BKT universality",
+   "manuscript_dir": "preprints/Essential-Singularity-of-the-Correlation-Length-in-the-Planar-XY-Model-October-5-2026",
+   "title": "Essential Singularity of the Correlation Length in the Planar XY Model",
+   "date": "2026-10-05",
+   "result_ref": "Main theorem (TeX label thm:main)",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Essential-Singularity-of-the-Correlation-Length-in-the-Planar-XY-Model-October-5-2026",
+   "source_file": "preprints/Essential-Singularity-of-the-Correlation-Length-in-the-Planar-XY-Model-October-5-2026/build/sections/introduction.tex",
+   "source_sha256": "da17f79de2294460d2985f6e3bc0b292742c689ab4cf2fa25906a0746f2f0d9a",
+   "statement_bpr": "In the nearest-neighbour cosine XY model on Z^2 with energy b * sum over edges of cos(theta_x - theta_y), free boxes Lambda_R with R -> infinity taken before the separation limit, axis correlations C_b(r), b_c := inf{b : m(b) = 0} (value not computed): for b < b_c the axis correlation length xi(b) = 1/m(b) satisfies lim over b -> b_c from below of sqrt(b_c - b) log xi(b) = A_XY for some A_XY in (0, infinity) that is not evaluated; only the leading behaviour of log xi is fixed.",
+   "not_covered": [
+    "Amplitudes, error rates and the numerical value of b_c",
+    "Other lattices, interactions, boundary conditions or directions",
+    "Continuum phase fields such as BPR's phi_mind on a finite boundary (reachable only through universality, a physics assumption)",
+    "The prefactor of xi (anything subexponential in (b_c - b)^(-1/2) is allowed)",
+    "The values xi_0 and b_xi used as placeholders in BPR (non-derived)"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "manuscript_only",
+   "verification_source": null,
+   "lean_scope_excerpt": null,
+   "lean_scope_terms": [],
+   "outside_lean_scope": [],
+   "lean": null,
+   "lean_doc": null,
+   "lean_doc_sha256": null,
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [
+    "Companion preprints on the critical exponent and the logarithmic correction (openai/math family 216): unformalized"
+   ],
+   "classical_fallback": [
+    "Kosterlitz 1974 (J. Phys. C 7): xi ~ exp(b' t^(-1/2)) as a renormalization-group prediction (non-rigorous)"
+   ],
+   "supersedes_classical": true,
+   "bpr_nodes": [],
+   "bpr_files": [
+    "bpr/rpst_extensions.py"
+   ],
+   "bpr_usage": "As for omath:216:xy-critical-exponent.",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "survived_value_refuted",
+    "date": "2026-10-09",
+    "reviewers": "multi_agent",
+    "lenses": {
+     "hypotheses": "not refuted",
+     "reliability": "not refuted",
+     "value": "refuted"
+    },
+    "note": "Tangential: BKTCoherenceTransition is speculative and not on the unification map. Every real fix to it cites textbook or refereed sources. Cite constants by paper, not by catalogue label: the catalogue swaps A and B, and the centre-magnetisation paper reuses A_XY for a third constant."
+   }
+  },
+  {
+   "key": "omath:223:z2-bond-exponents",
+   "family_id": "223",
+   "family_title": "Random-cluster interfaces",
+   "manuscript_dir": "preprints/Square-lattice-FK-interfaces-and-nested-loops-for-1-leq-q-lt-4-September-23-2026",
+   "title": "Square-lattice FK interfaces and nested loops for 1 ≤ q < 4",
+   "date": "2026-09-23",
+   "result_ref": "Corollary 'Square-bond arm and thermodynamic exponents' (TeX label intro:bond-exponents), stated in build/sections/introduction.tex and proved in build/sections/percolation.tex; not restated in the 2026-10-05 'Conformal Limits' edition, so cite this edition",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Square-lattice-FK-interfaces-and-nested-loops-for-1-leq-q-lt-4-September-23-2026",
+   "source_file": "preprints/Square-lattice-FK-interfaces-and-nested-loops-for-1-leq-q-lt-4-September-23-2026/build/sections/introduction.tex",
+   "source_sha256": "cf2697daa58019b77e0bf3ef64e66e9f9b2da47aa365684f7d3dfd420b6ff66a",
+   "statement_bpr": "Bernoulli bond percolation on Z^2 (the q = 1 case only), on a logarithmic scale with no amplitudes: one-arm probability pi_1(R) = R^(-5/48 + o(1)); for cyclically alternating colour words and every sufficiently large fixed r, pi_2k(r, R) = R^(-(4k^2 - 1)/12 + o(1)); theta(p) = (p - 1/2)^(5/36 + o(1)) as p decreases to 1/2; truncated susceptibility chi(p) = |p - 1/2|^(-43/18 + o(1)); correlation length xi(p) = |p - 1/2|^(-4/3 + o(1)).",
+   "not_covered": [
+    "q != 1, and odd or non-alternating colour words",
+    "Amplitudes or corrections beyond the o(1) in the exponent",
+    "Any dimension other than 2, in particular BPR's live Class B defaults at d = 3",
+    "Transitions that are not Bernoulli percolation (Polyakov loop, metal-insulator) listed as Class B examples"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "manuscript_only",
+   "verification_source": null,
+   "lean_scope_excerpt": null,
+   "lean_scope_terms": [],
+   "outside_lean_scope": [],
+   "lean": null,
+   "lean_doc": null,
+   "lean_doc_sha256": null,
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [
+    "The preprint's own q = 1 nested-loop (CLE_6) convergence theorem: unformalized",
+    "Refereed inputs cited by the preprint: Camia–Newman, Lawler–Schramm–Werner, Smirnov–Werner, Kesten 1987 scaling relations, Duminil-Copin–Manolescu–Tassion quasi-multiplicativity",
+    "Overlapping unrefereed claims: Tsai–Yam–Zhou 2013 and Zhou 2024"
+   ],
+   "classical_fallback": [
+    "Smirnov–Werner 2001 (Math. Res. Lett. 8), Lawler–Schramm–Werner 2002 (Electron. J. Probab. 7), Kesten 1987 (Comm. Math. Phys. 109): the same values for site percolation on the triangular lattice; the Class B failure at d = 2 already follows from these"
+   ],
+   "supersedes_classical": true,
+   "bpr_nodes": [],
+   "bpr_files": [
+    "bpr/phase_transitions.py"
+   ],
+   "bpr_usage": "Optional footnote in the Class B LIMITATION block: Z^2 bond values also claimed here; unrefereed, not Lean-formalized, log-scale exponents only; not needed for the limitation. Never the sole basis for a BPR assertion.",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "survived_value_refuted",
+    "date": "2026-10-09",
+    "reviewers": "multi_agent",
+    "lenses": {
+     "hypotheses": "not refuted",
+     "reliability": "not refuted",
+     "value": "refuted"
+    },
+    "note": "The three lens votes are recorded in the 2026-10-09 review packet; the only scratch artefact is the deep reviewer's exact-fraction check (no separate verifier script). Every Class B fix that changes something is BPR-internal arithmetic and is not credited to openai/math."
+   }
+  },
+  {
+   "key": "omath:225:six-vertex-gff",
+   "family_id": "225",
+   "family_title": "Gaussian free field limits for the balanced six-vertex model",
+   "manuscript_dir": "preprints/The-Gaussian-free-field-limit-of-the-balanced-six-vertex-model-with-variance-multiplier-1-over-arcsin-c-over-2-September-23-2026",
+   "title": "The Gaussian free field limit of the balanced six-vertex model with variance multiplier 1/arcsin(c/2)",
+   "date": "2026-09-23",
+   "result_ref": "Main theorem (TeX label thm:main)",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/The-Gaussian-free-field-limit-of-the-balanced-six-vertex-model-with-variance-multiplier-1-over-arcsin-c-over-2-September-23-2026",
+   "source_file": "preprints/The-Gaussian-free-field-limit-of-the-balanced-six-vertex-model-with-variance-multiplier-1-over-arcsin-c-over-2-September-23-2026/build/sections/01-introduction.tex",
+   "source_sha256": "141242b050b8526ad85a065dfdf9007286c3bf75ef710d8dfce7063421f2ad7d",
+   "statement_bpr": "Six-vertex model on Z^2 with weights a = b = 1 and c in (0, 2], in the zero-slope plane state P_c defined as an iterated local limit of column-balanced tori (first M -> infinity, then even L -> infinity): the rescaled height function converges to sigma(c) times the plane Gaussian free field modulo constants (Green function -(1/2 pi) log|x - y|), with sigma(c)^2 = 1/arcsin(c/2). Pairings with neutral finite-energy measures converge jointly to Gaussians, and mixed moments of distinct point increments with pairwise disjoint endpoints converge. At c = 1 (square ice): sigma^2 = 6/pi and the height variogram is (6/pi^2) log r + O(1).",
+   "not_covered": [
+    "Uniqueness among Gibbs states, other slopes or flux sectors, and estimates uniform as c -> 0",
+    "Lattice-scale (single-link) correlations; a single sharp flux has logarithmically divergent variance, so 'fluxes jointly Gaussian with covariance (3/2 pi) C_ij' is false as stated",
+    "Equivalence between BPR's finite zero-flux tori and P_1 (not proved by BPR)",
+    "Any 3D statement: emergent_gauge_field is a 3D claim, and the 2D RK point is the z = 2 point where BPR's photon speed vanishes and 2+1D compact U(1) confines away from it"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "manuscript_only",
+   "verification_source": null,
+   "lean_scope_excerpt": null,
+   "lean_scope_terms": [],
+   "outside_lean_scope": [],
+   "lean": null,
+   "lean_doc": null,
+   "lean_doc_sha256": null,
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [
+    "DKLM2026 (arXiv:2603.06268) Thms 4.3-4.4 and its zero-slope equilibrium characterization: needed at c = 1 for the identification of P_1 and the value of the multiplier. c = 1 lies outside that paper's own main-theorem range (sqrt(3) <= c <= 2) and rests on its stated extension to 1 <= c <= 2. Not checked by BPR.",
+    "Lammers–Tassy strict convexity of the surface tension (c >= 1), as cited by the preprint. Not checked by BPR.",
+    "The preprint's own normalization section covers c < 1 only."
+   ],
+   "classical_fallback": [
+    "Di Francesco–Saleur–Zuber 1987: the same variance as a Coulomb-gas prediction (square-ice stiffness K = pi/6), non-rigorous; cite it first",
+    "Lieb 1967: exact residual entropy of square ice, an independent refereed known answer"
+   ],
+   "supersedes_classical": false,
+   "bpr_nodes": [],
+   "bpr_files": [
+    "bpr/link_boson_gauge.py",
+    "doc/derivations/emergent_gauge_link_bosons_2026-09-25.md"
+   ],
+   "bpr_usage": "Considered, tangential. No section 6a, no sampler or GFF helpers, no demonstration_report reference, no map revision and no Monte Carlo test against 6/pi.",
+   "relation": "analogue",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "survived_value_refuted",
+    "date": "2026-10-09",
+    "reviewers": "multi_agent",
+    "lenses": {
+     "hypotheses": "not refuted",
+     "reliability": "not refuted",
+     "value": "refuted"
+    },
+    "note": "Analogue only; nothing in BPR consumes it. The 4x4 link-boson torus findings (2970/990/69/1) are BPR-internal and not credited to openai/math."
+   }
+  },
+  {
+   "key": "omath:267:hard-sphere-ground-state-bec",
+   "family_id": "267",
+   "family_title": "Positive-temperature Bose–Einstein condensation and exact quantum depletion",
+   "manuscript_dir": "preprints/Ground-state-condensation-in-the-dilute-hard-sphere-gas-September-24-2026",
+   "title": "Ground-state condensation in the dilute hard-sphere gas",
+   "date": "2026-09-24",
+   "result_ref": "Main theorem 'Condensation in every ground state' (TeX label main:theorem); Lean comparator OAI.HardSphere.condensation_with_mixed",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Ground-state-condensation-in-the-dilute-hard-sphere-gas-September-24-2026",
+   "source_file": "preprints/Ground-state-condensation-in-the-dilute-hard-sphere-gas-September-24-2026/build/sections/introduction.tex",
+   "source_sha256": "b7b00c4d60f4f04d7505afb5ec800ad3fb3d471e0dc8bed0afc6f1ceab15ae2c",
+   "statement_bpr": "For the continuum hard-sphere Bose gas (sphere radius a) on large tori there are absolute constants eps_0, c_0 > 0 such that, whenever rho a^3 < eps_0, every ground state (pure, or mixed and supported on the ground space) has condensate fraction with liminf >= c_0 along every thermodynamic sequence N/L^3 -> rho.",
+   "not_covered": [
+    "Positive-temperature BEC and quantum depletion, the family headline: paper-only, in the 2026-10-05 companions",
+    "Lattice bosons, including BPR's cubic Bose-Hubbard model and its free continuum limit (zero scattering length at g >= 0)",
+    "Fixed g at arbitrary density (a small gas parameter is required)",
+    "Any phonon-branch statement"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "lean_main_statement",
+   "verification_source": "lean_docs_only",
+   "lean_scope_excerpt": "lean/docs/267.md: ground-state Bose-Einstein condensation in the dilute hard-sphere gas; absolute constants eps_0, c_0 > 0 such that if rho a^3 < eps_0 the condensate fraction has liminf >= c_0 along every thermodynamic sequence N/L^3 -> rho; covers every pure ground state, mixed states supported on the ground space and the ground-space projection; no positive-temperature assertion. The comparator is not in lean/formalization.yaml main_results.",
+   "lean_scope_terms": [
+    "hard-sphere",
+    "ground state",
+    "rho a^3 < eps_0",
+    "condensate fraction",
+    "liminf >= c_0"
+   ],
+   "outside_lean_scope": [
+    "positive temperature",
+    "positive-temperature",
+    "depletion",
+    "lattice",
+    "phonon"
+   ],
+   "lean": {
+    "comparator_config": "lean/ComparatorChallenges/HardSphere.json",
+    "challenge_file": "lean/ComparatorChallenges/HardSphere.lean",
+    "declarations": [
+     "OAI.HardSphere.condensation_with_mixed"
+    ],
+    "solution_module": "OAI.Analysis.HardSphere.Main",
+    "permitted_axioms": [
+     "propext",
+     "Quot.sound",
+     "Classical.choice"
+    ],
+    "enable_nanoda": false,
+    "statement_sha256": "cd20c3a47cffa87359dade3ab4d69b625a5c15aa8d0c070932c968442e250b70",
+    "in_main_results": false,
+    "proof_route_differs_from_manuscript": null,
+    "additional_comparators": []
+   },
+   "lean_doc": "lean/docs/267.md",
+   "lean_doc_sha256": "f837b2fa9bf1421d74b51e418518c3968e7bcdc78d8e90ae08b12fe69f0002f0",
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [],
+   "classical_fallback": [
+    "Dyson–Lieb–Simon 1978 (J. Stat. Phys. 18) and Kennedy–Lieb–Shastry 1988: long-range order via reflection positivity in special lattice cases (e.g. hard-core bosons at half filling), which is what the thermodynamic_condensation limitation already cites",
+    "Lieb–Seiringer 2002 (Phys. Rev. Lett. 88): BEC for dilute trapped gases in the Gross–Pitaevskii limit, not the thermodynamic limit"
+   ],
+   "supersedes_classical": false,
+   "bpr_nodes": [
+    "thermodynamic_condensation"
+   ],
+   "bpr_files": [
+    "doc/derivations/cubic_condensate_regime_2026-09-25.md"
+   ],
+   "bpr_usage": "Context next to the thermodynamic_condensation open problem in the condensate note. Not the basis for any wording change to that node: such changes must rest on refereed sources (Dyson–Lieb–Simon, Kennedy–Lieb–Shastry, Capogrosso-Sansone et al. 2007).",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "context_only_unverified",
+    "date": "2026-10-09",
+    "reviewers": "single_agent",
+    "note": "Deep single-agent review: not applicable as an input (continuum, small gas parameter, no phonon theorem). Triaged by a single agent and not adversarially verified; read the source theorem before citing."
+   }
+  },
+  {
+   "key": "omath:271:heisenberg-spontaneous-magnetization",
+   "family_id": "271",
+   "family_title": "Bloch's law, its lattice correction, and the spherical magnetization law",
+   "manuscript_dir": "preprints/Spontaneous-magnetization-in-the-quantum-Heisenberg-ferromagnet-September-24-2026",
+   "title": "Spontaneous magnetization in the quantum Heisenberg ferromagnet",
+   "date": "2026-09-24",
+   "result_ref": "Main theorem (TeX label thm:main); Lean comparator OAI.Heisenberg.spontaneous_magnetization",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Spontaneous-magnetization-in-the-quantum-Heisenberg-ferromagnet-September-24-2026",
+   "source_file": "preprints/Spontaneous-magnetization-in-the-quantum-Heisenberg-ferromagnet-September-24-2026/build/source/sections/00-introduction.tex",
+   "source_sha256": "bf59b3ae4f0fb26d6af16b612c68af35ce3d4c4823268ca5cb521562c64185ed",
+   "statement_bpr": "Nearest-neighbour isotropic quantum Heisenberg ferromagnet on Z^d with d >= 3 and any spin S in {1/2, 1, 3/2, ...}: for every sufficiently large beta there is a translation-invariant beta-KMS state (zero-field dynamics) with magnetization <S_0^z> >= S/4.",
+   "not_covered": [
+    "Bloch's T^(3/2) law and its lattice correction, the family headline: paper-only",
+    "A hard-core-boson reading (off-diagonal long-range order for hard-core bosons with nearest-neighbour attraction at the tuned SU(2) point): not part of the Lean statement",
+    "BPR's model: BPR has no nearest-neighbour attraction, and the gapless mode here is a quadratic magnon, not a phonon"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "lean_main_statement",
+   "verification_source": "lean_docs_only",
+   "lean_scope_excerpt": "lean/docs/271.md: spontaneous magnetization for the nearest-neighbour isotropic quantum Heisenberg ferromagnet on Z^d for every d >= 3 and every spin S; at every sufficiently low positive temperature a translation-invariant KMS state for the zero-field dynamics with magnetization at least S/4; also convergence of the finite-volume dynamics. The comparator is not in lean/formalization.yaml main_results.",
+   "lean_scope_terms": [
+    "Heisenberg ferromagnet",
+    "d >= 3",
+    "translation-invariant",
+    "KMS state",
+    "S/4"
+   ],
+   "outside_lean_scope": [
+    "Bloch",
+    "T^(3/2)",
+    "boson",
+    "off-diagonal",
+    "spherical"
+   ],
+   "lean": {
+    "comparator_config": "lean/ComparatorChallenges/Heisenberg.json",
+    "challenge_file": "lean/ComparatorChallenges/Heisenberg.lean",
+    "declarations": [
+     "OAI.Heisenberg.spontaneous_magnetization"
+    ],
+    "solution_module": "OAI.MathematicalPhysics.Heisenberg.Main",
+    "permitted_axioms": [
+     "propext",
+     "Quot.sound",
+     "Classical.choice"
+    ],
+    "enable_nanoda": false,
+    "statement_sha256": "e943ce9c82349d3555fc658b69cb65bdd9968f293b1f0a4e137cf3fb05ab2bce",
+    "in_main_results": false,
+    "proof_route_differs_from_manuscript": null,
+    "additional_comparators": []
+   },
+   "lean_doc": "lean/docs/271.md",
+   "lean_doc_sha256": "a3f93c62adc355080af9fc64ced806c979f5abd41c7359749b1c55ef8dd5a883",
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [],
+   "classical_fallback": [
+    "Dyson–Lieb–Simon 1978 (J. Stat. Phys. 18); Kennedy–Lieb–Shastry 1988: long-range order where reflection positivity holds (not the isotropic ferromagnet)",
+    "Dyson 1956 (Phys. Rev. 102): spin-wave theory and Bloch's law (physics)"
+   ],
+   "supersedes_classical": false,
+   "bpr_nodes": [
+    "thermodynamic_condensation"
+   ],
+   "bpr_files": [
+    "doc/derivations/cubic_condensate_regime_2026-09-25.md",
+    "bpr/condensed_matter_predictions.py"
+   ],
+   "bpr_usage": "Context only for the condensate note: it sharpens the open problem (the hard part is a phonon branch at generic g). In magnon_dispersion_bpr, Bloch's law cannot test BPR's oscillatory correction. Not the basis for any wording change to thermodynamic_condensation; such changes must rest on refereed sources.",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "context_only_unverified",
+    "date": "2026-10-09",
+    "reviewers": "single_agent",
+    "note": "Deep single-agent review: not applicable as an input (different model, tuned point, quadratic magnon). Triaged by a single agent and not adversarially verified; read the source theorem before citing."
+   }
+  },
+  {
+   "key": "omath:213:z3-no-critical-percolation",
+   "family_id": "213",
+   "family_title": "Critical percolation on every quasi-transitive graph",
+   "manuscript_dir": "preprints/Critical-bond-and-site-percolation-on-the-cubic-lattice-September-24-2026",
+   "title": "Critical bond and site percolation on the cubic lattice",
+   "date": "2026-09-24",
+   "result_ref": "Main theorem (TeX label thm:main); Lean comparator OAI.CriticalZ3.critical_no_infinite",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Critical-bond-and-site-percolation-on-the-cubic-lattice-September-24-2026",
+   "source_file": "preprints/Critical-bond-and-site-percolation-on-the-cubic-lattice-September-24-2026/build/introduction.tex",
+   "source_sha256": "9c122e26801cef5bace09b8c6c9494f25ce31546917b1ab50223f06028981233",
+   "statement_bpr": "Nearest-neighbour Bernoulli bond and site percolation on Z^3 almost surely have no infinite cluster at their respective critical probabilities (theta(p_c) = 0).",
+   "not_covered": [
+    "Any critical-exponent value: consistent with the Class B value beta(3) = 0.2 > 0 and nothing more",
+    "Dimensions other than 3 (d = 2 and d >= 11 are classical)"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "lean_main_statement",
+   "verification_source": "formalization_yaml",
+   "lean_scope_excerpt": "lean/docs/213.md: at their respective critical probabilities, nearest-neighbour Bernoulli bond and site percolation on Z^3 almost surely have no infinite cluster; separately, bond percolation on every infinite connected locally finite quasi-transitive graph with p_c < 1 has no infinite cluster at p_c.",
+   "lean_scope_terms": [
+    "Z^3",
+    "bond and site",
+    "no infinite cluster",
+    "critical probabilities"
+   ],
+   "outside_lean_scope": [
+    "exponent"
+   ],
+   "lean": {
+    "comparator_config": "lean/ComparatorChallenges/CriticalZ3.json",
+    "challenge_file": "lean/ComparatorChallenges/CriticalZ3.lean",
+    "declarations": [
+     "OAI.CriticalZ3.critical_no_infinite"
+    ],
+    "solution_module": "OAI.Probability.CriticalZ3.Main",
+    "permitted_axioms": [
+     "propext",
+     "Quot.sound",
+     "Classical.choice"
+    ],
+    "enable_nanoda": false,
+    "statement_sha256": "34ea3ff4648b6ea92c3e7d94bcb7b66047a9d0fbd1f583c461c34636cbb854d8",
+    "in_main_results": true,
+    "proof_route_differs_from_manuscript": null,
+    "additional_comparators": []
+   },
+   "lean_doc": "lean/docs/213.md",
+   "lean_doc_sha256": "c42f93f6e99657086bb87d66e4b8c84e13f501decad985dde4474b5a0bb3d728",
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [],
+   "classical_fallback": [
+    "Harris 1960 and Kesten 1980: theta(1/2) = 0 for bond percolation on Z^2",
+    "Hara–Slade 1990; Fitzner–van der Hofstad 2017: continuity at p_c in high dimensions (d >= 11)"
+   ],
+   "supersedes_classical": false,
+   "bpr_nodes": [],
+   "bpr_files": [
+    "bpr/phase_transitions.py"
+   ],
+   "bpr_usage": "Optional context in the Class B LIMITATION block; gives no exponent, so it neither confirms nor refutes the formula.",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "context_only_unverified",
+    "date": "2026-10-09",
+    "reviewers": "single_agent",
+    "note": "Triaged by a single agent and not adversarially verified; read the source theorem before citing."
+   }
+  },
+  {
+   "key": "omath:214:nonamenable-mean-field-percolation",
+   "family_id": "214",
+   "family_title": "The Benjamini–Schramm nonuniqueness conjecture",
+   "manuscript_dir": "preprints/Nonuniqueness-of-percolation-on-nonamenable-quasi-transitive-graphs-September-24-2026",
+   "title": "Nonuniqueness of percolation on nonamenable quasi-transitive graphs",
+   "date": "2026-09-24",
+   "result_ref": "Corollary 'Critical laws and exponential connectivity' (TeX label cor:critical-laws); Lean comparator OAI.Percolation.BenjaminiSchramm.critical_laws. The paper's headline is the nonuniqueness theorem (TeX label thm:main)",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Nonuniqueness-of-percolation-on-nonamenable-quasi-transitive-graphs-September-24-2026",
+   "source_file": "preprints/Nonuniqueness-of-percolation-on-nonamenable-quasi-transitive-graphs-September-24-2026/build/sections/introduction.tex",
+   "source_sha256": "b18975526174ba8a3a483897a7a04e8fd2ad25c3beddb86f4fbdbff07375f325",
+   "statement_bpr": "Bernoulli bond percolation on every infinite connected locally finite nonamenable quasi-transitive graph has mean-field critical behaviour: a finite triangle diagram at p_c, susceptibility of order (p_c - p)^(-1) as p increases to p_c, and percolation probability of order p - p_c as p decreases to p_c.",
+   "not_covered": [
+    "Z^d or any amenable lattice, including BPR's cubic lattice",
+    "Exponent values at the finite dimensions BPR uses (Class B at d = 2, 3)"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "lean_main_statement",
+   "verification_source": "lean_docs_only",
+   "lean_scope_excerpt": "lean/docs/214.md: the nonuniqueness phase for Bernoulli bond percolation on infinite connected locally finite nonamenable quasi-transitive graphs (p_c < p_2->2 <= p_u, with an interval carrying infinitely many infinite clusters); selected critical estimates: a finite triangle diagram, susceptibility of order (p_c - p)^(-1), percolation probability of order p - p_c, cluster-volume tail of order n^(-1/2), radius tails of order n^(-1); exponential decay of connections below p_2->2. The comparator is not in lean/formalization.yaml main_results.",
+   "lean_scope_terms": [
+    "nonamenable quasi-transitive",
+    "triangle diagram",
+    "(p_c - p)^(-1)",
+    "p - p_c"
+   ],
+   "outside_lean_scope": [
+    "Z^d",
+    "Z^3",
+    "Euclidean"
+   ],
+   "lean": {
+    "comparator_config": "lean/ComparatorChallenges/BenjaminiSchramm.json",
+    "challenge_file": "lean/ComparatorChallenges/BenjaminiSchramm.lean",
+    "declarations": [
+     "OAI.Percolation.BenjaminiSchramm.critical_laws"
+    ],
+    "solution_module": "OAI.Probability.BenjaminiSchramm.Main",
+    "permitted_axioms": [
+     "propext",
+     "Quot.sound",
+     "Classical.choice"
+    ],
+    "enable_nanoda": false,
+    "statement_sha256": "1751e2795328a58a27f29568bf993f63c29cfeb82d87a80d87038e2428a67a47",
+    "in_main_results": false,
+    "proof_route_differs_from_manuscript": null,
+    "additional_comparators": []
+   },
+   "lean_doc": "lean/docs/214.md",
+   "lean_doc_sha256": "da93a0ed83eb2815e89c0993091833c7769f05f18dd60486a2ea306d8b8bca87",
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [],
+   "classical_fallback": [
+    "Aizenman–Newman 1984; Barsky–Aizenman 1991; Hara–Slade 1990; Hara 1990; Fitzner–van der Hofstad 2017: rigorous mean-field exponents (beta = gamma = 1, nu = 1/2) on Z^d for d >= 11, which is what a high-dimension Class B contradiction should cite"
+   ],
+   "supersedes_classical": false,
+   "bpr_nodes": [],
+   "bpr_files": [
+    "bpr/phase_transitions.py"
+   ],
+   "bpr_usage": "Optional context only for the Class B LIMITATION block; the high-d contradiction rests on the refereed Z^d sources.",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "context_only_unverified",
+    "date": "2026-10-09",
+    "reviewers": "single_agent",
+    "note": "Added by the completeness critique of the 2026-10-09 review. Triaged by a single agent and not adversarially verified; read the source theorem before citing."
+   }
+  },
+  {
+   "key": "omath:219:goe-random-regular",
+   "family_id": "219",
+   "family_title": "GOE bulk universality for regular graphs with weak Anderson disorder",
+   "manuscript_dir": "preprints/GOE-bulk-universality-for-fixed-degree-random-regular-graphs-September-23-2026",
+   "title": "GOE bulk universality for fixed-degree random regular graphs",
+   "date": "2026-09-23",
+   "result_ref": "Main theorem (TeX label thm:main)",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/GOE-bulk-universality-for-fixed-degree-random-regular-graphs-September-23-2026",
+   "source_file": "preprints/GOE-bulk-universality-for-fixed-degree-random-regular-graphs-September-23-2026/build/sections/01-introduction.tex",
+   "source_sha256": "8a8950fcd74035ca6323f4eb22624959dbcf941be557af1d86668b30af18724f",
+   "statement_bpr": "For every fixed degree d >= 3 and fixed energy E in (-2 sqrt(d-1), 2 sqrt(d-1)), the eigenvalues of the adjacency matrix of a uniformly random simple d-regular graph on n vertices, centred at E and unfolded by n times the Kesten-McKay density at E, have local statistics converging (Laplace functionals of nonnegative compactly supported test functions) to those of the GOE bulk as n -> infinity.",
+   "not_covered": [
+    "Spectral edges, rates of convergence and finite n (any BPR check on seeded finite graphs is statistical)",
+    "Weighted or disordered graphs (the weak-Anderson-disorder companion is a separate unformalized preprint)"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "manuscript_only",
+   "verification_source": null,
+   "lean_scope_excerpt": null,
+   "lean_scope_terms": [],
+   "outside_lean_scope": [],
+   "lean": null,
+   "lean_doc": null,
+   "lean_doc_sha256": null,
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [],
+   "classical_fallback": [
+    "Jakobson–Miller–Rivin–Rudnick 1999: numerical GOE spacing statistics for random regular graphs (cite first for a sparse positive control)",
+    "Bauerschmidt–Huang–Knowles–Yau 2017 (Ann. Probab. 45): bulk GOE statistics when the degree grows between N^eps and N^(2/3 - eps)",
+    "Kesten 1959; McKay 1981: the limiting spectral density"
+   ],
+   "supersedes_classical": false,
+   "bpr_nodes": [],
+   "bpr_files": [
+    "bpr/substrate_hamiltonians.py",
+    "tests/test_substrate_hamiltonians.py"
+   ],
+   "bpr_usage": "Context for an optional sparse positive control (seeded random 3-regular adjacency matrix) for classify_spacing_statistics / unfolded_spacings, citing Jakobson–Miller–Rivin–Rudnick first.",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "context_only_unverified",
+    "date": "2026-10-09",
+    "reviewers": "single_agent",
+    "note": "Added by the completeness critique of the 2026-10-09 review. Triaged by a single agent and not adversarially verified; read the source theorem before citing."
+   }
+  },
+  {
+   "key": "omath:281:qaoa-sk-optimum",
+   "family_id": "281",
+   "family_title": "QAOA attains the SK optimum in the thermodynamic-first limit",
+   "manuscript_dir": "preprints/QAOA-attains-the-SK-ground-state-energy-in-the-thermodynamic-first-limit-September-25-2026",
+   "title": "QAOA attains the SK ground-state energy in the thermodynamic-first limit",
+   "date": "2026-09-25",
+   "result_ref": "Main theorem (TeX label thm:main) and Corollary 'Regular MaxCut in successive limits' (TeX label cor:regular-maxcut)",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/QAOA-attains-the-SK-ground-state-energy-in-the-thermodynamic-first-limit-September-25-2026",
+   "source_file": "preprints/QAOA-attains-the-SK-ground-state-energy-in-the-thermodynamic-first-limit-September-25-2026/build/sections/01-introduction.tex",
+   "source_sha256": "b14a192b301cc839f84eeed4b36f6eb0e5842ed1da59cf09af5be37e7d767642",
+   "statement_bpr": "For the zero-field SK model the optimal depth-p QAOA value tends to the Parisi ground-state constant P* as p -> infinity (system size first). Corollary: for every eta > 0 a fixed-depth QAOA word gives cut fraction >= 1/2 + (P* - eta)/sqrt(D) on every (D+1)-regular graph of large enough girth, for D >= D_0.",
+   "not_covered": [
+    "QAOA convergence itself is not formalized; the Lean statements are conditional on an admissible Parisi minimizer",
+    "Finite n or finite D; the limits are successive (n first, then p or D)",
+    "Any statement about BPR's phase-oscillator solver"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "lean_supporting_only",
+   "verification_source": "lean_docs_only",
+   "lean_scope_excerpt": "lean/docs/281.md: supporting results only. Variational identities for the zero-field SK ground-state energy used in the paper's argument, conditional on an admissible Parisi minimizer and its diffusion (convergence of the finite-system ground-state energy to the Parisi value; martingale and curvature formulas; finite Gaussian approximation); the selected statement does not assert convergence of the circuit energies. A second comparator (another manuscript) proves full support of zero-temperature Parisi minimizers on [0, 1).",
+   "lean_scope_terms": [],
+   "outside_lean_scope": [
+    "QAOA",
+    "cut fraction"
+   ],
+   "lean": {
+    "comparator_config": "lean/ComparatorChallenges/SKValue.json",
+    "challenge_file": "lean/ComparatorChallenges/SKValue.lean",
+    "declarations": [
+     "OAI.SKValue.value_consequences"
+    ],
+    "solution_module": "OAI.Probability.SKValue.Main",
+    "permitted_axioms": [
+     "propext",
+     "Quot.sound",
+     "Classical.choice"
+    ],
+    "enable_nanoda": false,
+    "statement_sha256": "1c059a9b0e733ab43a2944ee6af222191f12b27c14714582613e1d5ff99f1d6e",
+    "in_main_results": false,
+    "proof_route_differs_from_manuscript": null,
+    "additional_comparators": []
+   },
+   "lean_doc": "lean/docs/281.md",
+   "lean_doc_sha256": "244155dd6e7310ab65b1b4ec342c499149057fe90ae0aba8340a0c5bd656a072",
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [
+    "Existence of an admissible Parisi minimizer (the Lean statements assume one)"
+   ],
+   "classical_fallback": [
+    "Dembo–Montanari–Sen 2017 (Ann. Probab. 45): MaxCut of random sparse regular graphs, cut fraction 1/2 + P*/sqrt(d) + o(1/sqrt(d)); cite this for any reference line",
+    "Talagrand 2006 (Ann. Math. 163): the Parisi formula"
+   ],
+   "supersedes_classical": true,
+   "bpr_nodes": [],
+   "bpr_files": [
+    "bpr/optimization.py"
+   ],
+   "bpr_usage": "Optional 1/2 + P*/sqrt(d) reference line in a report-only Max-Cut benchmark; the asymptote is prior literature and the preprint only adds that QAOA attains it.",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "context_only_unverified",
+    "date": "2026-10-09",
+    "reviewers": "single_agent",
+    "note": "Triaged by a single agent and not adversarially verified; read the source theorem before citing."
+   }
+  },
+  {
+   "key": "omath:284:quartic-query-separation",
+   "family_id": "284",
+   "family_title": "The optimal quartic separation between randomized and quantum queries",
+   "manuscript_dir": "preprints/A-Nearly-Quartic-Separation-Between-Randomized-and-Quantum-Query-Complexity-October-5-2026",
+   "title": "A Nearly Quartic Separation Between Randomized and Quantum Query Complexity",
+   "date": "2026-10-05",
+   "result_ref": "Main theorem (TeX label thm:main)",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-Nearly-Quartic-Separation-Between-Randomized-and-Quantum-Query-Complexity-October-5-2026",
+   "source_file": "preprints/A-Nearly-Quartic-Separation-Between-Randomized-and-Quantum-Query-Complexity-October-5-2026/build/sections/01-introduction.tex",
+   "source_sha256": "4ba9142cad50abbf3c5fefa4cc3c80b11dd41535405188bd1dc7362e259e6ea9",
+   "statement_bpr": "For total Boolean functions the optimal power relating randomized and quantum query complexity is 4: R(f) = O((1 + Q(f))^4) (prior literature), and for each fixed k >= 2 there are total functions with Q = O(sqrt(m) polylog m) and R = Omega(m^(2 - 1/k) / log^2 m), so no smaller exponent works.",
+   "not_covered": [
+    "Partial functions and promise problems, where exponential separations exist",
+    "Time complexity or physical parallelism; this is query complexity only"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "manuscript_only",
+   "verification_source": null,
+   "lean_scope_excerpt": null,
+   "lean_scope_terms": [],
+   "outside_lean_scope": [],
+   "lean": null,
+   "lean_doc": null,
+   "lean_doc_sha256": null,
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [],
+   "classical_fallback": [
+    "Beals–Buhrman–Cleve–Mosca–de Wolf 2001 (J. ACM 48): D(f) = O(Q(f)^6) for total functions, already enough for the caveat that quantum speedups for total functions are polynomially bounded",
+    "Aaronson–Ben-David–Kothari–Rao–Tal 2021 (STOC): R(f) = O(Q(f)^4)"
+   ],
+   "supersedes_classical": true,
+   "bpr_nodes": [],
+   "bpr_files": [
+    "bpr/complexity.py"
+   ],
+   "bpr_usage": "Caveat for TopologicalParallelism: quantum query speedups for total functions are polynomially bounded; cite the classical bounds first, the matching lower bound only as unrefereed context.",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "context_only_unverified",
+    "date": "2026-10-09",
+    "reviewers": "single_agent",
+    "note": "Triaged by a single agent and not adversarially verified; read the source theorem before citing."
+   }
+  },
+  {
+   "key": "omath:113:perfect-matching-fpras",
+   "family_id": "113",
+   "family_title": "Approximate counting and entropy of perfect matchings",
+   "manuscript_dir": "preprints/A-Fully-Polynomial-Randomized-Approximation-Scheme-for-Perfect-Matchings-in-General-Graphs-September-23-2026",
+   "title": "A Fully Polynomial Randomized Approximation Scheme for Perfect Matchings in General Graphs",
+   "date": "2026-09-23",
+   "result_ref": "Main theorem (TeX label thm:main); Lean comparator OAI.MatchingFPRAS.thm_main",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-Fully-Polynomial-Randomized-Approximation-Scheme-for-Perfect-Matchings-in-General-Graphs-September-23-2026",
+   "source_file": "preprints/A-Fully-Polynomial-Randomized-Approximation-Scheme-for-Perfect-Matchings-in-General-Graphs-September-23-2026/build/main.tex",
+   "source_sha256": "dcf28553d442dfc53a9f90f7c52bd48c9e2e7e5e27b197aa7ca4be1c8daed703",
+   "statement_bpr": "There is a fully polynomial randomized approximation scheme for counting perfect matchings of every finite simple undirected graph: relative error eps with probability >= 1 - delta, output zero when there is no perfect matching, worst-case running time polynomial in the input length, 1/eps and log(1/delta).",
+   "not_covered": [
+    "The companion entropy paper's sharp face-dimension bound (outside its Lean statement)",
+    "Any claim about BPR's ice manifold: reading P_0 as f-factors (each corresponds to prod_v (d_v - q_v)! perfect matchings via Tutte's gadget) is BPR's own observation, and no BPR claim depends on |P_0|",
+    "The RK ground state of a single flip class (the uniform measure on all of P_0 is a different object)"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "lean_main_statement",
+   "verification_source": "lean_docs_only",
+   "lean_scope_excerpt": "lean/docs/113.md: a fully polynomial randomized approximation scheme for counting perfect matchings in every finite simple undirected graph (relative error eps with probability >= 1 - delta, zero output when none exists, polynomial worst-case time); also the perfect-matching entropy bounds and deterministic approximations; the paper's sharp global face-dimension bound is outside the selected statements. The FPRAS comparator is not in lean/formalization.yaml main_results.",
+   "lean_scope_terms": [
+    "fully polynomial randomized approximation scheme",
+    "perfect matchings",
+    "finite simple undirected graph"
+   ],
+   "outside_lean_scope": [
+    "face-dimension",
+    "face dimension",
+    "ice manifold"
+   ],
+   "lean": {
+    "comparator_config": "lean/ComparatorChallenges/MatchingFPRAS.json",
+    "challenge_file": "lean/ComparatorChallenges/MatchingFPRAS.lean",
+    "declarations": [
+     "OAI.MatchingFPRAS.thm_main"
+    ],
+    "solution_module": "OAI.Combinatorics.MatchingCount.Main",
+    "permitted_axioms": [
+     "propext",
+     "Quot.sound",
+     "Classical.choice"
+    ],
+    "enable_nanoda": false,
+    "statement_sha256": "14624569e906d3702564c39dab9c63bc77ef1d0b621bd1b51a1239fcafbca206",
+    "in_main_results": false,
+    "proof_route_differs_from_manuscript": null,
+    "additional_comparators": []
+   },
+   "lean_doc": "lean/docs/113.md",
+   "lean_doc_sha256": "988234abb376528ffa180cd07778d5349ed15190b9d21c961117dd9d011c7e00",
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [],
+   "classical_fallback": [
+    "Jerrum–Sinclair–Vigoda 2004 (J. ACM 51): FPRAS for the permanent, hence for perfect matchings of bipartite graphs (covers BPR's bipartite clusters)"
+   ],
+   "supersedes_classical": false,
+   "bpr_nodes": [],
+   "bpr_files": [
+    "bpr/link_boson_gauge.py"
+   ],
+   "bpr_usage": "Numerics only: approximate |P_0| beyond MAX_ICE_DIMENSION on non-bipartite clusters. No claim depends on it.",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "context_only_unverified",
+    "date": "2026-10-09",
+    "reviewers": "single_agent",
+    "note": "Triaged by a single agent and not adversarially verified; read the source theorem before citing."
+   }
+  },
+  {
+   "key": "omath:115:cell-bounded-contingency-fpras",
+   "family_id": "115",
+   "family_title": "Sampling and counting contingency tables with arbitrary margins",
+   "manuscript_dir": "preprints/An-FPRAS-for-Cell-Bounded-Contingency-Tables-September-24-2026",
+   "title": "An FPRAS for Cell-Bounded Contingency Tables",
+   "date": "2026-09-24",
+   "result_ref": "Main theorem (TeX label thm:main); Lean comparator OAI.ContingencyTables.counting",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/An-FPRAS-for-Cell-Bounded-Contingency-Tables-September-24-2026",
+   "source_file": "preprints/An-FPRAS-for-Cell-Bounded-Contingency-Tables-September-24-2026/build/sections/introduction.tex",
+   "source_sha256": "dcbce0a815f690246a36b1f0d4268d6f4fbce105b0364267d067e642541bb730",
+   "statement_bpr": "There is a fully polynomial randomized approximation scheme for counting nonnegative integer matrices with prescribed row sums, column sums and individual entry bounds (zero bounds allowed, binary-encoded input), with zero output on every run when no table exists.",
+   "not_covered": [
+    "Any BPR claim: no claim or limitation depends on |P_0|",
+    "Non-bipartite clusters (reading P_0 as a table needs a bipartite lattice)"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "lean_main_statement",
+   "verification_source": "lean_docs_only",
+   "lean_scope_excerpt": "lean/docs/115.md: an exact uniform sampler and a bounded-time sampler for nonnegative integer contingency tables with arbitrary margins; and a fully polynomial randomized approximation scheme for counting nonnegative integer matrices with prescribed row sums, column sums and individual entry bounds (zero bounds allowed, binary-encoded input). The comparator is not in lean/formalization.yaml main_results.",
+   "lean_scope_terms": [
+    "fully polynomial randomized approximation scheme",
+    "row sums",
+    "column sums",
+    "entry bounds"
+   ],
+   "outside_lean_scope": [
+    "ice manifold",
+    "P_0"
+   ],
+   "lean": {
+    "comparator_config": "lean/ComparatorChallenges/ContingencyTables.json",
+    "challenge_file": "lean/ComparatorChallenges/ContingencyTables.lean",
+    "declarations": [
+     "OAI.ContingencyTables.counting"
+    ],
+    "solution_module": "OAI.Combinatorics.ContingencyTables.UnconditionalMain",
+    "permitted_axioms": [
+     "propext",
+     "Quot.sound",
+     "Classical.choice"
+    ],
+    "enable_nanoda": false,
+    "statement_sha256": "809f0a2575fb97e579e883d47aa6f38717c9df57f4b186d21dcdeb59743118b5",
+    "in_main_results": false,
+    "proof_route_differs_from_manuscript": null,
+    "additional_comparators": []
+   },
+   "lean_doc": "lean/docs/115.md",
+   "lean_doc_sha256": "7503f6655041af845dd16fb16746316e877356e75bcb3793ba68917585e02fb6",
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [],
+   "classical_fallback": [
+    "Jerrum–Sinclair–Vigoda 2004 (J. ACM 51): 0/1 tables with structural zeros (BPR's case) are bipartite f-factors and were already approximately countable"
+   ],
+   "supersedes_classical": true,
+   "bpr_nodes": [],
+   "bpr_files": [
+    "bpr/link_boson_gauge.py"
+   ],
+   "bpr_usage": "Numerics only, small marginal value: estimate |P_0| on bipartite clusters beyond the enumeration cap.",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "context_only_unverified",
+    "date": "2026-10-09",
+    "reviewers": "single_agent",
+    "note": "Triaged by a single agent and not adversarially verified; read the source theorem before citing."
+   }
+  },
+  {
+   "key": "omath:098:doubling-hilbert-no-embedding",
+   "family_id": "098",
+   "family_title": "Compact counterexamples to bi-Lipschitz dimension reduction",
+   "manuscript_dir": "preprints/A-doubling-Hilbert-subset-with-no-finite-dimensional-bi-Lipschitz-embedding-September-25-2026",
+   "title": "A doubling Hilbert subset with no finite-dimensional bi-Lipschitz embedding",
+   "date": "2026-09-25",
+   "result_ref": "Main theorem (TeX label thm:main); Lean comparator OAI.DoublingHilbert.main",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-doubling-Hilbert-subset-with-no-finite-dimensional-bi-Lipschitz-embedding-September-25-2026",
+   "source_file": "preprints/A-doubling-Hilbert-subset-with-no-finite-dimensional-bi-Lipschitz-embedding-September-25-2026/build/main.tex",
+   "source_sha256": "3eac74d00462787aec0f48599cdf51d6b14599c53fdbb247f16539d8cfdd06c7",
+   "statement_bpr": "There is a subset of real l_2 with doubling constant at most 76800 that admits no bi-Lipschitz embedding into R^k for any k, at any finite distortion.",
+   "not_covered": [
+    "Any statement that BPR's growth or ball-counting data determine a dimension; BPR makes no claim of the form 'doubling implies embeddable in R^d'",
+    "The companion Banach-space result (a separate comparator, CompactBanach)"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "lean_main_statement",
+   "verification_source": "formalization_yaml",
+   "lean_scope_excerpt": "lean/docs/098.md: a doubling subset of real l_2 with doubling constant at most 76800 that admits no bi-Lipschitz embedding into any finite-dimensional Euclidean space at any finite distortion; a companion gives, in every infinite-dimensional real Banach space, a compact doubling subset with no bi-Lipschitz embedding into any finite-dimensional normed space.",
+   "lean_scope_terms": [
+    "l_2",
+    "doubling constant at most 76800",
+    "bi-Lipschitz embedding"
+   ],
+   "outside_lean_scope": [
+    "spatial dimension",
+    "growth"
+   ],
+   "lean": {
+    "comparator_config": "lean/ComparatorChallenges/DoublingHilbert.json",
+    "challenge_file": "lean/ComparatorChallenges/DoublingHilbert.lean",
+    "declarations": [
+     "OAI.DoublingHilbert.main"
+    ],
+    "solution_module": "OAI.Geometry.DoublingHilbert.Main",
+    "permitted_axioms": [
+     "propext",
+     "Quot.sound",
+     "Classical.choice"
+    ],
+    "enable_nanoda": false,
+    "statement_sha256": "f7f9b905f01b3333bec0f1164075949eba47b536af2b60daa29032a6796b2d8a",
+    "in_main_results": true,
+    "proof_route_differs_from_manuscript": null,
+    "additional_comparators": []
+   },
+   "lean_doc": "lean/docs/098.md",
+   "lean_doc_sha256": "d0961af63a6a2f393ccf0a2d818879a71613ac2b8998eecb64d306bc4cabb0e8",
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [],
+   "classical_fallback": [
+    "Semmes 1996 (Rev. Mat. Iberoam. 12): the Heisenberg group is doubling yet bi-Lipschitz-embeds in no R^n, already enough for BPR's caution",
+    "Assouad 1983: doubling spaces embed bi-Lipschitzly into some R^N only after snowflaking"
+   ],
+   "supersedes_classical": true,
+   "bpr_nodes": [
+    "spatial_dimension"
+   ],
+   "bpr_files": [
+    "bpr/substrate_locality_dimension.py",
+    "doc/derivations/substrate_locality_dimension_2026-09-13.md"
+   ],
+   "bpr_usage": "Caution note for spatial_dimension: finite doubling dimension does not imply a finite-dimensional bi-Lipschitz embedding. Cite the classical Heisenberg-group example first.",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "context_only_unverified",
+    "date": "2026-10-09",
+    "reviewers": "single_agent",
+    "note": "Triaged by a single agent and not adversarially verified; read the source theorem before citing."
+   }
+  },
+  {
+   "key": "omath:007:liouville-two-point",
+   "family_id": "007",
+   "family_title": "Ordinary two-point correlations and the corrected Elliott conjecture",
+   "manuscript_dir": "preprints/Ordinary-two-point-correlations-of-multiplicative-functions-September-24-2026",
+   "title": "Ordinary two-point correlations of multiplicative functions",
+   "date": "2026-09-24",
+   "result_ref": "Theorem 'A logarithmic saving for affine Liouville correlations' (TeX label thm:q-affine); Lean comparator OAI.OrdinaryTwoPointCorrelations.liouville_log_saving",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Ordinary-two-point-correlations-of-multiplicative-functions-September-24-2026",
+   "source_file": "preprints/Ordinary-two-point-correlations-of-multiplicative-functions-September-24-2026/build/introduction.tex",
+   "source_sha256": "05f8ea23cd4d2f423e9a46dfc583813d30907159fb5a667dc2850740b7d32903",
+   "statement_bpr": "For the Liouville function on any fixed pair of nonproportional affine forms, the two-point correlation sum up to X is O(X/(log X)^c) for an absolute c > 0, with the implied constant depending on the forms (ordinary averages, not logarithmic).",
+   "not_covered": [
+    "Short dyadic intervals with shifts proportional to 2^(n_B), as in Gram matrices of prime-type states",
+    "Legendre symbols, whose two-point correlations are classically exactly -1/p for nonzero shifts",
+    "Any entanglement claim about the QR state"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "lean_main_statement",
+   "verification_source": "lean_docs_only",
+   "lean_scope_excerpt": "lean/docs/007.md: ordinary two-point cancellation for multiplicative functions; for the Liouville function on every fixed pair of nonproportional affine forms the correlation sum up to X is O(X/(log X)^c) for an absolute c > 0; for one-bounded multiplicative functions, one uniformly nonpretentious against twisted characters, shifted and affine correlations are o(N); ordinary averages, no logarithmic averaging. The comparators are not in lean/formalization.yaml main_results.",
+   "lean_scope_terms": [
+    "Liouville",
+    "nonproportional affine forms",
+    "O(X/(log X)^c)",
+    "ordinary"
+   ],
+   "outside_lean_scope": [
+    "Legendre",
+    "quadratic residue",
+    "entanglement"
+   ],
+   "lean": {
+    "comparator_config": "lean/ComparatorChallenges/OrdinaryTwoPointCorrelations.json",
+    "challenge_file": "lean/ComparatorChallenges/OrdinaryTwoPointCorrelations.lean",
+    "declarations": [
+     "OAI.OrdinaryTwoPointCorrelations.liouville_log_saving"
+    ],
+    "solution_module": "OAI.NumberTheory.TwoPointCorrelations.FinalMain",
+    "permitted_axioms": [
+     "propext",
+     "Quot.sound",
+     "Classical.choice"
+    ],
+    "enable_nanoda": false,
+    "statement_sha256": "e09ff958b87d795ff14b125457531f960e91c888b12b94af672c74954f406869",
+    "in_main_results": false,
+    "proof_route_differs_from_manuscript": null,
+    "additional_comparators": []
+   },
+   "lean_doc": "lean/docs/007.md",
+   "lean_doc_sha256": "0ad2938aa412b0521890c05327e30567c815e781a9381b8c5ede9bf0553d3397",
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [],
+   "classical_fallback": [
+    "Tao 2016 (Forum Math. Pi 4): logarithmically averaged two-point Chowla and Elliott",
+    "Matomäki–Radziwiłł–Tao 2015: averaged two-point Chowla"
+   ],
+   "supersedes_classical": false,
+   "bpr_nodes": [],
+   "bpr_files": [
+    "doc/PRIME_INFORMATION_STRUCTURE_CONNECTIONS.md",
+    "bpr/prime_state_check.py"
+   ],
+   "bpr_usage": "Conceptual pointer only ('multiplicative functions are pairwise pseudorandom'). The QR-state null-model finding is BPR-internal and not credited to openai/math.",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "context_only_unverified",
+    "date": "2026-10-09",
+    "reviewers": "single_agent",
+    "note": "Triaged by a single agent and not adversarially verified; read the source theorem before citing."
+   }
+  },
+  {
+   "key": "omath:215:on-exponential-decay",
+   "family_id": "215",
+   "family_title": "Canonical O(3) continuum limit and exact O(4) mass asymptotics",
+   "manuscript_dir": "preprints/Exponential-decay-in-two-dimensional-classical-On-models-September-23-2026",
+   "title": "Exponential decay in two-dimensional classical O(n) models",
+   "date": "2026-09-23",
+   "result_ref": "Main theorem (TeX label thm:main); Lean comparator OAI.ClassicalON.main",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Exponential-decay-in-two-dimensional-classical-On-models-September-23-2026",
+   "source_file": "preprints/Exponential-decay-in-two-dimensional-classical-On-models-September-23-2026/build/main.tex",
+   "source_sha256": "47296c2920eef88039125513548ee639a0e98c5b8006dc703aedebb749d95891",
+   "statement_bpr": "Classical O(n) model with n >= 3 on finite nearest-neighbour square-lattice subgraphs with free boundary and edge strengths in [0, beta]: for every beta > 0 there are A and m > 0, uniform over all such subgraphs and strengths, with 0 <= <sigma_x . sigma_y> <= A exp(-m |x - y|).",
+   "not_covered": [
+    "Infinite-volume limits, the massive continuum limit, the O(3) particle pole and the O(4) mass asymptotics (the family headline and its companions): paper-only; do not cite them as rigorous",
+    "Any BPR model: BPR's substrate is a 3D (or 1D ring) quantum Bose-Hubbard lattice in continuous time with O(2) bosons",
+    "A rate of approach to rotation invariance"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "lean_main_statement",
+   "verification_source": "formalization_yaml",
+   "lean_scope_excerpt": "lean/docs/215.md: exponential decay of spin correlations for the two-dimensional classical O(n) model at every temperature when n >= 3; for each bound beta > 0, constants A and m > 0 valid for every finite square-lattice subgraph with free boundary and nonnegative edge strengths at most beta; the infinite-volume limit and the separate O(4) spectral-gap claim are not included.",
+   "lean_scope_terms": [
+    "O(n)",
+    "n >= 3",
+    "finite",
+    "square-lattice subgraph",
+    "free boundary"
+   ],
+   "outside_lean_scope": [
+    "continuum limit",
+    "particle pole",
+    "infinite-volume",
+    "mass asymptotic"
+   ],
+   "lean": {
+    "comparator_config": "lean/ComparatorChallenges/ClassicalON.json",
+    "challenge_file": "lean/ComparatorChallenges/ClassicalON.lean",
+    "declarations": [
+     "OAI.ClassicalON.main"
+    ],
+    "solution_module": "OAI.Probability.ClassicalON.Main",
+    "permitted_axioms": [
+     "propext",
+     "Quot.sound",
+     "Classical.choice"
+    ],
+    "enable_nanoda": false,
+    "statement_sha256": "c2f5f88455b811eb6b56c1ae80ff91f4e398e18e7c7fbeee6daca8da4122d696",
+    "in_main_results": true,
+    "proof_route_differs_from_manuscript": null,
+    "additional_comparators": []
+   },
+   "lean_doc": "lean/docs/215.md",
+   "lean_doc_sha256": "41ed31b3d5b0f9c0ce5df3604527f17b26eec23b225a7a2184f5a9c2d936ac30",
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [],
+   "classical_fallback": [
+    "Polyakov 1975: a mass gap at all temperatures for 2D O(n >= 3) models is a physics prediction (asymptotic freedom)",
+    "Rigorous classically only at high temperature (convergent high-temperature expansions) and for large n (Kupiainen 1980, 1/n expansion)"
+   ],
+   "supersedes_classical": false,
+   "bpr_nodes": [],
+   "bpr_files": [],
+   "bpr_usage": "Not cited anywhere. Recorded for the headline-versus-Lean-scope trap. The useful outcome (a known-answer test for effective-mass estimators from the exactly solvable 1D classical O(3) chain) is independent of openai/math.",
+   "relation": "context",
+   "applicability": "none",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "context_only_unverified",
+    "date": "2026-10-09",
+    "reviewers": "single_agent",
+    "note": "Deep single-agent review: not applicable to any BPR model. If faithful, the Lean statement would bear on a well-known open problem (a mass gap at all temperatures); require a fidelity check before any prose mentions it. Triaged by a single agent and not adversarially verified; read the source theorem before citing."
+   }
+  },
+  {
+   "key": "omath:090:coulomb-renormalized-energy",
+   "family_id": "090",
+   "family_title": "Triangular-lattice optimality, long-range Riesz and Coulomb energies, and spherical logarithmic energy",
+   "manuscript_dir": "preprints/Triangular-minimality-for-planar-Coulomb-renormalized-energy-September-23-2026",
+   "title": "Triangular minimality for planar Coulomb renormalized energy",
+   "date": "2026-09-23",
+   "result_ref": "Main theorem (TeX label thm:main)",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Triangular-minimality-for-planar-Coulomb-renormalized-energy-September-23-2026",
+   "source_file": "preprints/Triangular-minimality-for-planar-Coulomb-renormalized-energy-September-23-2026/build/sections/01-introduction.tex",
+   "source_sha256": "6326c2926659a7d3bdf3946e843a0ba9d921259c9432a4132ba8da9b3d2f0496",
+   "statement_bpr": "Among all admissible planar configurations of density one, the Sandier-Serfaty renormalized Coulomb energy W is minimized by the triangular lattice: W(E) >= W(E_triangle) for every admissible field and admissible cutoff family, and the triangular value is finite.",
+   "not_covered": [
+    "Lean: the family's Lean formalization covers other manuscripts (completely monotone potentials and the planar Cohn-Elkies certificate), not W",
+    "BPR's brane_positions claim (four vortices on the flux sphere; quartic minimization over the spin-2 lowest level), which is not a planar pair-potential or large-N problem",
+    "Independent checking of the computer-assisted interval-arithmetic certificates the proof relies on"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "manuscript_only",
+   "verification_source": null,
+   "lean_scope_excerpt": "lean/docs/090.md scopes two other manuscripts of the family: universal minimality of the density-one triangular lattice for every nonnegative completely monotone function of squared distance (with sharp Gaussian Fourier minorants), and the planar Cohn-Elkies sharp Fourier certificate for circle packing. The renormalized-energy (W) manuscript is not among them.",
+   "lean_scope_terms": [],
+   "outside_lean_scope": [],
+   "lean": null,
+   "lean_doc": "lean/docs/090.md",
+   "lean_doc_sha256": "d349dc455d0c4c6621153f61ca639dd4932f0bbcb8fc5508e2a1805b95f6de26",
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [],
+   "classical_fallback": [
+    "Sandier–Serfaty 2012 (Comm. Math. Phys. 313): the triangular lattice minimizes W among lattice configurations (via Montgomery 1988)"
+   ],
+   "supersedes_classical": false,
+   "bpr_nodes": [],
+   "bpr_files": [
+    "bpr/brane_stabilization.py"
+   ],
+   "bpr_usage": "Background only if BPR ever moves to many vortices (higher chi charge); it does not bear on the N = 4 claim, whose global minimum rests on multistart numerics.",
+   "relation": "context",
+   "applicability": "tangential",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "context_only_unverified",
+    "date": "2026-10-09",
+    "reviewers": "single_agent",
+    "note": "Scope corrected by the completeness critique of the 2026-10-09 review: the Lean doc does not cover W. Triaged by a single agent and not adversarially verified; read the source theorem before citing."
+   }
+  },
+  {
+   "key": "omath:003:quasi-riemann-seven-eighths",
+   "family_id": "003",
+   "family_title": "The quasi-Riemann hypothesis",
+   "manuscript_dir": "preprints/The-Quasi-Riemann-Hypothesis-September-30-2026",
+   "title": "The Quasi-Riemann Hypothesis: A Zero-Free Half-Plane Re(s)>7/8",
+   "date": "2026-09-30",
+   "result_ref": "Main theorem (TeX label thm:main); Lean comparators OAI.DirichletCharacter.LFunction_ne_zero_of_seven_eighths_lt_re and OAI.riemannZeta_ne_zero_of_seven_eighths_lt_re",
+   "permalink": "https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/The-Quasi-Riemann-Hypothesis-September-30-2026",
+   "source_file": "preprints/The-Quasi-Riemann-Hypothesis-September-30-2026/build/paper.tex",
+   "source_sha256": "42a5ee0febca59fd1def55cfd6c6808c322ef4237d7726303ea52f711deac6a3",
+   "statement_bpr": "Every Dirichlet L-function, for every positive modulus and character (zeta included), has no zero with Re s > 7/8, apart from the pole at s = 1 of principal characters.",
+   "not_covered": [
+    "The Riemann hypothesis itself",
+    "Pair correlation or GUE statistics of zeros, the topic of doc/conjectures/riemann_connection.md",
+    "The paper's later applications (outside the Lean statements)"
+   ],
+   "upstream_status": "active",
+   "refereed": false,
+   "verification": "lean_main_statement",
+   "verification_source": "formalization_yaml",
+   "lean_scope_excerpt": "lean/docs/003.md: a zero-free half-plane Re s > 7/8 for the Riemann zeta function and every Dirichlet L-function, uniformly over all positive moduli and characters (principal-character poles at s = 1 excluded), and the same for finite-order Hecke L-functions over Q(sqrt(-3)); separately a uniform c/log q exclusion region for real Landau-Siegel zeros.",
+   "lean_scope_terms": [
+    "Dirichlet L-function",
+    "Re s > 7/8",
+    "s = 1"
+   ],
+   "outside_lean_scope": [
+    "pair correlation",
+    "GUE"
+   ],
+   "lean": {
+    "comparator_config": "lean/ComparatorChallenges/DirichletSevenEighths.json",
+    "challenge_file": "lean/ComparatorChallenges/DirichletSevenEighths.lean",
+    "declarations": [
+     "OAI.DirichletCharacter.LFunction_ne_zero_of_seven_eighths_lt_re"
+    ],
+    "solution_module": "OAI.NumberTheory.DirichletL.Nonvanishing",
+    "permitted_axioms": [
+     "propext",
+     "Quot.sound",
+     "Classical.choice"
+    ],
+    "enable_nanoda": false,
+    "statement_sha256": "8fb13ad977bca104591fcbc6ef01a58496e7385053c9b1445f95749afc0eff54",
+    "in_main_results": true,
+    "proof_route_differs_from_manuscript": null,
+    "additional_comparators": [
+     {
+      "comparator_config": "lean/ComparatorChallenges/QuasiRiemannHypothesis.json",
+      "challenge_file": "lean/ComparatorChallenges/QuasiRiemannHypothesis.lean",
+      "declarations": [
+       "OAI.riemannZeta_ne_zero_of_seven_eighths_lt_re"
+      ],
+      "permitted_axioms": [
+       "propext",
+       "Quot.sound",
+       "Classical.choice"
+      ],
+      "enable_nanoda": false,
+      "statement_sha256": "065f8c9a01d28db78c8b1bfc5083b535082a2d2aac2230d563f98b8caa812cc5",
+      "in_main_results": true
+     }
+    ]
+   },
+   "lean_doc": "lean/docs/003.md",
+   "lean_doc_sha256": "41e52ed718260e6feb1db218f8e97287e703cb63c6f16e6c36f5563e6e2395ce",
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [],
+   "classical_fallback": [
+    "de la Vallée Poussin 1899; Vinogradov–Korobov 1958: zero-free regions that shrink towards Re s = 1; no fixed half-plane Re s > theta with theta < 1 is known in the refereed literature"
+   ],
+   "supersedes_classical": false,
+   "bpr_nodes": [],
+   "bpr_files": [],
+   "bpr_usage": "Used by no BPR argument: riemann_connection.md makes no zero-free-region statement. Considered, not cited. A fidelity check is required before any prose mentions it.",
+   "relation": "none",
+   "applicability": "none",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "considered_not_cited",
+    "date": "2026-10-09",
+    "reviewers": "single_agent",
+    "note": "Would be a landmark result if correct, which is why it is the entry most likely to be over-read. citation() refuses to render it until a fidelity check is recorded."
+   }
+  }
+ ]
+}

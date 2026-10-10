@@ -67,3 +67,16 @@ If a future revised model supplies a distinct consequence, a separate experiment
 ## Preserved numerical debt
 
 The sampled-response module's four failed tiny-noise sign assertions remain failed. No repeat of that single-attempt supplemental probe is part of this work. Even a separately approved future stable-arithmetic revision would not break the physical-model equivalence established above.
+
+## Independent review
+
+This heading was added on 2026-10-09 so that the review record has a standard
+anchor in the unification map. No new review was performed, and the record
+below only collects what this note already states.
+
+- An independent read-only adversarial review found no confirmed defects in
+  the scoped identifiability argument, after comparison with the prediction
+  and sampled-response contracts (status paragraph at the top).
+- The disposition in "Decision and next prerequisite" follows that review.
+- The review does not certify measurements. It checks an argument about an
+  identical-model comparison, not an experiment.

@@ -11,6 +11,13 @@ between the current state and a connected theory (section 5). Round 3
 (2026-09-26) resolved the section 7 decision point by making Lorentz invariance
 fundamental; see [architecture_decision_2026-09-26.md](architecture_decision_2026-09-26.md).
 
+**Version note (2026-10-09).** The JSON is now schema 2. Every node separates
+its premises from its context, names its hypotheses and carries a
+verification record kept apart from its status (section 4b). The
+`thermodynamic_condensation` claim is re-scoped to the superfluid region; its
+status is unchanged. Status and claim changes are listed in
+[doc/HISTORY.md](../HISTORY.md).
+
 ## 1. The honest one-paragraph answer
 
 Everything does not yet tie together. The repository contains four largely
@@ -406,41 +413,42 @@ graph TD
   classDef open fill:#fff3cd,stroke:#b8860b
   classDef obst fill:#f8d7da,stroke:#a33
   classDef fit fill:#e0e0f8,stroke:#55a
+  classDef cond fill:#fde2c8,stroke:#c66a00
 
   ring[1D Bose ring]:::stip --> locobs[3D-in-ring encoding obstructed]:::obst
   ring --> gauss[short-interval Gauss obstructed]:::obst
-  locobs --> cubic[3D cubic lattice]:::stip
+  locobs -.-> cubic[3D cubic lattice]:::stip
   cubic --> tuned[tuned continuum + hard exclusion]:::ctrl
   tuned --> eqgate[equilibrium transfer gate]:::open
   cubic --> vac[sector vacuum: unique, symmetric]:::exact
   vac --> bec[mean-field BEC + Bogoliubov]:::ctrl
-  bec --> thermo[thermodynamic condensation]:::open
+  bec -.-> thermo[thermodynamic condensation, superfluid region]:::open
   cubic --> lit[literal particle relativity]:::obst
   bec --> window[acoustic Lorentz window]:::ctrl
   window --> metric[acoustic metric, stability = signature]:::ctrl
   metric --> speed[common cone for all species: obstructed in class]:::obst
   metric --> gdyn[metric dynamics / graviton]:::open
-  grav[R+R^2 action]:::stip --> gdyn
+  grav[R+R^2 action]:::stip -.-> gdyn
   grav --> G[G, Planck length]:::stip
-  link[link-boson amendment]:::stip --> egauge[emergent U(1): conditional]:::ctrl
-  gauss --> egauge
-  egauge --> nonab[non-Abelian SU3 x SU2]:::open
-  egauge --> speed
+  link[link-boson amendment]:::stip --> egauge[emergent U(1): conditional]:::cond
+  gauss -.-> egauge
+  egauge -.-> nonab[non-Abelian SU3 x SU2]:::open
+  egauge -->|hypothesis| speed
   pathb[dihedral gauge proposal]:::stip --> glue[glueball benchmark: withdrawn]:::obst
   parent[6D Spin10 parent]:::obst --> comp[minimal anomaly completion: + neutral 16]:::exact
-  comp --> ngen[n_gen in 3Z; 3 = one flux quantum]:::ctrl
-  comp --> latchi[lattice chiral fermions]:::open
+  comp --> ngen[n_gen in 3Z; 3 = one flux quantum]:::cond
+  comp -.-> latchi[lattice chiral fermions]:::open
   cubic --> latchi
   ngen --> flavor[flavor formulas]:::fit
   window --> lv[map phonon LV to real particles]:::open
-  speed --> lv
-  speed --> arch[BPR-6D: Lorentz invariance fundamental]:::stip
-  comp --> arch
-  arch --> g6[6D Einstein gravity]:::stip
+  speed -.-> lv
+  speed -.-> arch[BPR-6D: Lorentz invariance fundamental]:::stip
+  comp -.-> arch
+  arch -.-> g6[6D Einstein gravity]:::stip
   g6 --> fvac[M4 x S2 flux vacuum, radion stable]:::exact
   comp --> fvac
   fvac --> fsel[flux selects m=3: obstructed]:::obst
-  fsel --> ngen
+  fsel -.-> ngen
   comp --> gsq[GS Dirac quantization: parent charge in 3Z]:::exact
   gsq --> ngen
   gsq --> glob[global anomalies: Omega_7 = 0]:::exact
@@ -448,9 +456,156 @@ graph TD
   fam --> yuk[Yukawa sector: none in minimal content]:::obst
 ```
 
-Colors: green = proved (exact or controlled), yellow = open, red = obstructed
-or withdrawn, grey = supplied, blue = fit. The JSON gives sources and
-limitations for every node.
+Colors: green = proved (exact or controlled), orange = conditional, yellow =
+open, red = obstructed or withdrawn, grey = supplied, blue = fit. Solid
+arrows are premises; dashed arrows are context (motivation, not logical use;
+section 4b). The arrow marked "hypothesis" is a premise that the node names
+as a hypothesis. The JSON gives sources and limitations for every node.
+
+## 4b. Premises, axioms and verification (schema 2, 2026-10-09)
+
+Schema 2 borrows bookkeeping conventions from the openai/math repository (its
+Comparator challenges, Lean catalogue and release history). It records how
+far a result has been checked separately from what kind of claim it is, and
+it separates what a result uses from what motivated it. Only the conventions
+are borrowed: no openai/math result is used anywhere in this map.
+
+**Premises and context.** Each node's `depends_on` is now split in two:
+- `premises`: map nodes whose results the node's claim actually uses;
+- `context`: motivation or history.
+
+Every link carries a reason. `depends_on` stays as their union for this
+release. A stipulated node is an input, so it has no premises. For an open
+node, the premises are the objects the problem is posed on. `hypotheses`
+names the unproven assumptions a node rests on, and every conditional node
+names at least one.
+
+**Premise audit.** This is an analogue of Lean's `#print axioms` and of the
+fixed permitted-axiom lists in Comparator configurations. For every
+exact_theorem, controlled_limit and obstructed node, everything reachable
+through premises must be stipulated, exact, controlled or obstructed, unless
+the node names it in `hypotheses`. `tests/test_unification_map.py` enforces
+this. Run on the schema-1 graph (all of `depends_on`), the audit found three
+things:
+- **The BPR-6D chain was motivation.** `flux_vacuum` and `family_symmetry`
+  (exact), and `flux_selection`, `yukawa_sector`, `spin10_breaking` and
+  `cc_self_tuning` (obstructed), all reached the conditional
+  `emergent_gauge_field`. The path ran six_d_gravity → bpr6d_architecture →
+  common_limiting_speed. Those links record why the architecture was chosen;
+  it is a stipulated decision, and none of these results uses the light-cone
+  obstruction. They are now context (architecture note, section 9). No result
+  changes.
+- **A fit was context.** `flavor_source_selection` reached `flavor_formulas`
+  (a fit) and, through it, `family_count` (conditional). Its calculation uses
+  no mass or mixing target, so `flavor_formulas` is context. Its premise is
+  the ring, whose direct local sources give five of nine directions.
+- **One genuine premise is now a named hypothesis.**
+  `common_limiting_speed` → `emergent_gauge_field` is a real premise. The
+  obstruction's photon clause (photon, charges and phonons have unrelated
+  speeds; the charges outrun their photon) uses the link-boson model and its
+  Coulomb phase, which rests on published Monte Carlo. The node now names this
+  as the hypothesis `link_boson_photon_phase`. It stays obstructed, because its
+  Bogoliubov clause does not use the hypothesis: density-coupled condensate
+  species never share a cone, and decoupled ones share one only under tuning.
+
+**Verification record.** Each node has `verification: {level, review,
+additional_reviews, exact_checks, formal, scope}`. The levels, in order, are
+none < argument < ai_review < exact_computation < formal_statement <
+formal_proof.
+- `ai_review` is AI review of scoped mathematics, not certification. It
+  requires an anchor to the heading of an independent-review record in a
+  derivation note.
+- `exact_computation` requires named pytest tests that check the claim's
+  computational core in exact arithmetic. `scope` says what those tests do not
+  cover.
+- No node has a formal level, because BPR has no Lean formalization.
+- Stipulated inputs, open problems and the withdrawn node have level none.
+
+No percentage of nodes at any level is computed, here or anywhere else: it
+would depend on the denominator and would read as a proof score.
+
+Three notes recorded their review only in a prose paragraph. Each now has a
+standard "Independent review" heading:
+[substrate_local_symmetry](substrate_local_symmetry_2026-09-13.md),
+[flavor_source_selection](flavor_source_selection_2026-09-12.md) and
+[foundation_observation_gate](foundation_observation_gate_2026-09-13.md).
+Four older notes keep their review record under another heading, and their
+anchors point there:
+- substrate_locality_dimension: the status paragraph under the title;
+- chiral_parent_anomaly: "Status";
+- substrate_gauge_encoding: "Independently cross-checked mathematical
+  results";
+- cubic_contact_continuum: "Sources, preservation and status".
+
+**History and snapshot.** [doc/HISTORY.md](../HISTORY.md) lists status and
+claim changes by release. [status_snapshot.json](status_snapshot.json) stores
+each node's status and claim hash. A test fails if a status or claim changes
+without a matching `node_changes` entry in `revisions`.
+
+**External cross-references.**
+[doc/external/OPENAI_MATH.md](../external/OPENAI_MATH.md) indexes openai/math
+results that were read for possible relevance to BPR. It is context only. No
+node depends on it, and node data carry no external references in this
+release.
+
+The table lists, for every node, its verification level, its axioms and its
+hypotheses. The axioms are the stipulated map nodes reachable through
+premises. They cover map nodes only: inputs stated inside a node's own claim
+or limitation are not separate nodes. Examples are the supplied field content
+of `chiral_parent`, and the spinor and 2-form added in
+`chiral_parent_completion`. The test suite checks the table against the JSON.
+
+| Node | Status | Verification | Axioms (stipulated nodes via premises) | Hypotheses |
+|---|---|---|---|---|
+| `ring_substrate` | stipulated | none | `ring_substrate` | none |
+| `ring_locality_obstruction` | obstructed | ai_review | `ring_substrate` | none |
+| `ring_gauss_obstruction` | obstructed | ai_review | `ring_substrate` | none |
+| `cubic_lattice` | stipulated | none | `cubic_lattice` | none |
+| `cubic_tuned_continuum` | controlled_limit | ai_review | `cubic_lattice` | none |
+| `link_boson_substrate` | stipulated | none | `link_boson_substrate` | none |
+| `cubic_sector_vacuum` | exact_theorem | ai_review | `cubic_lattice` | none |
+| `cubic_mean_field_condensate` | controlled_limit | ai_review | `cubic_lattice` | none |
+| `thermodynamic_condensation` | open | none | none | none |
+| `continuum_equilibrium_gate` | open | none | `cubic_lattice` | none |
+| `literal_particle_relativity` | obstructed | ai_review | `cubic_lattice` | none |
+| `acoustic_lorentz_window` | controlled_limit | ai_review | `cubic_lattice` | none |
+| `acoustic_metric` | controlled_limit | ai_review | `cubic_lattice` | none |
+| `common_limiting_speed` | obstructed | ai_review | `cubic_lattice`, `link_boson_substrate` | `link_boson_photon_phase` (node `emergent_gauge_field`) |
+| `spatial_dimension` | stipulated | none | `spatial_dimension` | none |
+| `gravity_action` | stipulated | none | `gravity_action` | none |
+| `newton_constant` | calibrated | argument | `gravity_action` | none |
+| `metric_dynamics` | open | none | `cubic_lattice` | none |
+| `vacuum_energy` | open | none | none | none |
+| `path_b_gauge` | stipulated | none | `path_b_gauge` | none |
+| `glueball_benchmark` | withdrawn | none | `path_b_gauge` | none |
+| `substrate_gauge_encoding` | obstructed | ai_review | `path_b_gauge`, `ring_substrate` | none |
+| `emergent_gauge_field` | conditional | ai_review | `link_boson_substrate` | `pyrochlore_coulomb_phase` |
+| `nonabelian_gauge_field` | open | none | none | none |
+| `chiral_parent` | obstructed | exact_computation | none | none |
+| `chiral_parent_completion` | exact_theorem | exact_computation | none | none |
+| `gs_quantization` | exact_theorem | exact_computation | none | none |
+| `global_anomalies` | exact_theorem | exact_computation | none | none |
+| `family_count` | conditional | ai_review | none | `minimal_charge_and_flux`, `class_c_minimal_completion` |
+| `lattice_chiral_fermions` | open | none | `cubic_lattice` | none |
+| `flavor_formulas` | phenomenological_fit | argument | none | none |
+| `fine_structure_constant` | calibrated | argument | none | none |
+| `flavor_source_selection` | obstructed | ai_review | `ring_substrate` | none |
+| `experimental_discrimination` | obstructed | ai_review | `ring_substrate` | none |
+| `lorentz_violation_mapping` | open | none | `cubic_lattice` | none |
+| `bpr6d_architecture` | stipulated | none | `bpr6d_architecture` | none |
+| `six_d_gravity` | stipulated | none | `six_d_gravity` | none |
+| `flux_vacuum` | exact_theorem | exact_computation | `six_d_gravity` | none |
+| `flux_selection` | obstructed | ai_review | `six_d_gravity` | none |
+| `family_symmetry` | exact_theorem | ai_review | `six_d_gravity` | none |
+| `yukawa_sector` | obstructed | ai_review | `six_d_gravity` | none |
+| `string_embedding` | open | none | none | none |
+| `spin10_breaking` | obstructed | ai_review | `six_d_gravity` | none |
+| `cc_self_tuning` | obstructed | ai_review | `six_d_gravity` | none |
+| `bpr6d_predictions` | conditional | ai_review | `six_d_gravity` | `supplied_higgs_sector`, `supplied_f_charged_singlet` |
+| `bpr6d_minimal_model` | conditional | ai_review | `six_d_gravity` | `cited_vacuum_and_fits`, `one_loop_survival`, `brane_moduli_stabilized` |
+| `brane_positions` | conditional | ai_review | `six_d_gravity` | `chi_supplied`, `type_ii_regime`, `pinning_survives` |
+| `fermion_fit` | phenomenological_fit | ai_review | `six_d_gravity` | none |
+| `kinetic_corrections` | phenomenological_fit | ai_review | `six_d_gravity` | none |
 
 ## 5. Critical path: the smallest problems that would connect the islands
 
@@ -511,9 +666,13 @@ concrete first calculation; none is authorized as physics by this map alone.
    to show which dominates.
 5. **Thermodynamic vacuum (vacuum).** Extend condensation beyond the mean-field
    regime at fixed size. Rigorous results exist in the literature only for
-   hard-core bosons at half filling. First calculation: state precisely which
-   reflection-positivity / infrared-bound results transfer to the g→∞ member of
-   the family.
+   lattice hard-core bosons at half filling, via reflection positivity
+   (Dyson–Lieb–Simon 1978; Kennedy–Lieb–Shastry 1988). The target is the
+   superfluid region only: at integer filling and large g/C the ground state
+   is expected to be a Mott insulator, with (g/C)_c ≈ 29.3 at unit filling in
+   3D (Capogrosso-Sansone, Prokof'ev and Svistunov 2007, quantum Monte Carlo).
+   First calculation: state precisely which reflection-positivity /
+   infrared-bound results transfer to the g→∞ member of the family.
 6. **Flux and family number (matter/flavor).** q=3 is chosen, and the flux
    energy alone favors q=0 at fixed radius (constructive extension note,
    chiral section). First calculation:

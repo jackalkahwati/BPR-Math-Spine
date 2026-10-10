@@ -1,0 +1,17 @@
+# Synthetic stand-in written for BPR tests; not an upstream file.
+version: "v0.4"
+
+sources:
+  - title: "Synthetic paper one"
+    id: ../preprints/Synthetic-Paper-One-September-1-2026/paper.pdf
+    type: article
+
+status:
+  scope: "Synthetic."
+  main_results:
+    - comparator_config: ComparatorChallenges/SyntheticOne.json
+      declaration: Synthetic.one
+      file: Synthetic/One.lean
+
+review:
+  status: unchecked

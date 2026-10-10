@@ -1,0 +1,177 @@
+{
+ "schema_version": 1,
+ "title": "Synthetic index for BPR tests (not a real catalogue)",
+ "upstream": {
+  "name": "synthetic/math-fixture",
+  "url": "https://github.com/synthetic/math-fixture",
+  "key_prefix": "synth",
+  "author": "Synthetic",
+  "commit": "0123456789abcdef0123456789abcdef01234567",
+  "commit_short": "012345678",
+  "retrieved": "2026-10-09",
+  "license": "LicenseRef-Synthetic",
+  "license_url": "https://github.com/synthetic/math-fixture/blob/0123456789abcdef0123456789abcdef01234567/LICENSE",
+  "license_sha256": "7cbfdb09ffe025584ed9c1a493d4eed558615d7f434f02eac3ef97851b68046b",
+  "notice_file": null,
+  "redistributed_files": [],
+  "history_sections": [
+   "September 30, 2026"
+  ]
+ },
+ "vocab": {
+  "upstream_status": [
+   "active",
+   "revised",
+   "withdrawn"
+  ],
+  "verification": [
+   "manuscript_only",
+   "lean_supporting_only",
+   "lean_main_statement"
+  ],
+  "verification_source": [
+   "formalization_yaml",
+   "lean_docs_only"
+  ],
+  "bpr_check": [
+   "none",
+   "statement_read",
+   "built"
+  ],
+  "relation": [
+   "input",
+   "counterexample",
+   "technique",
+   "context",
+   "analogue",
+   "methodology",
+   "none"
+  ],
+  "applicability": [
+   "load_bearing",
+   "partial",
+   "tangential",
+   "none"
+  ],
+  "usage_cap": [
+   "context_only",
+   "conditional_input",
+   "rigorous_input"
+  ],
+  "review_verdict": [
+   "survived",
+   "survived_value_refuted",
+   "not_applicable",
+   "context_only_unverified",
+   "refuted",
+   "considered_not_cited"
+  ]
+ },
+ "entries": [
+  {
+   "key": "synth:901:seven-is-odd",
+   "family_id": "901",
+   "family_title": "Synthetic family",
+   "manuscript_dir": "preprints/Synthetic-Paper-One-September-1-2026",
+   "title": "Synthetic paper one",
+   "date": "2026-09-01",
+   "result_ref": "Main theorem (TeX label thm:main)",
+   "permalink": "https://github.com/synthetic/math-fixture/tree/0123456789abcdef0123456789abcdef01234567/preprints/Synthetic-Paper-One-September-1-2026",
+   "source_file": "preprints/Synthetic-Paper-One-September-1-2026/src/intro.tex",
+   "source_sha256": "ca50d9ed1d7ae0e84173581fff2d0d776b98fe77d24263f0d2f678790130b950",
+   "upstream_status": "active",
+   "refereed": false,
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [],
+   "classical_fallback": [],
+   "supersedes_classical": false,
+   "bpr_nodes": [],
+   "bpr_files": [],
+   "bpr_usage": "Synthetic test entry.",
+   "relation": "context",
+   "applicability": "none",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "context_only_unverified",
+    "date": "2026-10-09",
+    "reviewers": "single_agent",
+    "note": "Synthetic."
+   },
+   "statement_bpr": "The number seven is odd.",
+   "not_covered": [
+    "Every other number"
+   ],
+   "verification": "lean_main_statement",
+   "verification_source": "formalization_yaml",
+   "lean_scope_excerpt": "Synthetic scope: the number seven is odd.",
+   "lean_scope_terms": [
+    "seven is odd"
+   ],
+   "outside_lean_scope": [
+    "nine"
+   ],
+   "lean": {
+    "comparator_config": "lean/ComparatorChallenges/SyntheticOne.json",
+    "challenge_file": "lean/ComparatorChallenges/SyntheticOne.lean",
+    "declarations": [
+     "Synthetic.one"
+    ],
+    "solution_module": "Synthetic.One",
+    "permitted_axioms": [
+     "propext"
+    ],
+    "enable_nanoda": false,
+    "statement_sha256": "cf105c346feb9b6859bee553b72f28dcbfe834f1906a4aedd1591009b645f098",
+    "in_main_results": true,
+    "proof_route_differs_from_manuscript": null,
+    "additional_comparators": []
+   },
+   "lean_doc": "lean/docs/901.md",
+   "lean_doc_sha256": "81ba178f305c0912bdc53465f04e0ef1175e213367952d125c328d76be4592eb"
+  },
+  {
+   "key": "synth:902:nine-is-odd",
+   "family_id": "902",
+   "family_title": "Synthetic family",
+   "manuscript_dir": "preprints/Synthetic-Paper-Two-September-2-2026",
+   "title": "Synthetic paper two",
+   "date": "2026-09-02",
+   "result_ref": "Main theorem (TeX label thm:main)",
+   "permalink": "https://github.com/synthetic/math-fixture/tree/0123456789abcdef0123456789abcdef01234567/preprints/Synthetic-Paper-Two-September-2-2026",
+   "source_file": "preprints/Synthetic-Paper-Two-September-2-2026/src/intro.tex",
+   "source_sha256": "65ed2c9b7f1d93220346447216e09a9e551d40baad058e8ada1e4d6edfa2df9f",
+   "upstream_status": "active",
+   "refereed": false,
+   "bpr_check": "none",
+   "fidelity_check": null,
+   "external_dependencies": [],
+   "classical_fallback": [],
+   "supersedes_classical": false,
+   "bpr_nodes": [],
+   "bpr_files": [],
+   "bpr_usage": "Synthetic test entry.",
+   "relation": "context",
+   "applicability": "none",
+   "usage_cap": "context_only",
+   "review": {
+    "verdict": "context_only_unverified",
+    "date": "2026-10-09",
+    "reviewers": "single_agent",
+    "note": "Synthetic."
+   },
+   "statement_bpr": "The number nine is odd.",
+   "not_covered": [
+    "Every other number"
+   ],
+   "verification": "manuscript_only",
+   "verification_source": null,
+   "lean_scope_excerpt": null,
+   "lean_scope_terms": [],
+   "outside_lean_scope": [],
+   "lean": null,
+   "lean_doc": null,
+   "lean_doc_sha256": null
+  }
+ ]
+}

@@ -144,3 +144,19 @@ Imported `all_number_model`, `capped_binomial` and `local_annihilation_map` are 
 Separate test authors derive occupation-matrix and permutation/projector controls independently rather than reuse production helper output. Fixed six cases are enough for physics; share owned report fixtures, do not repeat real demo in multiple tests. Mock orchestration/CLI where possible, and run actual demos in isolated verification. Check missing/invalid data, cap before allocations, zero model/eigh retry, all retained six/15 slots, cross-number flip, positive-g swap versus dark projector, and nonzero/sign witnesses. All previous baselines stay protected.
 
 Only after independent contract and static implementation review: focused tests, isolated demos, eight algebra groups, Python3.8 grammar with actual runtime distinct, selected inherited-plus-new suites in serialized bounded processes. Preserve all failures and versions; no rerun of historical supplemental sign probe. This numerical work checks the new implementation and fixed controls, not all possible local operators.
+
+## Independent review
+
+This heading was added on 2026-10-09 so that the review record has a standard
+anchor in the unification map. No new review was performed, and the record
+below only collects what this note already states.
+
+- **Mathematics.** An independent derivation and a separate adversarial
+  mathematical review agree on the theorem (status paragraph at the top).
+- **Contract.** An independent numerical/API review cleared the frozen
+  implementation contract after five pre-execution clarifications (Frozen
+  implementation contract).
+- **Scope.** The agreement covers the stated theorem on unrestricted Bose Fock
+  space. It is not a broader physical no-go theorem, and the numerical work
+  checks the implementation and fixed controls, not all possible local
+  operators.
