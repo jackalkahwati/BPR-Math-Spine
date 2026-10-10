@@ -36,7 +36,9 @@ mixing angles via the standard PDG identity. See
 > a prediction. Recovering δ from J and the angles is an identity
 > (`doc/derivations/toe_audit_2026-09-12.md` §6). The
 > current CKM fit, δ = 1.144 ± 0.027 rad (65.5° ± 1.5°), puts 68.3° at
-> +1.8σ. See `doc/CLOSED_AND_DEPRECATED.md` §1c.
+> +1.8σ. See `doc/CLOSED_AND_DEPRECATED.md` §1c. The "PDG 2024 band:
+> 65.5°–72.2°, within 1σ" above is withdrawn as well, as in
+> `doc/derivations/mixing_and_cp_summary.md`.
 
 **Over-determination of p = 104,761:** Four independent BPR structural
 equations (α formula, EW hierarchy, v_EW/Λ_QCD, Sakharov M_Pl/Λ_b) each
@@ -50,7 +52,10 @@ Combined with primality + (p ≡ 1 mod 4) constraints, p = 104,761 is
 > 104,573–107,709, a band that holds 265 primes (129 of them
 > ≡ 1 (mod 4)). The v_EW equation takes Λ_QCD as an input, and its
 > root moves from about 95,000 to 123,000 across Λ_QCD = 332 ± 17 MeV.
-> See `doc/CLOSED_AND_DEPRECATED.md` §1c.
+> See the WITHDRAWN (2026-10) banner at the top of
+> `doc/derivations/p_selection_principle.md` and
+> `doc/CLOSED_AND_DEPRECATED.md` §1c; `scripts/p_calibration_check.py`
+> reproduces these numbers.
 
 ---
 
@@ -89,7 +94,11 @@ Code: `bpr/gauge_unification.py`, `forward_threshold_corrections` vs `boundary_t
 > GUT" is the input value, returned unchanged for any p (see the GUT note
 > above). The chain therefore replaces the Λ_QCD input with the α_s(M_Z)
 > input; it does not derive v_EW from (p, z). The "0%" in step A holds by
-> construction. See `doc/CLOSED_AND_DEPRECATED.md` §1c.
+> construction, and Λ_QCD then matches the PDG value (330.5 vs 332 MeV)
+> only through the empirical factor k_3loop = 1.57 in
+> `lambda_qcd_with_thresholds`. See the WITHDRAWN banner in
+> `doc/derivations/v_EW_self_consistent_chain.md` and
+> `doc/CLOSED_AND_DEPRECATED.md` §1c.
 
 **Previous claim:** v_EW = Lambda_QCD x p^(1/3) x (ln p + z - 2) = 243.5 GeV (1% off), with Lambda_QCD = 0.332 GeV as external input.
 
@@ -314,7 +323,7 @@ The four terms:
 - `γ = 0.5772...` — Euler-Mascheroni constant; the lattice→continuum finite renormalization.
 - `−1/(2π)` — on-shell scheme matching correction.
 
-For p=104,729, z=6: 1/α = 133.613 + 3.000 + 0.577 − 0.159 = **137.031** (experimental: 137.036, error 32.3 ppm).
+For p=104,729, z=6: 1/α = 133.613 + 3.000 + 0.577 − 0.159 = **137.031** (experimental: 137.036, error 32.3 ppm). (2026-10: at p = 104,761 the formula gives 137.0386, +19.3 ppm; p is calibrated.)
 
 This formula exists only in code. It has not appeared in any published BPR document. That is the documentation gap.
 

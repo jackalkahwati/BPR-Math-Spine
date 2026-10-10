@@ -562,6 +562,8 @@ def alpha_em_from_gut_running(p: int = 104761, z: int = 6) -> dict:
         alpha_em = float("nan")
         inv_alpha_em = float("nan")
 
+    alpha_s_mz = 1.0 / inv_a3_mz if inv_a3_mz > 0 else float("inf")
+
     return {
         "inv_alpha_gut": inv_a_gut,
         "M_gut_GeV": m_gut,
@@ -570,17 +572,26 @@ def alpha_em_from_gut_running(p: int = 104761, z: int = 6) -> dict:
         "inv_alpha_3_MZ": inv_a3_mz,
         "sin2_theta_W": sin2_tw,
         "inv_alpha_em_MZ": inv_alpha_em,
-        "alpha_s_MZ": 1.0 / inv_a3_mz if inv_a3_mz > 0 else float("inf"),
+        "alpha_s_MZ": alpha_s_mz,
         "note": (
             "Bare GUT coupling without threshold corrections. "
             "Full calculation requires S² cohomology charges for "
             "boundary mode representations (η_i values)."
         ),
+        # 2026-10: the values for the (p, z) passed are formatted in; the
+        # p = 104761 figures are kept as the reference case.  Away from
+        # 104761 the chain returns inf/NaN (p = 101) or drifts further
+        # (α_s = 0.0066 at p = 1000003).  In a log-spaced scan of real
+        # p from 1 to e^40 at z = 6, the smallest worst-of-three miss
+        # against the measured values is 17.8%, near p ≈ 1.6e4.
         "status": (
             "FAILS (2026-10): the ansatz α_GUT = π/(p^{1/3} z) at "
-            "M_GUT = M_Pl/p^{1/4} gives α_s ≈ 0.020, sin²θ_W ≈ 0.274, "
-            "1/α_em(M_Z) ≈ 261 at p = 104761 (measured 0.1179, 0.23122, "
-            "127.95). Legacy ansatz, superseded by bpr.model_scales."
+            f"M_GUT = M_Pl/p^{{1/4}} gives α_s = {alpha_s_mz:.4g}, "
+            f"sin²θ_W = {sin2_tw:.4g}, 1/α_em(M_Z) = {inv_alpha_em:.4g} "
+            f"at p = {p}, z = {z} (measured 0.1179, 0.23122, 127.95); "
+            "at p = 104761 it gives α_s ≈ 0.020, sin²θ_W ≈ 0.274, "
+            "1/α_em(M_Z) ≈ 261. Legacy ansatz, superseded by "
+            "bpr.model_scales."
         ),
     }
 

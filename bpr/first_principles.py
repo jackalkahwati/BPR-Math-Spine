@@ -681,6 +681,10 @@ class SubstrateDerivedTheories:
 
         # ── Gravitational Wave Phenomenology──
         preds["P7.1_vGW_equals_c"] = gw.dispersion
+        # P7.2 (2026-10): STIPULATED prime-periodic ringing, the same claim as
+        # Bridge 12 (bpr.bridges.cosmology_gravity.bh_ringdown_prime_periodic),
+        # withdrawn with it in the 2026-10 review of unmerged branches; kept as
+        # a legacy entry, not a prediction.  See doc/CLOSED_AND_DEPRECATED.md §1c.
         preds["P7.2_GW_memory_fine_structure"] = f"prime harmonics at p={self.params.p}"
         preds["P7.3_stochastic_background"] = "prime-periodic spectral features"
 
@@ -818,9 +822,18 @@ class SubstrateDerivedTheories:
         # ── Prediction 14: Proton lifetime ──
         tau_p = th2.proton_lifetime(p=self.params.p)
         preds["P2.15_proton_lifetime_years"] = tau_p
-        preds["P2.16_proton_stable"] = tau_p > 1e34  # Super-K bound
+        # Super-K 2020 bound tau(p -> e+ pi0) > 2.4e34 yr (90% CL), matching
+        # bpr.model_scales.SUPER_K_TAU_YR (2026-10; earlier: "> 1e34  # Super-K
+        # bound").  tau_p = 1e30 exp(p^(1/3)) yr = 2.97e50 yr at p = 104761, so
+        # the boolean is True under either bound.
+        preds["P2.16_proton_stable"] = tau_p > 2.4e34  # Super-K 2020 bound
 
         # ── Prediction 15: GW memory ringing ──
+        # P7.4 / P7.5 (2026-10): STIPULATED prime-periodic ringing at
+        # 1/(p tau_Pl) = 1.77e38 Hz at p = 104761, the same claim and frequency
+        # as Bridge 12 (bh_ringdown_prime_periodic, f_modulation_Hz), withdrawn
+        # with it in the 2026-10 review of unmerged branches; legacy entries,
+        # not predictions.  See doc/CLOSED_AND_DEPRECATED.md §1c.
         preds["P7.4_gw_memory_ringing"] = "oscillatory corrections at ω_n = 2πn/(pτ_Pl)"
         preds["P7.5_ringing_frequency_Hz"] = 1.0 / (
             self.params.p * 5.391247e-44)
@@ -1045,8 +1058,15 @@ class SubstrateDerivedTheories:
         gup = self.gup()
         li = self.lorentz_invariance()
 
-        preds["P20.1_LIV_xi1"] = md.xi_1  # = 0 (CPT protected)
+        # 2026-10: bpr.quantum_gravity_pheno is legacy and SUPERSEDED; P20.1,
+        # P20.4 and P20.7 are superseded or withdrawn (the 2026-10 review of
+        # unmerged branches; doc/CLOSED_AND_DEPRECATED.md §1c).  Values kept.
+        # P20.1: legacy, SUPERSEDED (2026-10) (earlier comment: "= 0 (CPT protected)").
+        preds["P20.1_LIV_xi1"] = md.xi_1  # = 0; legacy, SUPERSEDED (2026-10)
         preds["P20.2_LIV_xi2"] = md.xi_2
+        # P20.3 (2026-10): grb_time_delay now uses the corrected 3/2 prefactor
+        # (was 1/2), so the value is three times the earlier one:
+        # 9.885e-21 s at p = 104761 (earlier 3.295e-21 s).  Legacy entry.
         preds["P20.3_GRB_delay_1TeV_1Gpc_s"] = md.grb_time_delay(1000.0, 1000.0)
         preds["P20.4_GUP_beta"] = gup.beta
         preds["P20.5_minimum_length_m"] = gup.minimum_length

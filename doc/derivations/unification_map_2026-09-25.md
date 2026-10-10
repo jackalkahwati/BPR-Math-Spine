@@ -766,6 +766,25 @@ they are not mistaken for results.
     Ω_Λ ≈ 1.05×10⁻¹⁰⁴ for every p, like `dark_energy_from_boundary_action`
     above.
   - The EML re-encoding of the α formula is not a result.
+  - Code behaviour changed while applying the review (2026-10). Bridges 11
+    and 12 and `topological_phase_boundary` return
+    `status = "stipulated_deviation"`. The legacy consistency checks
+    `_check_alpha_em` (a self-comparison) and `_check_sin2_theta_w` report
+    NON-DISCRIMINATING instead of PASS while their routes agree exactly.
+    `alpha_em_full_chain` no longer averages the M_Z identity (127.952) with
+    its q² = 0 routes, and it flags
+    its impedance route as defective: as coded that route computes
+    2·Z₀·ε₀·c = 2, so 1/α = 2 for every p. Its route mean and spread are
+    now NaN. `impedance_weinberg_angle` gives a p-independent
+    sin²θ_W = 0.493 (W_c hard-coded). `ProtonDecay` compares with the
+    Super-K bound 2.4×10³⁴ yr, its exp(−p^{1/3}) suppression is marked as
+    stipulated and not implemented, and its α_GUT = 1/40 is marked as
+    hard-coded. In the legacy dispersion code the energy correction is
+    halved and the time-delay prefactor goes from 1/2 to 3/2, so the legacy
+    P20.3 delay at 1 TeV over 1 Gpc is 9.9×10⁻²¹ s rather than 3.3×10⁻²¹ s.
+    Legacy callers that still pass the backward-fit inputs through
+    (`pipelines.py`, `cross_predictions.py`, `first_principles.py`,
+    `experiments/validate_all_theories.py`) are labelled, not restructured.
 
   These sharpen the existing limitations of `fine_structure_constant` and
   `flavor_formulas`. They are listed in

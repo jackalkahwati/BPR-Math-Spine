@@ -178,6 +178,18 @@ def weinberg_angle_three_routes(
              ratios with W_B=1, W_W=2.
     Route 3: From alpha_EM and alpha_2 (substrate + running).
 
+    NOTE (2026-10): route 1 is not a prediction.
+    ``GaugeCouplingRunning.weinberg_angle_at_MZ`` is a backward-fit
+    identity that returns the input sin^2(theta_W) = 0.23122 for every p
+    (see ``GaugeCouplingRunning.boundary_threshold_corrections``), so
+    ``route1_gut_running`` is that input.  Route 3 is not independent of
+    it either: alpha_2(M_Z) is built from the same inputs
+    (alpha_EM(M_Z) / sin^2(theta_W)), so route 3 equals
+    0.23122 x alpha_EM,substrate(M_Z) / alpha_EM,input(M_Z), and is close
+    to 0.23122 only because p is calibrated to alpha.  The spread and mean
+    therefore do not test the Weinberg angle.  Found in the 2026-10 review
+    of unmerged branches.
+
     Returns dict with all three values, spread, and experimental value.
     """
     results: Dict[str, Any] = {
@@ -185,6 +197,8 @@ def weinberg_angle_three_routes(
     }
 
     # Route 1: GUT running
+    # (2026-10: weinberg_angle_at_MZ is a backward-fit identity returning the
+    # input 0.23122 for every p; route1 is that input, not a prediction.)
     route1 = None
     if _HAS_GAUGE:
         try:
@@ -231,6 +245,8 @@ def weinberg_angle_three_routes(
             delta_inv_alpha = 9.084
             alpha_em_MZ = 1.0 / (inv_alpha_0 - delta_inv_alpha)
             # alpha_2 at M_Z from GaugeCouplingRunning
+            # (2026-10: alpha2_MZ is the input alpha_EM(M_Z) / sin^2(theta_W),
+            # so route3 = 0.23122 * alpha_substrate(M_Z) / alpha_input(M_Z).)
             gcr = GaugeCouplingRunning(p=p)
             alpha_2_MZ = gcr.alpha2_MZ
             # sin^2 theta_W = alpha_EM / alpha_2
@@ -537,6 +553,15 @@ def full_cosmological_chain(
 
     Each value is compared to experiment with percent error.
 
+    NOTE (2026-10): not every entry is a prediction.
+    ``sin2_theta_W_predicted`` is ``GaugeCouplingRunning.weinberg_angle_at_MZ``,
+    a backward-fit identity that returns the input 0.23122 for every p;
+    m_tau is the anchor mass of ``ChargedLeptonSpectrum`` (an input); and
+    alpha_EM is a calibration (p is chosen to reproduce it: 1/alpha =
+    137.0386, +19.3 ppm, at p = 104761).  Keys are kept for compatibility;
+    the ``summary`` strings label the two inputs.  Found in the 2026-10
+    review of unmerged branches.
+
     Returns dict with all values and percent errors.
     """
     result: Dict[str, Any] = {
@@ -557,6 +582,11 @@ def full_cosmological_chain(
             result["inv_alpha_error"] = str(e)
 
     # --- sin^2 theta_W ---
+    # (2026-10: not a prediction.  weinberg_angle_at_MZ is a backward-fit
+    # identity returning the input 0.23122 for every p, so
+    # sin2_theta_W_predicted is that input and its 0.0000% error is by
+    # construction.  The key name is kept for compatibility; the summary
+    # string below labels it.)
     if _HAS_GAUGE:
         try:
             gcr = GaugeCouplingRunning(p=p)
@@ -621,8 +651,17 @@ def full_cosmological_chain(
         if key.endswith("_percent_error"):
             errors.append((key.replace("_percent_error", ""), result[key]))
 
+    # 2026-10: entries that are inputs returned unchanged are labelled in
+    # the summary string (values and keys unchanged): sin2_theta_W is the
+    # input 0.23122 returned by the backward-fit identity for every p, and
+    # m_tau is ChargedLeptonSpectrum's anchor mass (experimental input).
+    _input_labels = {
+        "sin2_theta_W": " (input returned by an identity, not a prediction)",
+        "m_tau": " (anchor mass, an input, not a prediction)",
+    }
     result["summary"] = {
-        name: f"{err:.4f}%" for name, err in sorted(errors, key=lambda x: x[1])
+        name: f"{err:.4f}%" + _input_labels.get(name, "")
+        for name, err in sorted(errors, key=lambda x: x[1])
     }
 
     return result

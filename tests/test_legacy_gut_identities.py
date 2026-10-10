@@ -7,7 +7,8 @@ These tests pin labels and arithmetic. They assert no agreement with
 experiment:
 
 - the backward-fit "predictions" are identities, so the consistency check
-  built on them is NON-DISCRIMINATING;
+  built on them is NON-DISCRIMINATING (and falls back to PASS / TENSION /
+  FAIL if its two routes ever diverge, i.e. a wiring regression);
 - the forward threshold factors are PHENOMENOLOGICAL (post hoc), with the
   look-elsewhere counts quoted in the docs;
 - docstring scales, the ProtonDecay coupling and Super-K bound, and the
@@ -20,7 +21,6 @@ import itertools
 import math
 from fractions import Fraction
 
-import numpy as np
 import pytest
 
 from bpr import gauge_unification as gu
@@ -85,6 +85,47 @@ def test_alpha_consistency_check_is_non_discriminating():
         pytest.skip(c.get("reason", "route unavailable"))
     assert c["status"] == NON_DISCRIMINATING
     assert c["route_A"] == c["route_B"]
+
+
+@pytest.mark.parametrize("factor, expected", [(1.02, "TENSION"), (1.30, "FAIL")])
+def test_alpha_check_flags_a_wiring_regression(monkeypatch, factor, expected):
+    # 2026-10: NON-DISCRIMINATING only while the routes agree to < 1e-9 %;
+    # a diverged route B (wiring regression) falls back to PASS/TENSION/FAIL.
+    import bpr.consistency as cons
+    if not (cons._HAS_ALPHA and cons._HAS_CROSS):
+        pytest.skip("alpha_derivation or cross_predictions unavailable")
+    real = cons.full_cosmological_chain
+
+    def shifted(p, z):
+        out = dict(real(p, z))
+        out["inv_alpha_predicted"] = out["inv_alpha_predicted"] * factor
+        return out
+
+    monkeypatch.setattr(cons, "full_cosmological_chain", shifted)
+    c = cons._check_alpha_em(P, 6)
+    assert c["status"] == expected
+    assert c["status"] != cons.NON_DISCRIMINATING
+
+
+@pytest.mark.parametrize("value, expected", [(0.23122 * 1.03, "TENSION"), (0.30, "FAIL")])
+def test_sin2_check_flags_a_wiring_regression(monkeypatch, value, expected):
+    import bpr.consistency as cons
+    if not (cons._HAS_GAUGE and cons._HAS_PARTICLES):
+        pytest.skip("gauge_unification or particles_matter bridge unavailable")
+    real = cons.impedance_weinberg_angle
+
+    def shifted(p):
+        out = dict(real(p=p))
+        out["sin2_theta_W_gauge_running"] = value
+        return out
+
+    monkeypatch.setattr(cons, "impedance_weinberg_angle", shifted)
+    c = cons._check_sin2_theta_w(P, 6)
+    assert c["status"] == expected
+    assert c["status"] != cons.NON_DISCRIMINATING
+    # the unpatched routes stay NON-DISCRIMINATING (identity to the last bit)
+    monkeypatch.setattr(cons, "impedance_weinberg_angle", real)
+    assert cons._check_sin2_theta_w(P, 6)["status"] == cons.NON_DISCRIMINATING
 
 
 def test_v_ew_chain_uses_alpha_s_input():

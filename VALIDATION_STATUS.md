@@ -4,8 +4,8 @@
 > **2026-10 status note.** The architecture decision (`doc/derivations/architecture_decision_2026-09-26.md` §4)
 > supersedes the substrate-based claims in this file. The substrate prime p has no BPR-6D counterpart. The fine-structure
 > formula is an inverse calibration in p. The Lorentz-violation, ξ₂ and GUP values (P20.x) are superseded: BPR-6D is
-> exactly Lorentz invariant. Following the 2026-10 review of unmerged branches, P11.2, P12.7, P12.11, P17.1, P17.8, P20.1,
-> P20.4, P20.7, P22.1 and P22.3 are relabelled; ξ₁ = 0 and the LHAASO row are removed from the lists of BPR-specific evidence;
+> exactly Lorentz invariant. Following the 2026-10 review of unmerged branches, P12.7, P12.11, P17.1, P17.8, P20.1,
+> P20.4, P20.7, P22.1 and P22.2 are relabelled, and P11.2 and P22.3 are annotated (status unchanged); ξ₁ = 0 and the LHAASO row are removed from the lists of BPR-specific evidence;
 > and the δ_CP comparisons below are corrected. See `doc/CLOSED_AND_DEPRECATED.md` §1c. Earlier labels and numbers are kept, relabelled, for history.
 > **v1.0.3 changes (SUPERSEDES the v0.9.9 and v1.0 status claims below for the flavor sector):**
 > Two foundational derivations were audited and found invalid; both are WITHDRAWN.
@@ -236,8 +236,8 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 ### Quantum Gravity Phenomenology (P20.x)
 | # | Prediction | Value | Status | Comparison |
 |---|-----------|-------|--------|------------|
-| P20.1 | ξ₁ = 0 (no linear LIV) | 0 | SUPERSEDED (2026-10; was DERIVED) | LHAASO GRB 221009A 2024 (arXiv:2402.06009): E_QG,1 > 10 M_Pl. BPR-6D is exactly Lorentz invariant and predicts zero LIV, as SM+GR do, so this does not discriminate. |
-| P20.4 | GUP β = 1/p | 9.5×10⁻⁶ | SUPERSEDED (2026-10; was DERIVED) | Bound: β < 4×10⁴. Stipulated on the calibrated p; architecture decision §4 supersedes the GUP. |
+| P20.1 | ξ₁ = 0 (no linear LIV) | 0 | SUPERSEDED (2026-10; was DERIVED) | LHAASO GRB 221009A 2024 (arXiv:2402.06009): E_QG,1 > 10 M_Pl. BPR-6D is exactly Lorentz invariant and predicts zero LIV, as SM+GR do, so this does not discriminate. (earlier: "E_QG,1 > 10 M_Pl ✓ — squeezes LQG/string LIV; BPR predicts exactly zero, not just suppressed") |
+| P20.4 | GUP β = 1/p | 9.5×10⁻⁶ | SUPERSEDED (2026-10; was DERIVED) | Bound: β < 4×10⁴. Stipulated on the calibrated p; architecture decision §4 supersedes the GUP. (earlier: "Bound: β < 4×10⁴ (well within)"; a value about ten orders below a bound is not a confirmation.) |
 | P20.7 | \|δc/c\| | 3.4×10⁻²¹ | SUPERSEDED (2026-10; was DERIVED) | e^{−p^{1/3}} = 3.36×10⁻²¹ at p = 104761 (3.38×10⁻²¹ at p = 104729), stipulated and superseded by architecture decision §4. "Fermi: < 6×10⁻²¹" is Nemiroff et al. 2012 (6.94×10⁻²¹), a dispersion bound, not a bound on an energy-independent offset. LHAASO quadratic LIV bound E_QG,2 > 6×10⁻⁸ M_Pl consistent |
 
 ### Emergent Spacetime & Holography (P13.x)
@@ -289,7 +289,7 @@ This is wrong: the lab parameters describe a Casimir experiment, not the univers
 | # | Prediction | Value | Status | Comparison |
 |---|-----------|-------|--------|------------|
 | P22.1 | 1/α at q²=0 | 137.031 | CALIBRATED (2026-10; was DERIVED) | 2026-10: at p = 104761 the formula gives 137.0386 (+19.3 ppm); 137.031 was the p = 104729 arithmetic. p is chosen as the nearest prime ≡ 1 (mod 4) to the formula's root 104,749.03, so this reproduces its own input and is not a test. CODATA: 137.036 (earlier entry: ✓ 0.06σ at theory precision ~55 ppm) |
-| P22.2 | 1/α at M_Z | 127.95 | DERIVED | PDG: 128.944 ✓ 0.50σ at running-coupling theory precision. (2026-10: 1/α(0) minus a fixed 9.084, so it inherits the calibration of P22.1.) |
+| P22.2 | 1/α at M_Z | 127.95 | CALIBRATED / NOT A PREDICTION (2026-10; was DERIVED) | 2026-10: 1/α(0) minus a fixed 9.084, so it inherits the calibration of P22.1, and the 9.084 is a hard-coded SM vacuum-polarisation input, not computed from BPR. At p = 104761 the code gives 127.955. The comparison value 128.944 is a different α(M_Z) convention from the 127.952 that `bpr/alpha_derivation.py` uses for this quantity, so the 0.50σ is not a valid comparison. PDG: 128.944 (earlier entry: ✓ 0.50σ at running-coupling theory precision) |
 | P22.3 | 1/α_GUT | ~90 | CONJECTURAL | Amaldi 1987: ~40 (scheme-dependent; factor ~2 discrepancy). (2026-10: ~40 is a model-dependent extrapolation, not a measurement. The legacy code holds three inconsistent values: 90.0 from the bare ansatz, 48.6 from the backward fit and 40 hard-coded in `ProtonDecay`.) |
 
 ### Meta-Boundary Dynamics (P23.x)
@@ -445,7 +445,7 @@ against published experimental data. Results as of Feb 2026:
 
 | Result | Count | Notes |
 |--------|-------|-------|
-| Pass (<2σ or bound satisfied) | 29 | Green |
+| Pass (<2σ or bound satisfied) | 29 (27 after 2026-10: P22.1 and P22.2 are calibrations, not tests, and the P22.2 comparison uses a different α(M_Z) convention) | Green |
 | Caution (2–3σ) | 7 (6 after 2026-10: P22.3 removed) | Yellow — within acceptable theory precision |
 | Fail (>3σ, DERIVED only) | 0 | All DERIVED predictions validated |
 

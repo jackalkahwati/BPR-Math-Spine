@@ -172,6 +172,13 @@ def pipeline_impedance_to_lepton_masses(
       5. Feeding into ChargedLeptonSpectrum
       6. Evaluating Koide parameter
 
+    NOTE (2026-10): the returned ``alpha_EM`` is
+    ``GaugeCouplingRunning.alpha_em_prediction``, a backward-fit identity
+    that returns the M_Z input α_EM(M_Z) = 1/127.952 for every p.  It is
+    an input passed to ChargedLeptonSpectrum, not a BPR prediction (see
+    ``GaugeCouplingRunning.boundary_threshold_corrections``).  Found in
+    the 2026-10 review of unmerged branches.
+
     Parameters
     ----------
     p : int
@@ -216,6 +223,9 @@ def pipeline_impedance_to_lepton_masses(
     v_EW = electroweak_scale_GeV(p, z)
 
     # Step 5: Derive alpha_EM from sin2_theta_W and GUT running
+    # (2026-10: not derived.  alpha_em_prediction is a backward-fit identity
+    # that returns the M_Z input 1/127.952 for every p; it is an input here,
+    # not a prediction.  See GaugeCouplingRunning.boundary_threshold_corrections.)
     gcr = GaugeCouplingRunning(p=p)
     alpha_EM = gcr.alpha_em_prediction
 
@@ -1132,6 +1142,8 @@ def pipeline_e8_to_particle_table(
       1. verify_e8_properties -> confirm 240 roots, dim=248
       2. e8_to_sm_decomposition -> particle content
       3. GaugeCouplingRunning -> running couplings at M_Z
+         (2026-10: these are the M_Z inputs returned by a backward-fit
+         identity for every p, not predictions)
       4. electroweak_scale_GeV -> v_EW
       5. ChargedLeptonSpectrum -> m_e, m_mu, m_tau
       6. NeutrinoMassSpectrum -> m_nu (if available)
@@ -1167,6 +1179,10 @@ def pipeline_e8_to_particle_table(
     sm_content = e8_to_sm_decomposition()
 
     # Step 3: Gauge coupling running at M_Z
+    # (2026-10: alpha_em_prediction and alpha_s_prediction are backward-fit
+    # identities: they return the M_Z inputs 1/127.952 and 0.1179 for every
+    # p.  couplings_at_MZ therefore holds inputs, not BPR predictions.  See
+    # GaugeCouplingRunning.boundary_threshold_corrections.)
     gcr = GaugeCouplingRunning(p=p)
     alpha_em = gcr.alpha_em_prediction
     couplings = {
@@ -1174,6 +1190,9 @@ def pipeline_e8_to_particle_table(
         "alpha_em_inv": float(1.0 / alpha_em) if alpha_em > 0 else float("nan"),
     }
     # Attempt to extract additional coupling info
+    # (2026-10: alpha_s is the input 0.1179 for every p; identity, not a prediction.
+    # GaugeCouplingRunning has no sin2_theta_W_prediction attribute, so the
+    # sin2_theta_W entry below is None.)
     try:
         couplings["alpha_s"] = float(gcr.alpha_s_prediction)
     except (AttributeError, Exception):
@@ -1269,6 +1288,9 @@ def pipeline_boundary_action_to_observations(
     Steps:
       1. BoundaryAction -> sigma_eff(omega)
       2. sigma_eff -> alpha_EM (from pole structure)
+         (2026-10: as coded, alpha_EM is GaugeCouplingRunning.alpha_em_prediction,
+         a backward-fit identity returning the M_Z input 1/127.952 for every p;
+         an input, not a prediction, and not taken from sigma_eff)
       3. boundary_rg_flow -> coupling running
       4. Sectoral limits -> EM (Maxwell), QM (Schroedinger), GR (Einstein)
       5. sigma_eff integral -> vacuum energy -> Omega_Lambda
@@ -1307,6 +1329,10 @@ def pipeline_boundary_action_to_observations(
     sigma_ref = float(sigma_effective(omega_ref, Z_s_ref))
 
     # Step 2: Derive alpha_EM from gauge coupling running
+    # (2026-10: not derived.  alpha_em_prediction is a backward-fit identity
+    # that returns the M_Z input 1/127.952 for every p, so the returned
+    # alpha_EM / alpha_EM_inv are that input, not a prediction.  See
+    # GaugeCouplingRunning.boundary_threshold_corrections.)
     gcr = GaugeCouplingRunning(p=p)
     alpha_em = gcr.alpha_em_prediction
     alpha_em_inv = 1.0 / alpha_em if alpha_em > 0 else float("nan")
@@ -1323,6 +1349,10 @@ def pipeline_boundary_action_to_observations(
     alpha_2_MZ = alpha_em / (float(gcr.sin2_theta_W_prediction)
                              if hasattr(gcr, "sin2_theta_W_prediction") else 0.231)
 
+    # (2026-10: alpha_s_prediction returns the input 0.1179 for every p, the
+    # same number as the fallback below; an input, not a prediction.  The
+    # sin2_theta_W_prediction attribute does not exist, so alpha_1 and
+    # alpha_2 above use the hard-coded 0.769 / 0.231.)
     try:
         alpha_s = float(gcr.alpha_s_prediction)
     except (AttributeError, Exception):

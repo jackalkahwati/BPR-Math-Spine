@@ -496,9 +496,16 @@ def validate_fine_structure_constant() -> list[Result]:
         alpha_gut    = alpha_gut_from_lattice()
         inv_alpha_gut = 1.0 / alpha_gut
     except Exception:
-        inv_alpha_0   = 137.031
-        inv_alpha_MZ  = 127.947
-        inv_alpha_gut = 40.0
+        # Fallback values recomputed at the default p = 104761, z = 6
+        # (2026-10; found in the 2026-10 review of unmerged branches).  Earlier:
+        # 137.031 / 127.947 / 40.0 -- the first two are the p = 104729
+        # arithmetic and 40.0 is not what alpha_gut_from_lattice returns.
+        # 1/alpha(0) is a calibration (p is chosen to reproduce alpha,
+        # +19.3 ppm), not a prediction; 1/alpha_GUT = pi^-1 p^(1/3) z is the
+        # legacy lattice ansatz.
+        inv_alpha_0   = 137.038641   # inverse_alpha_from_substrate(104761, 6)
+        inv_alpha_MZ  = 127.954641   # inverse_alpha_at_MZ(104761, 6)
+        inv_alpha_gut = 90.0329      # 1 / alpha_gut_from_lattice(104761, 6)
 
     for pid, predicted in [
         ("P22.1_inv_alpha_0",   inv_alpha_0),

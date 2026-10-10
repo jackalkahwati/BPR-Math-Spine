@@ -5,6 +5,8 @@ claude/audit-bpr-parameters-6fSrQ); recorded in doc/CLOSED_AND_DEPRECATED.md.
 These tests pin the labels and the corrected arithmetic, not any claim of agreement with experiment:
 - Bridges 11 and 12 (BH quasi-normal-mode shift, prime-periodic ringdown) are stipulated deviations, with no
   detector claim and no "horizon winding entropy" justification;
+- topological_phase_boundary reuses the same ln(p)/(4 pi p) template and carries none of that wording either
+  (its status and coefficient are pinned in tests/test_legacy_gut_identities.py);
 - the CKM phase delta_CP = pi/2 - 1/sqrt(z+1) is an ANSATZ, and its 1.196 fallback is an outdated input;
 - bpr.quantum_gravity_pheno is legacy and superseded, with the factor-2 (energy shift) and 3/2 (time delay)
   corrections;
@@ -20,6 +22,7 @@ from pathlib import Path
 import pytest
 
 from bpr.bridges import cosmology_gravity as cg
+from bpr.bridges import particles_matter as pm
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 P = 104761
@@ -42,6 +45,9 @@ def _string_values(obj):
         yield obj
     elif isinstance(obj, dict):
         for value in obj.values():
+            yield from _string_values(value)
+    elif isinstance(obj, (list, tuple)):
+        for value in obj:
             yield from _string_values(value)
 
 
@@ -93,9 +99,19 @@ def test_bridge12_status_is_stipulated():
         _assert_no_forbidden(text, "bh_ringdown_prime_periodic output")
 
 
-@pytest.mark.parametrize("func", [cg.bh_quasinormal_modes, cg.bh_ringdown_prime_periodic])
+@pytest.mark.parametrize(
+    "func", [cg.bh_quasinormal_modes, cg.bh_ringdown_prime_periodic, pm.topological_phase_boundary])
 def test_qnm_bridges_source_has_no_detector_or_horizon_entropy_claims(func):
     _assert_no_forbidden(inspect.getsource(func), f"source of {func.__name__}")
+
+
+@pytest.mark.parametrize("p", [101, P, 1000003])
+def test_topological_phase_boundary_output_has_no_detector_or_horizon_entropy_claims(p):
+    # Same ln(p)/(4 pi p) template as Bridge 11 (2026-10); status pinned in test_legacy_gut_identities.py.
+    r = pm.topological_phase_boundary(p=p)
+    assert r["status"] == "stipulated_deviation"
+    for text in _string_values(r):
+        _assert_no_forbidden(text, f"topological_phase_boundary(p={p}) output")
 
 
 # ---------------------------------------------------------------------------
@@ -145,8 +161,11 @@ def _toy_dispersion_coefficients(xi=1e-3, M=1.0, k=0.1):
     a in E = k (1 + a xi (k/M)^2) and b in v = dE/dk = 1 + b xi (k/M)^2."""
 
     def energy(kk):
-        # small root of xi E^4 / M^2 - E^2 + kk^2 = 0
-        x = (1 - math.sqrt(1 - 4 * xi * kk ** 2 / M ** 2)) / (2 * xi / M ** 2)
+        # small root x = E^2 of xi x^2 / M^2 - x + kk^2 = 0, in the numerically stable form
+        # 2 kk^2 / (1 + sqrt(1 - 4 xi kk^2 / M^2)) (2026-10; the earlier form
+        # (1 - sqrt(1 - 4 xi kk^2 / M^2)) / (2 xi / M^2) cancels catastrophically and gave
+        # b = 1.50111, using 74% of the rel=1e-3 margin; the stable form gives b = 1.50004).
+        x = 2 * kk ** 2 / (1 + math.sqrt(1 - 4 * xi * kk ** 2 / M ** 2))
         return math.sqrt(x)
 
     h = 1e-5

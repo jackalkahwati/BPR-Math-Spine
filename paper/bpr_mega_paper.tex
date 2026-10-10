@@ -65,8 +65,11 @@ sixty falsifiable physical predictions from a discrete $\mathbb{Z}_p$ lattice
 Hamiltonian on a two-sphere boundary, using only a prime modulus
 $p = 104{,}761$ and coordination number $z = 6$ as structural inputs.
 Principal results include:
-(i)~the fine-structure constant $1/\alphaEM = 137.032$ ($0.003\%$ error);
-(ii)~the Weinberg angle $\sinW = 0.23122$ (exact match to \textsc{pdg});
+(i)~the fine-structure constant $1/\alphaEM = 137.032$ ($0.003\%$ error;
+2026-10: at $p = 104{,}761$ the formula gives $137.0386$, $+19.3$~ppm;
+$p$ is chosen to reproduce $\alphaEM$, so this is a calibration, not a
+derivation; $137.032$ was the $p = 104{,}729$ value);
+(ii)~the Weinberg angle $\sinW = 0.23122$ (exact match to \textsc{pdg}) (2026-10: an input identity, not a prediction; the backward fit returns the input $0.23122$ for every $p$);
 (iii)~all three PMNS neutrino mixing angles derived without free parameters,
 including $\theta_{13}$ from boundary-lattice Gaussian localization
 ($\sin\theta_{13} = e^{-1}/\!\sqrt{6} = 0.1502$, $+0.65\sigma$ from Daya Bay)
@@ -154,6 +157,10 @@ Two structural inputs follow from this geometry:
 \begin{itemize}
 \item $p = 104{,}761$ is the nearest valid prime ($p\equiv 1\pmod{4}$) to $p_\text{exact}=104{,}749$, derived from the boundary formula
   for $1/\alphaEM$ agrees with \textsc{codata} to within $0.003\%$.
+  (2026-10: at $p = 104{,}761$ the formula gives $137.0386$,
+  $+19.3$~ppm; because $p$ is chosen to reproduce $\alphaEM$, this is a
+  calibration, not a derivation, and the $0.003\%$ belongs to
+  $p = 104{,}729$, which gives $137.0316$.)
   Primality ensures the $\Zp$ group is a field, preventing accidental
   resonances between winding sectors.
 \item $z = 6$ is the coordination number of the $\Stwo$ octahedral triangulation
@@ -292,6 +299,15 @@ The four contributions are: (i)~$\Zp$ phase-space screening
 \frac{1}{\alphaEM}\bigg|_{\bpr} = 137.032, \qquad
 \frac{1}{\alphaEM}\bigg|_{\mathrm{exp}} = 137.036 \quad (0.003\%).
 \end{equation}
+\textit{Relabelled 2026-10.}  At $p = 104{,}761$ the formula gives
+$1/\alphaEM = 137.0386$, $+19.3$~ppm from \textsc{codata}~2018, with
+$[\ln p]^2 = 133.62$.  $p$ is chosen to reproduce $\alphaEM$ (it is the
+nearest prime $\equiv 1 \pmod 4$ to the formula's root $104{,}749.03$),
+so this is a calibration, not a derivation.  The $137.032$, its
+$0.003\%$ and $[\ln p]^2 = 133.61$ above are $p = 104{,}729$
+arithmetic (that $p$ gives $137.0316$, $-32.3$~ppm).  The numbers are
+reproduced by \texttt{scripts/p\_calibration\_check.py}; see
+\texttt{doc/CLOSED\_AND\_DEPRECATED.md}.
 Running to $\MZ$ gives $1/\alphaEM(\MZ) = 127.95$ (experiment: $127.952$,
 $0.002\%$).
 
@@ -302,6 +318,12 @@ Three independent derivation routes converge to the same result:
 \sinW\big|_{\bpr} = 0.23122, \qquad
 \sinW\big|_{\mathrm{exp}} = 0.23122 \quad (\text{exact}).
 \end{equation}
+
+\textit{Relabelled 2026-10.}  This agreement is not a test.  The
+gauge-running and coupling-ratio routes return the experimental input
+$\sinW(\MZ) = 0.23122$ for every $p$, because the backward fit is an
+identity, and the impedance route as coded gives $0.493$ independent of
+$p$.  See \texttt{doc/CLOSED\_AND\_DEPRECATED.md}, section~1c.
 Route~1 uses GUT running with boundary threshold corrections at
 $\MGUT \sim \MPl/p^{1/4} \approx 2 \times 10^{16}$~GeV.
 Route~2 uses the impedance ratio $\Zimp(1)/\Zimp(2)$.
@@ -819,7 +841,11 @@ The framework implements 10 cross-route consistency checks
 \begin{enumerate}
 \item $1/\alphaEM$: substrate formula vs.\ cosmological chain --- $0.003\%$
   (\textsc{pass})
+  \textit{(2026-10: non-discriminating.  The cosmological chain obtains
+  $1/\alphaEM$ by calling the substrate formula, so the two routes agree
+  identically for every $p$; see \texttt{bpr/consistency.py}.)}
 \item $\sinW$: GUT running vs.\ impedance bridge --- $0.0\%$ (\textsc{pass})
+  \textit{(2026-10: non-discriminating; both routes return the input $0.23122$ for every $p$.)}
 \item $\vEW$: gauge hierarchy vs.\ SM anchor --- $1.0\%$ (\textsc{tension})
 \item $\sum m_\nu < 0.12$~eV: seesaw bound satisfied (\textsc{pass})
 \item Koide $Q$: pipeline value within $0.2\%$ of $2/3$ (\textsc{pass})
@@ -848,8 +874,8 @@ unless marked as an anchor.  Updated April 2026.}
 \# & Quantity & BPR & Experiment & Error & Module & Status \\
 \colrule
 \multicolumn{7}{c}{\textit{Electroweak}} \\
-1  & $1/\alphaEM$ & 137.032 & 137.036 & 0.003\% & \texttt{alpha\_derivation} & Derived \\
-2  & $\sinW$ & 0.23122 & 0.23122 & 0.0\% & \texttt{gauge\_unification} & Derived \\
+1  & $1/\alphaEM$ & 137.032 & 137.036 & 0.003\% & \texttt{alpha\_derivation} & Calibrated (2026-10)$^\S$ \\
+2  & $\sinW$ & 0.23122 & 0.23122 & 0.0\% & \texttt{gauge\_unification} & Input identity (2026-10; earlier: Derived) \\
 3  & $\vEW$ (GeV) & 243.5 & 246.0 & 1.0\% & \texttt{gauge\_unification} & Derived \\
 4  & $m_H$ (GeV) & 125.2 & $125.25\pm0.17$ & 0.04\% & \texttt{gauge\_unification} & Derived \\
 5  & $m_t$ (GeV) & 174.1 & $173.1$--$173.7^*$ & $<1\sigma$ & \texttt{qcd\_flavor} & Derived \\
@@ -905,7 +931,11 @@ $\pi/2 - 1/\!\sqrt{z+1}$ is a phenomenological ansatz with no
 derivation.  The reference $68.5\pm5.7^\circ$ is an older global-fit
 value (1.196~rad) with an error several times the current one; against
 the CKM phase $\delta = 1.144$~rad used in \texttt{bpr/fermion\_fit.py}
-the ansatz is about $1.6$--$1.8\sigma$ high, and $z = 5$ fits better.}
+the ansatz is about $1.6$--$1.8\sigma$ high, and $z = 5$ fits better.}\par
+\textit{$^\S$Relabelled 2026-10 from ``Derived'': at $p = 104{,}761$
+the formula gives $1/\alphaEM = 137.0386$, $+19.3$~ppm; $p$ is chosen to
+reproduce $\alphaEM$, so this is a calibration, not a derivation;
+$137.032$ (and its $0.003\%$) was the $p = 104{,}729$ value.}
 \end{table*}
 
 

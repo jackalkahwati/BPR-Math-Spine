@@ -28,7 +28,9 @@ class TestGaugeCoupling:
     def test_gut_scale_order(self):
         from bpr.gauge_unification import GaugeCouplingRunning
         gc = GaugeCouplingRunning(p=104729)
-        # Should be ~10¹⁶ GeV
+        # M_GUT = M_Pl / p^(1/4) = 6.79e17 GeV here (6.787e17 at p = 104729,
+        # 6.786e17 at p = 104761), not ~10^16 GeV (2026-10; earlier comment:
+        # "Should be ~10¹⁶ GeV").  The loose band below still holds.
         assert 1e14 < gc.unification_scale_GeV < 1e18
 
     def test_running_monotonic(self):
@@ -209,10 +211,14 @@ class TestNuclearRadius:
 # =====================================================================
 
 class TestModifiedDispersion:
+    # Legacy arithmetic regressions, SUPERSEDED (2026-10): bpr.quantum_gravity_pheno
+    # is legacy (the 2026-10 review of unmerged branches; doc/CLOSED_AND_DEPRECATED.md §1c).
     def test_xi1_zero(self):
         from bpr.quantum_gravity_pheno import ModifiedDispersion
         md = ModifiedDispersion()
-        assert md.xi_1 == 0.0  # CPT protected
+        # Legacy, SUPERSEDED (2026-10): xi_1 = 0 is hard-coded (returns 0.0)
+        # (earlier comment: "CPT protected").
+        assert md.xi_1 == 0.0
 
     def test_xi2_small(self):
         from bpr.quantum_gravity_pheno import ModifiedDispersion
@@ -251,6 +257,10 @@ class TestGUP:
 
 
 class TestLorentzInvariance:
+    # Legacy arithmetic regressions, SUPERSEDED (2026-10): P20.7 (delta c / c =
+    # exp(-p^(1/3))) is stipulated and withdrawn as a prediction (the 2026-10
+    # review of unmerged branches; doc/CLOSED_AND_DEPRECATED.md §1c).  These
+    # tests pin the legacy arithmetic only.
     def test_within_bounds(self):
         from bpr.quantum_gravity_pheno import LorentzInvariance
         li = LorentzInvariance(p=104729)
@@ -259,7 +269,9 @@ class TestLorentzInvariance:
     def test_within_experimental_bounds(self):
         from bpr.quantum_gravity_pheno import LorentzInvariance
         li = LorentzInvariance(p=104729)
-        # BPR prediction is just below Fermi-LAT bound: testable!
+        # Legacy arithmetic regression, SUPERSEDED (2026-10); not a testable
+        # prediction.  (earlier comment: "BPR prediction is just below
+        # Fermi-LAT bound: testable!")
         assert li.orders_below_bound > 0
 
 

@@ -89,6 +89,13 @@ DEFAULT_AUTONOMY_POLICY = AutonomyPolicy(
         "P4.9_Tc_MgB2_K",
         "P5.8_delta_m21_sq_eV2",
         "P18.2_m_muon_MeV",
+        # P22.1 is a calibration, not a prediction (2026-10): p = 104761 is
+        # chosen to reproduce alpha, and the formula then gives 1/alpha =
+        # 137.0386 (+19.3 ppm), not the 137.031 quoted earlier (the p = 104729
+        # arithmetic).  It stays in the list because the research loop and
+        # data/research/evaluator_boundary.json pin this tuple; scans of it
+        # monitor the calibration, they do not test BPR.  Found in the
+        # 2026-10 review of unmerged branches.
         "P22.1_inv_alpha_0",
     ),
     query_hints={

@@ -50,8 +50,12 @@ that derives over sixty falsifiable physical predictions from two
 substrate parameters---a prime modulus $p = 104{,}761$ and a
 coordination number $z = 6$---with zero additional free parameters.
 The framework yields the fine-structure constant
-$1/\alphaEM = 137.032$ (experiment: $137.036$, $0.003\%$ error),
-the Weinberg angle $\sinW = 0.23122$ (exact match), three charged
+$1/\alphaEM = 137.032$ (experiment: $137.036$, $0.003\%$ error)
+(2026-10: at $p = 104{,}761$ the formula gives $137.0386$,
+$+19.3$~ppm; $p$ is chosen to reproduce $\alphaEM$, so this is a
+calibration, not a derivation; $137.032$ was the $p = 104{,}729$
+value),
+the Weinberg angle $\sinW = 0.23122$ (exact match) (2026-10: an input identity, not a prediction; the backward fit returns the input $0.23122$ for every $p$), three charged
 lepton masses anchored to $m_\tau$ alone, three neutrino mass
 eigenvalues ($\sum m_\nu = 0.060$~eV, below the Planck bound), the
 baryon asymmetry $\eta_B = 6.83 \times 10^{-10}$ ($11.6\%$ error),
@@ -188,6 +192,11 @@ $1/\alphaEM$ (Eq.~\eqref{eq:alpha} below) into agreement with the
 CODATA value $137.036$ to within $0.003\%$.  This is a selection
 criterion, not a free fit: it uses a single equation with no adjustable
 coefficients to identify $p$ from the electromagnetic coupling alone.
+(2026-10: at $p = 104{,}761$ the formula gives $137.0386$, $+19.3$~ppm;
+$p$ is chosen to reproduce $\alphaEM$, so this is a calibration, not a
+derivation, and the agreement is not a test; the $0.003\%$ belongs to
+$p = 104{,}729$, which gives $137.0316$.  See the note after
+Eq.~\eqref{eq:alpha_value}.)
 
 The coordination number $z = 6$ has a different character: it is
 determined by geometry, not by matching to data.  A two-sphere
@@ -558,6 +567,17 @@ a deviation of $0.003\%$ (36~ppm) with zero free parameters.
 Higher-order corrections are $O(p^{-1/3}) \approx 0.02$, consistent
 with the observed residual.
 
+\textit{Relabelled 2026-10.}  At $p = 104{,}761$ the formula gives
+$1/\alphaEM = 137.0386$, $+19.3$~ppm from \textsc{codata}~2018, with
+$[\ln p]^2 = 133.62$.  $p$ is chosen to reproduce $\alphaEM$ (it is the
+nearest prime $\equiv 1 \pmod 4$ to the formula's root $104{,}749.03$),
+so this is a calibration, not a derivation, and ``zero free
+parameters'' does not apply to it.  The $137.032$, the $0.003\%$ and
+$36$~ppm, and $[\ln p]^2 = 133.61$ above are $p = 104{,}729$ arithmetic
+(that $p$ gives $137.0316$, $-32.3$~ppm).  The numbers are reproduced
+by \texttt{scripts/p\_calibration\_check.py}; see
+\texttt{doc/CLOSED\_AND\_DEPRECATED.md}.
+
 The physical meaning of each term deserves elaboration.
 The dominant term $[\ln p]^2 = (\ln 104{,}761)^2 \approx 133.6$
 is the squared logarithm of the prime modulus.  It arises from the
@@ -625,6 +645,12 @@ All three routes agree:
 \sinW\big|_{\mathrm{exp}} = 0.23122.
 \label{eq:weinberg_value}
 \end{equation}
+
+\textit{Relabelled 2026-10.}  This agreement is not a test.  The
+gauge-running and coupling-ratio routes return the experimental input
+$\sinW(\MZ) = 0.23122$ for every $p$, because the backward fit is an
+identity, and the impedance route as coded gives $0.493$ independent of
+$p$.  See \texttt{doc/CLOSED\_AND\_DEPRECATED.md}, section~1c.
 
 The agreement of three independent derivation routes---GUT running,
 impedance ratio, and coupling ratio---provides an important
@@ -1069,9 +1095,14 @@ module chains must agree.  We implement 10 cross-route checks in
 \begin{enumerate}
 \item \textbf{$1/\alphaEM$}: Substrate formula~\eqref{eq:alpha}
   vs.\ cosmological chain---$0.003\%$ agreement (\textsc{pass}).
+  \textit{(2026-10: non-discriminating.  The cosmological chain
+  obtains $1/\alphaEM$ by calling the substrate formula, so the two
+  routes agree identically for every $p$; see
+  \texttt{bpr/consistency.py}.)}
 
 \item \textbf{$\sinW$}: GUT running~\eqref{eq:weinberg_running}
   vs.\ impedance bridge---$0.0\%$ (\textsc{pass}).
+  \textit{(2026-10: non-discriminating; both routes return the input $0.23122$ for every $p$.)}
 
 \item \textbf{$\vEW$}: Gauge hierarchy~\eqref{eq:vew} vs.\ SM
   anchor---$1.2\%$ (\textsc{tension}).
@@ -1215,9 +1246,9 @@ Errors are computed relative to the central experimental value.}
 \colrule
 \multicolumn{7}{c}{\textit{Particle Physics}} \\
 1  & $1/\alphaEM$ & 137.032 & 137.036 & 0.003\% &
-   \texttt{alpha\_derivation} & Verified \\
+   \texttt{alpha\_derivation} & Calibrated (2026-10)$^\S$ \\
 2  & $\sinW$ & 0.23122 & 0.23122 & 0.0\% &
-   \texttt{gauge\_unification} & Verified \\
+   \texttt{gauge\_unification} & Input identity (2026-10; earlier: Verified) \\
 3  & $\vEW$ (GeV) & 243.5 & 246.0 & 1.0\% &
    \texttt{gauge\_unification} & Verified \\
 4  & $m_e$ (MeV) & 0.5104 & 0.5110 & 0.11\% &
@@ -1284,6 +1315,10 @@ Errors are computed relative to the central experimental value.}
    \texttt{bioelectric} & Verified \\
 \end{tabular}
 \end{ruledtabular}
+\textit{$^\S$Relabelled 2026-10 from ``Verified'': at $p = 104{,}761$
+the formula gives $1/\alphaEM = 137.0386$, $+19.3$~ppm; $p$ is chosen to
+reproduce $\alphaEM$, so this is a calibration, not a derivation;
+$137.032$ (and its $0.003\%$) was the $p = 104{,}729$ value.}
 \end{table*}
 
 
@@ -1340,7 +1375,8 @@ by 10 cross-route checks with no failures; (iv)~complete
 computational reproducibility via an open-source codebase.
 
 The most striking results are the fine-structure constant at
-$0.003\%$ error, the Weinberg angle at exact agreement, and the
+$0.003\%$ error (2026-10: a calibration, not a result; see the note after
+Eq.~\eqref{eq:alpha_value}), the Weinberg angle at exact agreement, and the
 neutrino mass sum that simultaneously satisfies the cosmological
 bound and predicts normal hierarchy.  The hydrogen 1S--2S shift of
 66.8~Hz is falsifiable with current technology, making it the most

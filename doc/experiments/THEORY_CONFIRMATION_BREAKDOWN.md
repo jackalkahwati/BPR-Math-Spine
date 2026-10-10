@@ -1,7 +1,7 @@
 # BPR Theory Confirmation Breakdown
 
 > **Purpose:** Map each of the 21 BPR theories to experimentally confirmed predictions.
-> **Total:** 115 CONFIRM verdicts across 129 tests as compiled in Feb 2026; in 2026-10 the 3D-Ising tests (29 and 96) were withdrawn and test 59 (Kibble–Zurek) was reclassified as non-discriminating, leaving at most 112. The 2026-10 review of unmerged branches then withdrew the Lorentz-invariance-violation and GUP rows (111, 112, 113, 123 and 124); a recount of the rows in papers.md leaves at most 109 labelled CONFIRM (see its totals note). These verdicts are historical; the dated audits (`VALIDATION_STATUS.md`, `doc/CLOSED_AND_DEPRECATED.md`) take precedence.
+> **Total:** 115 CONFIRM verdicts across 129 tests as compiled in Feb 2026; in 2026-10 the 3D-Ising tests (29 and 96) were withdrawn and test 59 (Kibble–Zurek) was reclassified as non-discriminating, leaving at most 112 (that figure was computed from the 115 above). A 2026-10 recount of the rows in papers.md finds that they hold 117 CONFIRM and 12 INCONCLUSIVE labels as compiled (the 115 CONFIRM and 11 INCONCLUSIVE in the papers.md totals line do not add up to 129), so those three changes leave at most 114. The 2026-10 review of unmerged branches then withdrew the Lorentz-invariance-violation and GUP rows (111, 112, 113, 123 and 124), leaving at most 117 − 3 − 5 = 109 rows labelled CONFIRM (see the totals note in papers.md, which also explains why the α rows and the GUT proton-lifetime rows are not independent confirmations). These verdicts are historical; the dated audits (`VALIDATION_STATUS.md`, `doc/CLOSED_AND_DEPRECATED.md`) take precedence.
 
 ---
 
@@ -376,7 +376,7 @@ Tests 51–59 added papers for Theories I, III, VI, VIII, IX, X, XV, XXI, and Ki
 | Theory | CONFIRM count |
 |--------|---------------|
 | II (Impedance) | 5 |
-| IV (Phase Transitions) | 4 |
+| IV (Phase Transitions) | 3 (was 4; 3D Ising withdrawn 2026-10) |
 | V (Neutrinos) | 9 |
 | VII (GW) | 2 |
 | XI (Cosmology) | 6 |
@@ -389,9 +389,11 @@ Tests 51–59 added papers for Theories I, III, VI, VIII, IX, X, XV, XXI, and Ki
 | XIX (Nuclear) | 7 |
 | XX (QG Pheno) | 0 (3 withdrawn 2026-10) |
 | α derivation | 1 |
-| **Total** | **~68 unique** |
+| **Total** | **~65** (2026-10; earlier: **~68 unique**) |
 
 *Note: 106 CONFIRM verdicts include split/duplicate tests (e.g., each quark mass as separate test). The ~68 unique theory-level confirmations map to the 21 theories above.*
+
+*2026-10: as compiled, the column summed to 69, not ~68. Withdrawing the 3D Ising row (IV, 4 → 3) and the three Theory XX rows (3 → 0) brings the sum to 65. The "106 CONFIRM verdicts" in the note above matches neither the 115 in the header nor the 117 found by recounting papers.md; see the header. These counts are historical labels, not independent confirmations.*
 
 ---
 

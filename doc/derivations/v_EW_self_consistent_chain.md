@@ -1,10 +1,41 @@
 # v_EW Self-Consistent Derivation Chain
 
+> **WITHDRAWN (2026-10). Read this first.** The chain below is not a
+> closure, and "v_EW is derived from (p, z) without a separate Λ_QCD
+> input" is withdrawn. The body is kept as a historical record.
+>
+> - Step A is an identity, not a prediction. The backward fit in
+>   `GaugeCouplingRunning.boundary_threshold_corrections` chooses the
+>   threshold corrections so that the couplings meet, and running back
+>   down returns the M_Z inputs. `alpha_s_prediction` is therefore the
+>   input α_s(M_Z) = 0.1179 for every p (the same value at p = 101,
+>   104,761 and 1,000,003). The "0%" in the numerical summary holds by
+>   construction.
+> - Step B lands on the PDG Λ_QCD only through an empirical factor.
+>   `lambda_qcd_with_thresholds` computes k_2loop ≈ 1.48 but multiplies by
+>   k_3loop = 1.57, an empirical factor (its code comment cites lattice-QCD
+>   comparisons), not a calculation. With it, α_s = 0.1179 gives
+>   Λ_QCD^(3) = 330.5 MeV. Without it the same code gives 210.5 MeV, and
+>   step C would give v_EW = 154.4 GeV (−37%) instead of 242.4 GeV.
+> - So the chain trades the Λ_QCD input for the α_s(M_Z) input (plus the
+>   empirical k_3loop). It does not remove an experimental input, and the
+>   "Status change" table at the end (Λ_QCD "Removed — derived from
+>   α_s^BPR", "Verified: 1.5% cumulative error") does not hold. All of the
+>   p dependence enters through step C, the boundary formula, which is
+>   itself motivated rather than derived (item 2 under "What this does NOT
+>   claim").
+>
+> Found in the 2026-10 review of unmerged branches. See
+> `doc/CLOSED_AND_DEPRECATED.md` §1c, `doc/LIMITATIONS_AND_FALSIFICATION.md`
+> (v_EW note in §1) and the 2026-10 status in
+> `bpr/gauge_unification.py::electroweak_scale_self_consistent`.
+
 > **Status:** April 2026 — closes Task #8 of the gap-closure pass.
 > v_EW is now derived from (p, z) via a chain that does NOT take Λ_QCD
 > as a separate experimental input; instead Λ_QCD is computed from α_s
 > via 1-loop + 2-loop RGE with flavor thresholds, and α_s from BPR's
 > backward-fit gauge unification. The chain closes at 1.6% error on v_EW.
+> (2026-10: the code gives 1.55% at p = 104,761 for this chain; see the banner above: it is not a closure.)
 
 ## The gap
 
@@ -99,7 +130,7 @@ v_EW boundary formula (1) which is a leading-order result.
 
 | Prediction | Previous | After this document |
 |---|---|---|
-| v_EW given Λ_QCD | DERIVED (1.2% off) | Same — unchanged |
+| v_EW given Λ_QCD | DERIVED (1.2% off) (2026-10: 243.52 GeV at p = 104,761, 1.10% off 246.22 GeV; uses the PDG Λ_QCD input) | Same — unchanged |
 | v_EW given α_s(M_Z) only | Implicit | **DERIVED (1.5% off via chain)** |
 | Λ_QCD as "external anchor" | Listed in LIMITATIONS | **Removed — derived from α_s^BPR** |
 | Self-consistency of the chain | Not demonstrated | **Verified: 1.5% cumulative error** |

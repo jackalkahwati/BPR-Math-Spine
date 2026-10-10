@@ -1814,6 +1814,14 @@ def topological_phase_boundary(
     ``status = "stipulated_deviation"``.  Found in the 2026-10 review of
     unmerged branches; see doc/CLOSED_AND_DEPRECATED.md §1c.
 
+    Metrology note (2026-10): the §1c row for this function also carries
+    the review's recalled, not re-verified, remark that a universal shift
+    of this size would conflict with quantum-Hall resistance metrology at
+    about the 1e-8 level.  That figure was not checked in the repository
+    (absolute R_K determinations were not fetched, and plateau comparisons
+    between materials would not see a universal shift), so the sentence
+    above still stands; see §1c for the recalled remark and its caveats.
+
     Additionally, BPR predicts that the FQHE filling fractions are
     exactly the Farey mediants of adjacent integer QHE plateaus:
 

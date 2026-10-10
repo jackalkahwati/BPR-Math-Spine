@@ -16,7 +16,9 @@
 >   104,573–107,709, contains 265 primes, 129 of them ≡ 1 (mod 4); it does
 >   not single out 104,761. Equation B's root depends on the Planck-mass
 >   convention: with the reduced Planck mass it moves from 104,573 to about
->   64,540. Equation D was not re-checked.
+>   64,540 (64,540.6 with `bpr.constants.M_PLANCK_GEV`/√(8π) and
+>   v_EW = 246.22 GeV; rounding M_Pl,red to 2.435×10¹⁸ GeV gives
+>   64,538). Equation D was not re-checked.
 > - **The "uniqueness" follows the tolerance, not the data.** Scoring each
 >   prime by the RMS of the fractional errors in 1/α and v_EW, 1,193 primes
 >   score within 2%, 580 within 1% and 238 within 0.5%, and none within
@@ -25,12 +27,15 @@
 >   104,749.03 and the v_EW root is 107,709.08.
 > - **α pins p only to within the prime spacing.** 1/α(104,761) = 137.038641,
 >   +19.3 ppm from CODATA 2018. The closest prime, 104,743, misses by 9.7 ppm,
->   which is what the spacing of primes near p_exact produces. Measured
+>   which is what the spacing of primes near p_exact produces; 104,761 ranks
+>   only third on the α miss alone, after 104,743 and 104,759 (+16.1 ppm),
+>   both ≡ 3 (mod 4). Measured
 >   against the CODATA uncertainty, every prime misses by at least 6×10⁴σ.
 > - **v_EW does not confirm the choice.** At 104,761, v_EW = 243.52 GeV,
 >   −1.10% from 246.22 GeV. That miss is within the Λ_QCD input uncertainty:
 >   moving Λ_QCD by ±17 MeV around 0.332 GeV (an illustrative uncertainty)
->   moves the v_EW root from about 95,000 to about 122,950.
+>   moves the v_EW root from about 95,000 to about 122,950. Λ_QCD = 0.3357 GeV
+>   makes v_EW exact at 104,761.
 > - **z = 6 is not derived here.** p and z enter 1/α only through
 >   [ln p]² + z/2, so α alone fixes one combination. Solving the α and v_EW
 >   equations together for a continuous z gives z* = 6.20 (at p* ≈ 104,296),
@@ -38,9 +43,13 @@
 >   nearest integer. Over all primes from 20,000 to 400,000, the best joint
 >   score at Λ_QCD = 0.332 GeV is 0.31% for z = 6, 1.18% for z = 7 and
 >   1.90% for z = 5. The preference does not survive the Λ_QCD uncertainty:
->   at 0.315 GeV z = 7 scores best (0.28%, against 1.77% for z = 6), and at
+>   at 0.315 GeV z = 7 scores best (0.27%, against 1.77% for z = 6; earlier:
+>   0.28%, a rounding slip for 0.2747%), and at
 >   0.349 GeV z = 5 does (0.52%, against 1.07%). The three arguments for
 >   z = 6 below are motivations, not derivations.
+>
+> Reproduce the calibration numbers with `scripts/p_calibration_check.py`
+> (regression-tested by `tests/test_p_calibration_check.py`).
 >
 > See `doc/CLOSED_AND_DEPRECATED.md` (including its section 4 row on the
 > ln(p)/(ln(p)+1) correction) and `doc/LIMITATIONS_AND_FALSIFICATION.md`.

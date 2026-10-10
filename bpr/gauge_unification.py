@@ -249,30 +249,44 @@ def electroweak_scale_self_consistent(p: int = 104761, z: int = 6) -> dict:
     lqcd_exp = _LAMBDA_QCD_GEV
     vew_exp = electroweak_scale_GeV(p, z, lqcd_exp)
 
+    # Percent misses on v_EW, quoted in the status strings below for the
+    # p actually passed (2026-10: the strings used to hard-code the
+    # p = 104761 figures, e.g. "1.5% off", for every p; at p = 101 the
+    # chain is 94.6% off).
+    err_backward = abs(vew_backward - 246.22) / 246.22 * 100
+    err_exp = abs(vew_exp - 246.22) / 246.22 * 100
+    err_1loop = abs(vew_1loop - 246.22) / 246.22 * 100
+
     return {
         "self_consistent_chain": {
             "alpha_s_MZ": alpha_s_backward,
             "Lambda_QCD_GeV": lqcd_backward,
             "v_EW_GeV": vew_backward,
-            "v_EW_error_pct": abs(vew_backward - 246.22) / 246.22 * 100,
+            "v_EW_error_pct": err_backward,
             "status": (
                 "USES α_s(M_Z) INPUT (2026-10): the backward-fit α_s is the "
                 "input 0.1179 for every p (identity), and Λ_QCD comes out "
                 "near the PDG value through an empirical 3-loop factor; "
-                "1.5% off on v_EW. Not a derivation. (Previously labelled "
-                "'DERIVED (1.5% off) via backward-fit α_s + 2-loop RGE'.)"
+                f"{err_backward:.2f}% off on v_EW at p = {p}, z = {z}. "
+                "Not a derivation. (Previously labelled "
+                "'DERIVED (1.5% off) via backward-fit α_s + 2-loop RGE', "
+                "a p = 104761 figure.)"
             ),
         },
         "experimental_chain": {
             "Lambda_QCD_GeV": lqcd_exp,
             "v_EW_GeV": vew_exp,
-            "v_EW_error_pct": abs(vew_exp - 246.22) / 246.22 * 100,
-            "status": "Uses PDG Λ_QCD directly (1.2% off)",
+            "v_EW_error_pct": err_exp,
+            "status": (
+                f"Uses PDG Λ_QCD directly ({err_exp:.2f}% off at p = {p}, "
+                f"z = {z}) (2026-10; earlier: 'Uses PDG Λ_QCD directly "
+                "(1.2% off)')"
+            ),
         },
         "legacy_1loop_chain": {
             "Lambda_QCD_GeV": lqcd_1loop,
             "v_EW_GeV": vew_1loop,
-            "v_EW_error_pct": abs(vew_1loop - 246.22) / 246.22 * 100,
+            "v_EW_error_pct": err_1loop,
             "status": "1-loop no thresholds — obsolete",
         },
         "diagnosis": (
@@ -282,7 +296,9 @@ def electroweak_scale_self_consistent(p: int = 104761, z: int = 6) -> dict:
             "needed. See doc/derivations/v_EW_self_consistent_chain.md. "
             "[2026-10: WITHDRAWN as stated. The backward-fit α_s(M_Z) "
             "equals its input for every p, so the chain trades the "
-            "Λ_QCD input for the α_s(M_Z) input; it is not a closure.]"
+            "Λ_QCD input for the α_s(M_Z) input; it is not a closure. "
+            "The 1.5% figure is the p = 104761 value (1.55%); at "
+            f"p = {p}, z = {z} the chain is {err_backward:.2f}% off.]"
         ),
     }
 
@@ -576,8 +592,9 @@ class GaugeCouplingRunning:
             "mechanism": "Y^2=(3z+1)/6, T2^2=1/(z+1), T3^2=1/(z+1)^2",
             "status": (
                 "PHENOMENOLOGICAL (post hoc, 2026-10): group factors chosen "
-                "after the gap was known (31 of 80 simple alternatives close "
-                ">=90%); not derived from z. Previously labelled "
+                "after the gap was known (at p = 104761, z = 6, 31 of 80 "
+                "simple alternatives close >=90%); not derived from z. "
+                "Previously labelled "
                 "'FORWARD-DERIVED from z alone — 0.5% unification'."
             ),
         }
@@ -602,7 +619,11 @@ class GaugeCouplingRunning:
         ``forward_threshold_corrections``, which are PHENOMENOLOGICAL
         (post hoc).  At p = 104761 it gives a 1.50% max deviation from the
         mean (bare 2-loop: 20.8%), i.e. 92.0% closed, not "~2.5%".  The
-        2-loop result inherits the post hoc status of the factors.
+        2-loop result inherits the post hoc status of the factors; the
+        returned ``status`` key says so, and the returned ``note`` quotes
+        the deviations computed for the p passed (at p = 101 the residual
+        is 23.4% against bare 24.3%; at p = 1000003 it is 24.1%, larger
+        than bare 19.6%).
         """
         # 2-loop beta coefficients (Machacek & Vaughn 1984)
         b_ij = np.array([
@@ -643,6 +664,8 @@ class GaugeCouplingRunning:
 
         # Uncorrected 2-loop gap for comparison
         max_dev_bare = np.max(np.abs(inv_alphas - np.mean(inv_alphas)))
+        max_dev_pct = float(max_dev / avg_all * 100)
+        max_dev_pct_bare = float(max_dev_bare / np.mean(inv_alphas) * 100)
 
         return {
             "inv_a1_2loop": float(inv_alphas[0]),
@@ -652,14 +675,27 @@ class GaugeCouplingRunning:
             "inv_a2_corrected_2loop": float(inv_a2_corr),
             "inv_a3_corrected_2loop": float(inv_a3_corr),
             "a23_gap_2loop": float(abs(inv_a2_corr - inv_a3_corr)),
-            "max_deviation_pct": float(max_dev / avg_all * 100),
-            "max_deviation_pct_bare": float(max_dev_bare / np.mean(inv_alphas) * 100),
+            "max_deviation_pct": max_dev_pct,
+            "max_deviation_pct_bare": max_dev_pct_bare,
             "fraction_closed_2loop": float(1.0 - max_dev / max_dev_bare)
                 if max_dev_bare > 0 else 0.0,
+            # 2026-10: the note quotes the values computed for this p.
+            # Earlier note (true only near p = 104761): "2-loop running +
+            # full 3-channel forward corrections (Y^2, T2^2, T3^2).
+            # Residual ~few % is within expected GUT-scale (superheavy
+            # gauge boson) threshold corrections."
             "note": (
                 "2-loop running + full 3-channel forward corrections "
-                "(Y^2, T2^2, T3^2). Residual ~few % is within expected "
-                "GUT-scale (superheavy gauge boson) threshold corrections."
+                f"(Y^2, T2^2, T3^2). At p = {self.p}: residual max "
+                f"deviation {max_dev_pct:.2f}% of the mean (bare 2-loop "
+                f"{max_dev_pct_bare:.2f}%). (2026-10: the earlier "
+                "'residual ~few %' reading held only near p = 104761.)"
+            ),
+            "status": (
+                "PHENOMENOLOGICAL (post hoc, 2026-10): inherits the status "
+                "of the three-channel forward threshold factors of "
+                "forward_threshold_corrections, which were chosen after "
+                "the gap was known; not a derivation."
             ),
         }
 
@@ -990,17 +1026,32 @@ class HierarchyProblem:
         """Compare derived hierarchy with observation."""
         ratio_bpr = self.hierarchy_ratio_bpr
         ratio_obs = _M_PL_GEV / _V_HIGGS
+        error_pct = abs(ratio_bpr - ratio_obs) / ratio_obs * 100
         return {
             "M_Pl_over_v_EW_bpr": ratio_bpr,
             "M_Pl_over_v_EW_obs": ratio_obs,
-            "error_pct": abs(ratio_bpr - ratio_obs) / ratio_obs * 100,
+            "error_pct": error_pct,
             "M_Pl_bpr_GeV": self.M_Pl_derived_GeV,
             "M_Pl_obs_GeV": _M_PL_GEV,
             "G_bpr": self.G_derived,
             "G_obs": 6.67430e-11,
             "G_error_pct": abs(self.G_derived - 6.67430e-11) / 6.67430e-11 * 100,
             "formula": "M_Pl / v_EW = p^(z/2 + 1/3) = p^(10/3)",
-            "status": "DERIVED from (p, z) — 9% error on hierarchy ratio",
+            # 2026-10: the error is formatted for the p passed.  The earlier
+            # string, "DERIVED from (p, z) — 9% error on hierarchy ratio",
+            # quoted the bare p^(10/3) miss at p = 104761 (9.2%) for every
+            # p, although the returned ratio includes the ln p/(ln p + 1)
+            # factor (0.51% off at p = 104761).
+            "status": (
+                f"HISTORICAL, not revalidated (2026-10): {error_pct:.2f}% off "
+                f"at p = {self.p}, using the PHENOMENOLOGICAL ln p/(ln p + 1) "
+                "factor and the unreduced M_Pl anchor (bare p^(10/3): 9.2% "
+                "at p = 104761); with the reduced Planck mass the bare root "
+                "moves to p of about 64,540, so matching the hierarchy is an "
+                "inverse calibration (doc/CLOSED_AND_DEPRECATED.md section "
+                "1c). Earlier: 'DERIVED from (p, z) — 9% error on hierarchy "
+                "ratio'"
+            ),
         }
 
 

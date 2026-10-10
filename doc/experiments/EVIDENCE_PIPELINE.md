@@ -19,8 +19,20 @@ python3 scripts/research_loop.py show-policy
 python3 scripts/research_loop.py evidence-scan
 
 # Limit the scan to one target prediction
-python3 scripts/research_loop.py evidence-scan --prediction-id P20.7_LI_delta_c_over_c
+python3 scripts/research_loop.py evidence-scan --prediction-id P4.9_Tc_MgB2_K
 ```
+
+Note (2026-10): the single-target example above read
+`--prediction-id P20.7_LI_delta_c_over_c` until 2026-10, and P20.7 was a
+flagship. P20.7 (|δc/c| = e^(−p^(1/3))) is superseded: it is stipulated on
+the α-calibrated p, and section 4 of the
+[architecture decision](../derivations/architecture_decision_2026-09-26.md)
+makes BPR-6D exactly Lorentz-invariant. It is no longer in
+`flagship_prediction_ids` in `bpr/research/policy.py`, so the bare
+`evidence-scan` skips it. Its registry row and query hints are kept, so an
+explicit `--prediction-id P20.7_LI_delta_c_over_c` scan still runs, as a legacy
+pipeline example only. Found in the 2026-10 review of unmerged branches; see
+`doc/CLOSED_AND_DEPRECATED.md`.
 
 ## Outputs
 

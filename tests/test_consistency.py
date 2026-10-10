@@ -60,12 +60,21 @@ class TestLimitingCases:
         assert prev_dev < 1e-5
 
     def test_lorentz_violation_vanishes_as_p_to_inf(self):
-        """LIV → 0 as p → ∞ (Lorentz invariance recovered)."""
+        """LIV → 0 as p → ∞ (Lorentz invariance recovered).
+
+        Legacy arithmetic regression, SUPERSEDED (2026-10):
+        bpr.quantum_gravity_pheno and its LIV coefficients (P20.1, P20.7)
+        are superseded or withdrawn (the 2026-10 review of unmerged
+        branches; doc/CLOSED_AND_DEPRECATED.md §1c).  This test pins the
+        legacy arithmetic only; it is not evidence for a BPR prediction.
+        """
         from bpr.quantum_gravity_pheno import ModifiedDispersion, LorentzInvariance
         for p in [101, 10007, 104729, 15485863]:
             md = ModifiedDispersion(p=p)
             assert md.xi_2 == pytest.approx(1.0 / p)
-            assert md.xi_1 == 0.0  # CPT protection holds for all p
+            # Legacy, SUPERSEDED (2026-10): xi_1 = 0 is hard-coded (returns 0.0).
+            # (earlier comment: "CPT protection holds for all p")
+            assert md.xi_1 == 0.0
 
         # Lorentz violation must decrease with p
         li_small = LorentzInvariance(p=101)
@@ -638,29 +647,41 @@ class TestMathematicalClosure:
                 f"Coupling not unified at GUT scale: {a1}, {a2}, {a3}"
 
     def test_weinberg_angle_from_couplings(self):
-        """Gauge coupling running: sin²θ_W from top-down BPR calculation.
+        """Gauge coupling running: identity regression (relabelled 2026-10).
 
-        BPR derives sin²θ_W(M_Z) from:
-        1. sin²θ_W(M_GUT) = 3/8 (S² boundary geometry)
-        2. SM 1-loop RGE running from M_GUT to M_Z
-        3. BPR matching corrections from boundary mode spectrum
+        IDENTITY REGRESSION (2026-10): ``weinberg_angle_at_MZ``,
+        ``alpha_s_prediction`` and ``alpha_em_prediction`` are backward-fit
+        identities that return the M_Z inputs 0.23122, 0.1179 and
+        1/127.952 for every p (see
+        ``GaugeCouplingRunning.boundary_threshold_corrections`` and
+        tests/test_legacy_gut_identities.py).  The assertions below hold
+        by construction and pin that wiring; they are not a top-down
+        derivation and not a test of BPR.  Found in the 2026-10 review of
+        unmerged branches.
 
-        The result should match the measured value 0.231 ± 0.03.
+        (earlier docstring: "Gauge coupling running: sin²θ_W from top-down
+        BPR calculation.  BPR derives sin²θ_W(M_Z) from: 1. sin²θ_W(M_GUT)
+        = 3/8 (S² boundary geometry) 2. SM 1-loop RGE running from M_GUT
+        to M_Z 3. BPR matching corrections from boundary mode spectrum.
+        The result should match the measured value 0.231 ± 0.03.")
         """
         from bpr.gauge_unification import GaugeCouplingRunning
         gc = GaugeCouplingRunning(p=104729)
 
-        # Top-down Weinberg angle prediction
+        # Input returned by the backward-fit identity (2026-10; earlier
+        # comment: "Top-down Weinberg angle prediction")
         sin2_w = gc.weinberg_angle_at_MZ
         assert sin2_w == pytest.approx(0.231, abs=0.005), \
             f"sin²θ_W(M_Z) = {sin2_w}, expected ≈ 0.231"
 
-        # α_s prediction from same top-down
+        # α_s(M_Z) input returned by the same identity (2026-10; earlier
+        # comment: "α_s prediction from same top-down")
         alpha_s = gc.alpha_s_prediction
         assert alpha_s == pytest.approx(0.1179, rel=0.1), \
             f"α_s(M_Z) = {alpha_s}, expected ≈ 0.1179"
 
-        # α_EM prediction
+        # α_EM(M_Z) input returned by the same identity (2026-10; earlier
+        # comment: "α_EM prediction")
         alpha_em = gc.alpha_em_prediction
         assert alpha_em == pytest.approx(1 / 127.952, rel=0.05), \
             f"1/α_EM = {1/alpha_em:.1f}, expected ≈ 128"

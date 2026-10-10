@@ -130,6 +130,16 @@ def _classify(error_pct: float, tol_pass: float, tol_tension: float = 5.0,
 # counted as a PASS.
 NON_DISCRIMINATING = "NON-DISCRIMINATING"
 
+# Percent error below which two routes that agree by construction are
+# reported as NON-DISCRIMINATING (2026-10).  The routes agree to the last
+# bit when wired as documented (error 0.0 at p = 101, 104729, 104761 and
+# 1000003, z = 6), so any larger difference means the wiring has changed:
+# the check then falls back to the normal PASS / TENSION / FAIL
+# classification, and a regression larger than the PASS tolerance shows
+# up as TENSION or FAIL instead of hiding behind the NON-DISCRIMINATING
+# label.
+_IDENTITY_TOL_PCT = 1e-9
+
 
 # ===================================================================
 # Individual consistency checks
@@ -147,6 +157,10 @@ def _check_alpha_em(p: int, z: int) -> Dict[str, Any]:
     so the two routes agree to the last bit for every (p, z).  The check
     only confirms that the call path is wired; it says nothing about the
     physics.  Status is reported as NON-DISCRIMINATING, not PASS.
+
+    If the routes differ by more than ``_IDENTITY_TOL_PCT`` (a wiring
+    regression), the status falls back to ``_classify(error_pct,
+    tol_pass=0.01)`` so the regression is visible (2026-10).
     """
     if not (_HAS_ALPHA and _HAS_CROSS):
         return {
@@ -167,6 +181,21 @@ def _check_alpha_em(p: int, z: int) -> Dict[str, Any]:
         }
 
     error_pct = abs(route_a - route_b) / route_b * 100.0
+    if error_pct < _IDENTITY_TOL_PCT:
+        # Was _classify(error_pct, tol_pass=0.01) -> always PASS (2026-10).
+        status = NON_DISCRIMINATING
+        note = (
+            "Route B calls the same function as route A; agreement is by "
+            "construction for every (p, z)."
+        )
+    else:
+        # The routes should be identical; a difference is a wiring
+        # regression, so classify it normally (2026-10).
+        status = _classify(error_pct, tol_pass=0.01)
+        note = (
+            "Routes expected to agree by construction differ: the call "
+            "path has changed (wiring regression); classified normally."
+        )
     return {
         "name": "alpha_EM",
         "route_A": float(route_a),
@@ -174,12 +203,8 @@ def _check_alpha_em(p: int, z: int) -> Dict[str, Any]:
         "route_B": float(route_b),
         "route_B_label": "full_cosmological_chain",
         "error": f"{error_pct:.4f}%",
-        # Was _classify(error_pct, tol_pass=0.01) -> always PASS (2026-10).
-        "status": NON_DISCRIMINATING,
-        "note": (
-            "Route B calls the same function as route A; agreement is by "
-            "construction for every (p, z)."
-        ),
+        "status": status,
+        "note": note,
     }
 
 
@@ -199,6 +224,10 @@ def _check_sin2_theta_w(p: int, z: int) -> Dict[str, Any]:
     it cannot fail and is reported as NON-DISCRIMINATING, not PASS.  Any
     "v_EW CLOSED" or "sin²θ_W consistent" claim that rests on it is
     withdrawn.  Found in the 2026-10 review of unmerged branches.
+
+    If the routes differ by more than ``_IDENTITY_TOL_PCT`` (a wiring
+    regression), the status falls back to ``_classify(error_pct,
+    tol_pass=0.1)`` so the regression is visible (2026-10).
     """
     if not (_HAS_GAUGE and _HAS_PARTICLES):
         return {
@@ -221,6 +250,21 @@ def _check_sin2_theta_w(p: int, z: int) -> Dict[str, Any]:
         }
 
     error_pct = abs(route_a - route_b) / route_b * 100.0
+    if error_pct < _IDENTITY_TOL_PCT:
+        # Was _classify(error_pct, tol_pass=0.1) -> always PASS (2026-10).
+        status = NON_DISCRIMINATING
+        note = (
+            "Identity: both routes return the input sin^2(theta_W) = 0.23122 "
+            "for every p (backward-fit identity vs. inputs rebuilt at M_Z)."
+        )
+    else:
+        # The routes should be identical; a difference is a wiring
+        # regression, so classify it normally (2026-10).
+        status = _classify(error_pct, tol_pass=0.1)
+        note = (
+            "Routes expected to agree by construction differ: the call "
+            "path has changed (wiring regression); classified normally."
+        )
     return {
         "name": "sin2_theta_W",
         "route_A": float(route_a),
@@ -228,12 +272,8 @@ def _check_sin2_theta_w(p: int, z: int) -> Dict[str, Any]:
         "route_B": float(route_b),
         "route_B_label": "impedance_weinberg_angle.sin2_theta_W_gauge_running",
         "error": f"{error_pct:.4f}%",
-        # Was _classify(error_pct, tol_pass=0.1) -> always PASS (2026-10).
-        "status": NON_DISCRIMINATING,
-        "note": (
-            "Identity: both routes return the input sin^2(theta_W) = 0.23122 "
-            "for every p (backward-fit identity vs. inputs rebuilt at M_Z)."
-        ),
+        "status": status,
+        "note": note,
     }
 
 
