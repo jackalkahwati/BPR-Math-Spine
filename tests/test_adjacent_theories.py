@@ -212,9 +212,9 @@ class TestPhaseTransitions:
 
     @pytest.mark.parametrize("d", range(11, 21))
     def test_class_b_contradicts_high_d_mean_field(self, d):
-        """Mean-field percolation (nu, beta, gamma) = (1/2, 1, 1) is proved for nearest-neighbour bond percolation
-        at d >= 11 (Hara-Slade 1990; Fitzner-van der Hofstad 2017; Aizenman-Newman 1984; Barsky-Aizenman 1991;
-        Hara 1990). Class B differs in every exponent."""
+        """For nearest-neighbour bond percolation beta = gamma = 1 are proved at d >= 11 (triangle condition:
+        Hara-Slade 1990, Fitzner-van der Hofstad 2017; Aizenman-Newman 1984; Barsky-Aizenman 1991), and nu = 1/2 in
+        sufficiently high d (Hara 1990). Class B differs in every exponent."""
         from fractions import Fraction
         e = self._class_b_fractions(d)
         assert e == {"nu": Fraction(4, d + 2), "beta": Fraction(d - 2, d + 2), "gamma": Fraction(2 * (d + 1), d + 2)}

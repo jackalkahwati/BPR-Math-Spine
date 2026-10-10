@@ -1839,9 +1839,10 @@ class CollectiveWindingCoherence:
     LIMITATION: 1.27 is an unexplained phenomenological exponent; no
     mechanism connects it to a percolating cluster. N counts agents in an
     unspecified network, so comparing it with the 2-D cluster fractal
-    dimension 91/48 ≈ 1.896 is not like-for-like. p_c = 1/2 is exact only
-    for bond percolation on Z² (Kesten 1980); for any other network it is a
-    placeholder.
+    dimension 91/48 ≈ 1.896 is not like-for-like. p_c = 1/2 is exact for
+    bond percolation on Z² (Kesten 1980) and some other self-dual planar
+    cases (e.g. site percolation on the triangular lattice); for a generic
+    agent network it is a placeholder.
 
     Critical agent number (Eq 40):
         N_c = Φ_crit / (k log N_nodes)
@@ -1849,8 +1850,8 @@ class CollectiveWindingCoherence:
     Parameters
     ----------
     p_c : float
-        Percolation threshold (1/2 for bond percolation on Z²; a placeholder
-        for other networks).
+        Percolation threshold (1/2 for bond percolation on Z² and some other
+        self-dual planar cases; a placeholder for a generic network).
     fractal_exponent : float
         Collective coherence scaling exponent (1.27; phenomenological,
         not derived).

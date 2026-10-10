@@ -72,7 +72,8 @@ def _random_regular_adjacency(n, d, seed):
 
 def test_sparse_random_regular_goe_control():
     """Sparse positive control: the adjacency matrix of a random 3-regular graph has GOE bulk spacings
-    (numerics: Jakobson, Miller, Rivin and Rudnick 1999; a proof is claimed in openai/math index entry
+    (numerics: Jakobson, Miller, Rivin and Rudnick 1999; proved for slowly growing degree by Bauerschmidt, Huang,
+    Knowles and Yau, Ann. Probab. 45 (2017); fixed degree is claimed in openai/math index entry
     omath:219:goe-random-regular, unrefereed, context only). Its density is Kesten-McKay, not a semicircle.
     unfolded_spacings only divides by the global mean spacing (no local unfolding), so this checks that the
     classification survives a second, non-semicircle density; it does not certify the unfolding."""

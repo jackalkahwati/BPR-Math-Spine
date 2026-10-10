@@ -157,7 +157,7 @@ def validate(verbose: bool = False) -> dict:
     if verbose:
         print(f"  Frames        : {len(spectra)}")
         print(f"  alpha_obs     : {alpha_obs:.3f} +/- {alpha_std:.3f}")
-        print(f"  alpha_BPR     : {bpr_prediction:.1f}")
+        print(f"  alpha_expected: {bpr_prediction:.1f}  (classical cascade)")
         print(f"  sigma         : {sigma:.2f}")
 
     return {**result_base,

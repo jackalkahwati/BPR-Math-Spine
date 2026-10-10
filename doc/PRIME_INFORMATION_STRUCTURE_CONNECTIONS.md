@@ -276,6 +276,8 @@ uniform-density-1/2 state would give without any correlations).
 The QR-state entanglement entropy is **consistently 0.57–0.77 of the
 Bernoulli baseline**, never approaching it. This means:
 
+*Points 1 and 2 are withdrawn (2026-10); see the null model below.*
+
 1. **Multiplicative correlations among quadratic residues carry quantum-
    information content.** A random density-1/2 subset would give ratio
    ~1.0. The observed ratio bounded away from 1 below is direct evidence
@@ -297,8 +299,10 @@ Bernoulli baseline**, never approaching it. This means:
 
 Density-matched random subsets of [1, p), embedded the same way, give the
 same ratio, so the reading in the interpretation above (points 1 and 2) is
-withdrawn. Random subsets do **not** give a ratio near 1.0; the gap below 1
-comes from the density and the zero padding of the embedding.
+withdrawn. Random subsets do **not** give a ratio near 1.0. A ratio below 1
+is generic: even a Haar-random state has a Page ratio of about 0.83 at
+n = 5 and 0.76 at n = 6 (Page 1993), and density and the zero padding of
+the embedding lower it further.
 
 | p | 31 | 61 | 127 | 251 | 509 |
 |---|---|---|---|---|---|
@@ -315,7 +319,7 @@ null model; its ✅ item is withdrawn.
 
 ### Honest scoping of what this establishes (superseded in part)
 
-✅ **The framework's prime-substrate claim is NOT purely decorative.**
+*(Withdrawn 2026-10; see the null model above.)* ✅ **The framework's prime-substrate claim is NOT purely decorative.**
 The natural quantum state on a Z_p substrate has nontrivial number-
 theoretic structure that reduces its entanglement entropy below the
 bare-density bound — exactly the kind of structure that signals real
@@ -348,7 +352,7 @@ ratio ∈ [0.4, 0.9] for all tested primes) and
 
 | Aspect | Status |
 |---|---|
-| BPR substrate state has nontrivial quantum-information content beyond bare density | **NOT ESTABLISHED** (2026-10): consistent with density-matched random subsets (see the null model below) |
+| BPR substrate state has nontrivial quantum-information content beyond bare density | **NOT ESTABLISHED** (2026-10): consistent with density-matched random subsets (see the null model above) |
 | Structure depends specifically on p = 104761 vs other primes | NOT CONFIRMED (slope ~ 0 across primes) |
 | Square-free / Möbius / Mertens structure appears in BPR substrate | UNTESTED (different number-theoretic invariants) |
 | Connections to SM parameters via QR structure | UNTESTED |

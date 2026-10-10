@@ -130,17 +130,20 @@ class SubstrateCriticalExponents:
     (d) Hyperscaling d·ν = 2β + γ fails by exactly 2/(d+2) for every d.
         Hyperscaling is a theorem for 2-D percolation (Kesten's 1987
         scaling relations with the triangular-lattice exponents above), is
-        expected but unproven for 3 ≤ d < 6, and is false above d = 6.
+        expected but unproven for 3 ≤ d < 6, is proved to fail at d ≥ 11
+        (mean-field exponents below), and is expected to fail for
+        7 ≤ d ≤ 10.
     (e) d = 3 defaults (0.8, 0.2, 1.6) have no rigorous or derived support.
         Monte Carlo estimates for 3-D percolation are ≈ (0.876, 0.42, 1.79)
         (numerical, not rigorous), and 3-D Ising is ≈ (0.630, 0.326, 1.237)
         (Hasenbusch 2010), so the formula reproduces neither.
-    (f) High d: mean-field percolation exponents (ν, β, γ) = (1/2, 1, 1) are
-        proved for nearest-neighbour bond percolation at d ≥ 11 (triangle
-        condition: Hara and Slade 1990; Fitzner and van der Hofstad 2017;
-        exponents: Aizenman and Newman 1984; Barsky and Aizenman 1991;
-        Hara 1990). Class B gives (4/13, 9/13, 24/13) at d = 11, and
-        γ → 2, ν → 0 as d → ∞.
+    (f) High d: for nearest-neighbour bond percolation the mean-field values
+        β = γ = 1 are proved at d ≥ 11 (triangle condition: Hara and Slade
+        1990; Fitzner and van der Hofstad 2017; exponents: Aizenman and
+        Newman 1984; Barsky and Aizenman 1991), and ν = 1/2 is proved in
+        sufficiently high d (Hara 1990). Class B gives (4/13, 9/13, 24/13)
+        at d = 11, and γ → 2, ν → 0 as d → ∞; β ≠ 1 and γ ≠ 1 already
+        contradict it.
     (g) Scope: the catalogue's Class B examples (Polyakov loop,
         metal-insulator transition) are not Bernoulli percolation. (b), (c)
         and (f) contradict the literal percolation reading; for the other

@@ -8,7 +8,7 @@
 </div></div>
 
 <section><div class="wrap">
-  <div class="callout warn"><p><strong>Read this first.</strong> Most of these checks test spectral exponents that standard physics also predicts (Kolmogorov −5/3, enstrophy −3, and so on). They show that BPR's scaling relations are consistent with known physics, not that BPR is right about particles. They are labelled <span class="tag info">consistent</span> for that reason. Two are BPR-specific and labelled <span class="tag warn">conjectural</span>.</p></div>
+  <div class="callout warn"><p><strong>Read this first.</strong> Most of these checks test spectral exponents that standard physics also predicts (Kolmogorov −5/3, enstrophy −3, and so on). They show that BPR's scaling relations are consistent with known physics, not that BPR is right about particles. They are labelled <span class="tag info">consistent</span> for that reason, except three 2-D enstrophy rows labelled <span class="tag info">not a BPR test</span>, which check the classical result only. Two are BPR-specific and labelled <span class="tag warn">conjectural</span>.</p></div>
   <div class="scroll"><table class="tbl">
     <tr><th>ID</th><th>Dataset</th><th>Prediction</th><th class="num">Predicted</th><th class="num">Observed</th><th class="num">σ</th><th>Status</th></tr>
     <tr><td class="mono">PW2.1</td><td>acoustic_scattering_inclusions</td><td>Mode entropy H/H<sub>max</sub> &gt; 0.5</td><td class="num">&gt; 0.50</td><td class="num">0.696</td><td class="num">pass</td><td><span class="tag info">consistent</span></td></tr>
@@ -31,7 +31,7 @@
     <tr><td class="mono">PW19.1</td><td>post_neutron_star_merger</td><td>Compressible MHD α = −3</td><td class="num">−3.000</td><td class="num">−3.085</td><td class="num">0.17</td><td><span class="tag info">consistent</span></td></tr>
     <tr><td class="mono">PW1.1</td><td>gray_scott</td><td colspan="4">Exempt. Gray–Scott spots are self-replicating structures, not Turing instabilities: det J = F(F+k) &gt; 0 at the trivial state, so the bifurcation condition is never met.</td><td><span class="tag">exempt</span></td></tr>
   </table></div>
-  <p class="small dim">18 validators pass, 1 exempt. Several observed exponents differ from the predicted ones by well over 10 percent while the quoted σ is small; the σ reflects the fit uncertainty of the observed exponent, not a claim of precision agreement. Source: <code>experiments/the_well_harness.py</code>.</p>
+  <p class="small dim">18 validators pass, 1 exempt. Since 2026-10, three of the 18 (PW7.1, PW13.1, PW14.1) are not counted as BPR tests: their enstrophy −3 index is the classical cascade, and the Class B formula they cited is contradicted at d = 2, so 15 remain. Several observed exponents differ from the predicted ones by well over 10 percent while the quoted σ is small; the σ reflects the fit uncertainty of the observed exponent, not a claim of precision agreement. Source: <code>experiments/the_well_harness.py</code>.</p>
 </div></section>
 
 <section><div class="wrap">

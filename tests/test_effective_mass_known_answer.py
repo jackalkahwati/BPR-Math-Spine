@@ -60,16 +60,18 @@ def test_jackknife_effective_mass_known_answer(chain):
     out = jackknife_effective_mass(c)
     for row in out[:4]:
         assert row is not None
-        assert abs(row["m_eff"] - EXACT_MASS) < max(4 * row["err"], 0.02 * EXACT_MASS)
+        assert abs(row["m_eff"] - EXACT_MASS) < 3 * row["err"]
 
 
 def test_gevp_effective_masses_known_answer(chain):
-    """3x3 correlator of the spin components: C_ab(t) = delta_ab u^t / 3, lowest mass -ln u."""
+    """3x3 correlator of the spin components: C_ab(t) = delta_ab u^t / 3, lowest mass -ln u. Only t <= 2 is
+    checked: the three states are exactly degenerate, so taking the largest noisy eigenvalue biases m_eff low once
+    the noise is comparable to the signal (t >= 3 here)."""
     n_t = 12
     C = np.zeros((chain.shape[0], 3, 3, n_t))
     for t in range(n_t):
         a, b = chain[:, :chain.shape[1] - t], chain[:, t:]
         C[..., t] = np.einsum("cia,cib->cab", a, b) / (chain.shape[1] - t)
     m = gevp_effective_masses(C, t0=1, n_blocks=40)
-    for t in range(1, 5):
-        assert abs(m["m_eff"][t] - EXACT_MASS) < max(4 * m["err"][t], 0.02 * EXACT_MASS)
+    for t in range(0, 3):
+        assert abs(m["m_eff"][t] - EXACT_MASS) < 3 * m["err"][t]

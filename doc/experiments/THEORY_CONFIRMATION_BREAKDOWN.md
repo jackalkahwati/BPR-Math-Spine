@@ -1,7 +1,7 @@
 # BPR Theory Confirmation Breakdown
 
 > **Purpose:** Map each of the 21 BPR theories to experimentally confirmed predictions.
-> **Total:** 115 CONFIRM verdicts across 129 tests. **All 21 theories** have CONFIRM.
+> **Total:** 115 CONFIRM verdicts across 129 tests as compiled in Feb 2026; in 2026-10 the 3D-Ising tests (29 and 96) were withdrawn and test 59 (Kibble–Zurek) was reclassified as non-discriminating, leaving at most 112. These verdicts are historical; the dated audits (`VALIDATION_STATUS.md`, `doc/CLOSED_AND_DEPRECATED.md`) take precedence.
 
 ---
 
@@ -12,7 +12,7 @@
 | **I** | memory | Non-Markovian memory; Casimir | **CONFIRM** (Test 51) |
 | **II** | impedance | MOND a₀, DM σ/m, proton τ, dark energy, Hubble-related | **5+ CONFIRM** |
 | **III** | decoherence | Γ vs mass; molecule interferometry | **CONFIRM** (Test 52) |
-| **IV** | phase_transitions | Tc(Nb), Tc(MgB₂), Kibble-Zurek (3D Ising withdrawn 2026-10) | **4+ CONFIRM** |
+| **IV** | phase_transitions | Tc(Nb), Tc(MgB₂), B/A framework (3D Ising withdrawn and Kibble–Zurek non-discriminating, 2026-10) | **3+ CONFIRM** |
 | **V** | neutrino | 0νββ, Σm_ν, θ₁₂, θ₂₃, θ₁₃, Δm²₂₁, \|Δm²₃₂\|, N_gen | **9+ CONFIRM** |
 | **VI** | info_geometry | QFI; Cramér–Rao bound | **CONFIRM** (Test 53) |
 | **VII** | gravitational_waves | v_GW = c | **2+ CONFIRM** |
@@ -88,7 +88,7 @@
 **Confirmed:** 3+
 
 **Withdrawn (2026-10):** Class B critical exponents against 3D Ising (tests 29 and 96). Class B gives
-ν = 0.8 at d = 3 against 0.630; the earlier CONFIRM was an arithmetic error, and its test reference "29, 87"
+ν = 0.8 at d = 3 against 0.630; the earlier CONFIRM was unsupported (no computation shown), and its test reference "29, 87"
 was also wrong (#87 is the NS maximum mass). See the LIMITATION block in `bpr/phase_transitions.py`.
 
 ---
@@ -356,7 +356,7 @@ Tests 51–59 added papers for Theories I, III, VI, VIII, IX, X, XV, XXI, and Ki
 | X | Kiss Science 316; O'Keeffe Nat. Commun.; Strogatz Physica D |
 | XV | Doran & Lasenby; Lounesto; Dirac success; Hiley arXiv |
 | XXI | NIST ASD; NIST Ionization; Sansonetti; Pauling |
-| IV (KZ) | Ulm Nat. Commun. 4; Chomaz Nat. Rev. Phys.; Zurek Nature |
+| IV (KZ) | Ulm Nat. Commun. 4; Chomaz Nat. Rev. Phys.; Zurek Nature (non-discriminating since 2026-10: KZ is standard physics, and BPR's default ν is the stipulated Class B value) |
 
 ---
 

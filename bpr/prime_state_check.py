@@ -280,6 +280,11 @@ def bpr_substrate_prime_state_analog_stub() -> dict:
 #
 #   - S_E(|QR_p⟩) > log 2 × n_A → not consistent with standard QI;
 #     would indicate a calculation error.
+#
+# WITHDRAWN READING (2026-10): the outcomes above use the wrong baseline.
+# A ratio below 1 is generic (even a Haar-random state is below log 2 × n_A,
+# Page 1993), and density-matched random subsets give the same ratio as the
+# QR state; see random_subset_null_model and bpr_substrate_analog_scaling.
 
 
 def legendre_symbol(a: int, p: int) -> int:
@@ -337,9 +342,10 @@ def bpr_substrate_analog_scaling(
 
     NULL MODEL (2026-10): that reading is wrong. A density-matched random
     subset of [1, p), embedded the same way, gives the same ratio
-    (≈ 0.61-0.70 for these primes; ``random_subset_null_model``). The ratio
-    below 1 comes from the density and the zero padding, not from quadratic
-    residuosity, and the QR values lie within 2.3 standard deviations of the
+    (≈ 0.61-0.70 for these primes; ``random_subset_null_model``). A ratio
+    below 1 is generic (even a Haar-random state has a Page ratio of about
+    0.83 at n = 5 and 0.76 at n = 6), and density and zero padding lower it
+    further; it does not come from quadratic residuosity, and the QR values lie within 2.3 standard deviations of the
     null mean, with deviations of both signs. Classically the Legendre symbol's two-point
     correlations are exactly -1/p.
     """
@@ -384,6 +390,8 @@ def random_subset_null_model(
     2^n_qubits embedding, and returns the mean and standard deviation of the
     half-half entanglement entropy as a ratio to log 2 × n_A.
     """
+    if p < 5 or n_samples < 2:
+        raise ValueError("need an odd prime p >= 5 and n_samples >= 2")
     rng = np.random.default_rng(seed)
     n = int(np.ceil(np.log2(p)))
     n_A = n // 2

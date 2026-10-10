@@ -286,7 +286,7 @@ def simulate_phase_coupled_flow(
 
 @dataclass
 class TwoDTurbulence:
-    """BPR predictions for 2-D turbulence energy spectra.
+    """Classical 2-D turbulence energy spectra (Kraichnan-Batchelor-Leith).
 
     In d = 2 there are two distinct spectral cascades
     (Kraichnan-Batchelor-Leith theory):

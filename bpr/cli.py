@@ -534,9 +534,9 @@ def cmd_well(args):
             results.append({"_key": key, "skipped": True, "skip_reason": str(exc)})
 
     # Print results table
-    print(f"  {'Key':<16} {'PID':<10} {'Status':<12} {'σ':>8}  Result")
-    print("  " + "-" * 68)
-    passed = skipped = failed = 0
+    print(f"  {'Key':<16} {'PID':<10} {'Status':<15} {'σ':>8}  Result")
+    print("  " + "-" * 71)
+    passed = skipped = failed = not_bpr = 0
     for r in results:
         key = r.get("_key", "?")
         pid = r.get("pid", "?")
@@ -549,6 +549,11 @@ def cmd_well(args):
             outcome = "SKIP"
             skipped += 1
             sig_str = "—"
+        elif status == "NOT_A_BPR_TEST":
+            # Classical check, reported but not scored as a BPR test
+            outcome = "NOT SCORED"
+            not_bpr += 1
+            sig_str = f"{sigma:.2f}σ" if sigma is not None and math.isfinite(sigma) else "—"
         elif sat is True:
             outcome = "PASS (bound)"
             passed += 1
@@ -570,10 +575,11 @@ def cmd_well(args):
             sig_str = "—"
             skipped += 1
 
-        print(f"  {key:<16} {pid:<10} {status:<12} {sig_str:>8}  {outcome}")
+        print(f"  {key:<16} {pid:<10} {status:<15} {sig_str:>8}  {outcome}")
 
     ran = passed + failed
-    print(f"\n  Ran: {ran}/{len(results)}  |  Pass: {passed}  |  Fail: {failed}  |  Skip: {skipped}")
+    print(f"\n  Ran: {ran}/{len(results)}  |  Pass: {passed}  |  Fail: {failed}  |  Skip: {skipped}"
+          f"  |  Not BPR tests: {not_bpr}")
     print()
     return 1 if failed > 0 else 0
 

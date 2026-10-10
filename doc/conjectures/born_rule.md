@@ -237,7 +237,7 @@ uniform phases?") on three legs:
 
 | Gap | Status |
 |-----|--------|
-| Gap 1 (why uniform phases) | **CLOSED** — invariance theorem + Arnold-Avez ergodicity + numerical coarse-grained mixing |
+| Gap 1 (why uniform phases) | **CLOSED up to a regularity assumption** — invariance theorem + Arnold-Avez mixing for initial measures μ ≪ Leb + numerical coarse-grained mixing; the μ ≪ Leb assumption is imposed (2026-10) |
 | Gap 2 (microstate definition) | CLOSED (previous commit — explicit Z_p construction) |
 | Gap 3 (independence) | PARTIAL — non-overlapping cells independent by construction |
 | Gap 4 (normalization) | CLOSED — counting measure normalizes |
@@ -246,8 +246,10 @@ The Born-rule conjecture is now promoted from "explicit construction with
 one remaining dynamical assumption" (after Gap 2) to **"explicit
 construction with the dynamical assumption derived from ergodicity."**
 The microcanonical / max-entropy assumption underlying the Born rule
-construction is no longer imposed — it follows from Z_p symplectic
-dynamics + a proven ergodicity theorem.
+construction is replaced by a weaker one: that the initial ensemble has a
+density (μ ≪ Leb). Given that, uniformity follows from Z_p symplectic
+dynamics and a proven mixing theorem. The density assumption itself is
+imposed, not derived (2026-10).
 
 Remaining: Gap 3's full proof of microstate independence under the
 specific RPST Hamiltonian (the cat map demonstration covers the

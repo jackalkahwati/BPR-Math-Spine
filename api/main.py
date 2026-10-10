@@ -721,13 +721,17 @@ def api_the_well(dataset: Optional[str] = Query(None, description="Run a single 
                 "skip_reason": f"Import/run error: {exc}",
             })
 
+    # Classical checks that are not tests of BPR are reported but not scored
+    not_bpr = sum(1 for r in results
+                  if not r.get("skipped") and r.get("status") == "NOT_A_BPR_TEST")
     passed = sum(1 for r in results
                  if not r.get("skipped")
+                 and r.get("status") != "NOT_A_BPR_TEST"
                  and ((r.get("satisfies") is True)
                       or (r.get("satisfies") is None
                           and r.get("sigma") is not None
                           and r["sigma"] < 3.0)))
-    ran = sum(1 for r in results if not r.get("skipped"))
+    ran = sum(1 for r in results if not r.get("skipped")) - not_bpr
     skipped = sum(1 for r in results if r.get("skipped"))
 
     return {
@@ -738,6 +742,7 @@ def api_the_well(dataset: Optional[str] = Query(None, description="Run a single 
         "passed": passed,
         "failed": ran - passed,
         "skipped": skipped,
+        "not_bpr_tests": not_bpr,
         "results": results,
     }
 

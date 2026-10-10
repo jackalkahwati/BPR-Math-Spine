@@ -502,7 +502,8 @@ def magnon_dispersion_bpr(
     Note: the correction cos(gamma_1 ln(ka)) is non-analytic at k = 0 and
     not 2*pi/a-periodic in k, so it is not a lattice dispersion of the
     usual kind. Bloch's T^{3/2} law and its coefficient come from the
-    small-k quadratic magnon and cannot test this correction; only direct
+    small-k quadratic magnon; the correction would shift that coefficient by
+    at most ~1/p, so Bloch's law cannot practically test it. Only direct
     measurement of omega(k) can.
 
     Parameters

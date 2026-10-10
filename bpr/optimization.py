@@ -24,7 +24,9 @@ Max-Cut (Burer, Monteiro and Zhang, SIAM J. Optim. 12 (2002) 503).
 STATUS: heuristic (rank-2 relaxation + rounding); no approximation
 guarantee; not exact for n <= 14 in general.
 - Results are empirical and average-case only, against named baselines:
-  random cut |E|/2, 1-flip local search, and Goemans-Williamson rounding.
+  random cut |E|/2, 1-flip local search, and an uncertified Burer-Monteiro
+  proxy for Goemans-Williamson rounding (which beats this heuristic by
+  about 9% on random 3-regular graphs with n = 500).
   See tests/test_optimization_maxcut.py and scripts/benchmark_maxcut.py.
   Any "% improvement" is stated only against a named baseline.
 - The only worst-case guarantee in this module is that of
@@ -308,10 +310,13 @@ def local_search_polish(W: np.ndarray, partition: np.ndarray) -> np.ndarray:
     half of its incident weight crossing the cut.  This is the only
     worst-case guarantee available in this module.
     """
-    W = np.asarray(W, dtype=float)
+    W = np.array(W, dtype=float)
+    np.fill_diagonal(W, 0.0)                # self-loops never cross a cut
     x = np.asarray(partition, dtype=int).copy()
     s = 1.0 - 2.0 * x                       # +1 on side 0, -1 on side 1
-    while True:
+    # Each accepted flip raises the cut strictly, so the loop terminates; the
+    # cap only guards against round-off cycling.
+    for _ in range(max(1, len(s)) ** 2 * 10):
         # gain[i] = (weight to i's own side) - (weight across), i.e. the cut
         # increase from flipping i.
         gain = s * (W @ s)

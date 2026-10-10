@@ -20,7 +20,7 @@
 
 | Verdict | Count | Tests |
 |---------|-------|-------|
-| **CONFIRM** | **115** | All 21 theories + 0νββ, MOND, η, DM σ/m, Σm_ν, PMNS, CKM, Tc, proton τ, inflation, nuclear, NS, α, quarks, CKM/PMNS angles, Δm², dimensions, n_s, r, G₀, m_e, m_μ, m_τ, Koide, pion, Higgs, v_EW, m_p, Ω_DM, strong CP, ΔN_eff, magic numbers, R_K, GW speed, Tsirelson, 3D Ising, dark energy, B/A, n_sat, Planck length, memory, decoherence, info geometry, adiabatic, bioelectric, Kuramoto, Clifford, quantum chemistry, KZ |
+| **CONFIRM** | **115** (Feb 2026; 2026-10: 3D Ising, tests 29 and 96, withdrawn; Kibble–Zurek, test 59, non-discriminating) | All 21 theories + 0νββ, MOND, η, DM σ/m, Σm_ν, PMNS, CKM, Tc, proton τ, inflation, nuclear, NS, α, quarks, CKM/PMNS angles, Δm², dimensions, n_s, r, G₀, m_e, m_μ, m_τ, Koide, pion, Higgs, v_EW, m_p, Ω_DM, strong CP, ΔN_eff, magic numbers, R_K, GW speed, Tsirelson, dark energy, B/A, n_sat, Planck length, memory, decoherence, info geometry, adiabatic, bioelectric, Kuramoto, Clifford, quantum chemistry |
 | **FALSIFY** | 0 | — |
 | **INCONCLUSIVE** | 11 | LIV, Casimir, mass ordering, Born rule, GUP, decoherence, Hubble tension, anyons, proton radius, muon g−2, GRB LIV, JWST H₀ |
 

@@ -6,7 +6,7 @@ certified upper bound. It asserts nothing; tests/test_optimization_maxcut.py hol
 
 Baselines
 ---------
-- random cut: the best of 20 uniformly random partitions (expected value |E|/2);
+- random cut: the best of 20 uniformly random partitions (each has expected value |E|/2);
 - 1-flip local search from a random partition (guarantees at least half the total weight);
 - GW rounding via Burer-Monteiro: a rank-r factorization of the Goemans-Williamson SDP, solved by projected
   gradient, then the best of 100 random hyperplanes. The SDP is not solved to certified optimality, so this

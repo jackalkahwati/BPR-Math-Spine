@@ -45,7 +45,9 @@ def test_sign_regression_cut_at_least_half_the_edges(name):
 
 
 def test_dynamics_are_gradient_descent_on_the_energy():
-    """dphi/dt = -dE/dphi at lambda = 0, checked by central differences. Pins the antiferromagnetic sign."""
+    """dphi/dt = -dE/dphi at lambda = 0, checked by central differences. This checks that the dynamics and
+    energy() agree (the old code was also self-consistent); the sign itself is pinned by the sign-regression and
+    binary-energy tests."""
     W = random_graph(9, 0.5, seed=1)
     mc = MaxCutBPR(W, beta=1.3)
     phi = np.random.default_rng(2).uniform(-np.pi, np.pi, 9)
@@ -85,7 +87,8 @@ def test_brute_force_refuses_large_graphs():
 @pytest.mark.parametrize("n", [8, 10, 12])
 def test_bounds_half_weight_le_polished_cut_le_optimum(n):
     """For non-negative weights a 1-flip local optimum cuts at least half the weight; nothing beats brute force.
-    The ratio to the optimum is recorded, not asserted: the heuristic is not exact for small n in general."""
+    This checks the polish and brute-force helpers (it would also pass with the old sign, since polishing alone
+    guarantees half the weight). The heuristic is not exact for small n in general, so exactness is not asserted."""
     for seed in range(5):
         W = random_graph(n, 0.5, seed=100 * n + seed)
         mc = MaxCutBPR(W)
@@ -123,10 +126,22 @@ def test_alpha_gw_constant():
 
 
 def test_module_docstring_states_its_scope():
+    """The old 'Predictions:' line must not return; the old claims may appear only inside the withdrawal note."""
     doc = opt.__doc__
-    assert "Exact optima" not in doc and "~5 pct" not in doc
+    assert "Predictions:" not in doc and "~5 pct" not in doc
+    for claim in ("exact optima", "~5%"):
+        for line in doc.lower().splitlines():
+            if claim in line:
+                assert "withdrawn" in line, line
     assert "no approximation guarantee" in doc
     assert "Burer" in doc
+
+
+def test_local_search_ignores_self_loops():
+    """A nonzero diagonal (self-loops) used to make the 1-flip loop run forever."""
+    W = np.array([[3.0, 1.0], [1.0, 3.0]])
+    x = local_search_polish(W, np.array([0, 0]))
+    assert MaxCutBPR(W - np.diag(np.diag(W))).cut_value(x) == 1.0
 
 
 def test_bridge_9_runs():

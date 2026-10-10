@@ -53,7 +53,7 @@
 > Quark/lepton l-modes reclassified SUSPICIOUS (reverse-engineered, not derived). 6 genuinely unique
 > BPR predictions identified. Falsification criteria added.
 > **v0.9.5 changes:** The Well validation harness added (experiments/the_well_harness.py).
-> 20 validators across all PolymathicAI datasets. 10/10 run pass. See "The Well Validation Harness" section.
+> 20 validators across all PolymathicAI datasets. 10/10 run pass (8 of them BPR tests since 2026-10; PW13.1 and PW14.1 are not). See "The Well Validation Harness" section.
 > **v0.9.4 changes:** Full-stack experimental validation suite added (experiments/validate_all_theories.py).
 > 36 predictions across 12 theories cross-checked against published data. All pass at BPR theory precision.
 
@@ -449,7 +449,7 @@ P24.1 GUE spacing ratio (1.04σ), P1.3 non-Markovian ratio (0.89σ).
 | Standard physics | ~70 | — | Unchanged |
 | OPEN | ~2 | — | l_t full derivation still open (N_c−1 Cartan cost not rigorously derived) |
 | **Genuinely Unique** | **7** | — | Unchanged |
-| **The Well** | **10/10 pass** | — | Unchanged |
+| **The Well** | **10/10 pass** | — | 2026-10: 8 of the 10 are BPR tests (PW13.1 and PW14.1 relabelled) |
 
 **v0.9.9 key result (WITHDRAWN in v1.0.3, kept for history):** ALL 9 fermion l-mode integers now DERIVED from (z, N_c=z/2, n_gen).
 l_t = (z²−1)(z+n_gen+2−N_c)+n_gen: adjoint base × generation-extended coordination + Dirac index.
@@ -485,7 +485,7 @@ to (z²−1)(z+n_gen−1)+n_gen [uses n_gen, reveals lepton/quark parallel].
 Cross-validation of BPR predictions against PolymathicAI's "The Well" — 15TB of peer-reviewed
 physics simulations across 20 datasets. Run via `experiments/the_well_harness.py`.
 
-### Results: 10/10 run, 10 pass, 0 fail
+### Results: 10/10 run, 10 pass, 0 fail (8 scored as BPR tests since 2026-10)
 
 2026-10: PW13.1 and PW14.1 are no longer counted as BPR tests. Their k^-3 index is the classical
 enstrophy cascade, and the Class B formula they cited is contradicted at d = 2 (`bpr/phase_transitions.py`,

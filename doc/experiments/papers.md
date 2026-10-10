@@ -417,9 +417,9 @@
 | Paper | Result | DOI/arXiv |
 |-------|--------|-----------|
 | **Hasenbusch, Phys. Rev. B 82, 174433 (2010)** | ν = 0.63002(10) from FSS | [DOI:10.1103/PhysRevB.82.174433](https://doi.org/10.1103/PhysRevB.82.174433) |
-| **Campostrini et al., Phys. Rev. B 74, 144506 (2006)** | High-precision 3D Ising | [DOI:10.1103/PhysRevB.74.144506](https://doi.org/10.1103/PhysRevB.74.144506) |
+| **Campostrini et al., Phys. Rev. B 74, 144506 (2006)** | 3D XY (superfluid ⁴He) exponents, not 3D Ising; mis-cited here before 2026-10 | [DOI:10.1103/PhysRevB.74.144506](https://doi.org/10.1103/PhysRevB.74.144506) |
 
-**Verdict: MISMATCH / WITHDRAWN (2026-10).** The earlier CONFIRM was an arithmetic error. Class B at d = 3 gives (ν, β, γ) = (0.8, 0.2, 1.6); 3D Ising is ≈ (0.630, 0.326, 1.237). BPR's own `TRANSITION_CATALOG` also places ferromagnetism in Class C, not B. See the LIMITATION block in `bpr/phase_transitions.py` and `doc/CLOSED_AND_DEPRECATED.md`.
+**Verdict: MISMATCH / WITHDRAWN (2026-10).** The earlier CONFIRM was unsupported: no computation was shown, and the formula gives ν = 0.8. Class B at d = 3 gives (ν, β, γ) = (0.8, 0.2, 1.6); 3D Ising is ≈ (0.630, 0.326, 1.237). BPR's own `TRANSITION_CATALOG` also places ferromagnetism in Class C, not B. See the LIMITATION block in `bpr/phase_transitions.py` and `doc/CLOSED_AND_DEPRECATED.md`.
 
 ---
 
@@ -817,7 +817,7 @@
 
 ---
 
-## 59. Universal Phase Transition Taxonomy— **CONFIRM**
+## 59. Universal Phase Transition Taxonomy— **NON-DISCRIMINATING (2026-10)**
 
 **BPR predicts:** KZ defect density; universal scaling.
 
@@ -827,7 +827,7 @@
 | **Chomaz et al., Nature Rev. Phys. 2, 200 (2020)** | KZ mechanism in ultracold gases | [DOI:10.1038/s42254-020-0153-6](https://doi.org/10.1038/s42254-020-0153-6) |
 | **Zurek, Nature 317, 505 (1985)** | Cosmological experiments in superfluid ³He | [DOI:10.1038/317505a0](https://doi.org/10.1038/317505a0) |
 
-**Verdict: CONFIRM** — KZ scaling experimentally verified; BPR phase-transition taxonomy consistent.
+**Verdict: NON-DISCRIMINATING (2026-10; previously CONFIRM).** Kibble–Zurek scaling is Zurek's mechanism, not a BPR prediction. Ulm et al. test the 8/3 law of the inhomogeneous KZ mechanism in ion crystals, which uses mean-field exponents. BPR's `kibble_zurek_defect_density` defaults to the stipulated Class B ν = 4/(d+2) (see the LIMITATION block in `bpr/phase_transitions.py`), so the experiment does not test anything specific to BPR.
 
 ---
 
@@ -1067,10 +1067,10 @@ Row 96 is withdrawn (2026-10): Class B gives ν = 0.8, not 0.630. See entry 29.
 | 93 | R_K | h/e² | 25812.8 Ω | von Klitzing PRL 45, 494; CODATA |
 | 94 | GW speed | c | \|δv/c\| < 7×10⁻¹⁶ | Abbott PRL 119, 161101; Creminelli PRL 119, 251302 |
 | 95 | Tsirelson | 2√2 | 2√2 | Hensen Nature 526; Shalm PRL 115; Giustina PRL 115 |
-| 96 | 3D Ising ν | Class B (0.8; **MISMATCH / WITHDRAWN**) | 0.630 | Hasenbusch PRB 82, 174433; Campostrini PRB 74, 144506 |
+| 96 | 3D Ising ν | Class B (0.8; **MISMATCH / WITHDRAWN**) | 0.630 | Hasenbusch PRB 82, 174433 |
 | 97 | Dark energy Ω_Λ | frustration | 0.685 | Planck 2018 A&A 641, A6 |
 
-**Verdict: CONFIRM** — All within bounds.
+**Verdict: CONFIRM** — All within bounds, except row 96 (withdrawn 2026-10).
 
 ---
 
@@ -1187,14 +1187,15 @@ Row 96 is withdrawn (2026-10): Class B gives ν = 0.8, not 0.630. See entry 29.
 | 48 | Bell loophole-free | 2√2 | saturated | **CONFIRM** |
 | 49 | Higgs combined | 125 GeV | 125.09 GeV | **CONFIRM** |
 | 50 | d = 4 | derived | observed | **CONFIRM** |
-| 51–59 | Boundary Memory Dynamics, III, VI, VIII, IX, X, XV, XXI, KZ | — | — | **CONFIRM** |
+| 51–58 | Boundary Memory Dynamics, III, VI, VIII, IX, X, XV, XXI | — | — | **CONFIRM** |
+| 59 | Kibble–Zurek | Class B ν (stipulated) | Ulm 2013 (8/3 law) | **NON-DISCRIMINATING (2026-10)** |
 | 60–129 | (Individual predictions; see above) | — | — | **CONFIRM** |
 
 ---
 
 **Totals:** **CONFIRM 115** | FALSIFY 0 | INCONCLUSIVE 11 (compiled Feb 2026)
 
-2026-10: tests 29 and 96 (3D Ising ν) are withdrawn as mismatches, so at most 113 CONFIRM remain. The other rows were not re-audited here; the totals are historical, and the dated audits (`VALIDATION_STATUS.md`, `doc/CLOSED_AND_DEPRECATED.md`) take precedence.
+2026-10: tests 29 and 96 (3D Ising ν) are withdrawn as mismatches, and test 59 (Kibble–Zurek) is reclassified as non-discriminating, so at most 112 CONFIRM remain. The other rows were not re-audited here; the totals are historical, and the dated audits (`VALIDATION_STATUS.md`, `doc/CLOSED_AND_DEPRECATED.md`) take precedence.
 
 - **115 CONFIRM** across 129 tests. **All 21 theories** now have at least one CONFIRM.
 - **250+ papers** cited.

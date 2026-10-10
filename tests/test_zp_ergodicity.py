@@ -43,4 +43,6 @@ def test_gap1_closure_status_string():
     """Report should explicitly state Gap 1 is closed."""
     r = gap1_closure_report(p=211)
     assert "Gap 1 CLOSED" in r["status"]
+    # ...but only for initial measures with a density, which is imposed, not derived
+    assert "mu << Leb" in r["status"] and "imposed" in r["status"]
     assert "Arnold-Avez" in r["leg_C_continuum_theorem"]

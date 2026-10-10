@@ -693,7 +693,7 @@ def pipeline_kuramoto_to_transition(
     # prediction for this system: all-to-all Kuramoto synchronization is
     # mean-field (beta = 1/2), and the Class B formula is a d-dimensional
     # lattice stipulation (bpr.phase_transitions, LIMITATION). Comparing the
-    # two is the category error of VALIDATION_STATUS.md finding 4.
+    # two is a category error.
     sce = SubstrateCriticalExponents(d=d)
     beta_predicted = sce.beta
 

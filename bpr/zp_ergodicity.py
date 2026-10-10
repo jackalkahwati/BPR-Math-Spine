@@ -191,15 +191,15 @@ def gap1_closure_report(p: int = 211) -> dict:
             "e.g. one supported on a periodic orbit."
         ),
         "status": (
-            "Gap 1 CLOSED. Uniformity of Z_p phases is the exact invariant "
-            "measure of any symplectic bijection (leg A), is asymptotically "
-            "reached from any initial measure mu << Leb by coarse-grained "
-            "mixing under "
-            "the hyperbolic dynamics (leg B), and is proven in the continuum "
-            "limit by the Arnold-Avez ergodicity theorem (leg C). The "
-            "microcanonical / max-entropy assumption underlying the Born "
-            "rule construction is no longer imposed -- it follows from the "
-            "dynamics."
+            "Gap 1 CLOSED up to a regularity assumption. Uniformity of Z_p "
+            "phases is the exact invariant measure of any symplectic "
+            "bijection (leg A); at finite p, coarse-grained mixing from a "
+            "concentrated initial ensemble is observed numerically (leg B); "
+            "and in the continuum limit the Arnold-Avez theorem gives "
+            "convergence to uniform for initial measures mu << Leb (leg C). "
+            "The microcanonical / max-entropy assumption is replaced by the "
+            "weaker assumption that the initial ensemble has a density "
+            "(mu << Leb); that assumption is imposed, not derived."
         ),
     }
 
